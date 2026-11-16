@@ -1,6 +1,6 @@
 # Numeric export investigation tracker
 
-Snapshot: 2026-11-16. **Reviewed repair validated in the exact SDK on amd64; upstream merge remains open.** This tracker records reproduced failures and explicit closure criteria. The isolated eligibility guard passed independent review and full unchanged upstream acceptance in the exact SDK. Full float-root export and wide arithmetic remain open. No repaired UORust compiler is shipped in the game. The tested 0.9.0 game keeps its current guests, Rust adapter, binaries and upstream pins. A full floating-point rewrite is not a release prerequisite.
+Snapshot: 2026-11-16. **Latest bounded-kernel and canonical-export status is in the follow-up below.** **Reviewed repair validated in the exact SDK on amd64; upstream merge remains open.** This tracker records reproduced failures and explicit closure criteria. The isolated eligibility guard passed independent review and full unchanged upstream acceptance in the exact SDK. Full float-root export and wide arithmetic remain open. No repaired UORust compiler is shipped in the game. The tested 0.9.0 game keeps its current guests, Rust adapter, binaries and upstream pins. A full floating-point rewrite is not a release prerequisite.
 
 Evidence baseline: [Prism rendering investigation](PRISM-RENDER-MATH-RESEARCH.md), UORust `9d1f379676aa1099c4b88093608a37a66ba819f6`, LexLean `71defb4c663aaec5b9a3aab04cbc6a03e7106227`, PrismPM `f465664167bdaccef13c37921c057e49d0883126`; game SDK lock selects 0.3.0/image `sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c`. Current checkout HEADs are not evidence that the pinned compiler was used. Repair results must record actual toolchain versions, commands, statuses and retained logs.
 
@@ -45,3 +45,42 @@ GitHub currently allows access to upstream but denies pushing and fork creation 
 The corrected candidate passed validation in [run 43924585630](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43924585630), dispatched from game commit `b7232d553e038ad89dd3ea4999d16ddbfa7df7f1`. Its manifest binds candidate tree `aa5082efb83d6fd38275d00aec404929fbe34d9c` and cumulative patch SHA256 `05a866911f5c6386ccf6665cb178471e039cae6a2da1b84a27033491affa33e3`. The full gate and subsequent primitive probe remain separate outcomes.
 
 **Final result:** both unchanged baseline and corrected candidate passed full `just vv` on amd64. The separate candidate primitive export, binding replay and native/import-free Wasm execution also passed. [Actual receipts, logs and retained-output hashes](numeric-export/exact-sdk-accepted/README.md) bind these results to the reviewed manifest. NEXP-001/007/008 are validated repairs; NEXP-005 exact-SDK acceptance is passed for amd64. Wide arithmetic, full IEEE roots, ABI work, conservative renderer parity and LOD benchmarking remain open. The upstream compiler has not been merged/released or adopted by the game.
+
+
+## Bounded kernels and canonical exporter follow-up
+
+The separate game-owned `mul32`, `mul64`, `div32` and `div64` raw production roots
+are implemented and reviewed. Their [retained receipt](../../artifacts/numeric-task2/receipt.json)
+binds source, generated target, proof/replay bundles and actual import-free Wasm.
+All 44,648 oracle pairs passed native/Wasm replay, including 10,000 seeded random
+pairs per operation/format and named IEEE boundary policies. This is tested
+conformance and recorded source/export preservation; it is not a universal IEEE
+correctness theorem, admission of the original generic UORust closures, or a
+canonical PrismPM Text/1 result.
+
+Canonical admission remains blocked. The reconstructed compiler candidate is
+retained as a [diagnostic Git bundle](../../scripts/numeric/compiler-candidate/README.md),
+with [independent source review](numeric-export/recovery-2026-11-16/source-stage-review-634c2c5.md).
+That review identified a P1 defect: pruning a closed conversion dictionary can
+also erase an eager checked-overflow computation, including one hidden inside
+an alias. The candidate must preserve that failure or refuse the dependency
+before admission. A source fix and focused regression are in progress; no
+production tool, SDK identity, guest or Pages build was replaced.
+
+The earlier local compiler candidate was lost in an environment reset.
+[Recovery notes and actual CI artifacts](numeric-export/recovery-2026-11-16/)
+separate historical observations from newly executed checks. The first new run
+built the compiler but failed some fixture/source gates; the second stopped in
+test-tool setup. The reviewed diagnostic repair now runs independent focused
+checks before supplemental preparation and preserves output/status on failures.
+[Run 43973785776](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43973785776)
+tests the retained candidate diagnostically; a passing run alone would not close
+the review defect.
+
+Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
+that preserves the original SDK seed as the default, bounded shared-source
+adaptation, all four roots through canonical export, and independent review.
+Persistent rendering integration, the exact shift/add experiment and Text/1
+transport benchmarks remain pending. [AQM research](VERDANT-AQM-INTEGRATION.md)
+does not close any of these numerical/compiler questions; its first navigation
+experiment did not justify a runtime import.

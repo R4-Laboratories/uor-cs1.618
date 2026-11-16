@@ -190,6 +190,32 @@
       "dependencies": [],
       "release_dependency": "NEXP-005",
       "repair_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09"
+    },
+    {
+      "id": "NEXP-009",
+      "status": "blocked_review_fix_in_progress",
+      "repo": "lean4-prod / PrismPM / uor-cs1.618",
+      "function": "Canonical bounded numeric export and conversion normalization",
+      "summary": "Game-owned raw mul32/mul64/div32/div64 pass 44,648 native/Wasm vectors; canonical admission remains blocked by compiler/source integration and an unsafe consumed-dictionary erasure finding.",
+      "reproduction": "See recovery-2026-11-16/source-stage-review-634c2c5.md for explicit consumed-overflow and hidden-alias static counterexamples; these new probes still require actual pinned-SDK execution.",
+      "acceptance_criteria": [
+        "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
+        "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
+        "Preserve original SDK source/seed default; explicitly bind candidate source acquisition, custody, actual child and Holo compiler revision.",
+        "Adapt bounded shared arithmetic and replay all four canonical roots and the full corpus; raw export success alone is insufficient."
+      ],
+      "evidence": [
+        "../../../artifacts/numeric-task2/receipt.json",
+        "recovery-2026-11-16/source-stage-review-634c2c5.md",
+        "recovery-2026-11-16/ci-43966373788-review.md",
+        "recovery-2026-11-16/ci-43970122933-review.md",
+        "recovery-2026-11-16/backport-selection-recon.md"
+      ],
+      "dependencies": [
+        "NEXP-002",
+        "NEXP-003"
+      ],
+      "production_admission": false
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
