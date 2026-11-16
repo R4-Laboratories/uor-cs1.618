@@ -30,7 +30,21 @@ try{
  await a.waitForFunction(()=>(window as any).cs1618.snapshot.phase==='live');await a.keyboard.down('KeyW');await a.waitForTimeout(900);await a.keyboard.up('KeyW');
  const moved=await state(a);assert.ok(moved.snapshot.self.z<22,`Expected motion, got ${moved.snapshot.self.z}`);await b.waitForFunction(id=>(window as any).cs1618.snapshot.players.find((p:any)=>p.id===id).z<22,pa.id);results.push('WASD movement appears on both independently rendered clients');
  console.log('Testing combat');Object.assign(pa,{x:0,z:20,vx:0,vz:0,recoil:0,cooldown:0});Object.assign(pb,{x:0,z:16,vx:0,vz:0,health:100});
- await a.waitForTimeout(300);await a.mouse.move(550,380);const aiming=await state(a);await a.mouse.move(550+aiming.yaw/.002,380+aiming.pitch/.002);await a.waitForTimeout(150);await a.waitForFunction(()=>(window as any).cs1618.characters?.joints===22&&(window as any).cs1618.characters.poseUpdates>1);await a.screenshot({path:'artifacts/verdant-operator.png',timeout:20000});results.push('Upstream Verdant 22-joint operators render and animate in multiplayer');console.log('Aim',JSON.stringify({yaw:(await state(a)).yaw,pitch:(await state(a)).pitch,locked:(await state(a)).locked,weapon:pa.inventory[pa.slot].id}));await a.dispatchEvent('#world','mousedown',{button:0});await a.waitForTimeout(800);await a.dispatchEvent('#world','mouseup',{button:0});
+ await a.waitForTimeout(300);
+ // Pointer lock consumes relative deltas. Absolute Playwright cursor coordinates
+ // can be rebased by Chromium on CI; establish this fixture through the real
+ // input handler, then require both the client and authoritative host to agree.
+ await a.evaluate(()=>{
+  const before=(window as any).cs1618;
+  if(!before.locked)throw Error('Combat fixture requires pointer lock');
+  document.dispatchEvent(new MouseEvent('mousemove',{movementX:125,movementY:75,bubbles:true}));
+  const turned=(window as any).cs1618,expected=Math.atan2(Math.sin(before.yaw-.25),Math.cos(before.yaw-.25));
+  if(Math.abs(turned.yaw-expected)>1e-6)throw Error('Relative mouse input did not turn the camera');
+  document.dispatchEvent(new MouseEvent('mousemove',{movementX:Math.round(turned.yaw/.002),movementY:Math.round(turned.pitch/.002),bubbles:true}));
+ });
+ await a.waitForFunction(()=>{const s=(window as any).cs1618;return Math.abs(s.yaw)<.003&&Math.abs(s.pitch)<.003&&Math.abs(s.snapshot.self.yaw)<.003&&Math.abs(s.snapshot.self.pitch)<.003;});
+ results.push('Relative pointer-lock aiming reaches the authoritative host before combat');
+ await a.waitForFunction(()=>(window as any).cs1618.characters?.joints===22&&(window as any).cs1618.characters.poseUpdates>1);await a.screenshot({path:'artifacts/verdant-operator.png',timeout:20000});results.push('Upstream Verdant 22-joint operators render and animate in multiplayer');console.log('Aim',JSON.stringify({yaw:(await state(a)).yaw,pitch:(await state(a)).pitch,locked:(await state(a)).locked,weapon:pa.inventory[pa.slot].id}));await a.dispatchEvent('#world','mousedown',{button:0});await a.waitForTimeout(800);await a.dispatchEvent('#world','mouseup',{button:0});
  console.log('Combat result',JSON.stringify({ammo:pa.inventory[pa.slot].ammo,health:pb.health,yaw:pa.yaw,pitch:pa.pitch,phase:room.phase,events:room.events.slice(-5)}));await b.waitForFunction(()=>(window as any).cs1618.snapshot.self.health<100);assert.ok(pb.health<100);results.push('Mouse fire consumes server ammo and damages the remote opponent');
  await a.keyboard.press('Tab');await a.waitForTimeout(150);await a.keyboard.down('Tab');await a.waitForSelector('#scoreboard:not(.hidden)');await a.screenshot({path:'artifacts/multiplayer-scoreboard.png',timeout:20000});await a.keyboard.up('Tab');
  await a.screenshot({path:'artifacts/multiplayer.png',timeout:20000});
