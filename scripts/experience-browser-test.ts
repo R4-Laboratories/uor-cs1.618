@@ -15,10 +15,14 @@ try{
  const voices=await page.evaluate(()=>(window as any).experienceLab.stressVoices());assert(voices.high<=voices.limit);assert.equal(voices.after,0);
  const render=await page.evaluate(()=>{const world=(window as any).evolutionLab.world;world.setQuality('low');const low=world.renderer.getPixelRatio();const count=world.scene.children.length;world.setQuality('native');const native=world.renderer.getPixelRatio();return {low,native,count,after:world.scene.children.length};});
  assert(Math.abs(render.low/render.native-.7)<.001);assert.equal(render.count,render.after);
+ // A stale unversioned engine can lack newly required exports. Production must bypass it.
+ let staleEngineHits=0;
+ await page.route(u=>u.pathname.endsWith('/wasm/cs_verdant.wasm')&&!u.search,route=>{staleEngineHits++;return route.fulfill({status:200,contentType:'application/wasm',body:Buffer.from([0,97,115,109,1,0,0,0])});});
  await page.goto(url);await page.waitForFunction(()=>(window as any).cs1618);
  await page.waitForFunction(()=>(window as any).cs1618.hd?.status==='ready');
  await page.locator('#render-quality').selectOption('native',{force:true});
  await page.waitForFunction(()=>(window as any).cs1618.hd?.lod===4&&(window as any).cs1618.hd.status==='ready');
+ assert.equal(staleEngineHits,0,'Both main and HD worker must load the digest-addressed engine');
  const hd4=await page.evaluate(()=>(window as any).cs1618.hd);
  await mkdir('artifacts/experience',{recursive:true});await page.screenshot({path:'artifacts/experience/verdant-hd4.png'});
  await page.locator('#render-quality').selectOption('low',{force:true});
@@ -41,5 +45,5 @@ try{
  await page.reload();await page.waitForFunction(()=>(window as any).cs1618?.quality.mode==='low');assert.equal(await page.locator('#volume').inputValue(),'.25'.replace(/^\./,'0.'));
  await page.setViewportSize({width:390,height:844});
  const fits=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);assert(fits,'Mobile page overflows');
- assert.deepEqual(errors,[]);await mkdir('artifacts/experience',{recursive:true});await writeFile('artifacts/experience/browser-results.json',JSON.stringify({url,sound,voices,render,hd:{hd0,hd4},cameraResizeRecovery:true,settingsPersist:true,mobileFits:fits,errors},null,2)+'\n');console.log('Experience browser: waveform, occlusion, stereo, cleanup, voice budget, render modes and persisted settings passed.');
+ assert.deepEqual(errors,[]);await mkdir('artifacts/experience',{recursive:true});await writeFile('artifacts/experience/browser-results.json',JSON.stringify({url,sound,voices,render,hd:{hd0,hd4},cameraResizeRecovery:true,staleEngineCacheBypassed:staleEngineHits===0,settingsPersist:true,mobileFits:fits,errors},null,2)+'\n');console.log('Experience browser: waveform, occlusion, stereo, cleanup, voice budget, render modes and persisted settings passed.');
 }finally{await browser.close();if(server)await new Promise<void>(resolve=>server.httpServer.close(()=>resolve()));}

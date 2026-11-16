@@ -33,3 +33,5 @@ Local final checks: **95 unit/tooling tests, eight native Rust tests, five brows
 The final placement pass puts two halls on inaccessible rooftops and the arch bridge above the attack approach. Trees remain outside the map. Geometry clears a 6 m vertical envelope or the map boundary. A real render-mesh raycast, checked against the authoritative engine raycast, verifies that the bridge is visible from the approach rather than hidden behind a wall. The browser artifact includes `experience/verdant-play-hd4.png`.
 
 All three full LexLean/PrismPM audits passed for the imported engine commit: [official audit run](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43884108122). The later scene-placement pass leaves those compiled guests and engine Wasm bytes unchanged.
+
+Both the main client and HD worker request the engine with its recorded SHA-256 in the URL. This prevents an older unversioned browser cache entry from pairing obsolete Wasm exports with the new JavaScript bridge. The browser gate deliberately serves an obsolete module at the bare URL and requires successful HD startup through the versioned URL.

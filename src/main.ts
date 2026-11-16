@@ -1,3 +1,4 @@
+import {engineAssetUrl} from './engine-url';
 import {frame as prismFrame} from './prism-frame';
 import '@fontsource/barlow/400.css';
 import '@fontsource/barlow/500.css';
@@ -21,7 +22,7 @@ const ui=new UI(),canvas=$<HTMLCanvasElement>('world');
 let view:WorldView;
 try{view=new WorldView(canvas);}catch(error){$('load-detail').textContent='WebGL2 is unavailable. Enable hardware acceleration and reload.';throw error;}
 let bytes:ArrayBuffer;
-try{const response=await fetch(`${import.meta.env.BASE_URL}wasm/cs_verdant.wasm`);if(!response.ok)throw Error('Engine download failed');bytes=await response.arrayBuffer();}catch(error){$('load-detail').textContent='Could not load the game engine. Check the connection and reload.';throw error;}
+try{const response=await fetch(engineAssetUrl(document.baseURI));if(!response.ok)throw Error('Engine download failed');bytes=await response.arrayBuffer();}catch(error){$('load-detail').textContent='Could not load the game engine. Check the connection and reload.';throw error;}
 const roundResponse=await fetch(`${import.meta.env.BASE_URL}wasm/cs_round.wasm`);if(!roundResponse.ok){$('load-detail').textContent='Could not load the Prism round kernel. Reload to try again.';throw Error('Missing Prism kernel');}const roundBytes=await roundResponse.arrayBuffer();
 const engine=await createEngine(bytes);view.setEngine(engine);const audio=new GameAudio(engine);
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;

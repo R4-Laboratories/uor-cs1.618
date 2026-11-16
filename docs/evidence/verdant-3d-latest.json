@@ -36,7 +36,7 @@
     "creative": "passed",
     "identity": "passed",
     "experience": {
-      "url": "http://127.0.0.1:34353/",
+      "url": "http://127.0.0.1:39059/",
       "sound": {
         "rows": [
           {
@@ -106,8 +106,8 @@
             "weapon": "smg",
             "occluded": true,
             "peak": 0.0202109906822443,
-            "left": 2.351028992101064e-8,
-            "right": 9.372015804385616e-7,
+            "left": 2.3510289924018474e-8,
+            "right": 9.372015805584654e-7,
             "tail": 0,
             "ended": 1
           },
@@ -162,6 +162,7 @@
         }
       },
       "cameraResizeRecovery": true,
+      "staleEngineCacheBypassed": true,
       "settingsPersist": true,
       "mobileFits": true,
       "errors": []
@@ -185,7 +186,8 @@
     "status": "approved after fixes",
     "fixed": [
       "Camera refusal no longer terminates animation/input loop; normal ultrawide ratios supported, extreme rejection recovers after resizing",
-      "Failed worker download can retry; fatal worker errors reject future requests"
+      "Failed worker download can retry; fatal worker errors reject future requests",
+      "Main and HD worker use digest-addressed Wasm URLs; obsolete bare-URL module fixture no longer breaks startup"
     ],
     "remainingMinor": [
       "Rapid quality changes can queue redundant worker generations",

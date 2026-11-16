@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {engineAssetUrl} from './engine-url';
 import {placements} from '../model/verdant-3d.json';
 import type {HdAsset} from '../shared/engine';
 export type HdLoader=(lod:number)=>Promise<HdAsset[]>;
@@ -30,5 +31,5 @@ export function createHdLoader(){
  const fail=(error:Error)=>{unavailable=error;worker.terminate();for(const p of pending.values())p.reject(error);pending.clear();};
  worker.onerror=e=>{e.preventDefault();fail(new Error(e.message));};
  worker.onmessageerror=()=>fail(new Error('HD worker response could not be decoded'));
- return {load:(lod:number)=>new Promise<HdAsset[]>((resolve,reject)=>{if(unavailable){reject(unavailable);return;}const id=++serial;pending.set(id,{resolve,reject});worker.postMessage({id,lod,engineUrl:new URL('wasm/cs_verdant.wasm',document.baseURI).href});}),dispose:()=>fail(new Error('HD worker closed'))};
+ return {load:(lod:number)=>new Promise<HdAsset[]>((resolve,reject)=>{if(unavailable){reject(unavailable);return;}const id=++serial;pending.set(id,{resolve,reject});worker.postMessage({id,lod,engineUrl:engineAssetUrl(document.baseURI)});}),dispose:()=>fail(new Error('HD worker closed'))};
 }
