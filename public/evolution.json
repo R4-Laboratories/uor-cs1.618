@@ -8,6 +8,20 @@
     },
     "navigation": {
       "cell": 3
+    },
+    "art": {
+      "version": 1,
+      "seed": 0,
+      "background": "#afa58b",
+      "ink": "#d9cfb0",
+      "siteA": "#b1a58b",
+      "siteB": "#a5aaa0",
+      "shapes": []
+    },
+    "tactics": {
+      "version": 1,
+      "rules": [],
+      "fallback": "advance"
     }
   },
   "lastEvaluation": {
@@ -151,7 +165,7 @@
     "checks": "complete-game-gates-passed",
     "hash": "318e727e9b29e9dd9937fcf1ffc41bafad0eda3f805084e9a3b49ac3a105ba1b"
   },
-  "scope": "Bounded rendering and navigation optimization; no unrestricted AI code generation.",
+  "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
     {
       "generation": 1,

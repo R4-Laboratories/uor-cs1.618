@@ -4,9 +4,16 @@ on:
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:
+    inputs:
+      family:
+        description: Candidate family
+        type: choice
+        options: [auto, art, tactics, render, navigation]
+        default: auto
 permissions:
   contents: write
   actions: write
+  models: read
 concurrency:
   group: cs-evolution
   cancel-in-progress: false
@@ -25,7 +32,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - name: Author a typed creative proposal
+        if: vars.CS_AI_AUTHOR != 'off'
+        env:
+          GH_MODELS_TOKEN: ${{ github.token }}
+        run: npm run evolution:author
       - name: Generate, measure and validate candidate source
+        env:
+          CS_EVOLUTION_FAMILY: ${{ inputs.family || 'auto' }}
         run: npm run evolution:tick -- --apply
       - name: Publish only hash-bound validated outputs
         env:

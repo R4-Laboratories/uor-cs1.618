@@ -32,3 +32,18 @@ test('tactics receive local visible facts, never hidden enemy coordinates',async
  const m=new Match('FACTS',engine,kernel,f=>{seen=f;return null;});const a=m.join('a','Scout','attack',true)!;const d=m.join('d','Hidden','defend')!;m.phase='live';Object.assign(a,{x:-12,z:22});Object.assign(d,{x:-12,z:0});m.botInput(a,1/60);
  assert.equal(seen!.enemy,false);assert.ok(Object.values(seen!).every(v=>typeof v==='boolean'));assert.equal(Object.keys(seen!).length,10);
 });
+import {measureTactics} from '../scripts/evolution/measure-creative';
+import {baselineArt,baselineTactics} from '../shared/creative-program';
+test('tactical promotion improves held-out decisions and real emergency outcomes, rejecting no-op policy',async()=>{
+ const before={render:{cell:16,minimum:2},navigation:{cell:3},art:baselineArt,tactics:baselineTactics};
+ const good={...before,tactics:synthesizeTactics(42)};const evidence=await measureTactics({id:'tactics-test',family:'tactics',config:good},before);
+ assert.equal(evidence.fidelity,true);assert.equal(evidence.bounds,true);assert.ok(evidence.candidateWork<evidence.baselineWork);assert.ok((evidence.after as any).holdoutErrors<(evidence.before as any).holdoutErrors);assert.ok((evidence.after as any).completed>(evidence.before as any).completed);
+ const bad=await measureTactics({id:'bad',family:'tactics',config:{...before,tactics:{version:1,rules:[{when:{fact:'enemy'},action:'guard'}],fallback:'guard'}}},good);assert.equal(bad.fidelity,false);
+});
+import {compileArt} from '../shared/creative-program';
+import {drawProgramMotif} from '../src/creative/artwork';
+test('compiled artwork executes the same bounded vector operations as its recipe',()=>{
+ const p=synthesizeArt(6210),exports:any={};runInNewContext(ts.transpileModule(compileArt(p),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports});
+ const log=()=>{const events:any[]=[];const ctx=new Proxy({},{get:(_,key)=>(...args:any[])=>events.push([key,...args]),set:(_,key,v)=>{events.push([key,v]);return true;}});return {events,ctx};};
+ const a=log(),b=log();exports.drawMotif(a.ctx);drawProgramMotif(b.ctx as CanvasRenderingContext2D,p);assert.deepEqual(a.events,b.events);assert.ok(a.events.length<=48*6);
+});

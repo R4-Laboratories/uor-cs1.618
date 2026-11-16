@@ -19,7 +19,8 @@
     "evolution:check": "tsx scripts/evolution/generate.ts --check",
     "evolution:tick": "tsx scripts/evolution/tick.ts",
     "evolution:publish": "tsx scripts/evolution/publish.ts",
-    "evolution:watch": "tsx scripts/evolution/deploy-watch.ts"
+    "evolution:watch": "tsx scripts/evolution/deploy-watch.ts",
+    "evolution:author": "tsx scripts/evolution/creative-author.ts"
   },
   "dependencies": {
     "@fontsource/barlow": "5.3.0",

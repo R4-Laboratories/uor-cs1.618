@@ -18,7 +18,7 @@ export function paintArtwork(ctx:CanvasRenderingContext2D,site:'A'|'B',p:ArtProg
 export class ArtworkLayer{
  readonly panels:T.Mesh[]=[];private textures:T.CanvasTexture[]=[];private enabled=true;private populated=false;status='baseline';
  constructor(scene:T.Scene){
-  for(const [x,y,z,w,h]of [[-16,2.1,-20.42,6,2.3],[16,2.1,-20.42,6,2.3],[-12,3.2,19.05,6,2.4],[12,3.2,19.05,6,2.4]]){const mesh=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-1}));mesh.position.set(x,y,z);mesh.userData.proceduralArt=true;mesh.visible=false;scene.add(mesh);this.panels.push(mesh);}
+  for(const [x,y,z,w,h]of [[-16,2.1,-20.42,6,2.3],[16,2.1,-20.42,6,2.3],[-12,1.8,19.05,4.8,2.1],[12,1.8,19.05,4.8,2.1]]){const mesh=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:0xffffff,polygonOffset:true,polygonOffsetFactor:-1}));mesh.position.set(x,y,z);mesh.userData.proceduralArt=true;mesh.visible=false;scene.add(mesh);this.panels.push(mesh);}
   this.apply(artProgram);
  }
  apply(program:ArtProgram){
