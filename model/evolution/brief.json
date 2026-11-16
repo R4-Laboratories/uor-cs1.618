@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "art": "Original coastal relay-station murals: architectural circuit traces, concentric signal rings, dark teal grounds, warm A and cool B accents, highly legible pale lettering. Keep geometric detail on the right half; labels occupy the left. No external assets.",
+  "tactics": "Bots should prioritize a last-chance defuse over shooting, interact with a plant/defuse when safe, reload an empty weapon, otherwise fight visible enemies, escort the friendly carrier and guard sites. Do not grant knowledge of hidden enemy positions or alter aim, damage, movement speed, economy or rules.",
+  "provider": "github-models",
+  "model": "openai/gpt-4.1-mini"
+}
