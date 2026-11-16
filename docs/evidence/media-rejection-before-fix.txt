@@ -1,0 +1,30 @@
+✖ browser rooms reject unsolicited media calls before they accumulate (8.156007ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1132.882769
+
+✖ failing tests:
+
+test at tests/peer-lifecycle.test.ts:1:583
+✖ browser rooms reject unsolicited media calls before they accumulate (8.156007ms)
+  AssertionError [ERR_ASSERTION]: Unsupported calls must close immediately on both host and guest
+
+  25 !== 0
+
+      at TestContext.<anonymous> (/workspace/cs1.618/tests/peer-lifecycle.test.ts:24:53)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 25,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

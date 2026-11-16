@@ -1,4 +1,16 @@
-# Verification of release 0.1.0
+# Verification evidence
+
+## Release 0.2.0 — browser-hosted WebRTC
+
+- `npm run verify`: **28 tests passed**, TypeScript/Vite production build passed, existing engine/Prism source and artifact integrity checks passed.
+- `npm run test:peer-browser`: real WebRTC between isolated browser contexts with only static files and a local signaling service; invitation rejection, worker-owned purchases/movement, signaling disconnect survival and host departure. The script checks that no game-server endpoint or gameplay-over-signaling is used.
+- `npm run test:browser`: dedicated-server gameplay, rendered UI, purchases/combat, leaving and browser-local bot practice passed after integration.
+- Independent code review found an unsupported-media-call resource leak in the PeerJS integration. A regression reproduced 25 retained calls before the fix; the host and guest now reject them immediately, and the suite passes.
+- Local network tests do not prove TURN connectivity or cross-ISP NAT traversal. Host migration is intentionally deferred. See [browser networking](BROWSER-MULTIPLAYER.md).
+
+The Rust bridge and Prism kernel did not change in this release. Their prior evidence and the open PrismPM verification gate below still apply.
+
+## Release 0.1.0 baseline
 
 This is a playable first release with executable evidence. It is **not** a claim of complete formal verification, production anti-cheat, or full Counter-Strike feature parity.
 
@@ -31,4 +43,4 @@ The directly checked 288-state round behavior is useful evidence despite that op
 
 The first release has one original map, five weapons, 5v5 rooms, bot filling, round economy and plant/defuse gameplay. It omits grenades, hostage modes, voice, accounts, ranked matchmaking and lag-compensated rewind. Enemy positions are transmitted to clients, so it is not protected against wallhack clients. Sessions and scores are in memory.
 
-No public multiplayer load benchmark, hardware-GPU performance certification or mobile gameplay support is claimed. Headless browser checks ran using software rendering. GitHub Pages can host the static client and local practice; online matches need a long-running WebSocket server, as explained in [DEPLOYMENT.md](DEPLOYMENT.md).
+No public multiplayer load benchmark, hardware-GPU performance certification or mobile gameplay support is claimed. Headless browser checks ran using software rendering. The 0.1.0 release needed a long-running WebSocket server for online play. Release 0.2.0 also supports browser-hosted WebRTC rooms from GitHub Pages; dedicated hosting remains optional, as explained in [DEPLOYMENT.md](DEPLOYMENT.md).

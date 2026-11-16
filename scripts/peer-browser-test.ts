@@ -66,3 +66,7 @@ try{
  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/peer-browser-results.json',JSON.stringify({passed:checks,errors},null,2)+'\n');console.log(checks.join('\n'));
 }catch(error){console.error('Peer failure',JSON.stringify({a:await state(a).catch(()=>null),b:await state(b).catch(()=>null)}));throw error;}
 finally{await browser.close();for(const client of signalingClients)client.getSocket()?.close();await new Promise<void>(r=>http.close(()=>r()));}
+// PeerServer 1.0.2 retains internal recurring maintenance timers without exposing
+// a shutdown API. Browser and HTTP resources are closed above; failures throw
+// before reaching this successful CLI exit.
+process.exit(0);

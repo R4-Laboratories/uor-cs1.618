@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "Wrong invitation is rejected before joining or evicting a bot",
+    "Isolated browser contexts join the same worker-hosted match with a real unordered WebRTC channel",
+    "Guest purchase is applied by the host and deducts the authoritative price",
+    "Guest input moves its authoritative player and reaches the host snapshot",
+    "Established gameplay continues when signaling sockets disconnect",
+    "No dedicated game-server endpoint or gameplay payload through signaling",
+    "Host departure closes the match and restores a usable guest lobby",
+    "No uncaught browser errors"
+  ],
+  "errors": []
+}

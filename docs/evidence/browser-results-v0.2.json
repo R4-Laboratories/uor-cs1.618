@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "Browser buy menu equips a server-issued rifle and deducts the exact price",
+    "WASD movement appears on both independently rendered clients",
+    "Mouse fire consumes server ammo and damages the remote opponent",
+    "Escape menu and leaving a room restore the lobby",
+    "Static browser practice starts ten-player simulation without a WebSocket connection",
+    "No uncaught browser errors across online and local gameplay"
+  ],
+  "errors": []
+}

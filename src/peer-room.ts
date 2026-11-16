@@ -35,6 +35,8 @@ export class PeerRoom {
    if(options.host)this.startHost();
    else this.attach(this.peer.connect(`${PEER_PROTOCOL}-${options.invitation.room}`,{label:PEER_PROTOCOL,serialization:'raw',reliable:true,metadata:{protocol:PEER_PROTOCOL}}));
   });
+  // Media is outside this protocol; PeerJS retains unanswered calls until closed.
+  this.peer.on('call',call=>call.close());
   this.peer.on('connection',connection=>{
    if(!options.host||!this.worker||this.links.size>=9||connection.label!==PEER_PROTOCOL||connection.metadata?.protocol!==PEER_PROTOCOL||connection.serialization!=='raw'){connection.close();return;}
    this.attach(connection);
