@@ -11,3 +11,5 @@ These are retained local validation receipts for the 2026-11-16 integration. [Re
 The local build's commit stamp precedes the integration commit because verification runs before commit. Publication must rebuild the final source and validate the served stamp; these local receipts must not be labeled a completed Pages deployment.
 
 The cold presentation command printed 0.8.0 because it began immediately before the metadata-only 0.9.0 bump; feature code was final. The verify/build and remaining suites used 0.9.0. Its harmless development reload notice and all warnings remain in the transcript.
+
+Final publication: source 382c45d is released as v0.9.0 and passed all Pages jobs. The `pages-*0.9.0` and `discovery-live-pages.json` receipts record actual deployed-origin verification; earlier local receipts retain their original scope and failures. The public match probe pauses scene rendering, uses actual public services and withdraws its transient listing.

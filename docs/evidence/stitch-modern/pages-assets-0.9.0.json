@@ -1,0 +1,54 @@
+{
+  "url": "https://r4-laboratories.github.io/uor-cs1.618/",
+  "commit": "382c45d7614842aa0b9ca99337cd1bada0d0f745",
+  "assets": [
+    {
+      "path": "engine.json",
+      "bytes": 3202,
+      "sha256": "f620bab349100b8572a36aa1776fd516e8eeeee5f491f2131138b51d627f5f2f",
+      "matched": true
+    },
+    {
+      "path": "app.holo",
+      "bytes": 36816,
+      "sha256": "22ecc71e5e61ac1b94e3afa9732053cb1639149791977734586a6f567fab9359",
+      "matched": true
+    },
+    {
+      "path": "wasm/cs_verdant.wasm",
+      "bytes": 261647,
+      "sha256": "b4d9096a739d6dd7fec457155c751fb1851d2230bd147015f3ed561b0697e2ce",
+      "matched": true
+    },
+    {
+      "path": "wasm/cs_round.wasm",
+      "bytes": 2558,
+      "sha256": "ab75a7806437f5611bc2e28afbdd6e2d56b941390fee8d6a9f033d0b255618fa",
+      "matched": true
+    },
+    {
+      "path": "wasm/cs_evolution.wasm",
+      "bytes": 1841,
+      "sha256": "b4763ff9796f52129b1c45f3669b43fe4b82c7841bfbcbd14f56a419cd195bf1",
+      "matched": true
+    },
+    {
+      "path": "wasm/cs_identity.wasm",
+      "bytes": 1832,
+      "sha256": "7326a2b1d4b8f6b3a66d1125c16a57a2e6368fe0a5db9e98cee69bd2a166045d",
+      "matched": true
+    },
+    {
+      "path": "prism-frame-worker.js",
+      "bytes": 1741,
+      "sha256": "9cfefcc9b09ad373ed7f13aa1c19c01056d38544ba851cd876358baff0167d05",
+      "matched": true
+    },
+    {
+      "path": "prism-frame-assets.mjs",
+      "bytes": 902,
+      "sha256": "bd9bf08c09afeb56ff0ff300496076e2612d7ce9f3e44b4dad1490a468d02165",
+      "matched": true
+    }
+  ]
+}

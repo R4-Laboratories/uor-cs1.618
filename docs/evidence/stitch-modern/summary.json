@@ -3,7 +3,15 @@
   "date": "2026-11-16",
   "version": "0.9.0",
   "baseCommit": "c0adac1bb871296cbabcae3a54256b616af3e754",
-  "publication": "ef7e4a3 pushed; second Pages attempt failed on actual upstream panels404; reviewed exact-byte dependency recovery and final133-test verify pass; deployment rerun pending",
+  "publication": {
+    "commit": "382c45d7614842aa0b9ca99337cd1bada0d0f745",
+    "version": "0.9.0",
+    "pagesRun": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43923626809",
+    "conclusion": "success: build, deploy, continue-evolution",
+    "servedBuild": "pages-0.9.0-served-build.json",
+    "servedAssets": "pages-assets-0.9.0.json",
+    "release": "https://github.com/R4-Laboratories/uor-cs1.618/releases/tag/v0.9.0"
+  },
   "verify": {
     "tests": 133,
     "failures": 0,
@@ -59,7 +67,8 @@
   "rustProjection": "not regenerated; Rust and pins unchanged",
   "proofScope": "existing mandatory round/evolution/identity guests; no new whole-game proof",
   "graphicsScope": "Chromium SwiftShader; no physical-GPU FPS claim",
-  "liveRelayProbe": "earlier actual ntfy/PeerJS Cloud/WebRTC local-preview origin; no HTTP interception; deployed-origin probe pending",
+  "liveRelayProbe": "passed on actual Pages origin using ntfy, PeerJS Cloud, WebRTC and live host proof; no HTTP interception; scene rendering paused; not load/TURN/uptime evidence",
   "numericExport": "reviewed local admission guard and diagnosed primitive overflow; full IEEE arithmetic/export and exact upstream SDK acceptance remain open",
-  "wholeBranchReview": "approved 4db5f823..23a3ad959; no blocking findings"
+  "wholeBranchReview": "approved 4db5f823..23a3ad959; no blocking findings",
+  "liveIdentityProbe": "passed on actual Pages origin: first-load worker, real account creation, signed binding and public export; both exact dependencies supplied by scoped worker"
 }
