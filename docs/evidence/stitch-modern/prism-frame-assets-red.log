@@ -1,0 +1,63 @@
+✖ frame dependency mirrors retain exact published hashes and generated map custody (2.54943ms)
+✖ dependency route accepts only exact GET URLs and resolves beneath each app scope (6.16091ms)
+✖ mirror response rejects altered bytes and unavailable assets without external fallback (3.435695ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 353.150986
+
+✖ failing tests:
+
+test at tests/prism-frame-assets.test.ts:1:226
+✖ frame dependency mirrors retain exact published hashes and generated map custody (2.54943ms)
+  AssertionError [ERR_ASSERTION]: Both immutable published dependencies must be in local custody
+      at TestContext.<anonymous> (/workspace/cs1.618/tests/prism-frame-assets.test.ts:9:47)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/prism-frame-assets.test.ts:1:803
+✖ dependency route accepts only exact GET URLs and resolves beneath each app scope (6.16091ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/cs1.618/public/prism-frame-worker.js' imported from /workspace/cs1.618/tests/prism-frame-assets.test.ts
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at nextResolve (node:internal/modules/esm/hooks:785:28)
+      at resolveBase (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:3744)
+      at async resolveDirectory (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:4237)
+      at async resolve (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:5355)
+      at async nextResolve (node:internal/modules/esm/hooks:785:22)
+      at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+      at async handleMessage (node:internal/modules/esm/worker:251:18) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/cs1.618/public/prism-frame-worker.js'
+  }
+
+test at tests/prism-frame-assets.test.ts:1:1880
+✖ mirror response rejects altered bytes and unavailable assets without external fallback (3.435695ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/cs1.618/public/prism-frame-worker.js' imported from /workspace/cs1.618/tests/prism-frame-assets.test.ts
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at nextResolve (node:internal/modules/esm/hooks:785:28)
+      at resolveBase (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:3744)
+      at async resolveDirectory (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:4237)
+      at async resolve (file:///workspace/cs1.618/node_modules/tsx/dist/esm/index.mjs?1794850993113:2:5355)
+      at async nextResolve (node:internal/modules/esm/hooks:785:22)
+      at async AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:24)
+      at async handleMessage (node:internal/modules/esm/worker:251:18) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///workspace/cs1.618/public/prism-frame-worker.js'
+  }

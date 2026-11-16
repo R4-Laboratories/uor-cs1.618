@@ -1,0 +1,11 @@
+✔ frame dependency mirrors retain exact published hashes and generated map custody (107.180526ms)
+✔ dependency route accepts only exact GET URLs and resolves beneath each app scope (4.292726ms)
+✔ mirror response rejects altered bytes and unavailable assets without external fallback (50.231328ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 524.337358

@@ -1,5 +1,6 @@
 {
   "passed": [
+    "First page is controlled before the canonical frame loads; exact dependencies are served locally with integrity checks",
     "Canonical Prism frame and address bar load",
     "Actual Holo identity policy loads and replays examples",
     "Nonextractable identity persists after reload",
@@ -10,5 +11,122 @@
     "Wrapped mobile Prism bar leaves the game header visible without overflow",
     "No uncaught browser errors"
   ],
-  "errors": []
+  "errors": [],
+  "network": [
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "status": 200,
+      "serviceWorker": true
+    },
+    {
+      "kind": "response",
+      "url": "https://ntfy.sh/prism-0e2280321a074782fd8a60780a028ef07c3c28aa9ca21d8d65247676c9/json",
+      "status": 200,
+      "serviceWorker": false
+    }
+  ],
+  "consoleMessages": [
+    "[.WebGL-0xd9c030e4000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0xd9c030e4000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0xd9c030e4000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0xd9c030e4000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+  ],
+  "prefix": "/"
 }

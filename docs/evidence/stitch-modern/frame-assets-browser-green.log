@@ -1,0 +1,5 @@
+
+> cs1-618@0.9.0 test:frame-assets-browser
+> tsx scripts/frame-assets-browser-test.ts
+
+Frame delivery: corrupt bytes rejected, unavailable worker disables sharing, unrelated scope preserved, navigation/engine requests unhandled.

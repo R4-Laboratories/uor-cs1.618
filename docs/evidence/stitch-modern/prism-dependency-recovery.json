@@ -1,0 +1,92 @@
+{
+  "schema": "cs1618/prism-frame-dependency-recovery/1",
+  "source": {
+    "repository": "UOR-Foundation/template",
+    "commit": "5b712b9d7b123af6c4545534ffa7c8b1647e7110"
+  },
+  "publishedAvailability": {
+    "panels": "HTTP404 from curl and real Chromium",
+    "identity": "HTTP200; mirrored to retain full immutable dependency closure"
+  },
+  "inputs": {
+    "frame/frame.mjs": {
+      "sha256": "208994058dcc6c70a91d590c345cb4956eda3532096f298f0a21f809f11672c1",
+      "bytes": 77046,
+      "gitBlob": "211002f8db67db97296ea037e6d0ba5609e3dc7d"
+    },
+    "frame/frame.css": {
+      "sha256": "c7470fdcbdb0ca9c6e2a634b6ec4ba9f1ed87c39b737f91e082b8c6466ab91f4",
+      "bytes": 21745,
+      "gitBlob": "b233c1c3bbf6e4bf2830c1f86f754a42ed66c0c1"
+    },
+    "frame/panels.mjs": {
+      "sha256": "f2db1617f0a6d14e4447c54bafc7aeb45c7cb152b0f5a0b27b5615f8ce8d7b92",
+      "bytes": 54295,
+      "gitBlob": "5197171b5ac71920ee13dba21a316d9cac81bdb5"
+    },
+    "frame/panels.css": {
+      "sha256": "9b6bcd85303139ddaac9b2cbde7b7d3ef61d34da336874774073124b2560d8ce",
+      "bytes": 21744,
+      "gitBlob": "98005af1dd762b995b69ccd48e8ced2380ce69e9"
+    },
+    "frame/publish.mjs": {
+      "sha256": "faaaca350d15e0a0fb90311f810f1cf322ec790d6e0739c90489caa5cd857dd9",
+      "bytes": 5454,
+      "gitBlob": "b582e82ad70bd995fe71261bf870f26fe144de4f"
+    },
+    "identity/prism-id.mjs": {
+      "sha256": "68482230e97b35a042295ec003687e745b34ba92275f0fc6a671bc1510f6d0d0",
+      "bytes": 174762,
+      "gitBlob": "5f4246b9c8623aa36fd17177ee57334c833ab2e0"
+    },
+    "site/brand/hologram-warm.css": {
+      "sha256": "86297939f26618556c560542f105cf1be1f0a718180aed7617d6e3018bf0339a",
+      "bytes": 3705,
+      "gitBlob": "b0c99eefdd904284f316f5bad617751e32b167e0"
+    }
+  },
+  "upstreamPackageLock": {
+    "sha256": "b36536b801af9ea3daf0582a7c4e88b3c45d6192ebfa26ac98e5ec5c9f154a52",
+    "bytes": 6265,
+    "gitBlob": "dae64d34cfa7e58095ab8cbfb2c776b1fd153d3a"
+  },
+  "recoveryPackageLock": {
+    "sha256": "f38b4fd1bde2c50094d607108a5f6bcede69f80ac4ea4317302262fe9858b533",
+    "bytes": 4859,
+    "gitBlob": "c33149cd29781e9e407173b283912ff982f6e0e3"
+  },
+  "toolchain": {
+    "node": "v24.22.1",
+    "terser": "5.51.2",
+    "lockedPackages": 11,
+    "method": "All resolved dependency entries copied unchanged from original package-lock; npm ci --ignore-scripts --no-audit --no-fund; no game dependency changes."
+  },
+  "command": "node frame/publish.mjs recovered 5b712b9d7b123af6c4545534ffa7c8b1647e7110",
+  "publisherChanged": false,
+  "originalPhotoInputs": 18,
+  "outputs": {
+    "9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs": {
+      "sha256": "9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02",
+      "bytes": 49707,
+      "gitBlob": "e2e57fbded4ef23d3b5a2a9b6935d01cc477e717"
+    },
+    "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849/prism-frame.mjs": {
+      "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
+      "bytes": 62343,
+      "gitBlob": "b0cd2703492e1dc58fe6a9e71eb0baa8546a3a8d"
+    },
+    "03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs": {
+      "sha256": "03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef",
+      "bytes": 96780,
+      "gitBlob": "35b9babe801106530d85baf7dc447f27a799c679"
+    }
+  },
+  "canonicalFrameByteEqual": true,
+  "license": {
+    "source": "LICENSE-MIT",
+    "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee",
+    "bytes": 1075,
+    "gitBlob": "8f12286c285dec35ba0d324aff23cf46debe3987"
+  },
+  "scope": "Exact recovered published modules; no new identity protocol or whole-game proof."
+}

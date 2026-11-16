@@ -1,0 +1,15 @@
+
+> cs1-618@0.9.0 test:identity-browser
+> tsx scripts/identity-browser-test.ts && tsx scripts/frame-assets-browser-test.ts
+
+First page is controlled before the canonical frame loads; exact dependencies are served locally with integrity checks
+Canonical Prism frame and address bar load
+Actual Holo identity policy loads and replays examples
+Nonextractable identity persists after reload
+Wrong confirmation code refuses device linking
+Two isolated browser contexts link and retain the same Stitch identity
+Explicit approval downloads only a public signed proof
+Published shared frame creates and signs a verified Stitch session binding
+Wrapped mobile Prism bar leaves the game header visible without overflow
+No uncaught browser errors
+Frame delivery: corrupt bytes rejected, unavailable worker disables sharing, unrelated scope preserved, navigation/engine requests unhandled.

@@ -1,0 +1,63 @@
+{
+  "status": "failed",
+  "stage": "shared frame account creation",
+  "error": {
+    "name": "TimeoutError",
+    "message": "page.waitForFunction: Timeout 60000ms exceeded.",
+    "stack": "page.waitForFunction: Timeout 60000ms exceeded.\n    at <anonymous> (/workspace/cs1.618/scripts/identity-browser-test.ts:16:96)"
+  },
+  "errors": [],
+  "network": [
+    {
+      "kind": "requestfailed",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 404
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 404
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 404
+    },
+    {
+      "kind": "response",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 404
+    }
+  ],
+  "consoleMessages": [
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "Failed to load resource: the server responded with a status of 404 ()"
+  ],
+  "diagnostics": [
+    {
+      "url": "http://127.0.0.1:34137/identity.html",
+      "account": false,
+      "accountReady": false,
+      "panelChildren": 0,
+      "barStatus": "",
+      "identityStatus": "Downloaded a public proof for this app origin, valid for 60 seconds. No private keys were exported.",
+      "policyStatus": "Compiled identity policy loaded: 28 examples passed."
+    },
+    {
+      "url": "http://127.0.0.1:34137/identity.html",
+      "account": false,
+      "accountReady": false,
+      "panelChildren": 0,
+      "barStatus": "",
+      "identityStatus": "",
+      "policyStatus": "Compiled identity policy loaded: 28 examples passed."
+    }
+  ]
+}

@@ -16,11 +16,11 @@ The final integration report and machine receipts are recorded under [evidence/s
 
 | Command | Result |
 | --- | --- |
-| `npm run verify` | 130/130 tests, zero failures/skips; generation check, 18 pinned vendor files, manifest, TypeScript/Vite, 66 source/artifact hashes, six upstream pins and mandatory import-free guests. |
+| `npm run verify` | 133/133 tests after dependency recovery, zero failures/skips; generation check, 18 pinned vendor files, manifest, TypeScript/Vite, 77 source/artifact hashes, six upstream pins and mandatory import-free guests. |
 | `npm run test:browser` | 11 checks after the CI fixture follow-up; real multiplayer purchase/movement/aim/combat/scoreboard/leave and ten-player practice. Initial failures and passing local repairs retained. |
 | `npm run test:peer-browser` | 8 checks, real unordered WebRTC, invitation refusal, host authority, signaling-loss continuity and departure. |
 | `npm run test:creative-browser` | 6 checks, studio, reversible original/evolved artwork, mobile width and rejection cases. |
-| `npm run test:identity-browser` | 9 checks, real frame/Holo, persistence, wrong-code refusal, linking, public export and account binding. |
+| `npm run test:identity-browser` | 10 checks, real frame/Holo, persistence, wrong-code refusal, linking, public export and account binding; root and Pages-subpath runs, plus three mandatory loader failure cases. |
 | `npm run test:experience-browser` | Pass; ten weapon/occlusion audio measurements, voice bounds/retirement, HD0/HD4, native/Performance ratios, camera recovery, digest-addressed engine, persistence/mobile width. |
 | `npm run test:discovery-browser` | 7 checks, signed public discovery, mobile bounds, live pinned-host proof/substitution refusal, withdrawal, private silence and outage fallback. |
 | `npm run test:objective-browser` | 4 checks, persistent HUD, real keyboard interaction/cancel and explicitly fixtured compiled-kernel terminal outcomes. |
@@ -38,6 +38,14 @@ The fresh presentation run began after removing only generated `node_modules/.vi
 The objective browser gate intentionally isolates the HUD with scene rendering paused. It observes real E input/progress/cancellation through normal WebSocket transport and the host, then uses late-progress/expiry fixtures for outcomes. It does not claim full-duration browser timing. Real Verdant/round-kernel tests independently check the 3/5/10/40-second boundaries at 180/300/600/2400 simulation ticks. An earlier task-2 full real-time browser lifecycle passed once, but only its log was retained; later HUD screenshots are not evidence of that earlier rendered run.
 
 Discovery's reproducible test intercepts only ntfy HTTP at the external boundary while retaining actual upstream bus framing, signatures, compiled identity admission, local PeerServer and WebRTC. It tests signed host substitution refusal, withdrawal, private silence and outage fallback. Separately, [the retained public relay receipt](evidence/stitch-modern/discovery-live-relay.json) records actual ntfy GET/POST 200 responses, actual PeerJS Cloud and WebRTC, pinned-host verification and departure/withdrawal, with no intercepted HTTP. That probe ran on a **local preview origin**, not the final Pages origin, with scene rendering paused to isolate networking; it establishes one observed success, not availability, NAT/TURN coverage or load tolerance.
+
+## Dependency availability repair
+
+Pages run [43919246410](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919246410) passed gameplay, peer and creative checks, then found the pinned Prism panels URL returning HTTP404. This broke real shared-frame account creation. The exact original publisher and locked dependencies reproduced the canonical frame and both companion module hashes; [recovery receipt](evidence/stitch-modern/prism-dependency-recovery.json) and [scoped review](evidence/stitch-modern/prism-dependency-review.md) retain the evidence.
+
+The app now owns exact local copies of those two immutable modules. A Service Worker at the application's scope handles only their exact GET URLs and verifies bytes; the original loaders verify their hashes again. Navigation, game code and engine downloads are untouched. Startup waits for matching control and fails visibly on missing/corrupt bytes or conflicting scope ownership. HTTPS/localhost and Service Worker support are required for this shared frame. This is tested host delivery, not a new formal identity proof or a change to the canonical frame, vendor, engine or guests. The MIT license is retained.
+
+The repaired real identity flow passes on root and Pages-style paths. Negative browser checks reject altered bytes and unavailable workers and preserve unrelated worker ownership; they now run in mandatory identity acceptance. Discovery's seven checks also pass. Final local `npm run verify` passed 133 tests and 77 custody hashes. The original failure remains recorded; final remote deployment is a separate acceptance step.
 
 ## Proof and performance scope
 

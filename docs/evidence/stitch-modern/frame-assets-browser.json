@@ -1,0 +1,172 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "mode": "corrupt",
+      "account": false,
+      "disabled": "true",
+      "notice": "Verified Prism bar unavailable · identity details",
+      "controller": "http://127.0.0.1:33995/corrupt/prism-frame-worker.js"
+    },
+    {
+      "mode": "unavailable",
+      "account": false,
+      "disabled": "true",
+      "notice": "Verified Prism bar unavailable · identity details"
+    },
+    {
+      "mode": "foreign",
+      "account": false,
+      "disabled": "true",
+      "notice": "Verified Prism bar unavailable · identity details",
+      "controller": "http://127.0.0.1:33995/foreign/foreign-worker.js"
+    }
+  ],
+  "errors": [],
+  "network": [
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/identity.html",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/identity.css",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/assets/identity-B4FdQ_wT.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/assets/index-GMZdtrmb.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/assets/hologram-identity-C42cxb9w.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/app.holo",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "status": 502,
+      "serviceWorker": true
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:33995/corrupt/wasm/cs_verdant.wasm",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/identity.html",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/identity.css",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/assets/identity-B4FdQ_wT.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/assets/index-GMZdtrmb.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/assets/hologram-identity-C42cxb9w.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "unavailable",
+      "url": "http://127.0.0.1:33995/unavailable/app.holo",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/seed.html",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/identity.html",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/identity.css",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/assets/identity-B4FdQ_wT.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/assets/index-GMZdtrmb.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/assets/hologram-identity-C42cxb9w.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "foreign",
+      "url": "http://127.0.0.1:33995/foreign/app.holo",
+      "status": 200,
+      "serviceWorker": false
+    }
+  ]
+}

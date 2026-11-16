@@ -1,0 +1,19 @@
+build	Run npm run test:identity-browser	﻿2026-11-16T17:34:21.6083816Z ##[group]Run npm run test:identity-browser
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6084201Z [36;1mnpm run test:identity-browser[0m
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6111677Z shell: /usr/bin/bash -e {0}
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6111959Z ##[endgroup]
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6778549Z 
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6779370Z > cs1-618@0.9.0 test:identity-browser
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6779925Z > tsx scripts/identity-browser-test.ts
+build	Run npm run test:identity-browser	2026-11-16T17:34:21.6780152Z 
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3110963Z node:internal/modules/run_main:107
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3111694Z     triggerUncaughtException(
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3111998Z     ^
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3112106Z 
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3112377Z page.waitForFunction: Timeout 60000ms exceeded.
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3113137Z     at <anonymous> (/home/runner/work/uor-cs1.618/uor-cs1.618/scripts/identity-browser-test.ts:14:58) {
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3113769Z   name: 'TimeoutError'
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3114081Z }
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3114233Z 
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3114405Z Node.js v24.22.2
+build	Run npm run test:identity-browser	2026-11-16T17:35:23.3426057Z ##[error]Process completed with exit code 1.

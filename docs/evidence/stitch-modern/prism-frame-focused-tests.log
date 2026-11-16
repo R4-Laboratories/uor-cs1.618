@@ -1,0 +1,27 @@
+(node:190258) ExperimentalWarning: The ML-KEM-768 Web Crypto API algorithm is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:190258) ExperimentalWarning: The ML-DSA-65 Web Crypto API algorithm is an experimental feature and might change at any time
+✔ actual Stitch identity signs a challenge; exported public identity contains no private keys (57.797434ms)
+✔ Stitch refuses tampering, wrong audience/challenge, stale time, replay and oversized input (42.150968ms)
+(node:190258) ExperimentalWarning: The encapsulateBits Web Crypto API method is an experimental feature and might change at any time
+(node:190258) ExperimentalWarning: The decapsulateBits Web Crypto API method is an experimental feature and might change at any time
+✔ actual one-use Stitch linking confirms code and revocation denies the removed signer (99.250902ms)
+✔ Me binding requires both real delegated session-key signature and Stitch action, with replay rejection (42.036645ms)
+✔ Me delegation policy rejects expired, over-seven-day, app-mismatch, wrong identity origin/rp and no UV (12.46875ms)
+✔ current published frame Stitch delegation binds a kept session with no network and rejects replay (58.039529ms)
+✔ current frame rejects wrong app/audience/action, invalid delegated key, duration, future issuance and revoked device (157.316781ms)
+✔ current frame and pinned game Stitch identities link in both directions (80.765697ms)
+✔ actual Holo loader replays acceptance and admits only all sixteen required observations (29.231133ms)
+✔ registry registration binds actual Holo fingerprint to the owning repository and Pages origin (18.951772ms)
+✔ address-bar index reader refuses altered content and untrusted pointer paths (27.597538ms)
+✔ frame dependency mirrors retain exact published hashes and generated map custody (94.277705ms)
+✔ dependency route accepts only exact GET URLs and resolves beneath each app scope (7.70683ms)
+✔ mirror response rejects altered bytes and unavailable assets without external fallback (47.33363ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 935.06529

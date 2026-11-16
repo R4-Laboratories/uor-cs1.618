@@ -3,13 +3,13 @@
   "date": "2026-11-16",
   "version": "0.9.0",
   "baseCommit": "c0adac1bb871296cbabcae3a54256b616af3e754",
-  "publication": "23a3ad9 pushed; first Pages run failed in browser fixture; reviewed harness rerun and final publication pending",
+  "publication": "ef7e4a3 pushed; second Pages attempt failed on actual upstream panels404; reviewed exact-byte dependency recovery and final133-test verify pass; deployment rerun pending",
   "verify": {
-    "tests": 130,
+    "tests": 133,
     "failures": 0,
     "skipped": 0,
     "pinnedVendorFiles": 18,
-    "sourceArtifactHashes": 66,
+    "sourceArtifactHashes": 77,
     "upstreamPins": 6,
     "typecheckBuild": "passed"
   },
@@ -29,8 +29,8 @@
       "result": "passed"
     },
     "identity": {
-      "checks": 9,
-      "result": "passed"
+      "checks": 10,
+      "result": "root and Pages-style subpath passed; three mandatory dependency-delivery negative cases passed"
     },
     "experience": {
       "result": "passed",

@@ -1,0 +1,256 @@
+
+> cs1-618@0.9.0 verify
+> npm run evolution:check && node scripts/verify-hologram-vendor.mjs && node scripts/hologram-manifest.mjs --check && npm test && npm run build && node scripts/verify-artifacts.mjs
+
+
+> cs1-618@0.9.0 evolution:check
+> tsx scripts/evolution/generate.ts --check
+
+Hologram vendor custody verified: 18 unchanged pinned files
+Prism frame dependency bytes and public projection verified.
+
+> cs1-618@0.9.0 test
+> tsx --test tests/*.test.ts
+
+✔ bot team chooses one kit defuser while another takes cover, then replaces a dead defuser (91.901014ms)
+✔ new visible targets require reaction time and automatic fire has recovery gaps (52.745083ms)
+ℹ {"firstShotSeconds":0.24999999999999997,"shots":9,"observedSeconds":1.8333333333333317,"largestGapSeconds":0.3666666666666676}
+✔ occlusion and range revoke fire immediately, reacquisition requires another reaction (31.634597ms)
+✔ carrier can reach a navigable site and generated escort follows the carrier (96.653387ms)
+✔ browser authority authenticates before bot eviction and binds identity to transport (89.757521ms)
+✔ browser snapshots are private, purchases validated, and guests clean up (64.190521ms)
+✔ browser host bounds connections, oversized messages, rates and join deadlines (42.887016ms)
+✔ duplicate transport opens preserve joined sessions and the original join deadline (55.519742ms)
+✔ upgraded Wasm returns actual team-distinct 22-joint Verdant meshes and rejects invalid slots (32.872101ms)
+✔ GPU skinning bridge fits standing height and animates finite nonrigid vertices (78.698553ms)
+✔ ten-player character roster releases Wasm slots and GPU skeletons for reuse (47.333893ms)
+✔ steep bot aim stays within the animation ABI without interrupting rendering (29.496542ms)
+✔ creative programs reject injected code, unknown facts and excessive computation (2.100854ms)
+✔ seeded authors generate reproducible novel artwork and compilable tactical behavior (105.384227ms)
+✔ model author validates responses and records provider failure without executing text (5.025219ms)
+✔ generated tactics complete a real emergency defuse while a visible enemy distracts the baseline (187.357863ms)
+✔ tactics receive local visible facts, never hidden enemy coordinates (35.719119ms)
+✔ tactical promotion improves held-out decisions and real emergency outcomes, rejecting no-op policy (811.941124ms)
+✔ compiled artwork executes the same bounded vector operations as its recipe (43.698758ms)
+✔ model feedback contains current programs and measured outcomes without unrelated state (0.397128ms)
+✔ author diagnostics distinguish transport failures from rejected program schemas (0.818673ms)
+✔ legacy empty-weapon engagement already reloads before firing (20.003709ms)
+✔ source discovery distinguishes verified current pins from available updates (19.869517ms)
+✔ unavailable or malformed responses cannot produce a successful discovery receipt (0.499773ms)
+✔ invalid catalogues are rejected before any GitHub lookup (0.376797ms)
+✔ CS-01 actual Verdant Wasm raycast hits Meridian walls (1.494682ms)
+✔ CS-01 swept player cannot tunnel through a building or wall (0.698422ms)
+✔ CS-01 diagonal input is normalized and no-input friction stops motion (2.333585ms)
+✔ CS-01 Verdant spatial audio pans sources and attenuates distance (0.570299ms)
+✔ a verified publication with untried candidates starts the next tick (1.012245ms)
+✔ continuation rejects failed, foreign, PR and superseded publications (0.276897ms)
+✔ pause, exhausted search and an existing tick cannot create a dispatch loop (0.216847ms)
+✔ continuation waits for the served commit and then dispatches exactly once (0.275435ms)
+✔ a failed deployment or exhausted frontier dispatches nothing (0.160251ms)
+✔ CDN timeout and API failures fail visibly without queuing a tick (0.70399ms)
+✔ a Pages job can continue after both verified jobs finish while the workflow is still running (0.241744ms)
+✔ evolution batching preserves original transforms, excludes actors and rolls back (9.502412ms)
+✔ invalid batching refuses before mutating the scene (0.673865ms)
+✔ evolution admission rejects missing, nonfinite, wrong-identity and regressing evidence (0.49819ms)
+✔ candidate frontier settles and source projections are deterministic and bounded (52.515978ms)
+✔ real Prism admission Wasm rejects all fifteen incomplete evidence combinations (5.436229ms)
+✔ publication rejects races, stale artifacts, missing custody and edits outside the generated surface (1.151074ms)
+✔ deployment watcher repairs missing publication without retrying failed validation (0.339181ms)
+✔ generated navigation alternatives preserve the independent full graph and all 480 route samples (689.687346ms)
+✔ history custody rejects tampered records and broken links (1.326048ms)
+✔ spray is repeatable, finite, weapon specific and rewards stationary crouched bursts (4.197011ms)
+✔ adaptive resolution has hysteresis, finite limits and ignores background stalls (2.654398ms)
+✔ sound profiles distinguish weapons, lower occluded frequencies and bound resources (0.926465ms)
+✔ free experience synthesis emits measured candidates, detects interactions and settles (221.164583ms)
+✔ imported LexLean-R4 decision model rejects defects, regressions and invalid weights (1.06247ms)
+✔ R4 compiler refuses executable escape hatches and non-natural interop values (0.587385ms)
+✔ R4 experience admission refuses an aggregate win that worsens a protected axis (117.904674ms)
+✔ HD adaptation ignores nominal 60 Hz jitter, pauses and isolated slow frames (1.851249ms)
+✔ sustained overload reduces HD detail and sustained headroom recovers it (0.893255ms)
+✔ HD scene installs real engine geometry and swaps detail without leaking old meshes (245.887032ms)
+✔ late worker results cannot override a newer quality choice (19.958611ms)
+✔ imported bridge is visible from the attack approach and detail clears playable space (33.1101ms)
+✔ HD worker retries a transient engine download failure and then generates real geometry (104.240795ms)
+(node:191835) ExperimentalWarning: The ML-KEM-768 Web Crypto API algorithm is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:191835) ExperimentalWarning: The ML-DSA-65 Web Crypto API algorithm is an experimental feature and might change at any time
+✔ actual Stitch identity signs a challenge; exported public identity contains no private keys (59.052453ms)
+✔ Stitch refuses tampering, wrong audience/challenge, stale time, replay and oversized input (73.511882ms)
+(node:191835) ExperimentalWarning: The encapsulateBits Web Crypto API method is an experimental feature and might change at any time
+(node:191835) ExperimentalWarning: The decapsulateBits Web Crypto API method is an experimental feature and might change at any time
+✔ actual one-use Stitch linking confirms code and revocation denies the removed signer (71.444789ms)
+✔ Me binding requires both real delegated session-key signature and Stitch action, with replay rejection (76.841808ms)
+✔ Me delegation policy rejects expired, over-seven-day, app-mismatch, wrong identity origin/rp and no UV (9.527871ms)
+✔ current published frame Stitch delegation binds a kept session with no network and rejects replay (79.999213ms)
+✔ current frame rejects wrong app/audience/action, invalid delegated key, duration, future issuance and revoked device (275.629955ms)
+✔ current frame and pinned game Stitch identities link in both directions (124.617807ms)
+✔ actual Holo loader replays acceptance and admits only all sixteen required observations (25.353356ms)
+✔ registry registration binds actual Holo fingerprint to the owning repository and Pages origin (30.977107ms)
+✔ address-bar index reader refuses altered content and untrusted pointer paths (29.149665ms)
+(node:191859) ExperimentalWarning: The ML-KEM-768 Web Crypto API algorithm is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:191859) ExperimentalWarning: The ML-DSA-65 Web Crypto API algorithm is an experimental feature and might change at any time
+✔ real Stitch relay HTTP framing publishes, discovers, withdraws and reports service failure (278.746638ms)
+✔ stop and stopHosting synchronously cancel queued or signing publications before relay writes (936.291693ms)
+(node:191877) ExperimentalWarning: The ML-KEM-768 Web Crypto API algorithm is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:191877) ExperimentalWarning: The ML-DSA-65 Web Crypto API algorithm is an experimental feature and might change at any time
+✔ directory admits a real Stitch signature through the compiled Holo and expires the lease (54.856475ms)
+✔ tampering, wrong audience, stale/future records, withdrawal replay and endpoint substitution are refused (56.737587ms)
+✔ untrusted input, pending verifications and room state remain bounded (853.593177ms)
+✔ fresh live proof binds Prism, room, token, both transport peers and endpoint (48.101635ms)
+✔ short signed withdrawals or replacements cannot erase rollback protection (43.865294ms)
+✔ a delayed older verification cannot undo an already-admitted withdrawal (24.502505ms)
+✔ same-origin blob and non-HTTP signaling endpoints never enter the directory (13.641817ms)
+✔ CS-02 invalid input and client positions cannot grant speed or damage (23.199272ms)
+✔ CS-03 buying is atomic and bounded by phase, money, team and spawn (35.850437ms)
+✔ CS-04 planted bomb keeps round alive after attackers eliminated (23.501423ms)
+✔ CS-04 defenders win on timeout without plant (22.462963ms)
+✔ CS-05 late joins spectate until next round (21.421664ms)
+✔ CS-02 shots damage opponents, consume ammunition, and respect cooldown (36.314977ms)
+✔ CS-02 walls and friendly bodies occlude hits (22.506069ms)
+✔ CS-02 reload transfers only available reserves after elapsed duration (46.290081ms)
+✔ CS-04 planting requires sustained still interaction inside a site (39.748659ms)
+✔ CS-04 kit defusal completes in five seconds and awards one round (18.952556ms)
+✔ CS-04 carrier disconnect drops device at authoritative position (14.803106ms)
+✔ CS-02 duplicate or flooded packets never advance more than one movement tick (12.738607ms)
+✔ CS-05 snapshots expose ammo and money only for the receiving player (16.574013ms)
+✔ CS-03 empty primary slot cannot grant a second free pistol magazine (32.077535ms)
+✔ CS-02 burst recovery resets the authoritative pattern and swapping clears old weapon recoil (19.013677ms)
+✔ CS-02 buying a replacement weapon resets its first shot during the live buy window (17.953171ms)
+✔ CS-05 two real sockets see movement, authoritative combat, room isolation and cleanup (690.273454ms)
+✔ carry drop pickup and plant emit physical cues and start a full timer (50.036745ms)
+✔ illegal plant, movement, release and stale input reset sustained interaction (34.052029ms)
+✔ kit and normal defusal take exact duration, clear active device and award once (97.288355ms)
+✔ deadline wins same-tick completion and detonates once with bounded blast falloff (42.395204ms)
+✔ only one defender progresses and interruption releases the device (31.323098ms)
+✔ round reset clears terminal objective, claims and progress (28.175522ms)
+✔ reload emits start cancel and completion at authoritative transitions (31.203614ms)
+✔ death drops the carrier device and a living attacker retrieves it (17.791898ms)
+✔ defuse rejects obstruction and leaving interaction range, then completes before deadline (28.67517ms)
+✔ defuse checks the actual elevated device endpoint through solid cover (23.588289ms)
+✔ defuser above cover cannot reach a lower device through the cover edge (28.540507ms)
+✔ round deadline prevents a same-tick late plant and awards through the kernel (15.319504ms)
+✔ round result cancels unfinished reload feedback instead of freezing it (19.271447ms)
+✔ plant completes on tick180 and detonation on tick2400 without shortening either timer (52.999747ms)
+✔ peer invitations round-trip in fragments without TURN credentials (3.283285ms)
+✔ ICE configuration validates relay credentials and custom signaling (0.679984ms)
+✔ browser rooms reject unsolicited media calls before they accumulate (8.511985ms)
+✔ duplicate PeerJS open notifications perform a single host or guest handshake (8.364868ms)
+✔ discovery guests refuse every gameplay packet until a live host proof has passed (13.268465ms)
+✔ closing challenged links does not release the room-wide pending-signature budget (23.161055ms)
+✔ weapon replacement disposes owned resources once and keeps shared geometry and flash alive (34.334725ms)
+✔ objective, reload and result cues have distinct bounded signatures (0.440604ms)
+✔ bomb clock emits spatial warning, accelerates late and resets on terminal and round change (0.363207ms)
+✔ blast killfeed identifies the bomb rather than inventing a killer (1.452267ms)
+✔ frame dependency mirrors retain exact published hashes and generated map custody (77.126327ms)
+✔ dependency route accepts only exact GET URLs and resolves beneath each app scope (6.561693ms)
+✔ mirror response rejects altered bytes and unavailable assets without external fallback (71.742858ms)
+✔ compiled Prism Wasm agrees with all 288 finite decision-table inputs (51.021006ms)
+✔ Prism round boundary rejects requests outside the modeled domain (0.913466ms)
+✔ Prism Hologram is a binary HOLO v4 archive, not a JSON surrogate (5.398361ms)
+✔ proof result binds both published artifacts to the full verified build (17.764507ms)
+✔ proof result rejects mismatched shipped WASM and Holo independently (1.191144ms)
+✔ proof result rejects unsuccessful results and malformed build references (0.675167ms)
+✔ verifier backport fails closed on any source except the pinned SDK source (0.233832ms)
+✔ identity proof also binds the discoverable app.holo alias (0.29262ms)
+✔ Verdant HD assets preserve real indexed geometry at all five detail levels (198.84054ms)
+✔ upstream governor lowers overloaded LOD, raises with headroom, and honors user pins (0.606594ms)
+✔ first-person near plane is guarded against Meridian walls and floor at wide and scoped FOV (0.92948ms)
+ℹ tests 133
+ℹ suites 0
+ℹ pass 133
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9961.953752
+
+> cs1-618@0.9.0 build
+> node scripts/stamp-build.mjs && tsc --noEmit && vite build
+
+vite v7.2.2 building client environment for production...
+transforming...
+✓ 124 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/evolution-studio.html                                           0.66 kB │ gzip:   0.36 kB
+dist/evolution-lab.html                                              0.73 kB │ gzip:   0.44 kB
+dist/index.html                                                      1.15 kB │ gzip:   0.54 kB
+dist/assets/hd-worker-BjX0wJJB.js                                    3.11 kB
+dist/identity.html                                                   3.70 kB │ gzip:   1.64 kB
+dist/assets/ibm-plex-mono-vietnamese-500-normal-C8zxqsMH.woff        5.62 kB
+dist/assets/ibm-plex-mono-vietnamese-400-normal-DDuiU_S-.woff        5.62 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BIfNGwUT.woff      5.77 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-DMdlQ8Kv.woff      5.82 kB
+dist/assets/ibm-plex-mono-vietnamese-400-normal-BulugwFq.woff2       5.87 kB
+dist/assets/ibm-plex-mono-vietnamese-500-normal-DZ4AoWbu.woff2       6.04 kB
+dist/assets/barlow-condensed-vietnamese-500-normal-CsrJDWc5.woff     6.04 kB
+dist/assets/barlow-condensed-vietnamese-600-normal-CNlPk46_.woff     6.08 kB
+dist/assets/barlow-vietnamese-400-normal-BFeobeCK.woff               6.09 kB
+dist/assets/barlow-condensed-vietnamese-700-normal-DhIzd8Tb.woff     6.10 kB
+dist/assets/barlow-vietnamese-500-normal-GNfB7rCE.woff               6.15 kB
+dist/assets/barlow-vietnamese-600-normal-CA_GiK2e.woff               6.23 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-xuaO2J-f.woff2     6.91 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BqneJy0T.woff2     6.97 kB
+dist/assets/ibm-plex-mono-cyrillic-400-normal-CEL4l2ZJ.woff          7.20 kB
+dist/assets/ibm-plex-mono-cyrillic-500-normal-Ael50iVv.woff          7.21 kB
+dist/assets/barlow-condensed-vietnamese-500-normal-DjeaNLFD.woff2    7.52 kB
+dist/assets/barlow-vietnamese-400-normal-Dpl4UHAZ.woff2              7.59 kB
+dist/assets/barlow-condensed-vietnamese-700-normal-DYeBwlKR.woff2    7.64 kB
+dist/assets/barlow-vietnamese-500-normal-zTViEIzf.woff2              7.67 kB
+dist/assets/barlow-condensed-vietnamese-600-normal-A5AYRdjN.woff2    7.70 kB
+dist/assets/barlow-vietnamese-600-normal-DcjprdFV.woff2              7.90 kB
+dist/assets/ibm-plex-mono-cyrillic-400-normal-BSMlKf0J.woff2         8.36 kB
+dist/assets/ibm-plex-mono-cyrillic-500-normal-Bq9vWWag.woff2         8.46 kB
+dist/assets/ibm-plex-mono-latin-ext-400-normal-D3D2R8hC.woff        11.77 kB
+dist/assets/ibm-plex-mono-latin-ext-500-normal-CZ70TYgx.woff        11.77 kB
+dist/assets/barlow-condensed-latin-ext-500-normal-B1RE8WP7.woff     11.86 kB
+dist/assets/barlow-condensed-latin-ext-600-normal-Clv9cIcR.woff     11.97 kB
+dist/assets/barlow-condensed-latin-ext-700-normal-BIHFfxf0.woff     11.99 kB
+dist/assets/barlow-latin-ext-400-normal-CvBsJvxq.woff               12.31 kB
+dist/assets/barlow-latin-ext-500-normal-CJPcKP2Q.woff               12.41 kB
+dist/assets/barlow-latin-ext-600-normal-DMVRjfRT.woff               12.60 kB
+dist/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff            13.14 kB
+dist/assets/ibm-plex-mono-latin-500-normal-CB9ihrfo.woff            13.16 kB
+dist/assets/ibm-plex-mono-latin-ext-400-normal-BmRBH3aV.woff2       13.35 kB
+dist/assets/ibm-plex-mono-latin-ext-500-normal-CAhNIIs5.woff2       13.43 kB
+dist/assets/barlow-condensed-latin-ext-500-normal-yA5ONLQ9.woff2    14.18 kB
+dist/assets/barlow-latin-ext-400-normal-HxX4XjxC.woff2              14.27 kB
+dist/assets/barlow-latin-ext-500-normal-DOaysfXq.woff2              14.42 kB
+dist/assets/barlow-condensed-latin-ext-600-normal-18ESti3H.woff2    14.52 kB
+dist/assets/barlow-condensed-latin-ext-700-normal-CwuXbfVR.woff2    14.64 kB
+dist/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2           14.71 kB
+dist/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2           14.89 kB
+dist/assets/barlow-latin-ext-600-normal-B8NK_A3D.woff2              14.97 kB
+dist/assets/barlow-condensed-latin-500-normal-HIEiP5Ov.woff         18.60 kB
+dist/assets/barlow-condensed-latin-700-normal-Dmwat-ge.woff         18.82 kB
+dist/assets/barlow-condensed-latin-600-normal-BFJEwTuo.woff         18.89 kB
+dist/assets/barlow-latin-500-normal-C1h8hMer.woff                   19.52 kB
+dist/assets/barlow-latin-400-normal-fsAxiSwU.woff                   19.58 kB
+dist/assets/barlow-latin-600-normal-CNwfPWQD.woff                   19.88 kB
+dist/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2        21.42 kB
+dist/assets/barlow-latin-500-normal-BPAOfeC8.woff2                  22.01 kB
+dist/assets/barlow-latin-400-normal-qiz4-Cze.woff2                  22.20 kB
+dist/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2        22.31 kB
+dist/assets/barlow-condensed-latin-700-normal-v1xN8_Wq.woff2        22.44 kB
+dist/assets/barlow-latin-600-normal-DILqtrty.woff2                  22.77 kB
+dist/assets/practice-worker-PXFN2Xd-.js                             26.78 kB
+dist/assets/host-worker-DYJUEFh0.js                                 29.09 kB
+dist/assets/studio-5ooFGoBJ.css                                      3.50 kB │ gzip:   1.24 kB
+dist/assets/400-CZFqm4Z3.css                                         5.41 kB │ gzip:   0.85 kB
+dist/assets/game--6JQHK_0.css                                       25.84 kB │ gzip:   5.97 kB
+dist/assets/__vite-browser-external-BIHI7g3E.js                      0.03 kB │ gzip:   0.05 kB
+dist/assets/modulepreload-polyfill-B5Qt9EMX.js                       0.71 kB │ gzip:   0.40 kB
+dist/assets/browser-ESA3P4dZ.js                                      1.46 kB │ gzip:   0.84 kB
+dist/assets/evolution-CTsZY6Nj.js                                    3.40 kB │ gzip:   1.75 kB
+dist/assets/identity-B4FdQ_wT.js                                     4.18 kB │ gzip:   1.88 kB
+dist/assets/studio-CiJLJXWb.js                                       8.64 kB │ gzip:   3.79 kB
+dist/assets/prism-id-BmGgulJM.js                                    95.35 kB │ gzip:  27.73 kB
+dist/assets/game-DE-Mjxxc.js                                       145.02 kB │ gzip:  44.03 kB
+dist/assets/artwork-D8NbyPub.js                                    209.18 kB │ gzip:  60.11 kB
+dist/assets/index-GMZdtrmb.js                                      234.04 kB │ gzip:  64.03 kB
+dist/assets/audio-293ZyGcI.js                                      384.74 kB │ gzip: 102.90 kB
+dist/assets/hologram-identity-C42cxb9w.js                          421.19 kB │ gzip:  56.95 kB
+✓ built in 3.67s
+Verified 77 source/artifact hashes, six upstream pins, import-free Wasm and mandatory Prism runtime.

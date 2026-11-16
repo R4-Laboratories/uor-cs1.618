@@ -15,6 +15,28 @@
     "contract": "hologram:guest/core-wasm@1",
     "scope": "Identity handoff admission, not the complete WebGL game"
   },
+  "frame": {
+    "url": "./prism-frame/frame.mjs",
+    "bytes": 62343,
+    "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
+    "dependencies": [
+      {
+        "url": "./prism-frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+        "bytes": 49707,
+        "sha256": "9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02",
+        "upstream": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs"
+      },
+      {
+        "url": "./prism-frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+        "bytes": 96780,
+        "sha256": "03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef",
+        "upstream": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs"
+      }
+    ],
+    "delivery": "Application-scoped worker routes only the exact immutable dependency GETs; no application cache",
+    "adapter": "./prism-frame-worker.js",
+    "proofScope": "Tested host delivery, unchanged upstream integrity checks"
+  },
   "dependencies": [
     {
       "url": "./wasm/cs_verdant.wasm",
@@ -51,6 +73,7 @@
     "WebAssembly",
     "WebCrypto",
     "IndexedDB",
+    "ServiceWorker for canonical Prism frame dependencies",
     "WebRTC for browser rooms"
   ],
   "vendorLock": "./hologram/vendor.json",

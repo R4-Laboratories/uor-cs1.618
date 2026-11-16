@@ -1,0 +1,63 @@
+{
+  "passed": false,
+  "stage": "corrupt",
+  "error": "TimeoutError: page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('prism-frame[data-error=\"frame\"]') to be visible\u001b[22m\n",
+  "results": [],
+  "errors": [],
+  "network": [
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/identity.html",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/identity.css",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/assets/identity-_M3OrozB.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/assets/index-GMZdtrmb.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/assets/hologram-identity-C7Pk8jqe.js",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/app.holo",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "http://127.0.0.1:44233/corrupt/prism-frame/frame.mjs",
+      "status": 200,
+      "serviceWorker": false
+    },
+    {
+      "mode": "corrupt",
+      "url": "blob:http://127.0.0.1:44233/b1257cb9-510f-4038-89bc-5f7632d0d53f",
+      "status": 200,
+      "serviceWorker": false
+    }
+  ]
+}

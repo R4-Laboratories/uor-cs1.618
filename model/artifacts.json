@@ -29,6 +29,18 @@
       "sha256": "08bf56ef781478d135040eefac443bb6b804d51f438592215daba1176c04424a",
       "bytes": 7027
     },
+    "docs/evidence/stitch-modern/prism-dependency-recovery.json": {
+      "sha256": "944aea2f802610302e1e8345ef427a8bbefa03ebc1b139568eb3bbb11ab0fc79",
+      "bytes": 3710
+    },
+    "docs/licenses/prism-template-MIT.txt": {
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee",
+      "bytes": 1075
+    },
+    "docs/licenses/prism-template-NOTICE.txt": {
+      "sha256": "88f4f69c85a636ebd3bf0183ca315e8445cc5a9ac337de28f1c1f54dbac14d45",
+      "bytes": 320
+    },
     "model/evolution/admission.prompt.json": {
       "sha256": "b5f402173bc77e84717c9dab55c678782f85ea6f5bf2900277ca566d23efda05",
       "bytes": 3341
@@ -46,8 +58,8 @@
       "bytes": 3772
     },
     "model/prism-frame.json": {
-      "sha256": "502e296bccbbec759d20dafc4e1b73e3db3502be2c1a1f518d6b846d697face2",
-      "bytes": 678
+      "sha256": "47bda7e5c2ecf0b025f983f6a352bcf9c6bd6f9067138e1e71606de3041123bc",
+      "bytes": 2138
     },
     "model/round.prompt.json": {
       "sha256": "29f59605c4f00cf8dcf2bce31eb63d215c70876b98cb8b7f9ed3a7eca3740c38",
@@ -241,6 +253,34 @@
       "sha256": "22ecc71e5e61ac1b94e3afa9732053cb1639149791977734586a6f567fab9359",
       "bytes": 36816
     },
+    "public/hologram/manifest.json": {
+      "sha256": "b17401422653ef01c35591ba6f3b23cdaa552307ae4c2bf739254f0cba707a92",
+      "bytes": 3475
+    },
+    "public/prism-frame-assets.mjs": {
+      "sha256": "bd9bf08c09afeb56ff0ff300496076e2612d7ce9f3e44b4dad1490a468d02165",
+      "bytes": 902
+    },
+    "public/prism-frame-worker.js": {
+      "sha256": "9cfefcc9b09ad373ed7f13aa1c19c01056d38544ba851cd876358baff0167d05",
+      "bytes": 1741
+    },
+    "public/prism-frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs": {
+      "sha256": "03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef",
+      "bytes": 96780
+    },
+    "public/prism-frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs": {
+      "sha256": "9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02",
+      "bytes": 49707
+    },
+    "public/prism-frame/LICENSE.txt": {
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee",
+      "bytes": 1075
+    },
+    "public/prism-frame/frame.mjs": {
+      "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
+      "bytes": 62343
+    },
     "public/prism/CS-Evolution.holo": {
       "sha256": "f04c030e29d917f99d8d0651e990dad6154233e194373fffb5f9a608a8685fa4",
       "bytes": 36810
@@ -268,6 +308,10 @@
     "public/wasm/cs_verdant.wasm": {
       "sha256": "b4d9096a739d6dd7fec457155c751fb1851d2230bd147015f3ed561b0697e2ce",
       "bytes": 261647
+    },
+    "scripts/prism-frame-assets.mjs": {
+      "sha256": "68bee0a510ac1d028c942d26914290b16dd4c30bd7fdcbdb3728e83b6b14b6c6",
+      "bytes": 1977
     }
   }
 }

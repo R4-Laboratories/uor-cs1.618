@@ -12,5 +12,30 @@
   "url": "https://uor-foundation.github.io/template/frame/7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849/prism-frame.mjs",
   "path": "public/prism-frame/frame.mjs",
   "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
-  "bytes": 62343
+  "bytes": 62343,
+  "dependencies": [
+    {
+      "url": "https://uor-foundation.github.io/template/frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "path": "prism-frame/9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02/prism-panels.mjs",
+      "sha256": "9e618c80b716a37942a69c82b24b0843c80f612c6c580e5e63a1e5a64bd29e02",
+      "bytes": 49707,
+      "provenance": "docs/evidence/stitch-modern/prism-dependency-recovery.json"
+    },
+    {
+      "url": "https://uor-foundation.github.io/template/frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "path": "prism-frame/03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef/prism-id.mjs",
+      "sha256": "03cee6c658dce4a4eed6aeb640ea3dd02ba79b5402066c2c7fff8ffd52a072ef",
+      "bytes": 96780,
+      "provenance": "docs/evidence/stitch-modern/prism-dependency-recovery.json"
+    }
+  ],
+  "delivery": {
+    "adapter": "public/prism-frame-worker.js",
+    "projection": "public/prism-frame-assets.mjs",
+    "scope": "application base path only; exact immutable dependency GET requests",
+    "cache": "none; navigation, game code and engine requests remain ordinary network requests",
+    "integrity": "Recovered published bytes are checked before response and again by the unchanged upstream loader",
+    "proofScope": "Tested host adapter, not a new formal proof",
+    "license": "public/prism-frame/LICENSE.txt"
+  }
 }
