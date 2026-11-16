@@ -26,4 +26,4 @@
 - [x] Build deterministic multi-view graphics and exact navigation evaluators; measure a real baseline and candidate.
 - [x] Add tick/search/ledger and hash-bound publication; test rejected candidates, stale evidence and concurrency.
 - [x] Add scheduled engine, build stamp and deployment watcher; tests for missing runs, pending, gate failure and bounded deploy retry.
-- [ ] Run full gates and fresh code review; fix findings; deploy; dispatch and observe an actual GitHub engine tick and its Pages outcome.
+- [x] Run full gates and fresh code review; fix findings; deploy; dispatch and observe an actual GitHub engine tick and its Pages outcome.
