@@ -6,6 +6,12 @@ Two teams, five players per team, two objective sites, one original map: **Merid
 
 ![Meridian gameplay](docs/evidence/multiplayer.png)
 
+## Play from GitHub Pages
+
+**[Launch cs1.618](https://r4-laboratories.github.io/uor-cs1.618/)** → **Create browser room** → copy the invitation → friends open it and choose **Join invitation**. WebRTC carries gameplay directly between browsers; no dedicated game server is needed. Keep the host tab open and active. Closing it ends the room.
+
+PeerJS Cloud supplies default rendezvous signaling and public STUN helps find direct routes. Restrictive networks may require your own TURN credentials. See [browser multiplayer and STUN/TURN setup](docs/BROWSER-MULTIPLAYER.md). **Practice with bots** still works locally in one browser.
+
 ## Play locally
 
 Node.js 22.12+ (Node 24 recommended):
@@ -15,12 +21,13 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:3000**. Choose **Practice with bots** for browser-local play, or **Join multiplayer** for the included WebSocket server. To play together, open the same server and enter the same room code. Empty online slots can be filled with bots; a joining human replaces a bot.
+Open **http://localhost:3000**. Choose **Practice with bots** for browser-local play, or select **Dedicated game server** and **Join multiplayer** for the included WebSocket server. To play together, open the same server and enter the same room code. Empty online slots can be filled with bots; a joining human replaces a bot.
 
 The shipped Wasm binaries are committed. Rust and the Prism SDK are needed only to regenerate them, not to play or host.
 
 ## What you can play
 
+- Browser-hosted WebRTC rooms with shareable invitation links, worker authority, reliable control and unordered realtime data channels. Optional TURN and custom signaling.
 - Authoritative 60 Hz server, 20 Hz snapshots, client movement prediction and reconciliation, remote interpolation, isolated named rooms and up to ten players.
 - Freeze/buy, live, planted, round-end and match-end phases. Equipment and money persist for survivors; eliminations reset equipment. Win, loss, kill and plant rewards.
 - P9 pistol, Kestrel assault rifle, Sentinel assault rifle, Vector SMG and scoped Longbow rifle. Recoil, movement spread, headshots, finite magazines, timed reloads, armor and defusal kits.
@@ -62,7 +69,7 @@ One Node process serves `dist/` and upgrades `/socket` to WebSocket. `GET /healt
 
 For the public internet, put the server behind a TLS proxy with WebSocket support. An HTTPS client needs a `wss://` server. A Dockerfile and Compose configuration are included; see [deployment instructions](docs/DEPLOYMENT.md).
 
-GitHub Pages hosts the static client and practice mode. It cannot run the persistent multiplayer server. In **Connection settings**, enter the separately hosted server URL, for example `wss://your-game-server.example/socket`. You can share a link with `?room=YOURROOM&server=wss%3A%2F%2Fyour-game-server.example%2Fsocket`.
+GitHub Pages hosts the client, browser-hosted WebRTC multiplayer, and practice mode. For dedicated-server play, select **Dedicated game server** and enter its URL in **Connection settings**, for example `wss://your-game-server.example/socket`. Pages itself cannot run a persistent game server, STUN or TURN. You can share a link with `?room=YOURROOM&server=wss%3A%2F%2Fyour-game-server.example%2Fsocket`.
 
 ## Build and verify
 
@@ -70,6 +77,7 @@ GitHub Pages hosts the static client and practice mode. It cannot run the persis
 npm test                  # simulation, real Wasm, real WebSocket integration
 npm run build             # type check + static client production build
 npm run test:browser       # real Chromium clients, input, purchases, combat, practice
+npm run test:peer-browser  # static-only WebRTC hosting, invitations, authority, disconnects
 npm run verify            # tests, client build, artifact/source integrity
 npm run engine:build      # Rust tests + Verdant Wasm bridge (Rust + wasm32 target)
 npm run prism:generate    # prism-devrel builder from the checked-in round prompt

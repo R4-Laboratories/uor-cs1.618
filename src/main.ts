@@ -7,6 +7,8 @@ import '@fontsource/barlow-condensed/700.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import './style.css';
+import {PeerRoom} from './peer-room';
+import {DEFAULT_STUN,newInvitation,parseInvitation,networkConfig} from './peer-config';
 import {WorldView} from './world';
 import {UI,$} from './ui';
 import {createEngine} from '../shared/engine';
@@ -22,6 +24,7 @@ try{const response=await fetch(`${import.meta.env.BASE_URL}wasm/cs_verdant.wasm`
 const roundResponse=await fetch(`${import.meta.env.BASE_URL}wasm/cs_round.wasm`);if(!roundResponse.ok){$('load-detail').textContent='Could not load the Prism round kernel. Reload to try again.';throw Error('Missing Prism kernel');}const roundBytes=await roundResponse.arrayBuffer();
 const engine=await createEngine(bytes);const audio=new GameAudio(engine);
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;
+let peerRoom:PeerRoom|null=null;
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
 let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0,beepTime=0;
 let pending:{input:Input;canMove:boolean}[]=[];const keys=new Set<string>();
@@ -32,8 +35,17 @@ const query=new URLSearchParams(location.search);
 $<HTMLInputElement>('room').value=query.get('room')??saved('cs-room','MERIDIAN');
 const defaultServer=location.hostname.endsWith('github.io')?'':`${location.protocol==='https:'?'wss':'ws'}://${location.host}/socket`;
 $<HTMLInputElement>('server').value=query.get('server')??saved('cs-server',defaultServer);
+$<HTMLInputElement>('stun-servers').value=saved('cs-stun',DEFAULT_STUN);
+$<HTMLInputElement>('signaling-server').value=saved('cs-signaling','');
+if(location.hash.includes('p2p='))$<HTMLInputElement>('peer-invite').value=location.href;
+if(query.has('server'))$<HTMLSelectElement>('network-mode').value='server';
+function connectionMode(){const browser=$<HTMLSelectElement>('network-mode').value==='browser';ui.show('browser-fields',browser);ui.show('peer-settings',browser);ui.show('server-room-field',!browser);ui.show('server-address-field',!browser);$('join-label').textContent=browser?'JOIN INVITATION':'JOIN MULTIPLAYER';$<HTMLInputElement>('room').required=!browser;}
+connectionMode();$('network-mode').onchange=connectionMode;
+function busy(value:boolean){for(const id of ['join','practice','host-room'])$<HTMLButtonElement>(id).disabled=value;}
+function peerSharing(){for(const el of document.querySelectorAll<HTMLElement>('.peer-share'))el.classList.toggle('hidden',!peerRoom);if(peerRoom){for(const el of document.querySelectorAll<HTMLInputElement>('.invitation-link'))el.value=peerRoom.invitation;}}
+for(const button of document.querySelectorAll<HTMLButtonElement>('.copy-invitation'))button.onclick=async()=>{if(!peerRoom)return;try{await navigator.clipboard.writeText(peerRoom.invitation);ui.toast('Invitation copied. Send it to your friends.');}catch{const field=button.parentElement!.querySelector<HTMLInputElement>('.invitation-link')!;field.focus();field.select();ui.toast('Copy the selected invitation link.');}};
 ui.show('loading',false);ui.show('lobby',true);
-function send(message:unknown){if(worker)worker.postMessage(message);else if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify(message));}
+function send(message:unknown){if(peerRoom)peerRoom.send(message);else if(worker)worker.postMessage(message);else if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify(message));}
 function spectator():PublicPlayer|null{if(!snapshot||snapshot.self.alive)return null;const list=snapshot.players.filter(p=>p.team===snapshot!.self.team&&p.alive);return list[spectatorIndex%Math.max(1,list.length)]??null;}
 function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);keys.clear();fire=false;scope=false;}
 async function capture(){await audio.start();try{await canvas.requestPointerLock();}catch{ui.toast('Click the game again to capture your mouse.');}ui.show('deploy-overlay',false);setPaused(false);}
@@ -41,6 +53,7 @@ function receive(m:any){
  if(m.type==='welcome'){connecting=false;seq=0;lastEvent=0;pending=[];ui.show('lobby',false);ui.show('hud',true);ui.show('deploy-overlay',true);$('deploy-description').textContent=`You joined ${m.team==='attack'?'Ember — attackers':'Tidal — defenders'}. Click to deploy.`;ui.status('');return;}
  if(m.type==='snapshot'){
   const s=m as Snapshot,previous=snapshot;
+  if(previous&&s.tick<=previous.tick)return;
   if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
   snapshot=s;lastSnapshot=performance.now();
   pending=pending.filter(p=>p.input.seq>s.self.seq);
@@ -57,15 +70,30 @@ function receive(m:any){
   if(!m.error){if(WEAPONS[m.item])slot=0;setTimeout(()=>{if(snapshot){ui.renderBuy(snapshot);}},100);}
   return;
  }
- if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;$<HTMLButtonElement>('join').disabled=false;$<HTMLButtonElement>('practice').disabled=false;}return;}
+ if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;busy(false);}return;}
 }
-function disconnect(){worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();$<HTMLButtonElement>('join').disabled=false;$<HTMLButtonElement>('practice').disabled=false;}
+function disconnect(){peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
+async function joinPeer(host:boolean){
+ if(connecting)return;
+ let invite,network;try{
+  invite=host?newInvitation():parseInvitation($<HTMLInputElement>('peer-invite').value);
+  network=networkConfig({stun:$<HTMLInputElement>('stun-servers').value,turn:$<HTMLInputElement>('turn-servers').value,username:$<HTMLInputElement>('turn-user').value,credential:$<HTMLInputElement>('turn-credential').value,relay:$<HTMLInputElement>('relay-only').checked,signaling:$<HTMLInputElement>('signaling-server').value});
+  if(location.protocol==='https:'&&network.signaling&&!network.signaling.secure)throw Error('An HTTPS game needs an HTTPS signaling service.');
+ }catch(error){ui.status((error as Error).message);return;}
+ connecting=true;busy(true);ui.status(host?'Opening your browser room…':'Finding the host and negotiating a peer connection…');
+ const name=$<HTMLInputElement>('name').value.trim()||'Operator';save('cs-name',name);save('cs-stun',$<HTMLInputElement>('stun-servers').value);save('cs-signaling',$<HTMLInputElement>('signaling-server').value);
+ try{
+  await audio.start();
+  peerRoom=await PeerRoom.start({host,invitation:invite,network,name,team,bots:$<HTMLInputElement>('fill-bots').checked,bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),receive,status:message=>{ui.status(message);ui.toast(message);},closed:reason=>{disconnect();ui.status(reason);ui.toast(reason);}});
+  peerSharing();$('deploy-description').textContent=host?'Your browser is hosting. Copy the invitation below, then deploy.':'Connected to the host browser. Click to deploy.';
+ }catch(error){disconnect();ui.status((error as Error).message);}
+}
 async function join(local:boolean){
  if(connecting)return;const name=$<HTMLInputElement>('name').value.trim()||'Operator',room=$<HTMLInputElement>('room').value.trim().toUpperCase();
  if(!local&&!/^[A-Z0-9-]{1,20}$/.test(room)){ui.status('Use a room code of 1–20 letters, digits or hyphens.');return;}
  let address=$<HTMLInputElement>('server').value.trim();
  if(!local){try{if(!address)throw Error();if(/^https?:/.test(address))address=address.replace(/^http/,'ws');const url=new URL(address);if(!['ws:','wss:'].includes(url.protocol))throw Error();if(url.pathname==='/')url.pathname='/socket';address=url.href;if(location.protocol==='https:'&&url.protocol!=='wss:'){ui.status('This HTTPS page needs a secure wss:// game server.');return;}}catch{ui.status('Enter a game server address in Connection settings, or choose Practice.');$<HTMLDetailsElement>('connection-settings').open=true;return;}}
- connecting=true;ui.status(local?'Preparing your local operation…':'Connecting to the game server…');$<HTMLButtonElement>('join').disabled=true;$<HTMLButtonElement>('practice').disabled=true;
+ connecting=true;ui.status(local?'Preparing your local operation…':'Connecting to the game server…');busy(true);
  save('cs-name',name);save('cs-room',room);if(!local)save('cs-server',address);
  await audio.start();
  if(local){worker=new Worker(new URL('./practice-worker.ts',import.meta.url),{type:'module'});worker.onmessage=e=>receive(e.data);worker.onerror=()=>{disconnect();ui.status('Practice could not start. Reload and try again.');};worker.postMessage({type:'init',bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),name,team});}
@@ -77,7 +105,7 @@ async function join(local:boolean){
   socket.onclose=()=>{clearTimeout(timeout);disconnect();ui.status('Disconnected from the game server. Rejoin to continue.');};
  }
 }
-$('join-form').addEventListener('submit',e=>{e.preventDefault();void join(false);});$('practice').onclick=()=>{void join(true);};$('deploy').onclick=()=>{void capture();};$('resume').onclick=()=>{void capture();};$('leave').onclick=disconnect;
+$('join-form').addEventListener('submit',e=>{e.preventDefault();if($<HTMLSelectElement>('network-mode').value==='browser')void joinPeer(false);else void join(false);});$('host-room').onclick=()=>{void joinPeer(true);};$('practice').onclick=()=>{void join(true);};$('deploy').onclick=()=>{void capture();};$('resume').onclick=()=>{void capture();};$('leave').onclick=disconnect;
 for(const button of document.querySelectorAll<HTMLButtonElement>('[data-team]'))button.onclick=()=>{team=button.dataset.team as Team|'auto';for(const b of document.querySelectorAll('[data-team]'))b.classList.toggle('selected',b===button);};
 $('close-buy').onclick=()=>{ui.setBuy(false,snapshot);void capture();};
 $('buy-menu').onclick=e=>{const button=(e.target as Element).closest<HTMLButtonElement>('[data-buy]');if(button&&!button.disabled)send({type:'buy',item:button.dataset.buy});};
@@ -117,10 +145,12 @@ function frame(now:number){
   uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target);uiTime=0;}
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
   if(snapshot.bomb?.state==='planted'&&snapshot.phase==='live'){beepTime+=dt;if(beepTime>(snapshot.bomb.remaining<10?.35:1)){audio.beep();beepTime=0;}}
+  if(peerRoom){const p=peerRoom.status;for(const el of document.querySelectorAll<HTMLElement>('.peer-state'))el.textContent=p.host?`HOST · ${p.peers} guest connection(s) · ${p.route}`:`WEBRTC · ${p.route} · ${p.fast?'realtime channel':'reliable fallback'}`;}
+  if(now-lastSnapshot>20000&&peerRoom&&!peerRoom.isHost){disconnect();ui.status('The browser host stopped responding. Ask the host to keep its tab active.');}
   if(now-lastSnapshot>5000&&socket){disconnect();ui.status('Connection lost. Rejoin the room to continue.');}
  }
  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',pending:pending.length})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

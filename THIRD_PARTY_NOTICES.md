@@ -7,6 +7,7 @@ Original game code, map, models, textures and synthesized sounds are MIT license
 - **Verdant Resonance** — afflom/verdant-resonance, architecture reference for a browser renderer over a committed Verdant Wasm substrate. Its game source and game assets are not copied.
 - **Prism-DevRel** — afflom/prism-devrel, MIT OR Apache-2.0; used under MIT to generate the checked-in Prism model and facets. License copied to `docs/licenses/prism-devrel-MIT.txt`.
 - **LexLean, PrismPM, UORust** — used as development/modeling tools at revisions in `model/upstream-lock.json`. Generated models and verification evidence are retained; toolchain executables are not bundled into the game.
+- **PeerJS** and **PeerServer** — MIT. PeerJS provides browser rendezvous and WebRTC connection setup; PeerServer is used for signaling-only tests and optional self-hosting. Licenses are copied to `docs/licenses`.
 - **Three.js**, **ws**, **tsx**, **Vite**, **TypeScript** — their original licenses remain in installed npm packages. Exact versions and integrity hashes are in package-lock.json. Three.js renders the world; ws hosts multiplayer transport; tsx runs the server.
 - **Barlow**, **Barlow Condensed**, **IBM Plex Mono** — self-hosted through pinned Fontsource packages; SIL Open Font License. Licenses are copied to `docs/licenses`. There are no runtime requests to Google Fonts.
 

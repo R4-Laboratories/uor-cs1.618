@@ -12,7 +12,7 @@ const state=(page:Page)=>page.evaluate(()=>JSON.parse(JSON.stringify((window as 
 const ready=async(page:Page,name:string,team:string)=>{
  await page.goto(`http://127.0.0.1:${game.port}`,{waitUntil:'domcontentloaded'});
  await page.waitForSelector('#lobby:not(.hidden)');
- await page.fill('#name',name);await page.fill('#room','BROWSER');await page.click(`[data-team="${team}"]`);await page.locator('#connection-settings').evaluate((e:any)=>e.open=true);await page.uncheck('#fill-bots');await page.click('#join');await page.waitForSelector('#deploy-overlay:not(.hidden)');
+ await page.selectOption('#network-mode','server');await page.fill('#name',name);await page.fill('#room','BROWSER');await page.click(`[data-team="${team}"]`);await page.locator('#connection-settings').evaluate((e:any)=>e.open=true);await page.uncheck('#fill-bots');await page.click('#join');await page.waitForSelector('#deploy-overlay:not(.hidden)');
 };
 try{
  await mkdir('artifacts',{recursive:true});
