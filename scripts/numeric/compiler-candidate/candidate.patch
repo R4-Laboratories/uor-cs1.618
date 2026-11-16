@@ -1,3 +1,33 @@
+diff --git a/fixtures/lexlean-1.1/expected/generated.rs b/fixtures/lexlean-1.1/expected/generated.rs
+index 02c02eca8f6e22ef885798db823ac052b091bf57..0d3e2c36ba7879704c53f378f5a3f18f91b40993 100644
+--- a/fixtures/lexlean-1.1/expected/generated.rs
++++ b/fixtures/lexlean-1.1/expected/generated.rs
+@@ -4,10 +4,10 @@
+ 
+ pub fn allConsecutive(x_1: u64, x_2: &[u64]) -> Result<bool, crate::ComputeError> {
+     Ok(match &(x_2)[..] {
+-        [] => { let _x_45 = true; _x_45 },
+-        [head_28, tail_29 @ ..] => { let head_28 = head_28.clone(); { let _x_50 = (x_1 == head_28); match _x_50 {
+-        false => _x_50,
+-        true => { let _x_54 = 1; { let _x_55 = core::convert::identity::<u64>(x_1).checked_add(_x_54).ok_or(crate::ComputeError::AddOverflow)?; { let _x_56 = allConsecutive(_x_55, &(tail_29))?; _x_56 } } },
++        [] => { let _x_44 = true; _x_44 },
++        [head_28, tail_29 @ ..] => { let head_28 = head_28.clone(); { let _x_51 = (x_1 == head_28); match _x_51 {
++        false => _x_51,
++        true => { let _x_57 = 1; { let _x_58 = core::convert::identity::<u64>(x_1).checked_add(_x_57).ok_or(crate::ComputeError::AddOverflow)?; { let _x_59 = allConsecutive(_x_58, &(tail_29))?; _x_59 } } },
+     } } },
+     })
+ }
+diff --git a/fixtures/lexlean-1.1/expected/kernel.ir b/fixtures/lexlean-1.1/expected/kernel.ir
+index c302d33cbec5cbaa6d8edd2bf2db78b304f732c4..5db88490579e2731814a49d880271a2b6dd97611 100644
+--- a/fixtures/lexlean-1.1/expected/kernel.ir
++++ b/fixtures/lexlean-1.1/expected/kernel.ir
+@@ -3,5 +3,5 @@
+ 
+   ;; full: SemanticFixture.Main.allConsecutive
+   (def allConsecutive ((x_1 Nat) (x_2 (List Nat))) Bool
+-    (cases x_2 (alt "List.nil" () (let _x_45 (ctor "Bool.true") _x_45)) (alt "List.cons" (head_28 tail_29) (let _x_50 (eq x_1 head_28) (cases _x_50 (alt "Bool.false" () _x_50) (alt "Bool.true" () (let _x_54 1 (let _x_55 (add x_1 _x_54) (let _x_56 (call allConsecutive _x_55 tail_29) _x_56)))))))))
++    (cases x_2 (alt "List.nil" () (let _x_44 (ctor "Bool.true") _x_44)) (alt "List.cons" (head_28 tail_29) (let _x_51 (eq x_1 head_28) (cases _x_51 (alt "Bool.false" () _x_51) (alt "Bool.true" () (let _x_57 1 (let _x_58 (add x_1 _x_57) (let _x_59 (call allConsecutive _x_58 tail_29) _x_59)))))))))
+ )
 diff --git a/justfile b/justfile
 index 21e5ebe9466bbaea054777d2d5f7b475f4efa72c..2d0aa2b7d0b19d74bfc468a9e74a0837aaed41ba 100644
 --- a/justfile
@@ -32,7 +62,7 @@ index 0000000000000000000000000000000000000000..c870ffff26f84eac2fde1a38e5cc8ce9
 +  logInfo "ordinary helper and renamed signed helper exported"
 diff --git a/lean/Conformance/NumericClosureFixture.lean b/lean/Conformance/NumericClosureFixture.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..78837ec1e92a436975b6de68887ae9e116513578
+index 0000000000000000000000000000000000000000..1f78874479660bd427f6e8c0d51032ca222ffd64
 --- /dev/null
 +++ b/lean/Conformance/NumericClosureFixture.lean
 @@ -0,0 +1,77 @@
@@ -42,8 +72,8 @@ index 0000000000000000000000000000000000000000..78837ec1e92a436975b6de68887ae9e1
 +namespace NumericRenamed
 +open SemanticFixture.Portable.LexLeanRuntime
 +-- Outside the roots' namespace and deliberately unrelated to instance spelling.
-+def sourceDictionary : ToMathInt UInt32 := inferInstance
-+def targetDictionary : Fixed UInt64 := inferInstance
++@[implicit_reducible] def sourceDictionary : ToMathInt UInt32 := inferInstance
++@[implicit_reducible] def targetDictionary : Fixed UInt64 := inferInstance
 +end NumericRenamed
 +
 +namespace NumericFixture
@@ -90,14 +120,14 @@ index 0000000000000000000000000000000000000000..78837ec1e92a436975b6de68887ae9e1
 +  if fuel ≤ 128 then countedLoop fuel delta (some ⟨x, 0⟩) else none
 +
 +-- Four independent semantic mutations: nominal dictionary type alone is insufficient.
-+def badSource : LexLeanRuntime.ToMathInt UInt32 where
++@[implicit_reducible] def badSource : LexLeanRuntime.ToMathInt UInt32 where
 +  toInt := fun x => Int.ofNat x.toNat + 1
 +
-+def badMinimum : LexLeanRuntime.Fixed UInt64 :=
++@[implicit_reducible] def badMinimum : LexLeanRuntime.Fixed UInt64 :=
 +  { (inferInstance : LexLeanRuntime.Fixed UInt64) with minimum := 1 }
-+def badMaximum : LexLeanRuntime.Fixed UInt64 :=
++@[implicit_reducible] def badMaximum : LexLeanRuntime.Fixed UInt64 :=
 +  { (inferInstance : LexLeanRuntime.Fixed UInt64) with maximum := 100 }
-+def badFromInt : LexLeanRuntime.Fixed UInt64 :=
++@[implicit_reducible] def badFromInt : LexLeanRuntime.Fixed UInt64 :=
 +  { (inferInstance : LexLeanRuntime.Fixed UInt64) with fromInt := fun _ => 0 }
 +
 +def alteredSource (x : UInt32) : Option UInt64 :=
@@ -115,10 +145,10 @@ index 0000000000000000000000000000000000000000..78837ec1e92a436975b6de68887ae9e1
 +end NumericFixture
 diff --git a/lean/Conformance/NumericConversion.lean b/lean/Conformance/NumericConversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c4f629e55
+index 0000000000000000000000000000000000000000..3890f1238800d235ba0c4fb375fe2d59c6586f89
 --- /dev/null
 +++ b/lean/Conformance/NumericConversion.lean
-@@ -0,0 +1,76 @@
+@@ -0,0 +1,78 @@
 +import Prod.Export
 +import Conformance.NumericClosureFixture
 +
@@ -131,7 +161,7 @@ index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c
 +    let decl := match decl.value with
 +      | .const name _ _ =>
 +        if Prod.isLexLeanRuntimeName name && Prod.lastComponent name == "checkedConvert" && wrongResult
-+        then { decl with type := mkApp (mkConst ``Option [levelZero]) (mkConst ``UInt8) }
++        then { decl with type := mkApp (mkConst ``Option [.zero]) (mkConst ``UInt8) }
 +        else decl
 +      | _ => decl
 +    .let decl (changeConversion rest wrongResult)
@@ -166,7 +196,8 @@ index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c
 +    throwError "live generic dictionary was silently erased or omitted from coverage"
 +  IO.FS.writeFile "../output/numeric/live-dictionary.ir" live.ir
 +  let extracted ← Prod.extractNames #[``NumericFixture.widen]
-+  let some decl := extracted[0]!.decl? | throwError "missing widen declaration"
++  let first : Prod.ExtractedDef := extracted[0]!
++  let some decl := first.decl? | throwError "missing widen declaration"
 +  let .code code := decl.value | throwError "missing widen code"
 +  for wrongResult in [false, true] do
 +    let mutant := if wrongResult then
@@ -188,7 +219,8 @@ index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c
 +  let one : LetDecl .pure := ⟨⟨`one⟩, `one, mkConst ``Nat, .lit (.nat 1)⟩
 +  let failure : LetDecl .pure := ⟨⟨`unusedFailure⟩, `unusedFailure, mkConst ``Nat,
 +    .const ``Nat.add [] #[.fvar large.fvarId, .fvar one.fvarId]⟩
-+  let failing := { decl with name := `NumericFixture.unusedFailure,
++  let failing : Decl .pure := { decl with
++    name := `NumericFixture.unusedFailure
 +    value := .code (.let large (.let one (.let failure code))) }
 +  let (ir, _, _) ← Prod.emitKernelIr { tagged := #[failing.name] } "UnusedFailure"
 +    #[{ name := failing.name, decl? := some failing, skipReason := "" }]
@@ -197,7 +229,7 @@ index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c
 +  logInfo "numeric conversions: canonical, renamed, four semantic and two type refusals, live residue, and failing unused operation"
 diff --git a/lean/Prod/Conversion.lean b/lean/Prod/Conversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..4127d1ccb4eea150781fcd9a21fdfe5cebd39b00
+index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce17880f7d
 --- /dev/null
 +++ b/lean/Prod/Conversion.lean
 @@ -0,0 +1,179 @@
@@ -286,7 +318,7 @@ index 0000000000000000000000000000000000000000..4127d1ccb4eea150781fcd9a21fdfe5c
 +    let some (minimum, maximum) := fixedBounds targetName
 +      | throwError "noncanonical checkedConvert target bounds"
 +    unless (← Meta.isDefEq operand sourceType) &&
-+        (← Meta.isDefEq result (mkApp (mkConst ``Option [levelZero]) targetType)) do
++        (← Meta.isDefEq result (mkApp (mkConst ``Option [.zero]) targetType)) do
 +      throwError "checkedConvert operand/result type mismatch"
 +    -- Infer/check every reconstructed term before trusting projection reduction.
 +    let _ ← Meta.check source
@@ -586,14 +618,15 @@ index 0000000000000000000000000000000000000000..a23383e4db295d6208775b6fef44c4ed
 +echo 'numeric helper/conversion refusals and generated native/import-free Wasm replay passed'
 diff --git a/scripts/check-numeric-source-stage.sh b/scripts/check-numeric-source-stage.sh
 new file mode 100755
-index 0000000000000000000000000000000000000000..6b1ed84fcf220c498768f8425528e30722fbd978
+index 0000000000000000000000000000000000000000..29aa3904b09ccfbe6100b837f36e63c79407f78b
 --- /dev/null
 +++ b/scripts/check-numeric-source-stage.sh
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,49 @@
 +#!/usr/bin/env bash
-+# Run inside the pinned SDK. No downloads, pin overrides, skip-to-success, or golden edits.
++# Run inside the pinned SDK without toolchain/pin changes or golden edits.
++# Existing gates may fetch their exact generated dependency locks before their
++# explicit --locked --offline builds; preserve those preparation steps.
 +set -uo pipefail
-+export CARGO_NET_OFFLINE=true
 +repo_root=$(cd "$(dirname "$0")/.." && pwd -P)
 +logs=${1:-"$repo_root/output/numeric-source-stage"}
 +mkdir -p "$logs"
