@@ -48,11 +48,21 @@
 
 **Interfaces:** `div32(a:UInt32,b:UInt32)->UInt32`, `div64(a:UInt64,b:UInt64)->UInt64`; wrapper op2/op3. Consume Task1's canonical representation/rounder only after inspecting the actual report. Use bounded quotient/remainder recurrence, never old huge-Nat numerator construction.
 
-- [ ] First validate bounded exponent/comparison/iteration primitives through the actual pinned PrismPM LCNF export and Rust codegen. Its mathematical Int rejection requires a checked fixed-width or biased-unsigned internal representation; keep every multiplication regression and unchanged exporter limits.
+- [x] Diagnose bounded exponent/comparison/iteration primitives through actual pinned LCNF and Rust codegen. Checked primitives pass; conversion dictionaries, helper specialization and higher-order iteration expose separate backend limits. Preserve these results; complete raw division with the already validated representation. Canonical repair is Task 2c.
 - [ ] Add failing exact-bit division vectors: zero/zero, finite/zero, infinity/infinity, tiny/huge, smallest-normal seams, signs and ties; include `1/1` that previously required160-bit intermediate in the old algorithm.
 - [ ] Implement fixed-format division with explicit per-step remainder/iteration bounds and sticky information carried into one rounding step.
 - [ ] Export/replay all four roots; run at least10,000 seeded division pairs per format and preserve multiply regression results after shared helper changes.
 - [ ] Record exact source/target hashes and proof/conformance scope; commit and review.
+
+### Task 2c: Repair canonical export and adapt bounded source
+
+Actual fixtures show primitive success but failures for generic conversion dictionaries and composed helpers; higher-order iteration and mathematical Int also need supported handling. This task precedes the bitwise comparison so it uses the final shared source.
+
+- [ ] Reproduce with exact canonical module staging; distinguish missing compiler artifacts or extraction setup from actual exporter defects.
+- [ ] Repair the smallest confirmed exporter issue with a separately identified, reviewable source backport when needed. Retain the base SDK pin and all original guards; bind actual patched tool source/binary identities explicitly. Do not relabel a patched tool as the pristine SDK or weaken verification, error behavior, or time limits.
+- [ ] Add focused regression/negative cases for helper specialization and conversions; run the applicable upstream acceptance gates before admitting the tool change.
+- [ ] Adapt internal exponent/comparison/loop representation to supported bounded source forms, preserving raw APIs, all IEEE policies, and explicit failures. Re-export/replay all four roots and the full corpus after source changes.
+- [ ] Validate actual canonical extraction/code generation, retain proof/custody evidence, and independently review. Upstream PRs remain deferred; no canonical admission claim from raw-export success alone.
 
 ### Task 2b: Isolated bitwise multiplier comparison
 
