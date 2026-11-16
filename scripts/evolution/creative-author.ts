@@ -12,10 +12,15 @@ export async function requestModelProposal(token:string,brief:string,fetcher:typ
   return {status:'authored',proposal};
  }catch{return {status:'unavailable',reason:'invalid-response-or-network',proposal:null};}
 }
+export function authorContext(state:any){
+ validateArt(state.config.art);validateTactics(state.config.tactics);
+ const feedback=state.history.slice(-3).flatMap((row:any)=>row.proposals.map((p:any)=>({candidate:p.candidate,family:p.family,baseline:p.baselineWork,measured:p.candidateWork,fidelity:p.fidelity,bounds:p.bounds})));
+ return '\nCurrent admitted programs: '+JSON.stringify({art:state.config.art,tactics:state.config.tactics})+'\nRecent measured feedback: '+JSON.stringify(feedback)+'\nUse this feedback to propose improvements; never invent measurement results.';
+}
 export async function authorProposals(){
  const state=JSON.parse(readFileSync('model/evolution/state.json','utf8'));const brief=readFileSync('model/evolution/brief.json','utf8');
  const token=process.env.GH_MODELS_TOKEN;
- const prompt=brief+'\nExample shape/schema (make a new program): '+JSON.stringify({art:synthesizeArt(state.seed),tactics:synthesizeTactics(state.seed)})+'\nConstraints: art version=1, seed uint32, hex RGB colors, at most48 shapes; kind line/ring/box, x/y/a/b between0and1, weight .002..04. Tactics version=1, max12rules, max64 expression nodes depth4. Expressions: {fact:name},{not:expression},{all:[expressions]},{any:[expressions]}. Facts: enemy,empty,lowAmmo,canPlant,canDefuse,urgent,carrier,attacker,planted,dropped. Actions: interact,reload,engage,advance,escort,guard. Fall back to advance.';
+ const prompt=brief+authorContext(state)+'\nExample shape/schema (make a new program): '+JSON.stringify({art:synthesizeArt(state.seed),tactics:synthesizeTactics(state.seed)})+'\nConstraints: art version=1, seed uint32, hex RGB colors, at most48 shapes; kind line/ring/box, x/y/a/b between0and1, weight .002..04. Tactics version=1, max12rules, max64 expression nodes depth4. Expressions: {fact:name},{not:expression},{all:[expressions]},{any:[expressions]}. Facts: enemy,empty,lowAmmo,canPlant,canDefuse,urgent,carrier,attacker,planted,dropped. Actions: interact,reload,engage,advance,escort,guard. Fall back to advance.';
  const result=token?await requestModelProposal(token,prompt):{status:'unavailable',reason:'no-model-token',proposal:null};
  const report={...result,base:process.env.GITHUB_SHA??null,seed:state.seed,brief:JSON.parse(brief).version,created:new Date().toISOString()};
  mkdirSync('artifacts/evolution',{recursive:true});writeFileSync('artifacts/evolution/author.json',JSON.stringify(report,null,2)+'\n');console.log(`Creative author: ${result.status}${result.reason?' ('+result.reason+')':''}; validated synthesis remains available.`);
