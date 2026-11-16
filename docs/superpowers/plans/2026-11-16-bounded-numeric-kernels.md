@@ -55,13 +55,13 @@
 
 ### Task 3: Measured rendering integration and Prism delivery
 
-**Files:** Create `src/numeric-kernel.ts`, `scripts/numeric/benchmark.mjs`, `tests/numeric-kernel.test.ts`; modify `src/hd-budget.ts`, its tests, package/artifact/Prism manifest generators as required by the actual generated package; publish the verified guest under `public/wasm/` with provenance.
+**Files:** Create `src/numeric-kernel.ts`, `scripts/numeric/benchmark.mjs`, `tests/numeric-kernel.test.ts`; modify `src/hd-budget.ts`, `src/world.ts`, `src/main.ts` diagnostics, their tests, package/artifact/Prism manifest generators as required by the actual generated package; publish the verified guest under `public/wasm/` with provenance.
 
 **Interfaces:** `NumericKernel.meanMicros(totalSeconds:number,frames:number)` returns a tagged success with numeric value or explicit diagnostic; it calls div64 then mul64 with raw BigInt bits and 1e6 constant bits `0x412e848000000000`. `status()` exposes loading/ready/failed and last failure. Domain as spec; no caller reads stale bits after nonzero status. Benchmark reports initialization/warm/full-boundary timings for the same operations.
 
 - [ ] Add failing exact-bit BigInt/unsigned-i64, invalid-domain, unavailable guest, error-status and threshold/pin tests.
 - [ ] Implement persistent import-free guest loading with hash/provenance custody and a status-preserving host adapter; preserve required existing guests and identity/Holo behavior.
-- [ ] Integrate at the existing three-second HD sampling boundary, preserving existing deadband and Verdant governor. Keep a visible diagnostic for existing-host fallback.
+- [ ] Integrate at the existing three-second HD sampling boundary, preserving existing deadband and Verdant governor. Expose fallback in existing read-only diagnostics and one bounded console warning; no fetch/compilation inside render().
 - [ ] Measure same-root persistent-vs-Text/1 boundary and host arithmetic; record counts, warmup, device/runtime and raw samples. Measure browser sampling cost; enforce a budget justified by the actual results, without claiming physical-GPU FPS improvement.
 - [ ] Run renderer/objective/identity checks appropriate to the changed path; package through existing LexLean/PrismPM custody and commit. Review before final integration.
 
