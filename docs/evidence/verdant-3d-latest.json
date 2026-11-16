@@ -4,7 +4,7 @@
   "version": "0.8.0",
   "localValidation": {
     "nativeRustTests": 8,
-    "typescriptTests": 95,
+    "typescriptTests": 97,
     "uorustProjection": "current",
     "browser": {
       "passed": [
@@ -43,8 +43,8 @@
             "weapon": "sidearm",
             "occluded": false,
             "peak": 0.025459162890911102,
-            "left": 4.9933371206238914e-8,
-            "right": 0.0000019905170912976327,
+            "left": 4.9933371206238914e-08,
+            "right": 1.9905170912976327e-06,
             "tail": 0,
             "ended": 1
           },
@@ -52,8 +52,8 @@
             "weapon": "sidearm",
             "occluded": true,
             "peak": 0.01971926912665367,
-            "left": 3.3159009411014114e-8,
-            "right": 0.0000013218329546700415,
+            "left": 3.3159009411014114e-08,
+            "right": 1.3218329546700415e-06,
             "tail": 0,
             "ended": 1
           },
@@ -61,8 +61,8 @@
             "weapon": "kestrel",
             "occluded": false,
             "peak": 0.037420112639665604,
-            "left": 1.603148960177026e-7,
-            "right": 0.000006390706973397324,
+            "left": 1.603148960177026e-07,
+            "right": 6.390706973397324e-06,
             "tail": 0,
             "ended": 1
           },
@@ -70,8 +70,8 @@
             "weapon": "kestrel",
             "occluded": true,
             "peak": 0.01787423901259899,
-            "left": 7.566388091604048e-8,
-            "right": 0.0000030162242905819847,
+            "left": 7.566388091604048e-08,
+            "right": 3.0162242905819847e-06,
             "tail": 0,
             "ended": 1
           },
@@ -79,8 +79,8 @@
             "weapon": "m4",
             "occluded": false,
             "peak": 0.03713112697005272,
-            "left": 1.250514751647259e-7,
-            "right": 0.0000049849848596896465,
+            "left": 1.250514751647259e-07,
+            "right": 4.9849848596896465e-06,
             "tail": 0,
             "ended": 1
           },
@@ -88,8 +88,8 @@
             "weapon": "m4",
             "occluded": true,
             "peak": 0.018432503566145897,
-            "left": 4.76021074331089e-8,
-            "right": 0.0000018975848451894548,
+            "left": 4.76021074331089e-08,
+            "right": 1.8975848451894548e-06,
             "tail": 0,
             "ended": 1
           },
@@ -97,8 +97,8 @@
             "weapon": "smg",
             "occluded": false,
             "peak": 0.040368933230638504,
-            "left": 6.332793918163258e-8,
-            "right": 0.0000025244710032085697,
+            "left": 6.332793918163258e-08,
+            "right": 2.5244710032085697e-06,
             "tail": 0,
             "ended": 1
           },
@@ -106,8 +106,8 @@
             "weapon": "smg",
             "occluded": true,
             "peak": 0.0202109906822443,
-            "left": 2.3510289924018474e-8,
-            "right": 9.372015805584654e-7,
+            "left": 2.3510289924018474e-08,
+            "right": 9.372015805584654e-07,
             "tail": 0,
             "ended": 1
           },
@@ -115,8 +115,8 @@
             "weapon": "scout",
             "occluded": false,
             "peak": 0.04547908529639244,
-            "left": 3.59365148718423e-7,
-            "right": 0.000014325539227743487,
+            "left": 3.59365148718423e-07,
+            "right": 1.4325539227743487e-05,
             "tail": 0,
             "ended": 1
           },
@@ -124,8 +124,8 @@
             "weapon": "scout",
             "occluded": true,
             "peak": 0.025255147367715836,
-            "left": 2.0799322189647917e-7,
-            "right": 0.000008291330155243541,
+            "left": 2.0799322189647917e-07,
+            "right": 8.291330155243541e-06,
             "tail": 0,
             "ended": 1
           }
@@ -201,5 +201,12 @@
     "evolution": "success",
     "identity": "success",
     "scope": "Same retained compiled guests and engine Wasm; subsequent roofline placement is empirically checked host code, not a new formal proof"
+  },
+  "networkRegression": {
+    "failedRun": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43888917028",
+    "observed": "Guest reported Room full while host snapshot contained one player",
+    "reproduced": "Duplicate transport open dropped an existing session; repeated PeerJS open emitted duplicate handshakes",
+    "fixed": "Per-link handshake runs once; authority open preserves existing authentication, rates and deadlines",
+    "scope": "Original CI transport events were not traced; exact event attribution is inferred. Deterministic regressions and real WebRTC pass."
   }
 }

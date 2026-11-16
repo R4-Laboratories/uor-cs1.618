@@ -39,3 +39,10 @@ test('browser host bounds connections, oversized messages, rates and join deadli
  f.join('flood');for(let n=0;n<151;n++)f.host.message('flood',{type:'ping',at:n});assert.ok(f.closed.includes('flood'));
  for(let n=0;n<9;n++)assert.ok(f.host.open('pending'+n));assert.equal(f.host.open('overflow'),false);
 });
+test('duplicate transport opens preserve joined sessions and the original join deadline',async()=>{
+ const f=await fixture();f.join('host');f.join('guest');const player=f.match.players.get('guest');
+ assert.equal(f.host.open('guest'),true);assert.equal(f.closed.length,0);assert.equal(f.match.players.get('guest'),player);
+ f.host.message('guest',{type:'input',input:{...neutralInput(),seq:1}});assert.equal(player!.acceptedSeq,1);
+ f.host.open('pending');f.setClock(9000);assert.equal(f.host.open('pending'),true);
+ f.setClock(10001);f.host.step(1/60);assert(f.closed.includes('pending'),'Repeated open must not renew unauthenticated handshake lifetime');
+});

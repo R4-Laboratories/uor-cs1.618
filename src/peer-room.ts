@@ -6,7 +6,7 @@ interface Options {
  bytes:ArrayBuffer;roundBytes:ArrayBuffer;
  receive:(message:any)=>void;status:(message:string)=>void;closed:(reason:string)=>void;
 }
-interface Link {id:string;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;window:number;count:number;}
+interface Link {id:string;opened:boolean;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;window:number;count:number;}
 /** Rendezvous uses PeerServer; gameplay stays on encrypted browser-to-browser channels. */
 export class PeerRoom {
  readonly invitation:string;
@@ -80,13 +80,14 @@ export class PeerRoom {
  }
  private attach(connection:DataConnection){
   const id=`remote-${crypto.randomUUID()}`;
-  const link:Link={id,connection,fast:null,lastSeen:performance.now(),route:'negotiating',window:performance.now(),count:0,timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
+  const link:Link={id,opened:false,connection,fast:null,lastSeen:performance.now(),route:'negotiating',window:performance.now(),count:0,timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
   this.links.set(id,link);this.diagnostics.peers=this.links.size;
   // PeerJS normally owns ondatachannel. Route only its primary channel to its handler.
   const pc=connection.peerConnection,original=pc.ondatachannel;
   pc.ondatachannel=event=>{if(event.channel.label==='cs-realtime')this.attachFast(link,event.channel);else if(event.channel.label===PEER_PROTOCOL)original?.call(pc,event);else event.channel.close();};
   connection.on('open',()=>{
-   if(this.stopped)return;
+   if(this.stopped||link.opened||!this.links.has(id))return;
+   link.opened=true;
    if(this.options.host)this.worker?.postMessage({type:'open',peer:id});
    else{
     this.attachFast(link,pc.createDataChannel('cs-realtime',{ordered:false,maxRetransmits:0}));

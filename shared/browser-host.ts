@@ -9,7 +9,9 @@ export class BrowserMatchHost {
   private send:(id:string,message:unknown,realtime:boolean)=>void,
   private drop:(id:string,reason:string)=>void,private now=()=>performance.now()){}
  open(id:string){
-  if(this.sessions.has(id)||this.sessions.size>=RULES.maxPlayers){this.drop(id,'Room full.');return false;}
+  // Repeated transport notifications must not drop a player or renew join deadlines.
+  if(this.sessions.has(id))return true;
+  if(this.sessions.size>=RULES.maxPlayers){this.drop(id,'Room full.');return false;}
   const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,window:now,count:0});return true;
  }
  private reject(id:string,reason:string){this.leave(id);this.drop(id,reason);}

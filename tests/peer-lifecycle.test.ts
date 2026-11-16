@@ -25,3 +25,26 @@ test('browser rooms reject unsolicited media calls before they accumulate',async
   finally{peer.emit('error',{type:'network'});await rejected;}
  }
 });
+test('duplicate PeerJS open notifications perform a single host or guest handshake',async()=>{
+ for(const host of [true,false]){
+  let peer!:FakePeer;const sent:any[]=[],workerMessages:any[]=[];let fastCreated=0;
+  const channel=()=>({readyState:'open',bufferedAmount:0,send:(s:string)=>sent.push(JSON.parse(s)),close:()=>{}});
+  class Connection extends EventEmitter {
+   label='cs1618-v2';metadata={protocol:'cs1618-v2'};serialization='raw';dataChannel=channel();
+   peerConnection={ondatachannel:null,addEventListener:()=>{},createDataChannel:()=>{fastCreated++;return channel();}};
+   close(){}
+  }
+  const connection=new Connection();
+  class FakePeer extends EventEmitter {constructor(){super();peer=this;}connect(){return connection;}destroy(){}}
+  class FakeWorker {onmessage:any;postMessage(m:any){workerMessages.push(m);if(m.type==='init')this.onmessage({data:{type:'ready'}});}terminate(){}}
+  const exports:Record<string,any>={};
+  runInNewContext(compiled,{exports,require:(name:string)=>name==='peerjs'?{default:FakePeer}:{PEER_PROTOCOL:'cs1618-v2',invitationUrl:()=>''},Worker:FakeWorker,crypto,location:{href:'https://game.test/'},performance,setTimeout,clearTimeout,setInterval,clearInterval,URL});
+  const started=exports.PeerRoom.start({host,invitation:{room:'123456789abc',token:'0'.repeat(32)},network:{ice:{iceServers:[]}},receive:()=>{},status:()=>{},closed:()=>{}});
+  peer.emit('open');if(host)peer.emit('connection',connection);
+  connection.emit('open');connection.emit('open');
+  if(!host)connection.emit('data',JSON.stringify({type:'welcome',id:'guest'}));
+  const room=await started;
+  try{assert.equal(room.status.mode,host?'host':'guest');if(host)assert.equal(workerMessages.filter(m=>m.type==='open').length,1);else{assert.equal(sent.filter(m=>m.type==='join').length,1);assert.equal(fastCreated,1);}}
+  finally{room.close();}
+ }
+});
