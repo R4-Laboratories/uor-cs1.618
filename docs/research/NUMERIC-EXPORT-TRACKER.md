@@ -64,8 +64,12 @@ with [independent source review](numeric-export/recovery-2026-11-16/source-stage
 That review identified a P1 defect: pruning a closed conversion dictionary can
 also erase an eager checked-overflow computation, including one hidden inside
 an alias. The candidate must preserve that failure or refuse the dependency
-before admission. A source fix and focused regression are in progress; no
-production tool, SDK identity, guest or Pages build was replaced.
+before admission. The reviewed fix now passes the actual focused Lean, generated
+native and import-free Wasm checks at optimization levels 0 and 2, using isolated
+components whose Lean/Rust/Cargo binaries match the SDK. The [retained report](numeric-export/recovery-2026-11-16/source-stage-fix-2a13f94.md)
+and [scoped review](numeric-export/recovery-2026-11-16/source-stage-round3-review-2a13f94.md)
+record the exact scope. Full pinned-SDK acceptance remains pending; no production
+tool, SDK identity, guest or Pages build was replaced.
 
 The earlier local compiler candidate was lost in an environment reset.
 [Recovery notes and actual CI artifacts](numeric-export/recovery-2026-11-16/)
@@ -74,8 +78,10 @@ built the compiler but failed some fixture/source gates; the second stopped in
 test-tool setup. The reviewed diagnostic repair now runs independent focused
 checks before supplemental preparation and preserves output/status on failures.
 [Run 43973785776](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43973785776)
-tests the retained candidate diagnostically; a passing run alone would not close
-the review defect.
+passed every nonfocused gate but failed a fixture compilation check. Later exact
+CI confirmed the next fixture error; both are retained and repaired. Current
+[run 43978245009](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43978245009)
+tests corrected source `2a13f942b04f0828e03c5d7db7e4db6ecb626d6e` through all gates.
 
 Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
 that preserves the original SDK seed as the default, bounded shared-source
