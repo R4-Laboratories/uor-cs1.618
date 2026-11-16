@@ -52,11 +52,26 @@ try{
   b.waitForFunction(id=>{const s=(window as any).cs1618.snapshot,p=s.players.find((p:any)=>p.id===id);return s.phase==='live'&&Math.abs(p.x)<.01&&Math.abs(p.z-23)<.01&&Math.abs(s.self.x-20)<.01&&Math.abs(s.self.z+18)<.01;},pa.id),
  ]);
  await aimForward(a);assert(Math.abs(pa.yaw)<.003&&Math.abs(pa.pitch)<.003);results.push('Relative pointer-lock aiming reaches the authoritative host before axis-specific locomotion');
- await a.keyboard.down('KeyW');
+ let releaseSeq=pa.acceptedSeq;await a.keyboard.down('KeyW');
  try{await Promise.all([
   a.waitForFunction(()=>(window as any).cs1618.snapshot.self.z<22,undefined,{timeout:30000}),
   b.waitForFunction(id=>(window as any).cs1618.snapshot.players.find((p:any)=>p.id===id).z<22,pa.id,{timeout:30000}),
- ]);}finally{await a.keyboard.up('KeyW');}
+ ]);}finally{releaseSeq=pa.acceptedSeq;await a.keyboard.up('KeyW');}
+ // Observe a real queued neutral packet becoming the host's processed input.
+ // Matching object identity excludes synthetic stale-input fallback, even if
+ // another packet has just reset inputAge. This only reads host state.
+ const queuedNeutral=new Set<typeof pa.input>();let neutralSeq=0;
+ const releaseDeadline=Date.now()+30000;
+ while(Date.now()<releaseDeadline){
+  for(const input of pa.queue)if(input.seq>releaseSeq&&input.forward===0&&input.strafe===0)queuedNeutral.add(input);
+  if(queuedNeutral.has(pa.input)&&pa.processedSeq===pa.input.seq)neutralSeq=pa.processedSeq;
+  for(const input of queuedNeutral)if(input.seq<=pa.processedSeq)queuedNeutral.delete(input);
+  if(neutralSeq>releaseSeq&&pa.input.forward===0&&pa.input.strafe===0&&!pa.queue.some(input=>input.forward!==0||input.strafe!==0)&&Math.hypot(pa.vx,pa.vz)<.001)break;
+  await new Promise(resolve=>setTimeout(resolve,5));
+ }
+ assert(neutralSeq>releaseSeq&&pa.input.forward===0&&pa.input.strafe===0&&!pa.queue.some(input=>input.forward!==0||input.strafe!==0)&&Math.hypot(pa.vx,pa.vz)<.001,'Host must process real keyup movement before combat teleport');
+ console.log('Movement release',JSON.stringify({releaseSeq,neutralSeq,processedSeq:pa.processedSeq,forward:pa.input.forward,strafe:pa.input.strafe,queuedMoving:pa.queue.filter(input=>input.forward!==0||input.strafe!==0).length,speed:Math.hypot(pa.vx,pa.vz)}));
+ results.push('Real released movement input is processed and settled before combat teleport');
  const moved=await state(a);assert.equal(moved.quality.mode,'low');assert(await a.evaluate(()=>!document.hidden));assert(await b.evaluate(()=>!document.hidden));assert.ok(moved.snapshot.self.z<22,`Expected motion, got ${moved.snapshot.self.z}`);await b.waitForFunction(id=>(window as any).cs1618.snapshot.players.find((p:any)=>p.id===id).z<22,pa.id);results.push('WASD movement appears on both independently rendered clients');
  console.log('Testing combat');Object.assign(pa,{x:0,z:20,vx:0,vz:0,recoil:0,cooldown:0});Object.assign(pb,{x:0,z:16,vx:0,vz:0,health:100});
  await Promise.all([
