@@ -35,12 +35,12 @@
 
 **Interfaces:** Source roots `mul32(a: UInt32,b: UInt32)->UInt32` and `mul64(a: UInt64,b: UInt64)->UInt64`, with generated failure effects preserved. Source helpers/rounding are internal; record their final signatures for Task2. One production package per root. Wrapper `numeric_run(op:u32,a:u64,b:u64)->u32` uses op0 mul32,op1 mul64; `numeric_result()->u64` returns last successful bits only after status0. Invalid f32 high bits return status3. Task2 reserves op2 div32,op3 div64. Root argument/result signatures may use an explicit internal Option/status record if needed, but the wrapper contract is fixed and every failure propagates.
 
-- [ ] Register operation contracts and construct failing overflow/boundary vectors before implementation.
-- [ ] Verify a minimal fixed-record/checked-operation source and small bound theorem under the actual game SDK; document which statements are kernel-proved versus tested.
-- [ ] Implement four-limb exact significand multiplication and complete fixed-format IEEE special handling, normalization, rounding and packing in LexLean source.
-- [ ] Build actual roots through production export and full verification; discover emitted `run` signatures instead of assuming symbol names. Save all proof packages without copying SDK Cargo caches.
-- [ ] Compile emitted Rust to native/Wasm; run exact boundary vectors and at least10,000 seeded operand pairs per format against independent rational and native IEEE oracles. Check signed zero, payload policy, no imports and no error masking; retain the red/green receipts.
-- [ ] Commit the source, registered contracts, reproducible harness and compact evidence. Review before Task2.
+- [x] Register operation contracts and construct failing overflow/boundary vectors before implementation.
+- [x] Verify a minimal fixed-record/checked-operation source and small bound theorem under the actual game SDK; document which statements are kernel-proved versus tested.
+- [x] Implement four-limb exact significand multiplication and complete fixed-format IEEE special handling, normalization, rounding and packing in LexLean source.
+- [x] Build actual roots through production export and full verification; discover emitted `run` signatures instead of assuming symbol names. Save all proof packages without copying SDK Cargo caches.
+- [x] Compile emitted Rust to native/Wasm; run exact boundary vectors and at least10,000 seeded operand pairs per format against independent rational and native IEEE oracles. Check signed zero, payload policy, no imports and no error masking; retain the red/green receipts.
+- [x] Commit the source, registered contracts, reproducible harness and compact evidence. Review before Task2.
 
 ### Task 2: Bounded division and shared rounder validation
 
