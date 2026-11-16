@@ -283,229 +283,119 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-16T19:17:53.036Z",
-    "base": "2f54a251238b26cfa2f41cfa95e8e4e17d94df83",
+    "at": "2026-11-16T19:23:15.088Z",
+    "base": "1a0f9215f1960c4e3bb467fa51b2ee80397defc7",
     "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
-    "previous": "bea0b5d63948b458f06cfa061a8c5e35a3acdce64237cd1c507514327692ff05",
+    "previous": "99c102f81ca38f4e9b06032ea81072ba0aedfe63a124e0e17f29c1bb1c292bca",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "art-synth-2",
-        "family": "art",
+        "candidate": "tactics-synth-1",
+        "family": "tactics",
         "author": "seeded-synthesis",
-        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "78a5b228f4c5e7f388964c7de45b750f43267843c202209ac3d9e04dbd2e4bf9",
-        "baselineWork": 0.23252706850815388,
-        "candidateWork": 0.30140059603138347,
+        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+        "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+        "baselineWork": 1,
+        "candidateWork": 1,
         "fidelity": true,
         "bounds": true,
-        "samples": 4,
-        "comparisons": [
-          {
-            "mean": 0.009943969566993465,
-            "changed": 0.02941796875
-          },
-          {
-            "mean": 0.010507883986928104,
-            "changed": 0.02798046875
-          },
-          {
-            "mean": 0.01710232843137255,
-            "changed": 0.04280078125
-          },
-          {
-            "mean": 0.018081020220588235,
-            "changed": 0.0426328125
-          }
-        ],
+        "samples": 198,
+        "comparisons": null,
         "reference": {
-          "protectedEqual": true,
-          "separation": 0.6615373610938612,
-          "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+          "metricVersion": 2,
+          "training": 96,
+          "heldOut": 96,
+          "realMatches": 6,
+          "scope": "Fixed scenario corpus; not general match win rate"
         },
         "before": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 11.900942897165983,
-              "coverage": 0.17115428055116333
-            },
-            {
-              "site": "B",
-              "contrast": 11.900942897165983,
-              "coverage": 0.1658459453354416
-            }
-          ],
-          "frames": [
-            {
-              "calls": 127,
-              "triangles": 4764,
-              "frameMs": 4.7000000000116415
-            },
-            {
-              "calls": 127,
-              "triangles": 4776,
-              "frameMs": 5.900000000023283
-            },
-            {
-              "calls": 42,
-              "triangles": 1860,
-              "frameMs": 1.099999999976717
-            },
-            {
-              "calls": 32,
-              "triangles": 1596,
-              "frameMs": 1.099999999976717
-            }
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
           ]
         },
         "after": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 12.145723264040305,
-              "coverage": 0.24108877343573526
-            },
-            {
-              "site": "B",
-              "contrast": 12.145723264040305,
-              "coverage": 0.2370454032075898
-            }
-          ],
-          "frames": [
-            {
-              "calls": 127,
-              "triangles": 4764,
-              "frameMs": 2.6000000000349246
-            },
-            {
-              "calls": 127,
-              "triangles": 4776,
-              "frameMs": 1.7000000000116415
-            },
-            {
-              "calls": 42,
-              "triangles": 1860,
-              "frameMs": 1.900000000023283
-            },
-            {
-              "calls": 32,
-              "triangles": 1596,
-              "frameMs": 0.7999999999883585
-            }
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
           ]
         }
       },
       {
-        "candidate": "art-synth-3",
-        "family": "art",
+        "candidate": "tactics-synth-3",
+        "family": "tactics",
         "author": "seeded-synthesis",
-        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "d859c356acdabfdfe840f743da55250f52f4f934c25f6ad73b36690d5ab7fb31",
-        "baselineWork": 0.23252706850815388,
-        "candidateWork": 0.25577922026179933,
+        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+        "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+        "baselineWork": 1,
+        "candidateWork": 1,
         "fidelity": true,
         "bounds": true,
-        "samples": 4,
-        "comparisons": [
-          {
-            "mean": 0.009089562908496732,
-            "changed": 0.02714453125
-          },
-          {
-            "mean": 0.00953951695261438,
-            "changed": 0.02646875
-          },
-          {
-            "mean": 0.015509135008169935,
-            "changed": 0.03722265625
-          },
-          {
-            "mean": 0.016325837418300654,
-            "changed": 0.0384609375
-          }
-        ],
+        "samples": 198,
+        "comparisons": null,
         "reference": {
-          "protectedEqual": true,
-          "separation": 0.6362254127708514,
-          "evidence": "artifacts/evolution/art/art-synth-3-*.png"
+          "metricVersion": 2,
+          "training": 96,
+          "heldOut": 96,
+          "realMatches": 6,
+          "scope": "Fixed scenario corpus; not general match win rate"
         },
         "before": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 11.900942897165983,
-              "coverage": 0.17115428055116333
-            },
-            {
-              "site": "B",
-              "contrast": 11.900942897165983,
-              "coverage": 0.1658459453354416
-            }
-          ],
-          "frames": [
-            {
-              "calls": 127,
-              "triangles": 4764,
-              "frameMs": 5.2000000000116415
-            },
-            {
-              "calls": 127,
-              "triangles": 4776,
-              "frameMs": 3.7999999999883585
-            },
-            {
-              "calls": 42,
-              "triangles": 1860,
-              "frameMs": 1.2000000000116415
-            },
-            {
-              "calls": 32,
-              "triangles": 1596,
-              "frameMs": 0.5999999999767169
-            }
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
           ]
         },
         "after": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 12.834688787207531,
-              "coverage": 0.19914163090128756
-            },
-            {
-              "site": "B",
-              "contrast": 12.834688787207531,
-              "coverage": 0.19658911226564266
-            }
-          ],
-          "frames": [
-            {
-              "calls": 127,
-              "triangles": 4764,
-              "frameMs": 2.2000000000116415
-            },
-            {
-              "calls": 127,
-              "triangles": 4776,
-              "frameMs": 2.099999999976717
-            },
-            {
-              "calls": 42,
-              "triangles": 1860,
-              "frameMs": 1
-            },
-            {
-              "calls": 32,
-              "triangles": 1596,
-              "frameMs": 0.5999999999767169
-            }
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
           ]
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "99c102f81ca38f4e9b06032ea81072ba0aedfe63a124e0e17f29c1bb1c292bca"
+    "hash": "852fcceda2d01368137ed383cf5aeba06d5577d01ccbce0015138b4b39f2cec7"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -5422,6 +5312,123 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "99c102f81ca38f4e9b06032ea81072ba0aedfe63a124e0e17f29c1bb1c292bca"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-16T19:23:15.088Z",
+      "base": "1a0f9215f1960c4e3bb467fa51b2ee80397defc7",
+      "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
+      "previous": "99c102f81ca38f4e9b06032ea81072ba0aedfe63a124e0e17f29c1bb1c292bca",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        },
+        {
+          "candidate": "tactics-synth-3",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "852fcceda2d01368137ed383cf5aeba06d5577d01ccbce0015138b4b39f2cec7"
     }
   ]
 }
