@@ -13,7 +13,7 @@ esac
 if [ -n "${SDK_RUNNER:-}" ]; then
   "$SDK_RUNNER" /bin/bash -c 'set -e; ulimit -S -s 65536; cd "/workspace/$1"; lexlean lock; lexlean fmt --check; prismpm check; prismpm build; prismpm verify' _ "$project_path"
 else
-  # The SDK defaults to uid 1000; hosted checkouts can belong to uid 1001.
-  # This isolated CI container needs to create compiler output in that mount.
-  docker run --rm --user 0:0 -v "$PWD:/workspace" "$sdk_image" /bin/bash -c 'set -e; ulimit -S -s 65536; cd "/workspace/$1"; lexlean lock; lexlean fmt --check; prismpm check; prismpm build; prismpm verify' _ "$project_path"
+  # The SDK entrypoint drops root to uid 1000. Match the checkout owner instead,
+  # using the SDK-supported per-UID writable cache for hosted runners.
+  docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp/prismpm-home -e PRISMPM_EPHEMERAL_HOME=1 -v "$PWD:/workspace" "$sdk_image" /bin/bash -c 'set -e; ulimit -S -s 65536; cd "/workspace/$1"; lexlean lock; lexlean fmt --check; prismpm check; prismpm build; prismpm verify' _ "$project_path"
 fi
