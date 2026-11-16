@@ -3,7 +3,7 @@
   "date": "2026-11-16",
   "version": "0.9.0",
   "baseCommit": "c0adac1bb871296cbabcae3a54256b616af3e754",
-  "publication": "not performed; final commit rebuild and deployed-origin probe pending",
+  "publication": "23a3ad9 pushed; first Pages run failed in browser fixture; reviewed harness rerun and final publication pending",
   "verify": {
     "tests": 130,
     "failures": 0,
@@ -15,9 +15,10 @@
   },
   "browser": {
     "gameplay": {
-      "checks": 9,
-      "result": "passed after Performance-mode fixture retry",
-      "initialFailure": "primary client disconnected before scoreboard; exact socket cause not captured"
+      "checks": 11,
+      "result": "focused local rerun passed after CI fixture/observation repair",
+      "initialFailure": "primary client disconnected before scoreboard; exact socket cause not captured",
+      "ciInitialFailure": "43917054531: fixed camera-axis and wall-time pulse assumptions; real movement observed"
     },
     "peer": {
       "checks": 8,
@@ -59,5 +60,6 @@
   "proofScope": "existing mandatory round/evolution/identity guests; no new whole-game proof",
   "graphicsScope": "Chromium SwiftShader; no physical-GPU FPS claim",
   "liveRelayProbe": "earlier actual ntfy/PeerJS Cloud/WebRTC local-preview origin; no HTTP interception; deployed-origin probe pending",
-  "numericExport": "independent bounded primitive checked overflow reproduced; full float root and guard review pending"
+  "numericExport": "reviewed local admission guard and diagnosed primitive overflow; full IEEE arithmetic/export and exact upstream SDK acceptance remain open",
+  "wholeBranchReview": "approved 4db5f823..23a3ad959; no blocking findings"
 }

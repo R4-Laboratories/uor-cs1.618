@@ -1,0 +1,262 @@
+{
+  "schema": "numeric-sdk-inventory-diff/1",
+  "path": "/opt/prismpm/share/inventory.json",
+  "environment_variable": "PRISMPM_SDK_INVENTORY",
+  "platform": "linux/amd64",
+  "baseline_lock_unchanged": true,
+  "expected_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+  "expected_inventory_digest": "sha256:d802737ecd17651465dc93640c052720bb361c1d158049ecfb5b9b25ca6c6f70",
+  "observed_inventory_digest": "sha256:0d4fe1864891ab1220a752d929a5a3a334f5987e0518a97f83f06fb5bdad105f",
+  "changed_artifacts": [
+    {
+      "id": "action",
+      "expected": {
+        "digest": "sha256:8e5a975e14957b2d9508e5ca3ad0cddbde83a3d4d4d71b1695b03f083abe2c32",
+        "id": "action",
+        "kind": "workflow",
+        "version": "0.4.0"
+      },
+      "observed": {
+        "digest": "sha256:73293099f7d17e1448d1ad7481644ce88cdbf2de94994a529588cd2b5d6adf14",
+        "id": "action",
+        "kind": "workflow",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "id": "browser-account-genesis-construction",
+      "expected": {
+        "digest": "sha256:60867439895c60f324e71acb744c269a16162c3f8f52113920f8f2fb86a5dcea",
+        "id": "browser-account-genesis-construction",
+        "kind": "adapter",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:5c85e8e830d6fcd505862ca31d8036a0aad783627828583ec5c6424d7e159e2b",
+        "id": "browser-account-genesis-construction",
+        "kind": "adapter",
+        "version": "1"
+      }
+    },
+    {
+      "id": "browser-host-primitives",
+      "expected": {
+        "digest": "sha256:4948f08bed33ce4648a8396540805377112dd1497da54050d225ce5ecf58c0e9",
+        "id": "browser-host-primitives",
+        "kind": "adapter",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:19693642aaafebcf7b45c0c5e107c4fd32e34d065045db2b4ee8d7f07f38f29a",
+        "id": "browser-host-primitives",
+        "kind": "adapter",
+        "version": "1"
+      }
+    },
+    {
+      "id": "conformance-corpus",
+      "expected": {
+        "digest": "sha256:111ad3f8eb5ae240c33c4743f4c57aef16163caaabc8b49355b92b9a9d816c26",
+        "id": "conformance-corpus",
+        "kind": "test-corpus",
+        "version": "prismpm/ids/1"
+      },
+      "observed": {
+        "digest": "sha256:d54f56d985ef1803d0b88aa62bea22fc77278b30b79088ed3c5075936cc844c6",
+        "id": "conformance-corpus",
+        "kind": "test-corpus",
+        "version": "prismpm/ids/1"
+      }
+    },
+    {
+      "id": "contracts",
+      "expected": {
+        "digest": "sha256:451b4ca5903177a0fd923c461f95873b86e7a49f664fe72c00323c4ec94f5218",
+        "id": "contracts",
+        "kind": "schema",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:d16d2c85ab2024a98c62f0d8c9fc195f5177ee65e9d6598ac84ecc6e3ede4fed",
+        "id": "contracts",
+        "kind": "schema",
+        "version": "1"
+      }
+    },
+    {
+      "id": "lexlean",
+      "expected": {
+        "digest": "sha256:5ffeb81962a84821cd3630e7599b469c49076696f3a4c60910ac82e65d253ee6",
+        "id": "lexlean",
+        "kind": "binary",
+        "version": "0.4.0"
+      },
+      "observed": {
+        "digest": "sha256:9cba65a6cf2db6c1afc24c60d98621409c6f7eb9a1dcb99298bb658310f6e5d6",
+        "id": "lexlean",
+        "kind": "binary",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "id": "oscal-validator",
+      "expected": {
+        "digest": "sha256:431b1cf86e5ae9bda64fe7f9f6b887d6466e3d9ea4d7bdae9f9f7c15c382e0e1",
+        "id": "oscal-validator",
+        "kind": "oracle",
+        "version": "jsonschema-0.58.2+oscal-1.1.0"
+      },
+      "observed": null
+    },
+    {
+      "id": "prism-stdlib",
+      "expected": {
+        "digest": "sha256:21b356886a1891d3de1c5ed7b61a8ffd6eb2cd86019e60bfe7177caad3eda8dc",
+        "id": "prism-stdlib",
+        "kind": "crate",
+        "version": "0.2.0"
+      },
+      "observed": {
+        "digest": "sha256:4d51976dd9241db70e1d6263d8187a456242f9fd06542a1e3a3e89c05eeb98e6",
+        "id": "prism-stdlib",
+        "kind": "crate",
+        "version": "0.2.0"
+      }
+    },
+    {
+      "id": "prismpm",
+      "expected": {
+        "digest": "sha256:1844807b379f7815c77266d1d2f03f784c317f59433c8625770daede9f94b2e3",
+        "id": "prismpm",
+        "kind": "binary",
+        "version": "0.4.0"
+      },
+      "observed": {
+        "digest": "sha256:eae9a54a3d5164b75cd409b43746132b7d89a6c5b90885fdd3e6fbc632bfd0fc",
+        "id": "prismpm",
+        "kind": "binary",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "id": "prismpm-conformance",
+      "expected": {
+        "digest": "sha256:ed0fd87fe3ceb3b010e2a71c94cb0eb2973ee7b5a681fa7085ba3d2966c35483",
+        "id": "prismpm-conformance",
+        "kind": "binary",
+        "version": "0.4.0"
+      },
+      "observed": {
+        "digest": "sha256:fd6890563f991a9f101f7752cd6c3c6d9e2dbbe867b51d3528cb8f26c5c083f6",
+        "id": "prismpm-conformance",
+        "kind": "binary",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "id": "prismpm-platform-equivalence",
+      "expected": {
+        "digest": "sha256:a843af07696d665e8f5162144fb71a948c0d943e76ca2ac5ff2a85e3d056af2b",
+        "id": "prismpm-platform-equivalence",
+        "kind": "binary",
+        "version": "0.4.0"
+      },
+      "observed": {
+        "digest": "sha256:b99153c9110e7648fd15e98631ccccb51f43243f20c7446b86ae13c6c5aade10",
+        "id": "prismpm-platform-equivalence",
+        "kind": "binary",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "id": "sdk-exporter-seed-producer",
+      "expected": {
+        "digest": "sha256:2fa9d3ee26c523899ae5314861306daff716320095cd638f1cd54fbff44cd208",
+        "id": "sdk-exporter-seed-producer",
+        "kind": "schema",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:461b784c886441906f1279cc92baae7783f2344f0c7ea55c7645c33fdfbb9baf",
+        "id": "sdk-exporter-seed-producer",
+        "kind": "schema",
+        "version": "1"
+      }
+    },
+    {
+      "id": "sdk-vv-manifest",
+      "expected": {
+        "digest": "sha256:47ab1013167edc7df0dfc8d70c7949f84de005dcee17f1a8c4a9b8aec0656f0a",
+        "id": "sdk-vv-manifest",
+        "kind": "test-corpus",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:9fa36a09f58a2a9461d102e80c0b0e7ace85ee010cda1d36e7703f02ab3508b5",
+        "id": "sdk-vv-manifest",
+        "kind": "test-corpus",
+        "version": "1"
+      }
+    },
+    {
+      "id": "sdk-vv-policy",
+      "expected": {
+        "digest": "sha256:de227a8ec8699b03aca5d08cc3195507fbf6460a81a252a0009f8fec0bc69074",
+        "id": "sdk-vv-policy",
+        "kind": "test-corpus",
+        "version": "1"
+      },
+      "observed": {
+        "digest": "sha256:d7823f4c2570d0795e9879c5d15e2245bc2bcc4820af07d0d038d295bf9ec3e7",
+        "id": "sdk-vv-policy",
+        "kind": "test-corpus",
+        "version": "1"
+      }
+    },
+    {
+      "id": "sdk-vv-source",
+      "expected": {
+        "digest": "sha256:5907a2a9cc81fc73be5825986f6cc2f2d11e86896daef1e7c84512a4f5573b0b",
+        "id": "sdk-vv-source",
+        "kind": "test-corpus",
+        "version": "15f630aa6deec5d6490ac22e222381fa28d6f17d"
+      },
+      "observed": {
+        "digest": "sha256:79817bb6f4be915511a8db9ed7a109a03ce519e75cf031df18374de31c38ac3c",
+        "id": "sdk-vv-source",
+        "kind": "test-corpus",
+        "version": "3666dc0f9da56fcf066d96ec01cd9e14ec9a2974"
+      }
+    },
+    {
+      "id": "standards-and-oracles",
+      "expected": {
+        "digest": "sha256:c7a9312edbb964ed6f275fdf7f4c25a759676a2fd695ef9df0e84dec4ef414f7",
+        "id": "standards-and-oracles",
+        "kind": "oracle",
+        "version": "prismpm/standards-lock/1"
+      },
+      "observed": {
+        "digest": "sha256:5717dc99c3dbe05d9be26114be7e2df3f00df7128b12f3d9933b77543da8f866",
+        "id": "standards-and-oracles",
+        "kind": "oracle",
+        "version": "prismpm/standards-lock/1"
+      }
+    },
+    {
+      "id": "stdlib-sources",
+      "expected": {
+        "digest": "sha256:36e0d81af415d94c111346f9fcf67ac64114d3629563b513419cf56dfce32a59",
+        "id": "stdlib-sources",
+        "kind": "crate",
+        "version": "0.2.0-sources"
+      },
+      "observed": {
+        "digest": "sha256:840617fbc4df682f893bdefe4f5320de16aebabc20c84936c8a583765e890ff0",
+        "id": "stdlib-sources",
+        "kind": "crate",
+        "version": "0.2.0-sources"
+      }
+    }
+  ]
+}

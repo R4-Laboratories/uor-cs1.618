@@ -1,0 +1,23 @@
+
+> cs1-618@0.9.0 test:browser
+> tsx scripts/browser-test.ts
+
+Opening first client
+Opening second client
+Testing locomotion
+Movement release {"releaseSeq":492,"neutralSeq":496,"processedSeq":496,"forward":0,"strafe":0,"queuedMoving":0,"speed":0}
+Testing combat
+Aim {"yaw":0,"pitch":0,"locked":true,"weapon":"kestrel"}
+Combat result {"ammo":29,"health":0,"yaw":0,"pitch":0,"phase":"ended","events":[{"id":5,"at":29.966666666666246,"type":"step","actor":"fba62498-26d3-4609-93a4-eff141db4843","x":0,"y":0,"z":17.143333333333295},{"id":6,"at":41.79999999999891,"type":"shot","actor":"fba62498-26d3-4609-93a4-eff141db4843","weapon":"kestrel","x":0,"y":1.62,"z":20,"ex":0.017727741899743514,"ey":1.6190599980411888,"ez":16.31},{"id":7,"at":41.79999999999891,"type":"hit","actor":"fba62498-26d3-4609-93a4-eff141db4843","target":"d62bed3e-3519-4829-82df-9e81b648b9d4","head":true},{"id":8,"at":41.79999999999891,"type":"kill","actor":"fba62498-26d3-4609-93a4-eff141db4843","target":"d62bed3e-3519-4829-82df-9e81b648b9d4","head":true,"weapon":"kestrel"},{"id":9,"at":41.79999999999891,"type":"round","team":"attack","text":"Opposition eliminated"}]}
+Testing standalone practice
+Browser buy menu equips a server-issued rifle and deducts the exact price
+Relative pointer-lock aiming reaches the authoritative host before axis-specific locomotion
+Real released movement input is processed and settled before combat teleport
+WASD movement appears on both independently rendered clients
+Relative pointer-lock aiming reaches the authoritative host before combat
+HD worker scenery and triangle-guarded camera are active in multiplayer
+Upstream Verdant 22-joint operators render and animate in multiplayer
+Mouse fire consumes server ammo and damages the remote opponent
+Escape menu and leaving a room restore the lobby and release character slots
+Static browser practice starts ten-player simulation without a WebSocket connection
+No uncaught browser errors across online and local gameplay

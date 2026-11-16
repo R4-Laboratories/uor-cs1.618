@@ -1,0 +1,17 @@
+{
+  "passed": [
+    "Browser buy menu equips a server-issued rifle and deducts the exact price",
+    "Relative pointer-lock aiming reaches the authoritative host before axis-specific locomotion",
+    "Real released movement input is processed and settled before combat teleport",
+    "WASD movement appears on both independently rendered clients",
+    "Relative pointer-lock aiming reaches the authoritative host before combat",
+    "HD worker scenery and triangle-guarded camera are active in multiplayer",
+    "Upstream Verdant 22-joint operators render and animate in multiplayer",
+    "Mouse fire consumes server ammo and damages the remote opponent",
+    "Escape menu and leaving a room restore the lobby and release character slots",
+    "Static browser practice starts ten-player simulation without a WebSocket connection",
+    "No uncaught browser errors across online and local gameplay"
+  ],
+  "errors": [],
+  "rendering": "Both clients render real scenes; Performance mode, 1100x760 CSS viewport, deviceScaleFactor 0.5; no hidden override"
+}

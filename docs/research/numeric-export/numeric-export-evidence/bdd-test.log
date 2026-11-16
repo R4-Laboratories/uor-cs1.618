@@ -1,0 +1,13 @@
+   Compiling repo-model v0.3.0 (/workspace/crates/model)
+   Compiling repo-conformance v0.3.0 (/workspace/crates/conformance)
+    Finished `test` profile [unoptimized] target(s) in 1.20s
+     Running tests/bdd.rs (target/numeric-repair/debug/deps/bdd-d7f78f0afaf777f2)
+
+running 4 tests
+test every_some_true_claim_cites_an_authority_cm_03 ... ok
+test no_scenario_is_pending_cm_02 ... ok
+test every_id_has_a_scenario_and_a_test_cm_02 ... ok
+test the_meta_gate_is_falsifiable_cm_02 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+

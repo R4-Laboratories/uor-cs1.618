@@ -1,0 +1,21 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling syn v3.0.4
+   Compiling serde_derive v1.0.229
+   Compiling serde v1.0.229
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling toml_edit v0.22.27
+   Compiling toml v0.8.23
+   Compiling repo-model v0.3.0 (/workspace/crates/model)
+   Compiling xtask v0.3.0 (/workspace/xtask)
+    Finished `dev` profile [unoptimized] target(s) in 10.15s
+     Running `target/numeric-repair/debug/xtask check-model --write`
+wrote /workspace/CONFORMANCE.md
+    Finished `dev` profile [unoptimized] target(s) in 0.03s
+     Running `target/numeric-repair/debug/xtask validate`
+check-model: CONFORMANCE.md equals the model, 26 ids (CM-01)
+audit-limits: no shipped crate returns an unsanctioned error (R5)
+audit-deferral: nothing is deferred (R4)
+audit-dependency-updates: SDK ownership and ordinary maintenance are preserved
+gate failed: prismpm.lock native artifact inventory disagrees with the running SDK

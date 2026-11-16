@@ -1,0 +1,580 @@
+From bee4de1e77f6e15e91f36a04a779ae17cf748632 Mon Sep 17 00:00:00 2001
+From: Casey Allard <lionelcallardiv@gmail.com>
+Date: Mon, 16 Nov 2026 11:57:47 -0500
+Subject: [PATCH 1/2] Refuse float-model certification without machine-width
+ evidence
+
+---
+ CONFORMANCE.md                                |   1 +
+ VERIFICATION.md                               |  46 +++++++
+ crates/uorust/src/certify.rs                  | 123 ++++++++++++++++++
+ crates/uorust/src/mir/float.rs                |  63 ++++++++-
+ .../fixtures/numeric-export/Main.lex.tex      |  14 ++
+ .../tests/fixtures/numeric-export/native.rs   |  14 ++
+ .../tests/fixtures/numeric-export/probe.mjs   |  17 +++
+ .../tests/fixtures/numeric-export/wasm.rs     |   5 +
+ docs/numeric-export.md                        |  64 +++++++++
+ features/suites/engine.feature                |   6 +
+ model/ids.toml                                |   6 +
+ scripts/probe-numeric-export.sh               |  38 ++++++
+ 12 files changed, 396 insertions(+), 1 deletion(-)
+ create mode 100644 crates/uorust/tests/fixtures/numeric-export/Main.lex.tex
+ create mode 100644 crates/uorust/tests/fixtures/numeric-export/native.rs
+ create mode 100644 crates/uorust/tests/fixtures/numeric-export/probe.mjs
+ create mode 100644 crates/uorust/tests/fixtures/numeric-export/wasm.rs
+ create mode 100644 docs/numeric-export.md
+ create mode 100755 scripts/probe-numeric-export.sh
+
+diff --git a/CONFORMANCE.md b/CONFORMANCE.md
+index 4fc5787..b1cf46e 100644
+--- a/CONFORMANCE.md
++++ b/CONFORMANCE.md
+@@ -41,6 +41,7 @@ model does not sanction.
+ | `UE-17` | `build` | The lift translates rustc's MIR mechanically: `uorust mir` dumps every library and binary target's MIR at the pinned toolchain, the kinds the translator dispatches on are generated from the vendored rustc definition of MIR at that toolchain and every kind has a coverage row, each function the surface lift leaves as residue is lowered to LexLean with a recursive helper per loop whose measure is derived from the loop's exit condition and proved by evidence theorems, and a theorem per assert, panic and overflow at the narrowest declared pointer width, a kind or type it does not lower is a residue row naming it, `uorust prove` decides each translation with lexlean verify into the verdict register (lift-verdicts.toml), and a projection lifts a translation only on a proved verdict of its digest |
+ | `UE-18` | `build` | The translator certifies itself: every function of uorust::mir, lift and lex the self register records as lifted is a production root of the self projection, `uorust certify production` exports them with `lexlean production build` (each root the compiler finds ineligible refused with its diagnostic) and replays the bundle with verify-artifact, `uorust certify sync` takes every certified package source into crates/certified byte for byte as the bundle records its SHA-256 with a manifest keying each root by the κ of the Rust function it certifies and the share of the translator reachable from the translate entry that is certified, a hand-written function runs its certified package in place of its body unless `--translator hand` is given, the core register and the self projection and register the certified and the hand-written translator write are required to have equal κ on amd64 and arm64, twice each, and a commit under which more translator functions are uncertified than under its parent is refused, naming each new one with its cause |
+ | `UE-19` | `build` | Every body of core's MIR is embedded in LexLean: `uorust embed` writes each body, never refusing one, as a value of the MIR datatype that one fuel-indexed small-step evaluator over frames of values runs, with calls the linker resolves as data and a callee a trait bound leaves abstract named for the caller's dictionary; the constructs the evaluator does not define are read from its own source and every register row carries its embedding's digest and the constructs blocking it, ranked by the bodies they block; and core's stable scalar methods whose closure the evaluator defines are run on inputs drawn from their types' widths both by rustc's build of core and by the evaluator, a theorem per case that `lexlean verify` decides, so a disagreement fails naming its body |
++| `UE-20` | `build` | Certification refuses a production root whose transitive closure reaches the Prelude float model, records an unbounded-float-model refusal by root identity, and leaves unrelated integer roots eligible, because mathematical float bit-pattern models have no certified 64-bit intermediate bound |
+ 
+ ## self-model
+ 
+diff --git a/VERIFICATION.md b/VERIFICATION.md
+index a7253e4..e7f761f 100644
+--- a/VERIFICATION.md
++++ b/VERIFICATION.md
+@@ -43,3 +43,49 @@ cannot generate the sole policy that authorizes PrismPM.
+ This file does not assert that any particular product capability passed. Those
+ claims belong to the project model, generated `CONFORMANCE.md`, and its
+ project-owned verification evidence.
++
++### UE-20 refuses float-model production closures
++
++The new regression was run before the guard was implemented. With the actual
++Prelude loaded, `certify::mark` admitted `direct`, `transitive` and `integer`;
++`float_model_closures_are_refused_before_export_ue_20` failed because only
++`integer` should enter the production request. The guard restored the expected
++result. The same test exercises `production`, the kappa-keyed `refusals.toml`,
++and a batch selecting only the refused transitive root. Removing the guard
++recreates that defect.
++
++A second test executes the actual Prelude with its arbitrary-size test evaluator
++and records intermediates above 64 bits while checking the final float bits:
++binary64 multiplication 105/106, division 160, FMA 105, square-root search 325,
++addition alignment 103; binary32 division 73 and square-root search 153.
++`cargo test --offline --locked -p uorust --lib -- --nocapture` passed all 147
++library tests on 2026-11-16 with cached Rust 1.97.1.
++`cargo test --offline --locked -p uorust --test cli` also passed all 12 CLI
++tests; the four `repo-conformance --test bdd` meta-gate tests passed.
++`cargo fmt --all -- --check` and `git diff --check` passed.
++
++`scripts/probe-numeric-export.sh` provides the independent production probe. It
++exports only the exact Nat multiplication primitive used for the significand
++product, not a complete IEEE root. On LexLean 0.4.0 with binary SHA-256
++`9cba65a6cf2db6c1afc24c60d98621409c6f7eb9a1dcb99298bb658310f6e5d6`,
++the package was kernel-checked, `verify-artifact` replayed its bindings, and the
++unaltered generated Rust was compiled by Rust 1.97.1 to native and import-free
++Wasm. Both returned explicit `Overflow` for `2^52 * 2^52` and
++`(2^53-1) * (2^53-1)`, while zero, `u64::MAX * 1` and `2^23 * 2^23` controls
++succeeded. This is checked failure, not silent corruption. The bundle result ID
++was `1d5242cc9705d62484e05139ec5548d40a773009dcdb3ec3184dc230cfc215ba`.
++The source-free replay explicitly does not rerun Lean elaboration, axiom audit,
++leanchecker or extraction; those were part of the preceding production build.
++
++This diagnostic SDK matches the game's d6c263a7 image pin and inventory, not
++UORust's c74e492a patched-image pin. `xtask check-model --write` regenerated
++CONFORMANCE.md; `xtask validate` passed model, errors, deferral and dependency
++checks, then correctly refused the SDK inventory mismatch. The complete
++`just vv` acceptance boundary still requires UORust's exact pinned SDK; no lock
++was changed to bypass that check. This evidence is not release acceptance.
++
++The final UE-20 coverage rerun additionally passed qualified Behavior and
++Prelude-alias paths, helper-free bit identity, and the width-64 conversion
++mask (`floatToNat(11,52,64,1.0)` returns 1 with a 65-bit intermediate). This
++refines coverage without changing the production guard or claiming full
++float export. The two focused tests passed after these additions.
+diff --git a/crates/uorust/src/certify.rs b/crates/uorust/src/certify.rs
+index 4f65766..528affe 100644
+--- a/crates/uorust/src/certify.rs
++++ b/crates/uorust/src/certify.rs
+@@ -992,6 +992,17 @@ pub(crate) fn mark(
+     let mut refused: BTreeMap<String, String> = BTreeMap::new();
+     for root in roots {
+         let own = closure(&format!("{BEHAVIOR}::{root}"));
++        // The Prelude's IEEE model computes with unbounded Nat intermediates.
++        // A compiler certificate permitting overflow does not establish the float
++        // result: even binary64 1 * 1 needs a 105-bit significand product. Keep
++        // these roots formal-only until machine-width evidence supports export.
++        if let Some(model) = own.iter().find(|d| d.starts_with("Prelude::float")) {
++            refused.insert(
++                (*root).to_string(),
++                format!("unbounded-float-model: reaches {model}; the Prelude float model has no certified 64-bit intermediate bound"),
++            );
++            continue;
++        }
+         // SPEC §17.13: an executable definition takes no function.
+         if let Some(hof) = own
+             .iter()
+@@ -2193,6 +2204,118 @@ mod tests {
+         assert!(p.contains("  name: r,\n  body: 1\n}"));
+     }
+ 
++    // Removing the float-closure guard must admit an unsafe root and fail this gate.
++    #[test]
++    fn float_model_closures_are_refused_before_export_ue_20() {
++        let behavior = "definition{name: direct, parameters: [], result: Nat, body: (Prelude::floatMul 11 52 4607182418800017408 4607182418800017408)}\n\
++            definition{name: transitive, parameters: [], result: Nat, body: (direct)}\n\
++            definition{name: qualified, parameters: [], result: Nat, body: (Behavior::transitive)}\n\
++            definition{name: viaPreludeAlias, parameters: [], result: Nat, body: (Prelude::numericAlias)}\n\
++            definition{name: bitIdentity, parameters: [a : Nat], result: Nat, body: a}\n\
++            definition{name: integer, parameters: [a : Nat], result: Nat, body: (a + 1)}\n";
++        let modules = [
++            ("Behavior".to_string(), behavior.to_string()),
++            (
++                "Prelude".to_string(),
++                crate::lift::PRELUDE_SOURCE.replace("\\end{semanticmodule}", "definition{name: numericAlias, parameters: [], result: Nat, body: (floatMul 11 52 4607182418800017408 4607182418800017408)}\n\\end{semanticmodule}"),
++            ),
++        ]
++        .into_iter()
++        .collect();
++        let names = [
++            "direct",
++            "transitive",
++            "qualified",
++            "viaPreludeAlias",
++            "bitIdentity",
++            "integer",
++        ]
++        .into_iter()
++        .collect();
++        let (out, found, refused) = mark(&modules, &names);
++        assert_eq!(
++            found,
++            ["integer".to_string(), "bitIdentity".to_string()]
++                .into_iter()
++                .collect()
++        );
++        assert_eq!(refused.len(), 4);
++        for name in ["direct", "transitive", "qualified", "viaPreludeAlias"] {
++            assert!(
++                refused[name].starts_with("unbounded-float-model:"),
++                "{}",
++                refused[name]
++            );
++            assert!(refused[name].contains("Prelude::float"));
++        }
++        // The original mathematical model stays available to proofs, unmarked for export.
++        assert_eq!(out["Prelude"], modules["Prelude"]);
++
++        // Exercise the public writer: refusal evidence must survive into the
++        // request and manifest, including when a batch selects only a refused root.
++        let dir = std::env::temp_dir().join(format!("uorust-float-export-{}", std::process::id()));
++        std::fs::create_dir_all(dir.join("source/src")).unwrap();
++        let source = dir.join("source");
++        std::fs::write(source.join("lexlean.toml"), "module_prefix = \"Probe\"\n").unwrap();
++        for (name, text) in &modules {
++            std::fs::write(source.join("src").join(format!("{name}.lex.tex")), text).unwrap();
++        }
++        let register = register(&[
++            (
++                "unsafe-direct",
++                "uorust::mir::direct",
++                Status::Lifted("Behavior::direct".into()),
++            ),
++            (
++                "unsafe-transitive",
++                "uorust::mir::transitive",
++                Status::Lifted("Behavior::transitive".into()),
++            ),
++            (
++                "safe-integer",
++                "uorust::mir::integer",
++                Status::Lifted("Behavior::integer".into()),
++            ),
++        ]);
++        let targets = include_str!("../../certified/targets.json");
++        let output = dir.join("out");
++        assert_eq!(
++            production(&source, &output, &register, targets, &BTreeMap::new(), None).unwrap(),
++            ["integer"]
++        );
++        let request: serde_json::Value =
++            serde_json::from_str(&std::fs::read_to_string(output.join("request.json")).unwrap())
++                .unwrap();
++        assert_eq!(request["roots"].as_array().unwrap().len(), 1);
++        assert_eq!(request["roots"][0]["root"], "Probe.Behavior.integer");
++        let refusal: toml::Value = std::fs::read_to_string(output.join(REFUSALS))
++            .unwrap()
++            .parse()
++            .unwrap();
++        let kappas: BTreeSet<&str> = refusal["refused"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .map(|r| r["kappa"].as_str().unwrap())
++            .collect();
++        assert_eq!(
++            kappas,
++            ["unsafe-direct", "unsafe-transitive"].into_iter().collect()
++        );
++        let batch = ["transitive".to_string()].into_iter().collect();
++        assert!(production(
++            &source,
++            &dir.join("batch"),
++            &register,
++            targets,
++            &BTreeMap::new(),
++            Some(&batch)
++        )
++        .unwrap()
++        .is_empty());
++        std::fs::remove_dir_all(dir).unwrap();
++    }
++
+     #[test]
+     fn an_adapter_converts_strings_lists_and_naturals() {
+         let root = Certified {
+diff --git a/crates/uorust/src/mir/float.rs b/crates/uorust/src/mir/float.rs
+index abc0c15..312d83c 100644
+--- a/crates/uorust/src/mir/float.rs
++++ b/crates/uorust/src/mir/float.rs
+@@ -607,6 +607,7 @@ mod tests {
+     struct Eval {
+         defs: Defs,
+         memo: std::cell::RefCell<BTreeMap<(String, Vec<V>), V>>,
++        max_nat_bits: std::cell::Cell<u32>,
+     }
+ 
+     impl Eval {
+@@ -614,11 +615,12 @@ mod tests {
+             Eval {
+                 defs: prelude(),
+                 memo: Default::default(),
++                max_nat_bits: Default::default(),
+             }
+         }
+         fn eval(&self, t: &T, env: &BTreeMap<String, V>) -> V {
+             let e = |t: &T| self.eval(t, env);
+-            match t {
++            let value = match t {
+                 T::Num(b) => V::N(b.clone()),
+                 T::Var(x) if x == "true" => V::B(true),
+                 T::Var(x) if x == "false" => V::B(false),
+@@ -677,7 +679,11 @@ mod tests {
+                     let vals: Vec<V> = args.iter().map(e).collect();
+                     self.call(f, vals)
+                 }
++            };
++            if let V::N(n) = &value {
++                self.max_nat_bits.set(self.max_nat_bits.get().max(n.bits()));
+             }
++            value
+         }
+         fn call(&self, f: &str, vals: Vec<V>) -> V {
+             let key = (f.to_string(), vals);
+@@ -1114,6 +1120,61 @@ mod tests {
+         });
+     }
+ 
++    // These are exact model executions, not production replay. A successful float
++    // result must not hide the machine width its intermediate naturals require.
++    #[test]
++    fn float_model_intermediates_exceed_the_production_nat_width_ue_20() {
++        deep(|| {
++            let one64 = u128::from(1.0f64.to_bits());
++            let one32 = u128::from(1.0f32.to_bits());
++            for (format, op, args, expected, at_least) in [
++                (F64, "Mul", vec![one64, one64], one64, 105),
++                (
++                    F64,
++                    "Mul",
++                    vec![0x3fff_ffff_ffff_ffff; 2],
++                    0x400f_ffff_ffff_fffe,
++                    106,
++                ),
++                (F64, "Div", vec![one64, one64], one64, 160),
++                (F64, "Fma", vec![one64, one64, 0], one64, 105),
++                (F64, "Sqrt", vec![one64], one64, 163),
++                (F32, "Div", vec![one32, one32], one32, 73),
++                (F32, "Sqrt", vec![one32], one32, 76),
++            ] {
++                let ev = Eval::new();
++                assert_eq!(ev.nat(format, op, &args), expected, "{format:?} {op}");
++                let width = ev.max_nat_bits.get();
++                assert!(width >= at_least, "{format:?} {op}: {width} bits");
++                println!("{format:?} {op}: {width} intermediate bits; correct model result {expected:#x}");
++            }
++            let shift = Eval::new();
++            assert_eq!(
++                shift.call("floatPow2", vec![V::N(Big::from(64))]).n(),
++                Big::pow2(64)
++            );
++            assert_eq!(shift.max_nat_bits.get(), 65);
++            let mask = Eval::new();
++            let args = [11, 52, 64, one64]
++                .into_iter()
++                .map(|n| V::N(Big::from(n)))
++                .collect();
++            assert_eq!(mask.call("floatToNat", args).n(), Big::from(1));
++            assert_eq!(mask.max_nat_bits.get(), 65);
++            println!("binary64 to u64(1.0): 65 intermediate bits for the 2^64-1 mask");
++            let ev = Eval::new();
++            assert_eq!(
++                ev.nat(F64, "Add", &[one64, u128::from(2.0f64.powi(-50).to_bits())]),
++                u128::from((1.0f64 + 2.0f64.powi(-50)).to_bits())
++            );
++            assert!(ev.max_nat_bits.get() >= 103);
++            println!(
++                "binary64 aligned Add: {} intermediate bits",
++                ev.max_nat_bits.get()
++            );
++        });
++    }
++
+     /// Every operation the lowering names is a definition of the prelude.
+     #[test]
+     fn every_operation_the_tables_name_is_defined() {
+diff --git a/crates/uorust/tests/fixtures/numeric-export/Main.lex.tex b/crates/uorust/tests/fixtures/numeric-export/Main.lex.tex
+new file mode 100644
+index 0000000..4c750ef
+--- /dev/null
++++ b/crates/uorust/tests/fixtures/numeric-export/Main.lex.tex
+@@ -0,0 +1,14 @@
++\begin{lexlean}{Main}
++\useglossary{lexlean.std.nat@1.2.0}
++\title{addition}
++\begin{semanticmodule}
++definition{
++  name: significandProduct,
++  parameters: [a : Nat, b : Nat],
++  result: Nat,
++  body: (prim multiply a b : Nat),
++  executable: true,
++  production: {effects: [overflow], targets: [rust-std]}
++}
++\end{semanticmodule}
++\end{lexlean}
+diff --git a/crates/uorust/tests/fixtures/numeric-export/native.rs b/crates/uorust/tests/fixtures/numeric-export/native.rs
+new file mode 100644
+index 0000000..fbc7c11
+--- /dev/null
++++ b/crates/uorust/tests/fixtures/numeric-export/native.rs
+@@ -0,0 +1,14 @@
++extern crate numeric_significand_probe as generated;
++fn main() {
++    for (name, a, b, overflow) in [
++        ("zero", 0, u64::MAX, false),
++        ("u64-edge", u64::MAX, 1, false),
++        ("binary32-one-product", 1 << 23, 1 << 23, false),
++        ("binary64-one-product", 1 << 52, 1 << 52, true),
++        ("binary64-max-significands", (1 << 53) - 1, (1 << 53) - 1, true),
++    ] {
++        let result = generated::run(a,b);
++        assert_eq!(result.is_err(), overflow, "{name}");
++        println!("{name}: {result:?}");
++    }
++}
+diff --git a/crates/uorust/tests/fixtures/numeric-export/probe.mjs b/crates/uorust/tests/fixtures/numeric-export/probe.mjs
+new file mode 100644
+index 0000000..cc0f225
+--- /dev/null
++++ b/crates/uorust/tests/fixtures/numeric-export/probe.mjs
+@@ -0,0 +1,17 @@
++import fs from 'node:fs';
++import assert from 'node:assert/strict';
++const module = new WebAssembly.Module(fs.readFileSync(process.argv[2]));
++assert.deepEqual(WebAssembly.Module.imports(module), []);
++console.log('imports: []');
++const ex = new WebAssembly.Instance(module, {}).exports;
++for (const [name, a, b, overflow] of [
++  ['zero', 0n, (1n << 64n) - 1n, 0],
++  ['u64-edge', (1n << 64n) - 1n, 1n, 0],
++  ['binary32-one-product', 1n << 23n, 1n << 23n, 0],
++  ['binary64-one-product', 1n << 52n, 1n << 52n, 1],
++  ['binary64-max-significands', (1n << 53n) - 1n, (1n << 53n) - 1n, 1],
++]) {
++  assert.equal(ex.product_overflow(a, b), overflow, name);
++  if (!overflow) assert.equal(BigInt.asUintN(64, ex.product_value(a, b)), a * b, name);
++  console.log(`${name}: overflow=${overflow}`);
++}
+diff --git a/crates/uorust/tests/fixtures/numeric-export/wasm.rs b/crates/uorust/tests/fixtures/numeric-export/wasm.rs
+new file mode 100644
+index 0000000..d2a4ce0
+--- /dev/null
++++ b/crates/uorust/tests/fixtures/numeric-export/wasm.rs
+@@ -0,0 +1,5 @@
++extern crate numeric_significand_probe as generated;
++#[no_mangle]
++pub extern "C" fn product_overflow(a: u64, b: u64) -> u32 { u32::from(generated::run(a,b).is_err()) }
++#[no_mangle]
++pub extern "C" fn product_value(a: u64, b: u64) -> u64 { generated::run(a,b).unwrap_or(0) }
+diff --git a/docs/numeric-export.md b/docs/numeric-export.md
+new file mode 100644
+index 0000000..f49e12d
+--- /dev/null
++++ b/docs/numeric-export.md
+@@ -0,0 +1,64 @@
++# Float-model certification boundary
++
++UORust's Prelude models IEEE values as bit patterns and computes with mathematical
++naturals. The production `rust-std` target represents `Nat` as checked `u64`.
++Certifying a program that reports integer overflow does not certify that it
++returns the original Rust floating-point result.
++
++For example, `floatMul 11 52` on two binary64 `1.0` values multiplies their
++significands, `2^52 * 2^52`. That intermediate needs 105 bits although the final
++IEEE result is exactly `1.0`. Two maximal normal significands require 106 bits.
++The prelude differential evaluator uses arbitrary-size natural numbers, so a
++passing host-float comparison does not establish production executability.
++
++UE-20 therefore refuses any production root whose transitive closure reaches a
++`Prelude::float*` definition, with the stable cause prefix
++`unbounded-float-model:` in `refusals.toml`, keyed by the root's kappa. Such roots
++are omitted from `request.json`, including batch requests. Unrelated integer
++roots remain eligible. The mathematical definitions remain available to proofs.
++This conservative guard does not claim that every float helper is intrinsically
++unsafe; it states that the current export path has no machine-width evidence
++with which to admit the closure.
++
++The test `float_model_intermediates_exceed_the_production_nat_width_ue_20`
++executes the actual Prelude with the existing arbitrary-size evaluator and
++records the largest natural value's bit length. It is model evidence, not
++compiled IEEE replay. Known examples include binary64 multiplication (105/106),
++division (160), fused multiply-add (105), square-root search (325), and exponent
++alignment in addition (103). Binary32 division (73) and square-root search
++(153) also exceed 64 bits. Replacing `u64` with `u128` alone cannot cover these
++algorithms.
++
++Removing the guard requires a bounded representation and a preservation
++argument for all reachable intermediates, or checked multi-limb operations;
++compiled native and Wasm replay of the actual exported float closure; explicit
++NaN, signed-zero, subnormal, rounding and overflow behavior; and differential
++vectors covering boundary values and operation ordering. A new bound must be
++carried by source-owned evidence, not inferred from a function's name or a
++successful proof of an unbounded model. The ordinary complete acceptance gate
++remains `just vv` under the repository's pinned SDK.
++
++To reproduce the narrow production boundary in a pinned SDK, run
++`bash scripts/probe-numeric-export.sh`. It keeps its output directory, exports
++the exact multiplication primitive, replays the certificate bindings and then
++runs native and import-free Wasm controls. It does not claim that the full
++IEEE `floatMul` function was exported. The fixture and commands were exercised
++in stages for the initial investigation; the portable shell wrapper has also
++been syntax-checked.
++
++The guard inspects each root's reachable definition closure, not the set of
++loaded modules. Tests load the entire unused float Prelude alongside an
++integer root and a bit-identity root, which stay eligible; direct calls,
++unqualified and qualified Behavior aliases, and a non-float-named Prelude
++alias that reaches floatMul are refused. It blocks reachable float helpers
++for add/sub/mul/div/remainder, sqrt/FMA, rounding/conversions, comparisons,
++classification, negation, abs and copy-sign. This is conservative: no claim
++is made that every fixed-format comparison or sign helper needs wide math.
++
++The MIR to_bits/from_bits branch (`mir/lower.rs`, `Kind::Bits`) returns the
++input bit-pattern term unchanged. A root made only of that identity and no
++reachable float helper is not refused by this guard; the usual compiler
++eligibility checks still apply. This does not independently establish the
++correctness of bitcasts or memory representation. In contrast, floatToNat
++with width 64 eagerly computes `2^64 - 1` even for input 1.0; the regression
++observes the 65-bit intermediate although the final result is only 1.
+diff --git a/features/suites/engine.feature b/features/suites/engine.feature
+index e1494bd..8c0fe4c 100644
+--- a/features/suites/engine.feature
++++ b/features/suites/engine.feature
+@@ -120,3 +120,9 @@ Feature: engine
+     Given core's MIR dumps, rust-src at the pinned toolchain and the MIR semantics module
+     When the suite exercises UE-19
+     Then every body is a value of the MIR datatype whose kinds are rustc's, a long list nests no deeper than its root, the constructs the evaluator does not define are read from its source, each register row records its embedding and what blocks it, and each sampled case is a theorem that the evaluator returns what rustc's build returned
++
++  @UE-20 @build
++  Scenario: Float-model closures require machine-width evidence before certification
++    Given production roots with direct, transitive and unrelated references to the Prelude float model
++    When the suite exercises UE-20
++    Then float-model roots have typed unbounded-float-model refusals and no production request entry, while the unrelated integer root remains eligible
+diff --git a/model/ids.toml b/model/ids.toml
+index 130947b..e955e04 100644
+--- a/model/ids.toml
++++ b/model/ids.toml
+@@ -171,3 +171,9 @@ id = "UE-19"
+ level = "build"
+ suite = "engine"
+ statement = "Every body of core's MIR is embedded in LexLean: `uorust embed` writes each body, never refusing one, as a value of the MIR datatype that one fuel-indexed small-step evaluator over frames of values runs, with calls the linker resolves as data and a callee a trait bound leaves abstract named for the caller's dictionary; the constructs the evaluator does not define are read from its own source and every register row carries its embedding's digest and the constructs blocking it, ranked by the bodies they block; and core's stable scalar methods whose closure the evaluator defines are run on inputs drawn from their types' widths both by rustc's build of core and by the evaluator, a theorem per case that `lexlean verify` decides, so a disagreement fails naming its body"
++
++[[id]]
++id = "UE-20"
++level = "build"
++suite = "engine"
++statement = "Certification refuses a production root whose transitive closure reaches the Prelude float model, records an unbounded-float-model refusal by root identity, and leaves unrelated integer roots eligible, because mathematical float bit-pattern models have no certified 64-bit intermediate bound"
+diff --git a/scripts/probe-numeric-export.sh b/scripts/probe-numeric-export.sh
+new file mode 100755
+index 0000000..c69ee12
+--- /dev/null
++++ b/scripts/probe-numeric-export.sh
+@@ -0,0 +1,38 @@
++#!/usr/bin/env bash
++# Run within the selected pinned SDK. Keeps a fresh, bounded probe for inspection.
++# This isolates floatMul's exact Nat multiplication, not the full IEEE closure.
++set -euo pipefail
++repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
++fixture_dir="$repo_dir/crates/uorust/tests/fixtures/numeric-export"
++probe_dir="$(mktemp -d "${TMPDIR:-/tmp}/uorust-numeric-export.XXXXXX")"
++lexlean --version
++rustc --version
++lexlean init --name numeric-probe --module-prefix NumericProbe --language 1.2 "$probe_dir/project"
++cp "$fixture_dir/Main.lex.tex" "$probe_dir/project/src/Main.lex.tex"
++lexlean production targets --diagnostic-format json > "$probe_dir/targets.json"
++python3 - "$probe_dir" <<'PY'
++import json, pathlib, sys
++p = pathlib.Path(sys.argv[1])
++targets = json.loads((p / 'targets.json').read_text())
++digest = next(t['digest'] for t in targets['targets'] if t['id'] == 'rust-std')
++request = {'spec': 'lexlean/production-request/1', 'roots': [{
++    'package': {'name': 'numeric_significand_probe', 'version': '0.1.0'},
++    'root': 'NumericProbe.Main.significandProduct',
++    'targets': [{'digest': digest, 'id': 'rust-std'}]}]}
++(p / 'project/request.json').write_text(json.dumps(request) + '\n')
++PY
++lexlean --project "$probe_dir/project/lexlean.toml" fmt
++lexlean --project "$probe_dir/project/lexlean.toml" lock
++lexlean --project "$probe_dir/project/lexlean.toml" production build --request "$probe_dir/project/request.json"
++bundles=("$probe_dir/project/.lexlean/production/"*/result.json)
++test "${#bundles[@]}" -eq 1
++bundle_dir="$(dirname "${bundles[0]}")"
++lexlean production verify-artifact "$bundle_dir"
++generated_source="$bundle_dir/packages/rust-std/numeric_significand_probe/src/lib.rs"
++rustc --edition=2021 --crate-name numeric_significand_probe --crate-type rlib "$generated_source" -o "$probe_dir/libnumeric_significand_probe.rlib"
++rustc --edition=2021 "$fixture_dir/native.rs" --extern "numeric_significand_probe=$probe_dir/libnumeric_significand_probe.rlib" -o "$probe_dir/native"
++"$probe_dir/native"
++rustc --edition=2021 --crate-name numeric_significand_probe --crate-type rlib --target wasm32-unknown-unknown "$generated_source" -o "$probe_dir/libnumeric_significand_probe_wasm.rlib"
++rustc --edition=2021 --crate-type cdylib --target wasm32-unknown-unknown "$fixture_dir/wasm.rs" --extern "numeric_significand_probe=$probe_dir/libnumeric_significand_probe_wasm.rlib" -o "$probe_dir/probe.wasm"
++node "$fixture_dir/probe.mjs" "$probe_dir/probe.wasm"
++printf 'Retained numeric export probe: %s\n' "$probe_dir"
+-- 
+2.52.0
+
+
+From 8716a9ce29e30bea96ee451cb16483b89b028ae2 Mon Sep 17 00:00:00 2001
+From: Casey Allard <lionelcallardiv@gmail.com>
+Date: Mon, 16 Nov 2026 12:09:16 -0500
+Subject: [PATCH 2/2] Assert native numeric probe success values
+
+---
+ crates/uorust/tests/fixtures/numeric-export/native.rs | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/crates/uorust/tests/fixtures/numeric-export/native.rs b/crates/uorust/tests/fixtures/numeric-export/native.rs
+index fbc7c11..da390e7 100644
+--- a/crates/uorust/tests/fixtures/numeric-export/native.rs
++++ b/crates/uorust/tests/fixtures/numeric-export/native.rs
+@@ -9,6 +9,9 @@ fn main() {
+     ] {
+         let result = generated::run(a,b);
+         assert_eq!(result.is_err(), overflow, "{name}");
++        if let Ok(value) = &result {
++            assert_eq!(*value, a * b, "{name}");
++        }
+         println!("{name}: {result:?}");
+     }
+ }
+-- 
+2.52.0
+

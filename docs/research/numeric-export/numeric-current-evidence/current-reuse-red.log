@@ -1,0 +1,21 @@
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized] target(s) in 19.08s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/uorust-244e4da3d5d54ea3)
+
+running 1 test
+
+thread 'certify::tests::float_model_prior_artifacts_are_refused_before_reuse_ue_21' (183043) panicked at crates/uorust/src/certify.rs:5038:9:
+assertion `left == right` failed
+  left: ["read", "scale"]
+ right: ["scale"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test certify::tests::float_model_prior_artifacts_are_refused_before_reuse_ue_21 ... FAILED
+
+failures:
+
+failures:
+    certify::tests::float_model_prior_artifacts_are_refused_before_reuse_ue_21
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 232 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p uorust --lib`

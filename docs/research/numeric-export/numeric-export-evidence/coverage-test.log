@@ -1,0 +1,19 @@
+   Compiling uorust v0.3.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 15.99s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/uorust-eb96183e2f21eb08)
+
+running 2 tests
+Format { exp: 11, frac: 52 } Mul: 105 intermediate bits; correct model result 0x3ff0000000000000
+test certify::tests::float_model_closures_are_refused_before_export_ue_20 ... ok
+Format { exp: 11, frac: 52 } Mul: 106 intermediate bits; correct model result 0x400ffffffffffffe
+Format { exp: 11, frac: 52 } Div: 160 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Fma: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Sqrt: 325 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 8, frac: 23 } Div: 73 intermediate bits; correct model result 0x3f800000
+Format { exp: 8, frac: 23 } Sqrt: 153 intermediate bits; correct model result 0x3f800000
+binary64 to u64(1.0): 65 intermediate bits for the 2^64-1 mask
+binary64 aligned Add: 103 intermediate bits
+test mir::float::tests::float_model_intermediates_exceed_the_production_nat_width_ue_20 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 145 filtered out; finished in 0.06s
+

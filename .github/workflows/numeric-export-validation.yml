@@ -1,0 +1,65 @@
+name: Manual numeric export validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    name: UORust full gate / ${{ matrix.mode }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [baseline, patched]
+    steps:
+      - name: Create evidence directory
+        run: mkdir -p evidence
+      - name: Check out the exact game event revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - name: Resolve the reviewed immutable target
+        id: target
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 game/scripts/validate-numeric-export.py metadata > evidence/target.txt 2> evidence/metadata-error.log
+          cat evidence/target.txt >> "$GITHUB_OUTPUT"
+      - name: Check out the exact reviewed upstream base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: afflom/UORust
+          ref: ${{ steps.target.outputs.base }}
+          path: uorust
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run the unchanged upstream bootstrap gate
+        shell: bash
+        env:
+          VALIDATION_MODE: ${{ matrix.mode }}
+        run: |
+          set -euo pipefail
+          python3 -u game/scripts/validate-numeric-export.py run \
+            --source "$GITHUB_WORKSPACE/uorust" \
+            --output "$GITHUB_WORKSPACE/evidence" \
+            --mode "$VALIDATION_MODE" 2>&1 | tee evidence/gate.log
+      - name: Run the separate bounded primitive probe in the same SDK
+        if: ${{ success() && matrix.mode == 'patched' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -u game/scripts/validate-numeric-export.py probe \
+            --source "$GITHUB_WORKSPACE/uorust" \
+            --output "$GITHUB_WORKSPACE/evidence" \
+            --mode patched 2>&1 | tee evidence/primitive.log
+      - name: Retain validation logs even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: numeric-export-${{ matrix.mode }}-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30

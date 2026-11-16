@@ -1,0 +1,29 @@
+{
+  "status": "failed",
+  "passed": [],
+  "errors": [],
+  "error": {
+    "name": "Error",
+    "message": "Injected early readiness failure for receipt verification",
+    "stack": "Error: Injected early readiness failure for receipt verification\n    at <anonymous> (/workspace/cs1.618/scripts/.browser-failure-receipt.ts:38:50)"
+  },
+  "rendering": "Both clients render real scenes; Performance mode, 1100x760 CSS viewport, deviceScaleFactor 0.5; no hidden override",
+  "failureState": {
+    "a": null,
+    "b": null
+  },
+  "failureUI": [
+    {
+      "focused": true,
+      "active": "",
+      "scoreboardDisplay": null,
+      "hidden": false
+    },
+    {
+      "focused": true,
+      "active": "",
+      "scoreboardDisplay": null,
+      "hidden": false
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+imports: []
+zero: overflow=0
+u64-edge: overflow=0
+binary32-one-product: overflow=0
+binary64-one-product: overflow=1
+binary64-max-significands: overflow=1

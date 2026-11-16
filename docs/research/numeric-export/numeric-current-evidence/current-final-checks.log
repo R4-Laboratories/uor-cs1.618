@@ -1,0 +1,100 @@
+   Compiling uorust v0.4.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 23.95s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/uorust-244e4da3d5d54ea3)
+
+running 2 tests
+Format { exp: 11, frac: 52 } Mul: 105 intermediate bits; correct model result 0x3ff0000000000000
+test certify::tests::float_model_closures_are_refused_before_export_ue_21 ... ok
+Format { exp: 11, frac: 52 } Mul: 106 intermediate bits; correct model result 0x400ffffffffffffe
+Format { exp: 11, frac: 52 } Div: 160 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Fma: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Sqrt: 325 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 8, frac: 23 } Div: 73 intermediate bits; correct model result 0x3f800000
+Format { exp: 8, frac: 23 } Sqrt: 153 intermediate bits; correct model result 0x3f800000
+binary64 to u64(1.0): 65 intermediate bits for the 2^64-1 mask
+binary64 aligned Add: 103 intermediate bits
+test mir::float::tests::float_model_intermediates_exceed_the_production_nat_width_ue_21 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 230 filtered out; finished in 0.06s
+
+   Compiling uorust v0.4.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 22.22s
+     Running tests/cli.rs (target/numeric-repair/debug/deps/cli-a42cb128cb4036d8)
+
+running 12 tests
+test the_cli_lists_the_routes_ue_05 ... ok
+test layouts_of_no_aggregate_ask_for_nothing_ue_19 ... ok
+test the_bridge_refuses_an_unwritten_project_and_carries_only_its_own_rows_ue_19 ... ok
+test the_cli_compares_the_two_translators_by_kappa_ue_18 ... ok
+test the_cli_plans_an_export_and_refuses_to_diagnose_without_a_target ... ok
+test the_cli_refuses_an_embedding_without_a_target_ue_19 ... ok
+test the_cli_writes_and_merges_library_registers ... ok
+test the_cli_projects_a_fresh_package_without_an_empty_module_ue_01 ... ok
+test the_hooks_retest_a_patch_unless_main_moved_disjointly ... ok
+test the_cli_refuses_a_bundle_it_cannot_export_or_take_in ... ok
+test the_cli_dumps_mir_and_proves_on_the_verdicts_ue_17 ... ok
+test the_cli_projects_and_checks_the_fixture_ue_01 ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.37s
+
+   Compiling repo-model v0.4.0 (/workspace/crates/model)
+   Compiling repo-conformance v0.4.0 (/workspace/crates/conformance)
+    Finished `test` profile [unoptimized] target(s) in 1.18s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/repo_conformance-f6e16a10ddc0dcab)
+
+running 1 test
+test meta::tests::the_assertive_vocabulary_is_recognised ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/bdd.rs (target/numeric-repair/debug/deps/bdd-d0eba63ed128f681)
+
+running 4 tests
+test every_some_true_claim_cites_an_authority_cm_03 ... ok
+test no_scenario_is_pending_cm_02 ... ok
+test every_id_has_a_scenario_and_a_test_cm_02 ... ok
+test the_meta_gate_is_falsifiable_cm_02 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests/factory.rs (target/numeric-repair/debug/deps/factory-50b6a43d80f589e2)
+
+running 2 tests
+test an_undeclared_read_of_a_test_or_an_embedded_file_is_refused_ue_20 ... ok
+test factory_ue_20 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.23s
+
+     Running tests/ratchet.rs (target/numeric-repair/debug/deps/ratchet-29c3b2b726c24b7b)
+
+running 3 tests
+test the_hand_written_translator_only_shrinks_ue_18 ... ok
+test a_grown_translator_is_refused_ue_18 ... ok
+test a_closure_without_its_base_fails_ue_18_and_one_with_it_decides ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.78s
+
+     Running tests/self_model.rs (target/numeric-repair/debug/deps/self_model-763f9106d5602f2f)
+
+running 6 tests
+test self_model_sm_02 ... ok
+test self_model_sm_06 ... ok
+test self_model_sm_03 ... ok
+test self_model_sm_01 ... ok
+test self_model_sm_05 ... ok
+test self_model_sm_04 ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests repo_conformance
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+check-model: CONFORMANCE.md equals the model, 27 ids (CM-01)
+check-model: CONFORMANCE.md equals the model, 27 ids (CM-01)
+audit-limits: no shipped crate returns an unsanctioned error (R5)
+audit-deferral: nothing is deferred (R4)
+audit-dependency-updates: SDK ownership and ordinary maintenance are preserved
+gate failed: prismpm.lock native artifact inventory disagrees with the running SDK

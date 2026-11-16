@@ -1,0 +1,67 @@
+{
+  "schema": "numeric-sdk-ci-evidence/1",
+  "observed_date": "2026-11-16",
+  "run": "https://github.com/afflom/UORust/actions/runs/43903410601",
+  "commit": "a784e7e204a1c13108391c834f77221ecbe3c35c",
+  "sdk_image_at_commit": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+  "bootstrap_matches_local": true,
+  "workflow_sha256": "4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
+  "jobs": [
+    {
+      "name": "acceptance / ubuntu-24.04",
+      "conclusion": "success",
+      "started_at": "2026-11-16T16:04:34Z",
+      "completed_at": "2026-11-16T16:33:03Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check out the exact event revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run the template gate through the locked SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Check out the exact event revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "acceptance / ubuntu-24.04-arm",
+      "conclusion": "success",
+      "started_at": "2026-11-16T16:04:35Z",
+      "completed_at": "2026-11-16T16:44:08Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check out the exact event revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run the template gate through the locked SDK",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Check out the exact event revision",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ]
+}

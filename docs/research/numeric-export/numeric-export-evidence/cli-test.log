@@ -1,0 +1,20 @@
+   Compiling uorust v0.3.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 23.00s
+     Running tests/cli.rs (target/numeric-repair/debug/deps/cli-5bcb4f41c9a527a9)
+
+running 12 tests
+test layouts_of_no_aggregate_ask_for_nothing_ue_19 ... ok
+test the_cli_lists_the_routes_ue_05 ... ok
+test the_bridge_refuses_an_unwritten_project_and_carries_only_its_own_rows_ue_19 ... ok
+test the_cli_compares_the_two_translators_by_kappa_ue_18 ... ok
+test the_cli_plans_an_export_and_refuses_to_diagnose_without_a_target ... ok
+test the_cli_refuses_an_embedding_without_a_target_ue_19 ... ok
+test the_cli_refuses_a_bundle_it_cannot_export_or_take_in ... ok
+test the_cli_writes_and_merges_library_registers ... ok
+test the_cli_projects_a_fresh_package_without_an_empty_module_ue_01 ... ok
+test the_hooks_retest_a_patch_unless_main_moved_disjointly ... ok
+test the_cli_dumps_mir_and_proves_on_the_verdicts_ue_17 ... ok
+test the_cli_projects_and_checks_the_fixture_ue_01 ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.57s
+

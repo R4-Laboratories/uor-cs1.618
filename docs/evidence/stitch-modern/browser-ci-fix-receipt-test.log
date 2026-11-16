@@ -1,0 +1,27 @@
+Failure state {"a":null,"b":null}
+Failure UI {
+  status: undefined,
+  focused: true,
+  active: '',
+  locked: undefined,
+  scoreboard: undefined,
+  scoreboardDisplay: null,
+  hidden: false
+}
+Failure UI {
+  status: undefined,
+  focused: true,
+  active: '',
+  locked: undefined,
+  scoreboard: undefined,
+  scoreboardDisplay: null,
+  hidden: false
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+Error: Injected early readiness failure for receipt verification
+    at <anonymous> (/workspace/cs1.618/scripts/.browser-failure-receipt.ts:38:50)
+
+Node.js v24.22.1

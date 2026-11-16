@@ -1,0 +1,6 @@
+Python syntax and all workflow bash blocks passed
+YAML: manual dispatch only,no inputs,contents read,ubuntu24.04,45m,baseline/patched matrix,fail-fast false,always upload,full action commits passed
+Actual current-base bootstrap SHA validated and exact extracted run block bash syntax passed
+Bootstrap run SHA256: 9c5fd7a3e422d2ac6f41e7398e61b24601cd3f1c79f7499a4c967192cfc35f73
+Separate primitive inner shell syntax passed; no target installation or host fallback
+No Docker/SDK/just vv execution performed

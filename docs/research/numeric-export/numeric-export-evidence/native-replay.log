@@ -1,0 +1,5 @@
+zero: Ok(0)
+u64-edge: Ok(18446744073709551615)
+binary32-one-product: Ok(70368744177664)
+binary64-one-product: Err(Overflow)
+binary64-max-significands: Err(Overflow)

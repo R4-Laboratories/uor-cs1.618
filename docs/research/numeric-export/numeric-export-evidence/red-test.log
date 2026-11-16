@@ -1,0 +1,29 @@
+   Compiling uorust v0.3.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 24.24s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/uorust-eb96183e2f21eb08)
+
+running 2 tests
+
+thread 'certify::tests::float_model_closures_are_refused_before_export_ue_20' (172637) panicked at crates/uorust/src/certify.rs:2208:9:
+assertion `left == right` failed
+  left: {"direct", "integer", "transitive"}
+ right: {"integer"}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test certify::tests::float_model_closures_are_refused_before_export_ue_20 ... FAILED
+Format { exp: 11, frac: 52 } Mul: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Div: 160 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Fma: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Sqrt: 325 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 8, frac: 23 } Div: 73 intermediate bits; correct model result 0x3f800000
+Format { exp: 8, frac: 23 } Sqrt: 153 intermediate bits; correct model result 0x3f800000
+binary64 aligned Add: 103 intermediate bits
+test mir::float::tests::float_model_intermediates_exceed_the_production_nat_width_ue_20 ... ok
+
+failures:
+
+failures:
+    certify::tests::float_model_closures_are_refused_before_export_ue_20
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 145 filtered out; finished in 0.07s
+
+error: test failed, to rerun pass `-p uorust --lib`

@@ -1,0 +1,46 @@
+build	Run npm run test:browser	﻿2026-11-16T17:19:42.2838770Z ##[group]Run npm run test:browser
+build	Run npm run test:browser	2026-11-16T17:19:42.2839322Z [36;1mnpm run test:browser[0m
+build	Run npm run test:browser	2026-11-16T17:19:42.2862012Z shell: /usr/bin/bash -e {0}
+build	Run npm run test:browser	2026-11-16T17:19:42.2862347Z ##[endgroup]
+build	Run npm run test:browser	2026-11-16T17:19:42.3896987Z 
+build	Run npm run test:browser	2026-11-16T17:19:42.3897691Z > cs1-618@0.9.0 test:browser
+build	Run npm run test:browser	2026-11-16T17:19:42.3898115Z > tsx scripts/browser-test.ts
+build	Run npm run test:browser	2026-11-16T17:19:42.3898302Z 
+build	Run npm run test:browser	2026-11-16T17:19:43.9750103Z Opening first client
+build	Run npm run test:browser	2026-11-16T17:19:57.9110272Z Opening second client
+build	Run npm run test:browser	2026-11-16T17:20:26.1131328Z Testing locomotion
+build	Run npm run test:browser	2026-11-16T17:20:31.5381821Z Failure state {"a":{"snapshot":{"type":"snapshot","room":"BROWSER","time":33.96666666666602,"tick":2038,"phase":"live","round":1,"remaining":95.00000000000028,"score":{"attack":0,"defend":0},"players":[{"id":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","name":"Aster","team":"attack","alive":true,"x":-2.8380682796804626,"y":0,"z":21.61918074758131,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":1.1,"pitch":0.874,"weapon":"kestrel","kills":0,"deaths":0,"bot":false},{"id":"4a7169e6-70a4-4a7b-9572-aa05070bc83d","name":"Beryl","team":"defend","alive":true,"x":20,"y":0,"z":-18,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":3.141592653589793,"pitch":0,"weapon":"sidearm","kills":0,"deaths":0,"bot":false}],"self":{"id":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","name":"Aster","team":"attack","alive":true,"x":-2.8380682796804626,"y":0,"z":21.61918074758131,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":1.1,"pitch":0.874,"weapon":"kestrel","kills":0,"deaths":0,"bot":false,"health":100,"armor":0,"money":2300,"kit":false,"inventory":[{"id":"kestrel","ammo":30,"reserve":90},{"id":"sidearm","ammo":15,"reserve":60}],"slot":0,"reloadLeft":0,"progress":0,"action":"","seq":402,"recoil":0},"bomb":{"state":"carried","carrier":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-2.8380682796804626,"y":0,"z":21.61918074758131,"site":null,"remaining":40},"events":[{"id":1,"at":22.833333333333318,"type":"round","text":"Round 1 · buy phase"},{"id":2,"at":30.016666666666243,"type":"step","actor":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-0.06999999999999999,"y":0,"z":22.93},{"id":3,"at":31.216666666666175,"type":"step","actor":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-1.4890341398402311,"y":0,"z":22.239590373790655}],"winner":null,"reason":"Buy equipment. Prepare to deploy."},"position":{"x":-2.8380682796804626,"y":0,"z":21.61918074758131,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false},"yaw":1.1,"pitch":0.874,"locked":true,"engine":"Verdant Core","hd":{"lod":0,"triangles":5492,"status":"ready","error":""},"cameraGuard":{"x":-2.8380682796804626,"y":1.62,"z":21.61918074758131,"guard":0.08898726798588308,"clearance":0.3639490719435323,"guarded":true,"obstructed":false},"cameraError":"","characters":{"source":"Verdant Engine","joints":22,"poseUpdates":38,"actors":2,"trianglesPerActor":1200},"evolution":"active","artwork":"active","quality":{"mode":"low","scale":0.7},"audioVoices":0,"pending":3,"network":{"mode":"server"}},"b":{"snapshot":{"type":"snapshot","room":"BROWSER","time":34.08333333333268,"tick":2045,"phase":"live","round":1,"remaining":94.88333333333362,"score":{"attack":0,"defend":0},"players":[{"id":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","name":"Aster","team":"attack","alive":true,"x":-2.8380682796804626,"y":0,"z":21.61918074758131,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":1.1,"pitch":0.874,"weapon":"kestrel","kills":0,"deaths":0,"bot":false},{"id":"4a7169e6-70a4-4a7b-9572-aa05070bc83d","name":"Beryl","team":"defend","alive":true,"x":20,"y":0,"z":-18,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":3.141592653589793,"pitch":0,"weapon":"sidearm","kills":0,"deaths":0,"bot":false}],"self":{"id":"4a7169e6-70a4-4a7b-9572-aa05070bc83d","name":"Beryl","team":"defend","alive":true,"x":20,"y":0,"z":-18,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":3.141592653589793,"pitch":0,"weapon":"sidearm","kills":0,"deaths":0,"bot":false,"health":100,"armor":0,"money":800,"kit":false,"inventory":[{"id":"sidearm","ammo":15,"reserve":60},{"id":"sidearm","ammo":15,"reserve":60}],"slot":1,"reloadLeft":0,"progress":0,"action":"","seq":165,"recoil":0},"bomb":{"state":"carried","carrier":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-2.8380682796804626,"y":0,"z":21.61918074758131,"site":null,"remaining":40},"events":[{"id":1,"at":22.833333333333318,"type":"round","text":"Round 1 · buy phase"},{"id":2,"at":30.016666666666243,"type":"step","actor":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-0.06999999999999999,"y":0,"z":22.93},{"id":3,"at":31.216666666666175,"type":"step","actor":"bbc8b22c-a79f-4246-9bb3-57aeeef4ed32","x":-1.4890341398402311,"y":0,"z":22.239590373790655}],"winner":null,"reason":"Buy equipment. Prepare to deploy."},"position":{"x":20,"y":0,"z":-18,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false},"yaw":3.141592653589793,"pitch":0,"locked":false,"engine":"Verdant Core","hd":{"lod":0,"triangles":5492,"status":"ready","error":""},"cameraGuard":{"x":20,"y":1.62,"z":-18,"guard":0.08898726798588308,"clearance":0.3639490719435323,"guarded":true,"obstructed":false},"cameraError":"","characters":{"source":"Verdant Engine","joints":22,"poseUpdates":56,"actors":2,"trianglesPerActor":1200},"evolution":"active","artwork":"active","quality":{"mode":"low","scale":0.7},"audioVoices":0,"pending":3,"network":{"mode":"server"}}}
+build	Run npm run test:browser	2026-11-16T17:20:31.6750325Z Failure UI {
+build	Run npm run test:browser	2026-11-16T17:20:31.6799314Z   status: '',
+build	Run npm run test:browser	2026-11-16T17:20:31.6828377Z   focused: true,
+build	Run npm run test:browser	2026-11-16T17:20:31.6891000Z   active: '',
+build	Run npm run test:browser	2026-11-16T17:20:31.6893434Z   locked: 'world',
+build	Run npm run test:browser	2026-11-16T17:20:31.6894333Z   scoreboard: 'overlay score-overlay hidden',
+build	Run npm run test:browser	2026-11-16T17:20:31.6895132Z   scoreboardDisplay: 'none',
+build	Run npm run test:browser	2026-11-16T17:20:31.6895761Z   hidden: false
+build	Run npm run test:browser	2026-11-16T17:20:31.6896307Z }
+build	Run npm run test:browser	2026-11-16T17:20:31.8188990Z Failure UI {
+build	Run npm run test:browser	2026-11-16T17:20:31.8237240Z   status: '',
+build	Run npm run test:browser	2026-11-16T17:20:31.8283039Z   focused: true,
+build	Run npm run test:browser	2026-11-16T17:20:31.8311107Z   active: '',
+build	Run npm run test:browser	2026-11-16T17:20:31.8316821Z   locked: undefined,
+build	Run npm run test:browser	2026-11-16T17:20:31.8318045Z   scoreboard: 'overlay score-overlay hidden',
+build	Run npm run test:browser	2026-11-16T17:20:31.8322346Z   scoreboardDisplay: 'none',
+build	Run npm run test:browser	2026-11-16T17:20:31.8326103Z   hidden: false
+build	Run npm run test:browser	2026-11-16T17:20:31.8329155Z }
+build	Run npm run test:browser	2026-11-16T17:20:31.9003982Z node:internal/modules/run_main:107
+build	Run npm run test:browser	2026-11-16T17:20:31.9004601Z     triggerUncaughtException(
+build	Run npm run test:browser	2026-11-16T17:20:31.9005008Z     ^
+build	Run npm run test:browser	2026-11-16T17:20:31.9005174Z 
+build	Run npm run test:browser	2026-11-16T17:20:31.9005648Z AssertionError [ERR_ASSERTION]: Expected motion, got 22.309590373790655
+build	Run npm run test:browser	2026-11-16T17:20:31.9006694Z     at <anonymous> (/home/runner/work/uor-cs1.618/uor-cs1.618/scripts/browser-test.ts:34:169) {
+build	Run npm run test:browser	2026-11-16T17:20:31.9007464Z   generatedMessage: false,
+build	Run npm run test:browser	2026-11-16T17:20:31.9007903Z   code: 'ERR_ASSERTION',
+build	Run npm run test:browser	2026-11-16T17:20:31.9008310Z   actual: false,
+build	Run npm run test:browser	2026-11-16T17:20:31.9008649Z   expected: true,
+build	Run npm run test:browser	2026-11-16T17:20:31.9008976Z   operator: '==',
+build	Run npm run test:browser	2026-11-16T17:20:31.9010622Z   diff: 'simple'
+build	Run npm run test:browser	2026-11-16T17:20:31.9010973Z }
+build	Run npm run test:browser	2026-11-16T17:20:31.9011143Z 
+build	Run npm run test:browser	2026-11-16T17:20:31.9011324Z Node.js v24.22.2
+build	Run npm run test:browser	2026-11-16T17:20:31.9326256Z ##[error]Process completed with exit code 1.

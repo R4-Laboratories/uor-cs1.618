@@ -1,0 +1,168 @@
+   Compiling uorust v0.3.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 28.22s
+     Running unittests src/lib.rs (target/numeric-repair/debug/deps/uorust-eb96183e2f21eb08)
+
+running 147 tests
+test bridge::tests::a_signature_reads_as_the_shallow_types_ue_19 ... ok
+test bridge::tests::a_carried_stamp_needs_the_row_it_was_measured_on_ue_19 ... ok
+test bridge::tests::each_boolean_input_is_a_case_ue_19 ... ok
+test certified::tests::use_hand_selects_the_hand_written_translator ... ok
+test certify::tests::a_root_is_a_lifted_translator_function ... ok
+test certify::tests::a_diagnostic_names_its_root ... ok
+test bridge::tests::the_register_records_each_translated_row_bridged_or_pending_ue_19 ... ok
+test certify::tests::a_trait_call_is_the_method_of_its_type ... ok
+test certify::tests::a_plan_sizes_its_shards_and_names_the_compiler_refusals ... ok
+test certify::tests::an_adapter_converts_strings_lists_and_naturals ... ok
+test certify::tests::the_kept_bundles_are_read_in_build_order ... ok
+test certify::tests::the_differential_refuses_one_byte_apart ... ok
+test certify::tests::marking_makes_the_roots_production_and_their_callees_executable ... ok
+test certify::tests::the_ratchet_refuses_a_grown_surface_naming_each_new_row ... ok
+test convert::tests::the_lift_reads_no_certified_dispatch ... ok
+test certify::tests::the_manifest_round_trips ... ok
+test embed::tests::a_function_pointer_is_one_however_it_prints ... ok
+test embed::tests::a_harness_output_without_its_checks_is_refused_ue_19 ... ok
+test embed::platform_tests::platform_intrinsics_read_their_stabilized_docs ... ok
+test embed::tests::a_linked_librarys_keys_are_renamed_as_whole_literals ... ok
+test embed::tests::a_part_is_named_by_its_owners_dump_ue_19 ... ok
+test embed::tests::a_pattern_constant_is_its_base_integer ... ok
+test embed::tests::a_samples_fuel_counts_each_call_of_each_callee ... ok
+test embed::tests::a_string_keeps_every_character_ue_19 ... ok
+test embed::tests::a_transmutes_work_is_read_from_its_layouts ... ok
+test embed::tests::an_allocations_pointers_and_a_constants_item_are_read_ue_19 ... ok
+test embed::tests::an_impls_header_is_read_from_its_span ... ok
+test embed::tests::an_integer_constant_is_its_twos_complement_ue_19 ... ok
+test embed::tests::byte_strings_allocations_and_repeats_are_read_ue_19 ... ok
+test embed::tests::inline_assembly_is_a_call_its_dictionary_answers ... ok
+test embed::tests::names_an_item_by_a_trimmed_path ... ok
+test embed::tests::reads_a_subslice ... ok
+test embed::tests::stamps_each_row_by_its_kappa ... ok
+test embed::tests::the_datatype_kinds_are_rustcs_kinds_ue_19 ... ok
+test embed::tests::the_undefined_constructs_are_read_from_the_evaluator_ue_19 ... ok
+test expand::tests::an_unmatched_invocation_is_kept ... ok
+test expand::tests::repetitions_expand_to_items ... ok
+test expand::tests::separated_lists_and_crate_paths_transcribe ... ok
+test layouts::tests::a_field_of_another_crate_is_read_in_its_printed_module ... ok
+test embed::tests::an_array_of_a_parameter_count_is_sized ... ok
+test embed::tests::a_static_is_read_as_its_initializer_ue_19 ... ok
+test layouts::tests::an_alias_may_be_written_in_the_modules_its_text_names ... ok
+test layouts::tests::writes_a_printed_type_as_source ... ok
+test lex::tests::a_match_held_as_text_is_read_into_its_arms ... ok
+test lex::tests::a_short_definition_is_flat_and_a_long_one_breaks ... ok
+test lex::tests::names_are_camel_cased_from_rust_and_cargo_names ... ok
+test lex::tests::strings_are_escaped_and_collapsed ... ok
+test layouts::tests::reads_a_layout_and_a_refusal ... ok
+test embed::tests::a_long_list_nests_no_deeper_than_its_bit_length_ue_19 ... ok
+test certify::tests::float_model_closures_are_refused_before_export_ue_20 ... ok
+test layouts::tests::a_librarys_root_is_the_one_its_manifest_names ... ok
+test lift::tests::a_percent_sign_is_residue ... ok
+test lift::tests::a_match_on_a_state_enum_lifts_exhaustively ... ok
+test lift::tests::a_question_mark_in_an_operand_hoists ... ok
+test lift::tests::an_index_is_the_element_or_the_default ... ok
+test lift::tests::comparisons_and_logic_lift ... ok
+test lift::tests::character_matches_lift_to_tests ... ok
+test lift::tests::an_empty_vector_takes_the_type_the_block_returns ... ok
+test lift::tests::arithmetic_without_a_named_overflow_is_residue ... ok
+test lift::tests::early_returns_and_tuple_lets_lift ... ok
+test lift::tests::loops_continue_break_and_enumerate ... ok
+test lift::tests::maps_lift_only_where_their_order_is_defined ... ok
+test lift::tests::literal_matches_and_string_formats_lift ... ok
+test lift::tests::iterator_chains_lift_to_structural_helpers ... ok
+test lift::tests::slice_recursion_is_structural ... ok
+test lift::tests::structs_and_tuples_lift ... ok
+test lift::tests::usize_widths_come_from_the_declared_targets ... ok
+test mir::core::tests::a_bodys_type_parameters_are_its_bare_names ... ok
+test mir::core::tests::a_const_trait_impls_const_parameters_have_their_types ... ok
+test mir::core::tests::a_parameters_associated_types_are_the_parameter ... ok
+test mir::core::tests::allocations_are_numbered_by_first_mention ... ok
+test mir::core::tests::causes_rank_by_kind_and_head ... ok
+test lift::tests::named_overflow_lifts ... ok
+test mir::core::tests::the_embeddings_summary_counts_each_kappa_once ... ok
+test mir::coverage::tests::every_kind_of_the_pinned_mir_has_a_row ... ok
+test lift::tests::signed_strings_options_and_lets_lift ... ok
+test mir::float::tests::every_operation_the_tables_name_is_defined ... ok
+test lift::tests::string_methods_lift_to_the_prelude ... ok
+test mir::core::tests::every_module_key_round_trips_through_tomllib ... ok
+test lift::tests::statement_ifs_lift_the_statements_after_them_once ... ok
+test mir::float::tests::f32_unary_operations_are_the_hosts ... ok
+test mir::float::tests::conversions_are_the_hosts ... ok
+Format { exp: 11, frac: 52 } Mul: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Mul: 106 intermediate bits; correct model result 0x400ffffffffffffe
+Format { exp: 11, frac: 52 } Div: 160 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Fma: 105 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 11, frac: 52 } Sqrt: 325 intermediate bits; correct model result 0x3ff0000000000000
+Format { exp: 8, frac: 23 } Div: 73 intermediate bits; correct model result 0x3f800000
+Format { exp: 8, frac: 23 } Sqrt: 153 intermediate bits; correct model result 0x3f800000
+binary64 aligned Add: 103 intermediate bits
+test mir::float::tests::float_model_intermediates_exceed_the_production_nat_width_ue_20 ... ok
+test mir::float::tests::formats_are_read_from_cores_constants ... ok
+test mir::float::tests::literals_and_named_constants_round_to_nearest ... ok
+test mir::generate::tests::std_is_vendored_from_the_pinned_toolchain ... ok
+test mir::generate::tests::the_spec_is_generated_from_the_pinned_mir_definition ... ok
+test mir::generate::tests::variants_are_read_at_the_enum_indentation ... ok
+test mir::int::tests::bounds_are_rusts ... ok
+test mir::int::tests::casts_are_rusts ... ok
+test mir::int::tests::helpers_are_well_founded_and_closed ... ok
+test mir::int::tests::literal_folds ... ok
+test mir::int::tests::order_is_rusts ... ok
+test mir::int::tests::rules_take_a_fixed_width ... ok
+test mir::int::tests::varying_targets_state_their_range ... ok
+test mir::layout::tests::a_layout_is_used_only_where_the_targets_agree ... ok
+test mir::layout::tests::a_malformed_data_layout_is_refused ... ok
+test mir::layout::tests::primitives_take_the_data_layouts_alignment ... ok
+test mir::lower::tests::a_held_borrow_and_its_place_share_a_match_key ... ok
+test mir::lower::tests::a_pointer_value_is_the_pointer_struct ... ok
+test mir::lower::tests::a_tuple_of_one_item_is_told_from_a_wider_one ... ok
+test mir::lower::tests::comparisons_read_back ... ok
+test mir::lower::tests::generic_arguments_are_erased_from_callees ... ok
+test mir::lower::tests::lifetime_arguments_are_left_out ... ok
+test mir::lower::tests::mir_types_name_the_lifts_types ... ok
+test mir::lower::tests::mut_parameters_are_threaded ... ok
+test mir::lower::tests::patterns_give_rustcs_valid_ranges_and_niches ... ok
+test mir::memory::tests::the_laws_name_their_cell_size ... ok
+test mir::parse::tests::a_dump_reads_into_blocks_locals_and_kinds ... ok
+test mir::parse::tests::paths_split_outside_generic_arguments ... ok
+test mir::parse::tests::places_nest_fields_downcasts_and_derefs ... ok
+test mir::parse::tests::reads_a_spanned_dump_as_the_plain_one_with_its_spans ... ok
+test mir::parse::tests::rvalues_read_as_their_kinds ... ok
+test mir::prove::tests::diagnostics_name_their_declarations ... ok
+test mir::site::tests::reads_whether_a_body_tracks_its_caller_and_where_its_calls_are ... ok
+test mir::std_vectors::std_agrees_with_every_vector_of_its_models ... ok
+test mir::stdlib::tests::generic_parameters_bind_to_the_call_sites_types ... ok
+test mir::stdlib::tests::models_apply_at_their_types ... ok
+test mir::stdlib::tests::std_paths_key_without_their_crate ... ok
+test mir::stdlib::tests::the_table_parses_and_names_only_vendored_bodies ... ok
+test mir::tests::impls_are_named_by_the_type_their_source_implements ... ok
+test mir::trips::tests::a_counter_below_a_constant_bounds_its_loop ... ok
+test mir::trips::tests::a_counter_compared_through_a_copy_bounds_its_loop ... ok
+test mir::trips::tests::a_halved_counter_bounds_its_loop_by_its_width ... ok
+test mir::trips::tests::a_loop_no_exit_bounds_is_unbounded ... ok
+test mir::verdict::tests::verdicts_round_trip ... ok
+test project::tests::sha_meets_every_nist_short_vector ... ok
+test project::tests::sha_meets_the_nist_vectors_at_the_padding_bounds ... ok
+test queue::tests::a_merge_admits_only_a_retracted_regression ... ok
+test queue::tests::a_translated_kappa_may_not_turn_residue ... ok
+test register::tests::a_lifted_kappa_that_turns_unlifted_is_refused ... ok
+
+thread 'register::tests::a_path_with_a_newline_is_refused' (173209) panicked at crates/uorust/src/register.rs:50:5:
+a crate path holds a newline, which the κ framing cannot tell apart: "c::f\ng"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test register::tests::a_path_with_a_newline_is_refused - should panic ... ok
+test register::tests::kappa_depends_on_path_and_tokens ... ok
+test register::tests::the_preimage_is_the_models_fixture ... ok
+test register::tests::the_register_round_trips_and_rows_are_typed ... ok
+test registry::tests::a_dump_is_filed_under_its_module ... ok
+test registry::tests::a_sample_left_out_prints_its_cases_unbuilt ... ok
+test registry::tests::a_spec_is_a_name_at_a_version ... ok
+test tests::utc_renders_the_epoch_and_a_leap_day ... ok
+test wf::tests::a_call_on_a_let_bound_value_is_refused ... ok
+test wf::tests::a_call_under_a_constructor_branch_states_its_decrease ... ok
+test wf::tests::a_group_that_does_not_measure_is_refused ... ok
+test wf::tests::a_member_passing_its_argument_on_ranks_above_its_callee ... ok
+test mir::float::tests::f16_arithmetic_is_the_hosts_rounded_twice ... ok
+test mir::float::tests::f32_arithmetic_is_the_hosts ... ok
+test mir::float::tests::f32_binary_and_fused_operations_are_the_hosts ... ok
+test mir::float::tests::f64_arithmetic_is_the_hosts has been running for over 60 seconds
+test mir::float::tests::f64_arithmetic_is_the_hosts ... ok
+
+test result: ok. 147 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 64.52s
+

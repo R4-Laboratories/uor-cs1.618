@@ -1,0 +1,33 @@
+{
+  "schema": "numeric-sdk-registry-availability/1",
+  "sdk_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+  "anonymous_token_status": 200,
+  "index_status": 200,
+  "observed_index_digest": "sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+  "platforms": [
+    {
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      },
+      "manifest_digest": "sha256:46abe18a9234ba6ec5c0832be86df80fddb6403dff26ef0940c6b7eba515c453",
+      "manifest_status": 200,
+      "compressed_layer_bytes": 5777274173,
+      "layers": 26,
+      "largest_layer_bytes": 1737699190,
+      "largest_blob_head_status": 200
+    },
+    {
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      },
+      "manifest_digest": "sha256:a50c3fab062679a107a652d57f89e1df34b633099be5fefcd7b441af2dbd9051",
+      "manifest_status": 200,
+      "compressed_layer_bytes": 5748888383,
+      "layers": 26,
+      "largest_layer_bytes": 1679338836,
+      "largest_blob_head_status": 200
+    }
+  ]
+}

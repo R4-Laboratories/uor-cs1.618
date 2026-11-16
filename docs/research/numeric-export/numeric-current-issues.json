@@ -1,0 +1,143 @@
+{
+  "schema": "numeric-export-issues/1",
+  "updated": "2026-11-16",
+  "repair_commit": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "repair_repository": "UORust",
+  "release_verified": false,
+  "issues": [
+    {
+      "id": "NEXP-001",
+      "status": "fixed_local_pending_exact_sdk",
+      "repo": "UORust",
+      "function": "Profile::mark / carry / production_build / production",
+      "summary": "Fresh and reused float-model closures refused without machine-width evidence.",
+      "reproduction": "cargo test --offline --locked -p uorust --lib ue_21 -- --nocapture; current baseline admits unsafe direct/alias roots; fresh-only guard reuses unsafe cached read; final guards refuse both and keep safe controls.",
+      "acceptance_criteria": [
+        "Direct and transitive Prelude float closures omitted from production request.",
+        "Refusal recorded by root kappa with unbounded-float-model cause.",
+        "Batch requests cannot re-admit refused roots.",
+        "Unrelated integer roots remain eligible.",
+        "Qualified and unqualified aliases and non-float-named Prelude aliases cannot hide a reachable float helper; unused definitions and bit identity do not trigger refusal.",
+        "Previously certified artifacts obey current closure admission, plan and export counts agree, synchronized refusal persists by kappa, eligible artifacts still reuse unchanged bytes."
+      ],
+      "evidence": [
+        "numeric-current-evidence/current-red.log",
+        "numeric-current-evidence/current-reuse-red.log",
+        "numeric-current-evidence/current-reuse-green.log",
+        "numeric-current-evidence/current-final-after-reuse.log"
+      ],
+      "dependencies": [],
+      "release_dependency": "NEXP-005"
+    },
+    {
+      "id": "NEXP-002",
+      "status": "open",
+      "repo": "UORust / LexLean",
+      "function": "Prelude::floatMul, floatDiv, floatFma, floatSqrt, floatSumCore, floatPow2",
+      "summary": "Mathematical Nat intermediates exceed the checked u64 production representation.",
+      "reproduction": "cargo test --offline --locked -p uorust --lib float_model_intermediates_exceed_the_production_nat_width_ue_21 -- --nocapture",
+      "observed_bits": {
+        "binary64_mul_ones": 105,
+        "binary64_mul_max_significands": 106,
+        "binary64_div_ones": 160,
+        "binary64_fma_one_one_zero": 105,
+        "binary64_sqrt_one_search": 325,
+        "binary64_add_one_plus_two_pow_minus50": 103,
+        "binary32_div_ones": 73,
+        "binary32_sqrt_one_search": 153,
+        "pow2_64": 65,
+        "binary64_to_u64_one_mask": 65
+      },
+      "acceptance_criteria": [
+        "Provide source-owned bounded multi-limb or bounded alternative arithmetic for all reachable intermediates.",
+        "Prove/check target preservation and resource bounds; a u128 substitution alone is insufficient.",
+        "Preserve subnormals, signed zeros, NaN policy and rounding requirements."
+      ],
+      "evidence": [
+        "numeric-current-evidence/current-reuse-green.log"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "NEXP-003",
+      "status": "open",
+      "repo": "UORust / PrismPM",
+      "function": "Production export of actual IEEE float root closures",
+      "summary": "Full IEEE root export and compiled execution have not been established.",
+      "reproduction": "The production probe exports only Nat multiplication; do not interpret it as a full floatMul export.",
+      "acceptance_criteria": [
+        "Export and replay actual floatMul/Div/Fma/Sqrt closures under the selected exact SDK.",
+        "Compile emitted source to native and Wasm; execute boundary and randomized vectors.",
+        "Record exact root, input domain, output/exception semantics and all toolchain hashes.",
+        "Compare ordered operations to an independent IEEE oracle, including cancellation and extreme exponents."
+      ],
+      "dependencies": [
+        "NEXP-002",
+        "NEXP-005"
+      ]
+    },
+    {
+      "id": "NEXP-004",
+      "status": "diagnosed",
+      "repo": "LexLean",
+      "function": "Nat multiplication production primitive",
+      "summary": "Oversized significand products produce explicit checked Overflow, not silent wrong results in tested compiled artifacts.",
+      "reproduction": "bash scripts/probe-numeric-export.sh within the selected pinned SDK; package fixture in UORust repair commit.",
+      "acceptance_criteria": [
+        "Generated primitive bundle verifies.",
+        "Native and import-free Wasm return overflow for 2^52*2^52 and (2^53-1)^2.",
+        "Zero, u64::MAX*1 and binary32 significand controls succeed."
+      ],
+      "evidence": [
+        "numeric-export-evidence/build.log",
+        "numeric-export-evidence/replay.log",
+        "numeric-export-evidence/native-replay.log",
+        "numeric-export-evidence/wasm-replay.log"
+      ],
+      "dependencies": [],
+      "scope": "Exact inner multiplication primitive only; full IEEE export not tested."
+    },
+    {
+      "id": "NEXP-005",
+      "status": "blocked_environment",
+      "repo": "UORust",
+      "function": "Pinned-SDK acceptance / just vv",
+      "summary": "Current UORust exact SDK c1bfe8d5 is publicly pullable but uncached; cached game SDK d6c263a7 fails native inventory gate.",
+      "reproduction": "cargo run --offline --locked -p xtask -- validate in cached diagnostic SDK: prismpm.lock native artifact inventory disagrees with the running SDK.",
+      "acceptance_criteria": [
+        "Run full unchanged just vv inside ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635 for reviewed candidate 46bdbc56ad99ac2bb73d6499863260a7fead9712.",
+        "Run repository acceptance and independent review before upstream release.",
+        "Keep existing lock unchanged unless a separately reviewed migration is intended."
+      ],
+      "evidence": [
+        "numeric-current-evidence/current-final-after-reuse.log",
+        "numeric-current-evidence/sdk-inventory-diff.json",
+        "numeric-current-evidence/sdk-registry-availability.json",
+        "numeric-current-evidence/upstream-prior-success.json"
+      ],
+      "dependencies": [],
+      "baseline_environment_issue": true,
+      "expected_inventory_digest": "sha256:d802737ecd17651465dc93640c052720bb361c1d158049ecfb5b9b25ca6c6f70",
+      "observed_inventory_digest": "sha256:0d4fe1864891ab1220a752d929a5a3a334f5987e0518a97f83f06fb5bdad105f",
+      "changed_inventory_entries": 17,
+      "resolution_path": "Manual game CI with exact base + reviewed patch/tree custody, unchanged upstream bootstrap run block and full just vv; optional separate primitive replay after gate."
+    },
+    {
+      "id": "NEXP-006",
+      "status": "open",
+      "repo": "cs1.618 / renderer integration",
+      "function": "Three.js CPU math and GPU shader equivalence",
+      "summary": "A repaired numeric model would not establish Three.js evaluation-order, shader, visual or performance equivalence.",
+      "reproduction": "No renderer replacement was attempted. Existing engine/game artifacts unchanged.",
+      "acceptance_criteria": [
+        "Define CPU-vs-GPU operation and rounding boundaries.",
+        "Test numerical and conservative-culling error requirements against a named oracle.",
+        "Measure end-to-end serialization, Wasm execution and GPU/frame cost on target devices."
+      ],
+      "dependencies": [
+        "NEXP-003"
+      ]
+    }
+  ],
+  "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81"
+}
