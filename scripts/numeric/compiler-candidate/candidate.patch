@@ -62,10 +62,10 @@ index 0000000000000000000000000000000000000000..c870ffff26f84eac2fde1a38e5cc8ce9
 +  logInfo "ordinary helper and renamed signed helper exported"
 diff --git a/lean/Conformance/NumericClosureFixture.lean b/lean/Conformance/NumericClosureFixture.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..1f78874479660bd427f6e8c0d51032ca222ffd64
+index 0000000000000000000000000000000000000000..aa737405f8f3342e5a4066634ab52be70a93445e
 --- /dev/null
 +++ b/lean/Conformance/NumericClosureFixture.lean
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,90 @@
 +import Conformance.LexLeanPortable
 +
 +/-! Compiler-owned probes; not replacements for generated application modules. -/
@@ -130,6 +130,19 @@ index 0000000000000000000000000000000000000000..1f78874479660bd427f6e8c0d51032ca
 +@[implicit_reducible] def badFromInt : LexLeanRuntime.Fixed UInt64 :=
 +  { (inferInstance : LexLeanRuntime.Fixed UInt64) with fromInt := fun _ => 0 }
 +
++-- Safe and kernel-total does not mean erasable under bounded target arithmetic.
++-- NumericConversion inserts these calls after extraction so simplifier DCE
++-- cannot remove the eager computations before the production pass is tested.
++def maxNat : Nat := 18446744073709551615
++def oneNat : Nat := 1
++def canonicalAfter (_ : Nat) : LexLeanRuntime.Fixed UInt64 := inferInstance
++def canonicalAfterAlias : Nat → LexLeanRuntime.Fixed UInt64 := canonicalAfter
++def overflowAlias : Nat := maxNat + oneNat
++def hiddenScalarDictionary : LexLeanRuntime.Fixed UInt64 :=
++  canonicalAfterAlias overflowAlias
++def hiddenBranchDictionary : LexLeanRuntime.Fixed UInt64 :=
++  if maxNat + oneNat == 0 then badMaximum else inferInstance
++
 +def alteredSource (x : UInt32) : Option UInt64 :=
 +  @LexLeanRuntime.checkedConvert UInt32 UInt64 badSource inferInstance x
 +def alteredMinimum (x : UInt32) : Option UInt64 :=
@@ -145,10 +158,10 @@ index 0000000000000000000000000000000000000000..1f78874479660bd427f6e8c0d51032ca
 +end NumericFixture
 diff --git a/lean/Conformance/NumericConversion.lean b/lean/Conformance/NumericConversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..3890f1238800d235ba0c4fb375fe2d59c6586f89
+index 0000000000000000000000000000000000000000..455f25da32644f58fb689c30b4760ce810abe44e
 --- /dev/null
 +++ b/lean/Conformance/NumericConversion.lean
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,130 @@
 +import Prod.Export
 +import Conformance.NumericClosureFixture
 +
@@ -165,6 +178,30 @@ index 0000000000000000000000000000000000000000..3890f1238800d235ba0c4fb375fe2d59
 +        else decl
 +      | _ => decl
 +    .let decl (changeConversion rest wrongResult)
++  | _ => code
++
++private partial def conversionTarget? (code : Code .pure) : Option FVarId :=
++  match code with
++  | .let decl rest =>
++    match decl.value with
++    | .const name _ args =>
++      if Prod.isLexLeanRuntimeName name && Prod.lastComponent name == "checkedConvert" then
++        match args[3]? with
++        | some (.fvar id) => some id
++        | _ => none
++      else conversionTarget? rest
++    | _ => conversionTarget? rest
++  | _ => none
++
++/-- Replace the original target let, leaving no unrelated old dictionary residue.
++    This goes through emitKernelIr, including production normalization/discovery. -/
++private partial def withConsumedDependency (code : Code .pure) (target : FVarId)
++    (value : LetValue .pure) (dependencies : Array (LetDecl .pure)) : Code .pure :=
++  match code with
++  | .let decl rest =>
++    if decl.fvarId == target then
++      dependencies.foldr Code.let (.let { decl with value } rest)
++    else .let decl (withConsumedDependency rest target value dependencies)
 +  | _ => code
 +
 +run_meta do
@@ -213,6 +250,34 @@ index 0000000000000000000000000000000000000000..3890f1238800d235ba0c4fb375fe2d59
 +        throwError "wrong typed rejection: {message}"
 +      pure true
 +    unless rejected do throwError "mistyped conversion admitted"
++  -- RED shape for the original pass: all terms reconstruct and their fields
++  -- validate, then pruning follows target -> overflow -> max/one and erases the
++  -- AddOverflow. Hidden aliases exercise body inspection as well as arguments.
++  let maxValue : LetDecl .pure := ⟨⟨`consumedMax⟩, `consumedMax, mkConst ``Nat,
++    .const ``NumericFixture.maxNat [] #[]⟩
++  let oneValue : LetDecl .pure := ⟨⟨`consumedOne⟩, `consumedOne, mkConst ``Nat,
++    .const ``NumericFixture.oneNat [] #[]⟩
++  let overflow : LetDecl .pure := ⟨⟨`consumedOverflow⟩, `consumedOverflow, mkConst ``Nat,
++    .const ``Nat.add [] #[.fvar maxValue.fvarId, .fvar oneValue.fvarId]⟩
++  let some target := conversionTarget? code | throwError "missing conversion target"
++  let probes : Array (Name × Array (Arg .pure) × Array (LetDecl .pure)) := #[
++    (``NumericFixture.canonicalAfter, #[.fvar overflow.fvarId], #[maxValue, oneValue, overflow]),
++    (``NumericFixture.canonicalAfterAlias, #[.fvar overflow.fvarId], #[maxValue, oneValue, overflow]),
++    (``NumericFixture.hiddenScalarDictionary, #[], #[]),
++    (``NumericFixture.hiddenBranchDictionary, #[], #[])]
++  for (name, args, dependencies) in probes do
++    let mutant : Decl .pure := { decl with
++      value := .code (withConsumedDependency code target (.const name [] args) dependencies) }
++    let rejected ← try
++      let _ ← Prod.emitKernelIr { tagged := #[mutant.name] } "ConsumedFailure"
++        #[{ name := mutant.name, decl? := some mutant, skipReason := "" }]
++      pure false
++    catch error =>
++      let message ← error.toMessageData.toString
++      unless message == "noncanonical checkedConvert non-inert dictionary dependency" do
++        throwError "wrong consumed-dependency rejection for {name}: {message}"
++      pure true
++    unless rejected do throwError "failing consumed dependency admitted: {name}"
 +  -- Test the normalization pass, not Lean simplifier DCE: insert a real unused
 +  -- bounded-target failure into already-extracted LCNF and lower through production.
 +  let large : LetDecl .pure := ⟨⟨`large⟩, `large, mkConst ``Nat, .lit (.nat 18446744073709551615)⟩
@@ -226,13 +291,13 @@ index 0000000000000000000000000000000000000000..3890f1238800d235ba0c4fb375fe2d59
 +    #[{ name := failing.name, decl? := some failing, skipReason := "" }]
 +  unless (ir.splitOn "(add ").length > 1 do throwError "unused failing computation erased"
 +  IO.FS.writeFile "../output/numeric/unused-failure.ir" ir
-+  logInfo "numeric conversions: canonical, renamed, four semantic and two type refusals, live residue, and failing unused operation"
++  logInfo "numeric conversions: canonical, renamed, four semantic, two type and four consumed-dependency refusals, live residue, and failing unused operation"
 diff --git a/lean/Prod/Conversion.lean b/lean/Prod/Conversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce17880f7d
+index 0000000000000000000000000000000000000000..0bc44eb43ab09958c5f8121e1eb0e2be0f9fcf28
 --- /dev/null
 +++ b/lean/Prod/Conversion.lean
-@@ -0,0 +1,179 @@
+@@ -0,0 +1,269 @@
 +import Prod.Lower
 +import Lean.Compiler.LCNF.FVarUtil
 +
@@ -268,8 +333,8 @@ index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce
 +      (mkApp (mkConst ``Int.ofNat) (mkApp (mkConst (name ++ `toNat)) (.bvar 0))) .default)
 +  else none
 +
-+/-- Only reconstruct closed total kernel terms. Unknown arguments stay unknown,
-+    and thus cannot authorize removal of a live dictionary graph. -/
++/-- Reconstruct closed kernel terms, without claiming their eager evaluation is
++    erasable under bounded target semantics. `inertValue?` checks that separately. -/
 +private def closedValue? (values : Values) (value : LetValue .pure) : CoreM (Option Expr) := do
 +  match value with
 +  | .const name levels args =>
@@ -296,6 +361,95 @@ index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce
 +  | .proj name index id =>
 +    return (values[id.name]?).map (Expr.proj name index)
 +  | _ => return none
++
++/-- A deliberately small eager value evaluator, not kernel normalization.
++    Check arguments and let values BEFORE substitution/projection can discard
++    them. Never reduce recursors, branches, or scalar arithmetic. Fuel exhaustion
++    refuses the graph. Lambda bodies are delayed; applied functions are inspected.
++
++    The only scalar construction admitted is bounded Nat literals and Int literal
++    representation (including negation of an already literal Int). This supports
++    elaborated signed bounds without admitting computed bounds or Nat overflow. -/
++private def inertValue? : Nat → Expr → MetaM (Option Expr)
++  | 0, _ => return none
++  | fuel + 1, term => do
++    -- Types and proofs have no eager runtime evaluation.
++    if (← Meta.whnf (← Meta.inferType term)).isSort || (← Meta.isProof term) then
++      return some term
++    match term with
++    | .lam .. => return some term
++    | .lit (.nat n) =>
++      return if n ≤ 18446744073709551615 then some term else none
++    | .mdata _ body => inertValue? fuel body
++    | .letE _ _ value body _ =>
++      let some value ← inertValue? fuel value | return none
++      inertValue? fuel (body.instantiate1 value)
++    | .proj _ index value =>
++      let some value ← inertValue? fuel value | return none
++      let .const name _ := value.getAppFn | return none
++      let some (.ctorInfo info) := (← getEnv).find? name | return none
++      let some field := value.getAppArgs[info.numParams + index]? | return none
++      return some field
++    | .const name levels =>
++      let some info := (← getEnv).find? name | return none
++      if info.isPartial then return none
++      match info with
++      | .ctorInfo _ => return some term
++      | .defnInfo defn =>
++        unless defn.safety == .safe do return none
++        let body := defn.value.instantiateLevelParams defn.levelParams levels
++        -- A syntactic function definition is a reference, not a call. An alias
++        -- that first computes a function must still pass the eager body check.
++        if body.isLambda then return some term
++        inertValue? fuel body
++      | .opaqueInfo opaqueVal =>
++        -- Primitive function references are values; applying an opaque function
++        -- below is refused. Closed opaque scalar/dictionary thunks are refused.
++        if !opaqueVal.isUnsafe && (← Meta.whnf opaqueVal.type).isForall then
++          return some term
++        return none
++      | _ => return none
++    | .app .. =>
++      let mut args := #[]
++      for arg in term.getAppArgs do
++        let some arg ← inertValue? fuel arg | return none
++        args := args.push arg
++      let some fn ← inertValue? fuel term.getAppFn | return none
++      match fn with
++      | .lam _ _ body _ =>
++        inertValue? fuel (mkAppN (body.instantiate1 args[0]!) (args.extract 1 args.size))
++      | .const name levels =>
++        -- Signed literal notation eventually applies Int.neg to an Int literal.
++        -- This is representation construction, not a license to evaluate an
++        -- arbitrary expression definitionally equal to a literal.
++        if name == ``Int.neg && args.size == 1 then
++          let value := args[0]!
++          let #[.lit (.nat n)] := value.getAppArgs | return none
++          if value.getAppFn == mkConst ``Int.ofNat then
++            return some (toExpr (-(Int.ofNat n)))
++          if value.getAppFn == mkConst ``Int.negSucc && n < 18446744073709551615 then
++            return some (toExpr (Int.ofNat (n + 1)))
++          return none
++        let some info := (← getEnv).find? name | return none
++        match info with
++        | .ctorInfo ctor =>
++          let dictionary := isLexLeanRuntimeName ctor.induct &&
++            ["Fixed", "ToMathInt"].contains (lastComponent ctor.induct)
++          unless dictionary || [``OfNat, ``Neg].contains ctor.induct ||
++              [``Int.ofNat, ``Int.negSucc].contains name do return none
++          return some (mkAppN fn args)
++        | .defnInfo defn =>
++          unless defn.safety == .safe do return none
++          inertValue? fuel (mkAppN
++            (defn.value.instantiateLevelParams defn.levelParams levels) args)
++        | _ => return none
++      | _ => return none
++    | _ => return none
++
++private def validateErasure (source target : Expr) : CoreM Unit :=
++  Meta.MetaM.run' do
++    unless (← inertValue? 256 source).isSome && (← inertValue? 256 target).isSome do
++      throwError "noncanonical checkedConvert non-inert dictionary dependency"
 +
 +private def typeArgument (dictionary : Expr) (classPart : String) : MetaM (Name × Expr) := do
 +  let type ← Meta.whnf (← Meta.inferType dictionary)
@@ -353,6 +507,7 @@ index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce
 +        let some operand := types[input.name]?
 +          | throwError "checkedConvert operand/result type mismatch"
 +        validateConversion sourceExpr targetExpr operand decl.type
++        validateErasure sourceExpr targetExpr
 +        modify fun consumed => (consumed.insert source.name).insert target.name
 +        value := .const name levels #[.fvar input]
 +    let resolved ← closedValue? values decl.value
@@ -379,7 +534,7 @@ index 0000000000000000000000000000000000000000..96886ab597ba018611212b4ea284e6ce
 +    return .cases (cases.updateAlts alts)
 +  | _ => return code
 +
-+/-- Backward liveness deletes only previously validated closed dictionary lets.
++/-- Backward liveness deletes only previously validated closed, inert dictionary lets.
 +    Any other use retains the graph, including unsupported generic residue. -/
 +private partial def pruneConsumed (code : Code .pure) : StateM Consumed (Code .pure) := do
 +  match code with
@@ -691,10 +846,10 @@ index 0000000000000000000000000000000000000000..a5bc2c4f33910c0fe90aebd21c090486
 +  "$output/kernel.ir" --output "$output/generated.rs"
 diff --git a/specs/designs/numeric-conversion-normalization.md b/specs/designs/numeric-conversion-normalization.md
 new file mode 100644
-index 0000000000000000000000000000000000000000..fccc170311401a572967468432699528380b5a1f
+index 0000000000000000000000000000000000000000..16c7f3fac4553da7ae2dec33c8cdbe44152a4fc7
 --- /dev/null
 +++ b/specs/designs/numeric-conversion-normalization.md
-@@ -0,0 +1,32 @@
+@@ -0,0 +1,78 @@
 +# Canonical checked conversion normalization
 +
 +Named extraction disables only the pinned compiler's opportunistic small-body
@@ -703,27 +858,73 @@ index 0000000000000000000000000000000000000000..fccc170311401a572967468432699528
 +not recognize specialized names or admit runtime closures.
 +
 +Before type discovery and lowering, a single pass reconstructs closed, safe,
-+total dictionary constants/projections used by checkedConvert. It checks their
++total dictionary constants/projections used by checkedConvert. Reconstruction
++alone gives no permission to erase eager computation. The pass checks their
 +kernel types and definitionally compares source integer interpretation and the
 +target minimum, maximum, and fromInt to the built-in scalar operations/ranges.
 +It independently checks the actual operand and Option result types. Dictionary
 +spelling is irrelevant. Open, altered, ill-typed, unsafe, or partial inputs are
-+refused. A validated conversion retains only its scalar operand in LCNF; the
-+existing typed checked-convert IR operation enforces target bounds.
++refused. Independently, an eager value check must succeed before either
++dictionary is marked consumed. A validated conversion retains only its scalar
++operand in LCNF; the existing typed checked-convert IR operation enforces target
++bounds.
 +
-+Backward liveness removes only the validated dictionary graph consumed by those
-+calls and unused elsewhere. It retains other uses and unsupported generic type
-+declarations. It must not perform generic dead-code elimination: a separately
-+inserted unused bounded-Nat addition overflow is replayed as AddOverflow in
-+native and Wasm generated code. Type discovery and body lowering receive the
-+same normalized declaration, and coverage reports retained unsupported types.
++The erasability check admits dictionary construction, function references,
++projections of inert constructors, and pure aliases composed of these forms.
++It inspects safe definition bodies rather than trusting their safety metadata.
++Every application argument and let value is checked **before** beta reduction,
++substitution, or projection can discard it. An alias returning a function must
++also be inert up to the lambda; the lambda body is delayed until application.
++Opaque function references may be stored as values, but calls to them and opaque
++scalar/dictionary thunks are refused. Types and proofs are erased.
 +
-+This is a local semantic argument about recognized closed dictionary fields,
-+not a mechanized universal compiler-equivalence theorem or proof that entire
++The evaluator only constructs literal scalar data: Nat literals at most
++`2^64 - 1`, Int constructors, and negation of an already literal Int within the
++same magnitude representation bound. This admits elaborated positive and
++negative dictionary bounds. The `OfNat` and `Neg` constructor wrappers are
++inspected, including their arguments; no user numeral/negation instance is
++trusted by name or definitional equality. Recursors, branches, `Nat.succ`
++applications, bounded arithmetic, and unclassified calls are refused, even when
++kernel reduction would produce canonical fields. A fuel limit of 256 refuses
++deeper alias graphs rather than assuming they are inert. The evaluator is not a
++general constant folder and intentionally rejects some harmless computations.
++
++Backward liveness removes only the validated **inert** dictionary graph consumed
++by those calls and unused elsewhere. The eager check reconstructs and inspects
++every dependency before consumption, so following the deleted lets' arguments
++cannot newly authorize an unchecked scalar computation. It retains other uses
++and unsupported generic type declarations. It must not perform generic dead-code
++elimination: a separately inserted unused bounded-Nat addition overflow must
++replay as AddOverflow in native and Wasm generated code. Type discovery and body
++lowering receive the same normalized declaration, and coverage reports retained
++unsupported types.
++
++The consumed-dependency regressions insert calls after LCNF extraction, then
++use production `emitKernelIr` (normalization, type discovery, and lowering).
++They assert exactly `noncanonical checkedConvert non-inert dictionary dependency`
++for (1) `canonicalAfter (maxNat + oneNat)`, (2) the same call through a function
++alias, (3) a closed dictionary alias hiding the scalar argument behind another
++safe alias, and (4) a closed alias that branches on that overflow before returning
++a canonical dictionary. Here `maxNat = 2^64 - 1` and `oneNat = 1`. Static kernel
++reduction selects canonical fields in all four cases; the tests require field
++validation to succeed before the exact erasure refusal. The pre-fix RED
++shape is static: the old pass accepts and prunes these computations; this has
++not been executed locally. These graphs are deliberately refused, so there is
++no generated native/Wasm success claim for them. The separate unused-overflow
++fixture remains admitted and its existing generated native/import-free Wasm
++replay at optimization levels 0 and 2 still requires `AddOverflow`.
++
++This is a local argument about eager construction and deletion of recognized
++closed dictionary graphs. Function bodies stored in fields are not executed
++merely to construct a dictionary; the existing field-equivalence check remains
++kernel definitional equality. This change does not establish that arbitrary
++definitionally equal function bodies preserve bounded-target evaluation failures.
++It is not a mechanized universal compiler-equivalence theorem or proof that entire
 +numeric roots cannot fail. Existing generic Int/closure/array refusals and UOR
 +guards remain in place. Compiler-owned fixtures are test inputs, not substituted
 +application Lean or handwritten target implementations.
 +
-+The reconstructed candidate requires fresh pinned-SDK compilation, regression
-+results, and independent review. See scripts/check-numeric-source-stage.sh for
-+the full source-stage command contract; every failed gate remains recorded.
++The repair has no local Lean SDK execution evidence. It requires fresh pinned-SDK
++compilation, regression results, and independent review. See
++scripts/check-numeric-source-stage.sh for the full source-stage command contract;
++every failed gate remains recorded.
