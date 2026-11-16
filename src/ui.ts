@@ -66,7 +66,7 @@ export class UI{
  }
  event(e:GameEvent,s:Snapshot){
   const name=(id:string|undefined)=>escape(s.players.find(p=>p.id===id)?.name??'Operator');
-  if(e.type==='kill'){this.killLines.unshift({text:`<b>${name(e.actor)}</b> <span>${e.head?'⌖':'—'} ${escape(WEAPONS[e.weapon!]?.name??'')}</span> ${name(e.target)}`,until:performance.now()+6500});this.killLines=this.killLines.slice(0,5);}
+  if(e.type==='kill'){this.killLines.unshift({text:`<b>${!e.actor&&e.text==='Device blast'?'Bomb blast':name(e.actor)}</b> <span>${e.head?'⌖':'—'} ${escape(WEAPONS[e.weapon!]?.name??'')}</span> ${name(e.target)}`,until:performance.now()+6500});this.killLines=this.killLines.slice(0,5);}
   if(e.type==='hit'&&e.actor===s.self.id)this.hitUntil=performance.now()+160;
   if(e.type==='plant'||e.type==='defuse')this.toast(e.text??'');
  }
@@ -78,11 +78,11 @@ export class UI{
   const planted=s.bomb?.state==='planted'&&!s.bomb.terminal&&s.phase==='live';const time=planted?s.bomb!.remaining:s.remaining;
   const seconds=Math.ceil(Math.max(0,time));$('clock').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
   $('clock').classList.toggle('urgent',planted||time<15&&s.phase==='live');
-  $('phase-label').textContent=planted?`DEVICE AT ${s.bomb?.site}`:s.phase==='freeze'?'BUY PHASE':s.phase==='waiting'?'WAITING':s.phase==='matchEnd'?'MATCH COMPLETE':s.phase==='ended'?'ROUND COMPLETE':'LIVE ROUND';
+  $('phase-label').textContent=planted?`BOMB AT ${s.bomb?.site}`:s.phase==='freeze'?'BUY PHASE':s.phase==='waiting'?'WAITING':s.phase==='matchEnd'?'MATCH COMPLETE':s.phase==='ended'?'ROUND COMPLETE':'LIVE ROUND';
   $('round-label').textContent=`ROUND ${String(s.round).padStart(2,'0')}`;
   $('session-room').textContent=s.room;$('ping').textContent=s.room==='PRACTICE'?'LOCAL':`${Math.round(ping)} MS`;
   $('zone').textContent=zoneAt(pos.x,pos.z);$('health').textContent=String(self.health);$('armor').textContent=String(self.armor);$('money').textContent=`$${self.money.toLocaleString()}`;
-  $('equipment').textContent=[s.bomb?.carrier===self.id?'◈ DEVICE':'',self.kit?'◇ KIT':''].filter(Boolean).join('  ');
+  $('equipment').textContent=[s.bomb?.carrier===self.id?'◈ BOMB':'',self.kit?'◇ KIT':''].filter(Boolean).join('  ');
   const g=self.inventory[self.slot];$('weapon-name').textContent=WEAPONS[g.id].name.toUpperCase();$('ammo').textContent=String(g.ammo).padStart(2,'0');$('reserve').textContent=String(g.reserve);$('reload-label').textContent=self.reloadLeft>0?`RELOADING  ${self.reloadLeft.toFixed(1)}s`:'1 PRIMARY  ·  2 SIDEARM';
   const duration=self.action==='PLANTING'?RULES.plantSeconds:self.kit?RULES.kitDefuseSeconds:RULES.defuseSeconds;
   this.show('objective',self.progress>0);$('objective-text').textContent=`${self.action} · ${Math.max(0,(1-self.progress)*duration).toFixed(1)}s`;$('objective-progress').style.width=`${Math.min(100,self.progress*100)}%`;

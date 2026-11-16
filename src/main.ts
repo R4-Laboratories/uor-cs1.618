@@ -33,7 +33,7 @@ let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=nul
 let peerRoom:PeerRoom|null=null;
 let directory:MatchDirectory|null=null;
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
-let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0,beepTime=0;
+let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0;
 let pending:{input:Input;canMove:boolean}[]=[];const keys=new Set<string>();
 const saved=(key:string,fallback:string)=>{try{return localStorage.getItem(key)??fallback;}catch{return fallback;}};
 const save=(key:string,value:string)=>{try{localStorage.setItem(key,value);}catch{}};
@@ -59,7 +59,7 @@ const directoryReady=policyReady.then(async policy=>{
 }).catch(()=>{$('directory-status').textContent='Verified directory unavailable: identity policy could not load. Private invitations still work.';return null;});
 $('refresh-matches').onclick=()=>{void directory?.refresh();};
 $<HTMLSelectElement>('room-visibility').onchange=()=>ui.show('public-disclosure',$<HTMLSelectElement>('room-visibility').value==='public');
-window.addEventListener('pagehide',()=>{void directory?.stop();peerRoom?.close();});
+window.addEventListener('pagehide',()=>{audio.stop();void directory?.stop();peerRoom?.close();});
 try{$<HTMLInputElement>('procedural-art').checked=localStorage.getItem('cs1618-art')!=='off';}catch{}
 view.artwork.setEnabled($<HTMLInputElement>('procedural-art').checked);
 $<HTMLInputElement>('procedural-art').onchange=e=>{const enabled=(e.target as HTMLInputElement).checked;view.artwork.setEnabled(enabled);try{localStorage.setItem('cs1618-art',enabled?'on':'off');}catch{}};
@@ -74,6 +74,7 @@ function receive(m:any){
   const s=m as Snapshot,previous=snapshot;
   if(previous&&s.tick<=previous.tick)return;
   if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
+  if(previous&&previous.self.weapon!==s.self.weapon)audio.event({id:0,type:'equip'},{...s.self,yaw},s.self.id);
   snapshot=s;lastSnapshot=performance.now();
   pending=pending.filter(p=>p.input.seq>s.self.seq);
   position={x:s.self.x,y:s.self.y,z:s.self.z,vx:s.self.vx,vy:s.self.vy,vz:s.self.vz,grounded:s.self.grounded,crouch:s.self.crouch};
@@ -91,7 +92,7 @@ function receive(m:any){
  }
  if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;busy(false);}return;}
 }
-function disconnect(){void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
+function disconnect(){audio.stop();void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
 async function joinPeer(host:boolean,listing?:MatchListing){
  if(connecting)return;
  let invite,network;try{
@@ -187,7 +188,7 @@ function frame(now:number){
  if(snapshot&&position){
   uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target);uiTime=0;}
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
-  if(snapshot.bomb?.state==='planted'&&snapshot.phase==='live'){beepTime+=dt;if(beepTime>(snapshot.bomb.remaining<10?.35:1)){audio.beep();beepTime=0;}}
+  audio.update(dt,snapshot,{...position,yaw});
   if(peerRoom){const p=peerRoom.status;for(const el of document.querySelectorAll<HTMLElement>('.peer-state'))el.textContent=p.host?`HOST · ${p.peers} guest connection(s) · ${p.route}`:`WEBRTC · ${p.route} · ${p.fast?'realtime channel':'reliable fallback'}`;}
   if(now-lastSnapshot>20000&&peerRoom&&!peerRoom.isHost){disconnect();ui.status('The browser host stopped responding. Ask the host to keep its tab active.');}
   if(now-lastSnapshot>5000&&socket){disconnect();ui.status('Connection lost. Rejoin the room to continue.');}

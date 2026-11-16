@@ -12,16 +12,16 @@ export function objectiveHint(s:Snapshot,pos:Motion):string{
  if(b?.terminal)return s.reason;
  if(p.action)return `${p.action} · HOLD E · stand still`;
  if(b?.state==='planted'){
-  if(p.team==='attack')return `PROTECT DEVICE ${b.site} · ${bearing(b.x,b.z)} · ${Math.ceil(b.remaining)}s`;
+  if(p.team==='attack')return `PROTECT BOMB ${b.site} · ${bearing(b.x,b.z)} · ${Math.ceil(b.remaining)}s`;
   const near=Math.hypot(pos.x-b.x,pos.z-b.z,pos.y-b.y)<2.3;
   const teammate=b.defuser&&b.defuser!==p.id?' · TEAMMATE DEFUSING — COVER THEM':'';
   return `${near&&!teammate?'HOLD E TO DEFUSE':'DEFUSE'} ${b.site} · ${bearing(b.x,b.z)} · ${p.kit?R.kitDefuseSeconds:R.defuseSeconds}s${teammate}`;
  }
  if(p.team==='defend')return `DEFEND · ${sites} · Stop the plant`;
- if(b?.state==='dropped')return `RECOVER DEVICE · ${bearing(b.x,b.z)} · Walk over to pick up`;
+ if(b?.state==='dropped')return `RECOVER BOMB · ${bearing(b.x,b.z)} · Walk over to pick up`;
  if(b?.carrier===p.id){
   if(MAP.sites.some(site=>Math.hypot(pos.x-site.x,pos.z-site.z)<site.radius))return 'HOLD E TO PLANT · stand still';
-  return `PLANT DEVICE · ${sites}`;
+  return `PLANT BOMB · ${sites}`;
  }
  const carrier=s.players.find(player=>player.id===b?.carrier);
  return `ESCORT CARRIER${carrier?` · ${bearing(carrier.x,carrier.z)}`:''} · ${sites}`;
