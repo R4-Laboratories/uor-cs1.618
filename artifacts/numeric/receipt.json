@@ -82,8 +82,20 @@
     "artifacts/numeric/probe-evidence.tar.gz": "bf6dcdf070726851b01f985b131b3ad0a3d66a5617f57a0ade71fd0b75fe00b2",
     "artifacts/numeric/first-export-red.tar.gz": "24794b0e6caac4c23bbe18982214fae07b284505bf0630d8d5bbdb6dfe9b6e3a",
     "artifacts/numeric/numeric.wasm.gz": "5b8581de29a20504d4a0f527e693d38a1a1dbae4c2aa4711e0d935519280058b",
-    "artifacts/numeric/manifest.json": "d5a589bcc85257f7250d2af6c2138988f8b4c25c733e09c7c2685743c45d2214",
+    "artifacts/numeric/manifest.json": "42627d53c5bd57c4294a4078b8a8ae43a06143470d83f0ec52b678c08f23aa55",
     "artifacts/numeric/exported-signatures.json": "8e8afe6b4a4ce9e11b94611123e057deaa7d29e2cb210d5540d40c7357088c8b",
-    "artifacts/numeric/targets.json": "84a0b823e20a923deb5070b18ce4710a55090846ffc22d796bb468e9216d274e"
-  }
+    "artifacts/numeric/targets.json": "84a0b823e20a923deb5070b18ce4710a55090846ffc22d796bb468e9216d274e",
+    "artifacts/numeric/red-clean-build.log": "6df8153ab131150bdcca2a7c5303234b7d13b42aeb49811bdc3bf363ffa4ee40",
+    "artifacts/numeric/green-clean-build.log": "b1e67e64a8cd60a3c4f6f298fbe521bd3170377ac73fe1f632c022fc8c5bcc26",
+    "scripts/numeric/tests/test_build.py": "be82d6b38528060cb0f4720124ad19f7b7203e933939912f0aab1f526d701766"
+  },
+  "harness_fixes": [
+    {
+      "change": "Generate deterministic corpus before SDK work and collection",
+      "verification": "real build.sh, oracle.py and collect.py in isolated temporary workspaces with a stubbed SDK boundary",
+      "tests": 2,
+      "corpus_sha256": "f50314b9e145085fd6ed85e3fb0984578e22ef956253be27ff5493287088b9d9",
+      "scope": "No numeric source, emitted output, production bundle or proof identity changed; prior full verification evidence retained; build.sh custody hash refreshed after focused orchestration verification."
+    }
+  ]
 }

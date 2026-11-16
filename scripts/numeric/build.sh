@@ -2,6 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 mkdir -p artifacts/numeric
+# Collection binds this deterministic corpus; generate it before SDK work.
+python3 scripts/numeric/oracle.py > artifacts/numeric/oracle.log
 # The caller may provide a runner for the exact pinned production SDK image.
 runner=${NUMERIC_SDK_RUNNER:-scripts/numeric/run-cached-sdk.sh}
 "$runner" sh -c 'cd /workspace/prism/numeric; lexlean lock && lexlean fmt && lexlean lock; status=$?; chmod -R a+rwX .; exit $status' > artifacts/numeric/format.log 2>&1

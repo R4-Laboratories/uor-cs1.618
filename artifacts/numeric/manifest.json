@@ -62,7 +62,7 @@
     "scripts/numeric/native.rs": "5026c68406d69a42bb0090d9b16cd73d86861b312b6d47b3e5403d412f4882e7",
     "scripts/numeric/wasm.rs": "f66bd4657b8d44a2f18bfb293447317f8c1701c6d30e10f203ee6b66ce9274fe",
     "scripts/numeric/test.sh": "f9d88ee652731ba57f03e638cf7feaedda6b48f36662b4cb55db1a86b74961f0",
-    "scripts/numeric/build.sh": "757cf2279fbb48cd3d5af94df5a709975564b3f89a3ab4919e787a2260ed0cb4",
+    "scripts/numeric/build.sh": "bb76977e3f2818c59692ce8a30848b09ba55aae66d238c166913a29b9ee32052",
     "scripts/numeric/run-cached-sdk.sh": "9eb42f0c1c578c4167aee58c9549cb24d6f11fee53a76a89fe2271acc01d49d7",
     "scripts/numeric/replay.mjs": "6fc75319b83f2d61cb0adee86a2374e87dc3ca14c3bea602e6820030a3a8f04c",
     "model/numeric-kernels.json": "bc0eb2e63ecd50a5eec33cafc7d40eb04f4e913bc733316812e84a019d708518",
