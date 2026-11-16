@@ -1,3 +1,5 @@
+import {decideTactic} from '../shared/generated-tactics';
+import type {TacticDecider,BotFacts} from '../shared/creative-program';
 import {RULES as R,WEAPONS,type Team,type Phase} from '../shared/config';
 import {MAP} from '../shared/map';
 import {neutralInput,type Input,type Motion,type Gun,type Bomb,type GameEvent,type Snapshot,type PublicPlayer,type SelfState} from '../shared/protocol';
@@ -17,7 +19,7 @@ export class Match {
  players=new Map<string,Player>();phase:Phase='waiting';phaseLeft:number=R.freezeSeconds;time=0;tick=0;round=0;
  score={attack:0,defend:0};bomb:Bomb|null=null;winner:Team|null=null;reason='Waiting for both teams';events:GameEvent[]=[];
  private eventId=0;private randomState=1618;nav:BotNavigator;botsEnabled=false;
- constructor(public room:string,public engine:VerdantEngine,private roundKernel:RoundKernel){this.nav=new BotNavigator(engine);}
+ constructor(public room:string,public engine:VerdantEngine,private roundKernel:RoundKernel,private tacticDecider:TacticDecider=decideTactic){this.nav=new BotNavigator(engine);}
  random(){let x=this.randomState;x^=x<<13;x^=x>>>17;x^=x<<5;this.randomState=x;return (x>>>0)/4294967296;}
  emit(e:Omit<GameEvent,'id'>){this.events.push({id:++this.eventId,at:this.time,...e});if(this.events.length>80)this.events.shift();}
  join(id:string,name:string,wanted:Team|'auto',bot=false){
@@ -178,7 +180,16 @@ export class Match {
   if(b?.state==='planted')goal={x:b.x,z:b.z};
   else if(b?.state==='dropped'&&p.team==='attack')goal=b;
   else if(p.team==='defend')goal={x:p.id.charCodeAt(p.id.length-1)%2?-17:17,z:-11};
-  if(enemy){
+  const facts:BotFacts={enemy:!!enemy,empty:p.inventory[p.slot].ammo===0,lowAmmo:p.inventory[p.slot].ammo<8,
+   canPlant:b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5),
+   canDefuse:b?.state==='planted'&&p.team==='defend'&&Math.hypot(b.x-p.x,b.z-p.z)<1.8,
+   urgent:b?.state==='planted'&&b.remaining<=(p.kit?R.kitDefuseSeconds:R.defuseSeconds)+1.5,
+   carrier:b?.carrier===p.id,attacker:p.team==='attack',planted:b?.state==='planted',dropped:b?.state==='dropped'};
+  const tactic=this.tacticDecider(facts);
+  if(tactic==='interact'&&(facts.canPlant||facts.canDefuse)){i.use=true;p.input=i;return;}
+  if(tactic==='reload'&&p.inventory[p.slot].ammo<WEAPONS[p.inventory[p.slot].id].mag&&p.inventory[p.slot].reserve>0){i.reload=true;p.input=i;return;}
+  if(tactic==='escort'&&p.team==='attack'&&b?.state==='carried'&&b.carrier!==p.id){const carrier=this.players.get(b.carrier!);if(carrier){goal={x:carrier.x,z:carrier.z};if(Math.hypot(goal.x-p.x,goal.z-p.z)<3&&!enemy){p.input=i;return;}}}
+  if(enemy&&(tactic===null||tactic==='engage')){
    const dx=enemy.x-p.x,dz=enemy.z-p.z,dy=enemy.y+(enemy.crouch?0.75:1.2)-(p.y+R.eyeHeight);const d=Math.hypot(dx,dz);
    const aim=Math.atan2(-dx,-dz);let delta=Math.atan2(Math.sin(aim-p.yaw),Math.cos(aim-p.yaw));i.yaw=p.yaw+Math.max(-dt*4,Math.min(dt*4,delta));i.yaw=Math.atan2(Math.sin(i.yaw),Math.cos(i.yaw));i.pitch=Math.atan2(dy,d);
    if(Math.abs(delta)<0.1&&p.botShoot<=0){i.fire=true;p.botShoot=WEAPONS[p.inventory[p.slot].id].automatic?0:0.35;}

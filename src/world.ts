@@ -1,3 +1,4 @@
+import {ArtworkLayer} from './creative/artwork';
 import {optimizeScenery} from './generated/render-policy';
 import * as T from 'three';
 import {BOXES,MAP,type Box} from '../shared/map';
@@ -21,6 +22,7 @@ export class WorldView{
  private buildingScenery=true;
  private undoEvolution:(()=>void)|null=null;
  evolutionStatus='baseline';
+ artwork:ArtworkLayer;
  constructor(public canvas:HTMLCanvasElement,options:{evolution?:boolean;preserveDrawingBuffer?:boolean}={}){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:options.preserveDrawingBuffer??false});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
   this.scene.background=new T.Color(0xc6d4d3);this.scene.fog=new T.Fog(0xc6d4d3,50,155);
@@ -33,6 +35,7 @@ export class WorldView{
   for(const b of BOXES)this.buildBox(b);
   this.details();
   for(const s of MAP.sites){const col=s.id==='A'?0xc67f4f:0x67aaa7;const ring=new T.Mesh(new T.RingGeometry(s.radius-.12,s.radius,64),new T.MeshBasicMaterial({color:col,transparent:true,opacity:.7,side:T.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(s.x,.018,s.z);this.scene.add(ring);this.sign(s.id,s.x,.03,s.z+2.5,2.2,col,true);this.sign(`SITE ${s.id}`,s.x,3.5,-20.45,2.8,col);}
+  this.artwork=new ArtworkLayer(this.scene);
   this.buildingScenery=false;
   if(options.evolution!==false){try{this.undoEvolution=optimizeScenery(this.scene);this.evolutionStatus='active';}catch{this.evolutionStatus='rolled-back';}}
   this.bomb=this.makeBomb();this.scene.add(this.bomb);this.bomb.visible=false;

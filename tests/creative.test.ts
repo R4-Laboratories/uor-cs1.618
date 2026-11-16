@@ -18,3 +18,17 @@ test('model author validates responses and records provider failure without exec
  for(const response of [new Response('',{status:403}),new Response('{"choices":[{"message":{"content":"process.exit()"}}]}',{status:200})]){const result=await requestModelProposal('token','brief',async()=>response);assert.equal(result.status,'unavailable');assert.equal(result.proposal,null);}
  const unavailable=await requestModelProposal('token','brief',async()=>{throw new Error('network');});assert.equal(unavailable.status,'unavailable');
 });
+import {readFile} from 'node:fs/promises';
+import {createEngine} from '../shared/engine';
+import {createRoundKernel} from '../shared/round-kernel';
+import {Match} from '../server/match';
+test('generated tactics complete a real emergency defuse while a visible enemy distracts the baseline',async()=>{
+ const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm')),kernel=await createRoundKernel(await readFile('public/wasm/cs_round.wasm'));
+ const run=(creative:boolean)=>{const m=new Match('TACTIC',engine,kernel,...(creative?[(facts:BotFacts)=>decideProgram(synthesizeTactics(42),facts)]:[]) as []);m.join('a','Enemy','attack');const bot=m.join('d','Defuser','defend',true)!;m.phase='live';m.phaseLeft=80;Object.assign(bot,{x:0,z:18,kit:true});Object.assign(m.players.get('a')!,{x:0,z:22});m.bomb={state:'planted',carrier:null,x:0,y:0,z:18,site:'A',remaining:6.2};for(let i=0;i<320;i++)m.step(1/60);return m;};
+ assert.equal(run(true).reason,'Device defused');assert.notEqual(run(false).reason,'Device defused');
+});
+test('tactics receive local visible facts, never hidden enemy coordinates',async()=>{
+ const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm')),kernel=await createRoundKernel(await readFile('public/wasm/cs_round.wasm'));let seen:BotFacts|undefined;
+ const m=new Match('FACTS',engine,kernel,f=>{seen=f;return null;});const a=m.join('a','Scout','attack',true)!;const d=m.join('d','Hidden','defend')!;m.phase='live';Object.assign(a,{x:-12,z:22});Object.assign(d,{x:-12,z:0});m.botInput(a,1/60);
+ assert.equal(seen!.enemy,false);assert.ok(Object.values(seen!).every(v=>typeof v==='boolean'));assert.equal(Object.keys(seen!).length,10);
+});
