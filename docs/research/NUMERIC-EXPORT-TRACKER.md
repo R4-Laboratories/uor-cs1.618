@@ -68,8 +68,9 @@ before admission. The reviewed fix now passes the actual focused Lean, generated
 native and import-free Wasm checks at optimization levels 0 and 2, using isolated
 components whose Lean/Rust/Cargo binaries match the SDK. The [retained report](numeric-export/recovery-2026-11-16/source-stage-fix-2a13f94.md)
 and [scoped review](numeric-export/recovery-2026-11-16/source-stage-round3-review-2a13f94.md)
-record the exact scope. Full pinned-SDK acceptance remains pending; no production
-tool, SDK identity, guest or Pages build was replaced.
+record the exact scope. Full pinned-SDK source-stage acceptance and [final
+independent review](numeric-export/recovery-2026-11-16/source-stage-final-review-2a13f94.md)
+now pass. No production tool, SDK identity, guest or Pages build was replaced.
 
 The earlier local compiler candidate was lost in an environment reset.
 [Recovery notes and actual CI artifacts](numeric-export/recovery-2026-11-16/)
@@ -79,9 +80,10 @@ test-tool setup. The reviewed diagnostic repair now runs independent focused
 checks before supplemental preparation and preserves output/status on failures.
 [Run 43973785776](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43973785776)
 passed every nonfocused gate but failed a fixture compilation check. Later exact
-CI confirmed the next fixture error; both are retained and repaired. Current
+CI confirmed the next fixture error; both are retained and repaired. Final
 [run 43978245009](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43978245009)
-tests corrected source `2a13f942b04f0828e03c5d7db7e4db6ecb626d6e` through all gates.
+passes all31 gates, both focused replays, and original SDK/tool/lock checks for
+corrected source `2a13f942b04f0828e03c5d7db7e4db6ecb626d6e`; its generated diff is empty.
 
 Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
 that preserves the original SDK seed as the default, bounded shared-source

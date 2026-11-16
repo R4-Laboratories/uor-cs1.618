@@ -193,11 +193,11 @@
     },
     {
       "id": "NEXP-009",
-      "status": "source_focused_passed_full_sdk_pending",
+      "status": "source_stage_passed_backport_in_progress",
       "repo": "lean4-prod / PrismPM / uor-cs1.618",
       "function": "Canonical bounded numeric export and conversion normalization",
       "summary": "Game-owned raw mul32/mul64/div32/div64 pass 44,648 native/Wasm vectors; canonical admission remains blocked by compiler/source integration and an unsafe consumed-dictionary erasure finding.",
-      "reproduction": "Reviewed source2a13f94 passes actual component-only focused Lean and generated native/import-free Wasm O0/O2, including four consumed-dependency refusals and unchanged AddOverflow replay. Full pinned-SDK CI43978245009 and dual-authority acquisition/canonical game roots remain pending.",
+      "reproduction": "Reviewed source2a13f94 passes exact pinned-SDK CI43978245009: all31 gates, early and prepared-environment focused native/import-free Wasm O0/O2, four consumed-dependency refusals and unchanged AddOverflow replay. Original SDK/tool/lock hashes match. Dual-authority acquisition and canonical game roots remain pending.",
       "acceptance_criteria": [
         "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
         "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
@@ -211,7 +211,9 @@
         "recovery-2026-11-16/ci-43970122933-review.md",
         "recovery-2026-11-16/backport-selection-recon.md",
         "recovery-2026-11-16/source-stage-fix-2a13f94.md",
-        "recovery-2026-11-16/source-stage-round3-review-2a13f94.md"
+        "recovery-2026-11-16/source-stage-round3-review-2a13f94.md",
+        "recovery-2026-11-16/ci-43978245009-artifact.json",
+        "recovery-2026-11-16/source-stage-final-review-2a13f94.md"
       ],
       "dependencies": [
         "NEXP-002",

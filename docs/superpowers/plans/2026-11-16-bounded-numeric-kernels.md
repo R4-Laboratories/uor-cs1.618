@@ -19,7 +19,7 @@
 - Status0 success,1 unsupported operation,2 arithmetic failure,3 renderer-domain failure; no error-to-zero fallback.
 - Preserve exact hidden production bundles and source/compiler/target/output hashes; distinguish proof, tested conformance and measured performance.
 - Original UORust float guard remains unchanged; no upstream PRs in this phase.
-- Do not download another large SDK locally; current free disk is about2.3GiB.
+- Do not pull the full Docker SDK locally on vfs. Isolated, hash-verified compiler components may support diagnostics within a measured disk budget (keep at least8GiB free); full acceptance still runs in the pinned SDK.
 
 ## Review Focus
 
@@ -58,9 +58,9 @@
 
 Actual fixtures show primitive success but failures for generic conversion dictionaries and composed helpers; higher-order iteration and mathematical Int also need supported handling. This task precedes the bitwise comparison so it uses the final shared source.
 
-- [ ] Reproduce with exact canonical module staging; distinguish missing compiler artifacts or extraction setup from actual exporter defects.
+- [x] Reproduce with exact canonical module staging; distinguish missing compiler artifacts or extraction setup from actual exporter defects.
 - [ ] Repair the smallest confirmed exporter issue with a separately identified, reviewable source backport when needed. Retain the base SDK pin and all original guards; bind actual patched tool source/binary identities explicitly. Do not relabel a patched tool as the pristine SDK or weaken verification, error behavior, or time limits.
-- [ ] Add focused regression/negative cases for helper specialization and conversions; run the applicable upstream acceptance gates before admitting the tool change.
+- [x] Add focused regression/negative cases for helper specialization and conversions; run the applicable upstream acceptance gates before admitting the tool change.
 - [ ] Adapt internal exponent/comparison/loop representation to supported bounded source forms, preserving raw APIs, all IEEE policies, and explicit failures. Re-export/replay all four roots and the full corpus after source changes.
 - [ ] Validate actual canonical extraction/code generation, retain proof/custody evidence, and independently review. Upstream PRs remain deferred; no canonical admission claim from raw-export success alone.
 
