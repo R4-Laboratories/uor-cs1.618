@@ -1,0 +1,182 @@
+\begin{lexlean}{Wide}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{addition}
+\begin{semanticmodule}
+structure{
+  name: Limbs,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: l0, type: UInt32},
+    {name: l1, type: UInt32},
+    {name: l2, type: UInt32},
+    {name: l3, type: UInt32}
+  ]
+}
+
+definition{
+  name: multiply,
+  parameters: [a : UInt64, b : UInt64],
+  result: (Option Limbs),
+  body: (match (ctor Option.some [UInt64] (prim bit_and a (4294967295 : UInt64) : UInt64))
+    | Option.some a0 => (match (prim shift_right a (32 : UInt32) : (Option UInt64))
+      | Option.some a1 => (match (ctor Option.some [UInt64] (prim bit_and b (4294967295 : UInt64) : UInt64))
+        | Option.some b0 => (match (prim shift_right b (32 : UInt32) : (Option UInt64))
+          | Option.some b1 => (match (prim checked_multiply a0 b0 : (Option UInt64))
+            | Option.some t0 => (match (prim shift_right t0 (32 : UInt32) : (Option UInt64))
+              | Option.some c0 => (match (prim checked_multiply a1 b0 : (Option UInt64))
+                | Option.some m1 => (match (prim checked_add m1 c0 : (Option UInt64))
+                  | Option.some t1 => (match (prim checked_multiply a0 b1 : (Option UInt64))
+                    | Option.some m2 => (match (prim checked_add m2 (prim bit_and t1 (4294967295 : UInt64) : UInt64) : (Option UInt64))
+                      | Option.some t2 => (match (prim shift_right t1 (32 : UInt32) : (Option UInt64))
+                        | Option.some c1 => (match (prim shift_right t2 (32 : UInt32) : (Option UInt64))
+                          | Option.some c2 => (match (prim checked_multiply a1 b1 : (Option UInt64))
+                            | Option.some m3 => (match (prim checked_add m3 c1 : (Option UInt64))
+                              | Option.some u3 => (match (prim checked_add u3 c2 : (Option UInt64))
+                                | Option.some t3 => (match (prim shift_right t3 (32 : UInt32) : (Option UInt64))
+                                  | Option.some top => (match (prim checked_convert (prim bit_and t0 (4294967295 : UInt64) : UInt64) : (Option UInt32))
+                                    | Option.some r0 => (match (prim checked_convert (prim bit_and t2 (4294967295 : UInt64) : UInt64) : (Option UInt32))
+                                      | Option.some r1 => (match (prim checked_convert (prim bit_and t3 (4294967295 : UInt64) : UInt64) : (Option UInt32))
+                                        | Option.some r2 => (match (prim checked_convert (prim bit_and top (4294967295 : UInt64) : UInt64) : (Option UInt32))
+                                          | Option.some r3 => (ctor Option.some [Limbs] (record Limbs {l0 := r0, l1 := r1, l2 := r2, l3 := r3}))
+                                          | Option.none => (ctor Option.none [Limbs]))
+                                        | Option.none => (ctor Option.none [Limbs]))
+                                      | Option.none => (ctor Option.none [Limbs]))
+                                    | Option.none => (ctor Option.none [Limbs]))
+                                  | Option.none => (ctor Option.none [Limbs]))
+                                | Option.none => (ctor Option.none [Limbs]))
+                              | Option.none => (ctor Option.none [Limbs]))
+                            | Option.none => (ctor Option.none [Limbs]))
+                          | Option.none => (ctor Option.none [Limbs]))
+                        | Option.none => (ctor Option.none [Limbs]))
+                      | Option.none => (ctor Option.none [Limbs]))
+                    | Option.none => (ctor Option.none [Limbs]))
+                  | Option.none => (ctor Option.none [Limbs]))
+                | Option.none => (ctor Option.none [Limbs]))
+              | Option.none => (ctor Option.none [Limbs]))
+            | Option.none => (ctor Option.none [Limbs]))
+          | Option.none => (ctor Option.none [Limbs]))
+        | Option.none => (ctor Option.none [Limbs]))
+      | Option.none => (ctor Option.none [Limbs]))
+    | Option.none => (ctor Option.none [Limbs])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: right,
+  parameters: [w : Limbs],
+  result: (Option Limbs),
+  body: (match (prim shift_right (project w l0) (1 : UInt32) : (Option UInt32))
+    | Option.some q0 => (match (prim shift_right (project w l1) (1 : UInt32) : (Option UInt32))
+      | Option.some q1 => (match (prim shift_right (project w l2) (1 : UInt32) : (Option UInt32))
+        | Option.some q2 => (match (prim shift_right (project w l3) (1 : UInt32) : (Option UInt32))
+          | Option.some q3 => (match (prim shift_left (prim bit_and (project w l1) (1 : UInt32) : UInt32) (31 : UInt32) : (Option UInt32))
+            | Option.some c0 => (match (prim shift_left (prim bit_and (project w l2) (1 : UInt32) : UInt32) (31 : UInt32) : (Option UInt32))
+              | Option.some c1 => (match (prim shift_left (prim bit_and (project w l3) (1 : UInt32) : UInt32) (31 : UInt32) : (Option UInt32))
+                | Option.some c2 => (ctor Option.some [Limbs] (record Limbs {l0 := (prim bit_or q0 c0 : UInt32), l1 := (prim bit_or q1 c1 : UInt32), l2 := (prim bit_or q2 c2 : UInt32), l3 := q3}))
+                | Option.none => (ctor Option.none [Limbs]))
+              | Option.none => (ctor Option.none [Limbs]))
+            | Option.none => (ctor Option.none [Limbs]))
+          | Option.none => (ctor Option.none [Limbs]))
+        | Option.none => (ctor Option.none [Limbs]))
+      | Option.none => (ctor Option.none [Limbs]))
+    | Option.none => (ctor Option.none [Limbs])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: low64,
+  parameters: [w : Limbs],
+  result: (Option UInt64),
+  body: (if ((prim equal (project w l2) (0 : UInt32) : Bool) && (prim equal (project w l3) (0 : UInt32) : Bool)) then (match (prim checked_convert (project w l0) : (Option UInt64))
+    | Option.some lo => (match (prim checked_convert (project w l1) : (Option UInt64))
+      | Option.some hi => (match (prim shift_left hi (32 : UInt32) : (Option UInt64))
+        | Option.some sh => (ctor Option.some [UInt64] (prim bit_or lo sh : UInt64))
+        | Option.none => (ctor Option.none [UInt64]))
+      | Option.none => (ctor Option.none [UInt64]))
+    | Option.none => (ctor Option.none [UInt64])) else (ctor Option.none [UInt64])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: lengthStep,
+  parameters: [state : (Option (UInt32 * Int))],
+  result: (Option (UInt32 * Int)),
+  body: (match state
+    | Option.some st => (match (prim shift_right (first st) (1 : UInt32) : (Option UInt32))
+      | Option.some next => (ctor Option.some [(UInt32 * Int)] (next, (if (prim equal (first st) (0 : UInt32) : Bool) then (second st) else (prim subtract (second st) (-1 : Int) : Int))))
+      | Option.none => (ctor Option.none [(UInt32 * Int)]))
+    | Option.none => (ctor Option.none [(UInt32 * Int)])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length32,
+  parameters: [v : UInt32],
+  result: (Option Int),
+  body: (match (prim iterate (fun (state : (Option (UInt32 * Int))) => (lengthStep state)) 32 (ctor Option.some [(UInt32 * Int)] (v, (0 : Int))) : (Option (UInt32 * Int)))
+    | Option.some st => (ctor Option.some [Int] (second st))
+    | Option.none => (ctor Option.none [Int])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length,
+  parameters: [w : Limbs],
+  result: (Option Int),
+  body: (if (prim equal (project w l3) (0 : UInt32) : Bool) then (if (prim equal (project w l2) (0 : UInt32) : Bool) then (if (prim equal (project w l1) (0 : UInt32) : Bool) then (length32 (project w l0)) else (match (length32 (project w l1))
+    | Option.some n => (ctor Option.some [Int] (prim subtract n (-32 : Int) : Int))
+    | Option.none => (ctor Option.none [Int]))) else (match (length32 (project w l2))
+    | Option.some n => (ctor Option.some [Int] (prim subtract n (-64 : Int) : Int))
+    | Option.none => (ctor Option.none [Int]))) else (match (length32 (project w l3))
+    | Option.some n => (ctor Option.some [Int] (prim subtract n (-96 : Int) : Int))
+    | Option.none => (ctor Option.none [Int]))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+structure{
+  name: Rounding,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: value, type: Limbs}, {name: guard, type: Bool}, {name: sticky, type: Bool}]
+}
+
+definition{
+  name: roundStep,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (match state
+    | Option.some st => (match (right (project st value))
+      | Option.some next => (ctor Option.some [Rounding] (record Rounding {value := next, guard := (prim equal (prim bit_and (project (project st value) l0) (1 : UInt32) : UInt32) (1 : UInt32) : Bool), sticky := ((project st sticky) || (project st guard))}))
+      | Option.none => (ctor Option.none [Rounding]))
+    | Option.none => (ctor Option.none [Rounding])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round,
+  parameters: [w : Limbs, amount : Int],
+  result: (Option UInt64),
+  body: (if (prim less_than amount (0 : Int) : Bool) then (match (prim checked_convert (prim negate amount : Int) : (Option UInt32))
+    | Option.some count => (match (low64 w)
+      | Option.some bits => (prim shift_left bits count : (Option UInt64))
+      | Option.none => (ctor Option.none [UInt64]))
+    | Option.none => (ctor Option.none [UInt64])) else (if (prim less_than (128 : Int) amount : Bool) then (ctor Option.some [UInt64] (0 : UInt64)) else (match (prim checked_convert amount : (Option UInt8))
+    | Option.some count => (match (prim iterate (fun (state : (Option Rounding)) => (roundStep state)) (prim to_nat count : Nat) (ctor Option.some [Rounding] (record Rounding {value := w, guard := false, sticky := false})) : (Option Rounding))
+      | Option.some st => (match (low64 (project st value))
+        | Option.some bits => (if ((project st guard) && ((project st sticky) || (prim equal (prim bit_and bits (1 : UInt64) : UInt64) (1 : UInt64) : Bool))) then (prim checked_add bits (1 : UInt64) : (Option UInt64)) else (ctor Option.some [UInt64] bits))
+        | Option.none => (ctor Option.none [UInt64]))
+      | Option.none => (ctor Option.none [UInt64]))
+    | Option.none => (ctor Option.none [UInt64])))),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}

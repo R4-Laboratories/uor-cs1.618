@@ -1,0 +1,31 @@
+{
+  "spec": "lexlean/production-request/1",
+  "roots": [
+    {
+      "package": {
+        "name": "numeric_mul32",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Float.mul32",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "numeric_mul64",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Float.mul64",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    }
+  ]
+}

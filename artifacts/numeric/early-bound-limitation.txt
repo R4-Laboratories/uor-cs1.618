@@ -1,0 +1,1 @@
+Stopped after inspecting generated proof: to_nat lowers to 32 bit tests per operand and repeat split branches over 64 tests; not a successful bound proof.

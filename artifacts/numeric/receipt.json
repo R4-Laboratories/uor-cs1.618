@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "scope": "Task1 mul32/mul64; no universal IEEE theorem or performance claim",
+  "sdk_pin": "ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c",
+  "sdk_execution": "existing read-only flattened game SDK cache; inventory identical to retained prior evidence; registry tag not present locally",
+  "source": {
+    "lock_sha256": "7b2806004d5f35e529a5e191144baad6dd08fcd13998e1425930c2ccb9dabfaa",
+    "semantic_id": "15df0ec6938aafb6ecc96a3413fb6e11fa6391ef3d45b94339fe5e8aacb2a34e",
+    "source_id": "a14e670ef32c049d1bdef5503f3e1d110bf31c9c40777ebcc024558447b23071"
+  },
+  "compiler": {
+    "lean_toolchain": "leanprover/lean4:v4.32.1",
+    "semantics": "1427f8b629013648a480454d67202788f2303f5396f1d7c70a7c350ddab6f694",
+    "version": "0.4.0"
+  },
+  "target": {
+    "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+    "id": "rust-std"
+  },
+  "result_id": "3e239879c3ca4316d90c524ffbb224c30902639ffcbbc86977ed39b33342c7cd",
+  "attestation_id": "448298172d2de6be279314e876d543adae771fb856a494226907531ea975ed47",
+  "minimal_probe_attestation": "f6ed13956e8fa620010b1453917e81c40684ff6e30be58b9a0f5164f01d0f26e",
+  "exported_signatures": {
+    "numeric_mul32": "pub fn run(p0: u32, p1: u32) -> R<Option<u32>> {",
+    "numeric_mul64": "pub fn run(p0: u64, p1: u64) -> R<Option<u64>> {"
+  },
+  "vectors": {
+    "seed": 1618,
+    "per_format": 11161,
+    "random_per_format": 10000,
+    "total": 22322,
+    "sha256": "f50314b9e145085fd6ed85e3fb0984578e22ef956253be27ff5493287088b9d9"
+  },
+  "native_sha256": "af36bc7c7c5e31a41255182cb4ddabf4c0c3cc01b7987951b9820d4d491214e0",
+  "wasm_sha256": "6cd50b611604938094d9213e81a69b340cfbe6b0dc9ddf2124a46ad437438005",
+  "native_output_sha256": "42ed4e358edbe2e74787bfb1fda72009f44de36782fa59f3d4023cb7402add8a",
+  "wasm_imports": 0,
+  "existing_export_validation_tests": 18,
+  "negative_controls": [
+    "missing kernel before implementation",
+    "source identity",
+    "target identity",
+    "bundle identity",
+    "output hash",
+    "official changed emitted bundle bytes",
+    "actual Wasm result-bit corruption",
+    "wrapper generated-Err-shaped and Option-none statuses"
+  ],
+  "proof_scope": {
+    "kernel_checked": [
+      "source/target/composition preservation including failure effects",
+      "Nat-premise limb addition bound",
+      "Nat-premise cell addition bound assuming product bound"
+    ],
+    "not_proved": [
+      "nonlinear product bound as a source theorem",
+      "global absence of internal checked failure",
+      "universal IEEE conformance"
+    ]
+  },
+  "later_integration_limitation": "PrismPM LCNF backend rejects mathematical Int; current LexLean rust-std exports support bounded Int with overflow effects; separate backend compatibility remains for Task2/3",
+  "files": {
+    "artifacts/numeric/build.log": "5e0e6196658146d338fc2be38875fa8a795afc51b1fdc836f6f61aafb1ef289d",
+    "artifacts/numeric/verify-artifact.log": "ed4302d72a49913734c06e8b687100c0c30df6bda2384babb575d3e0b60c7bf5",
+    "artifacts/numeric/final-tests.log": "5af54f0edd89c33fd6749709f70d793cb7af4338e8230edcfe22f8d2e47ed5b9",
+    "artifacts/numeric/final-custody.log": "9e3e00ae85847c785630bad4aa53a325735bfbd9f4d2f53626482300374b680c",
+    "artifacts/numeric/wasm-replay.log": "11274149bd442d1b6ccd6b9331b66532173ef9e4fe3673538cae3582dcdcbc5e",
+    "artifacts/numeric/red-first-export-timeout.log": "a95e05cbb20c62893f8016e67b9d819b9cf1840ecc0e7f09b80bf5f3692e9a01",
+    "artifacts/numeric/red-wrong-result.log": "4838d89243c7f51fcf497c5e80c653569db1a8c84d40c37c56b1165f14c86579",
+    "artifacts/numeric/red-changed-bundle.log": "27dad7321505cec1c2c703dc2bebbc3330d3d61c9c278ce0ae364b7ed07ccb22",
+    "artifacts/numeric/red-missing-kernel.log": "6b16e253a311a7a74b3bdfeb607e5f21382f0ed2ac3c441d0563baf97499aa7a",
+    "artifacts/numeric/red-bound-policy.log": "7b651af986d3a8e3f6aef4974de0c82e89a68957fd6140f6e43cc142ca37f9b1",
+    "artifacts/numeric/minimal-probe.log": "21fe809a24e5bdb9b663e5b6b9286c089fd9146b504f103b8dbee8ec7f5af3f4",
+    "artifacts/numeric/existing-export-tests.log": "972eea856389ad2d2bd52e3acfa250767706809bbbe37223e906d6262878707e",
+    "artifacts/numeric/compiler-identity.txt": "dbca765959be8a368c024d47278e60673a90815307b5ce10719144b1e39941ca",
+    "artifacts/numeric/early-bound-limitation.txt": "35a346dcaad63066b91831cdfbb7ef3f1c5ef5dfbbb711f8e344e78c77fb8fd4",
+    "artifacts/numeric/early-uint32-bound.lean": "699a410c6588786a85eacc663f27a1b8608ddc7918f71f6447d0eb2d4e9ba80d",
+    "artifacts/numeric/initial-vectors.sha256": "4374a9443c1b7d893621df87ffe8beaff3d4c0bd867ecc5877f8fcfd485cc64e",
+    "artifacts/numeric/sdk-inventory.json": "0d4fe1864891ab1220a752d929a5a3a334f5987e0518a97f83f06fb5bdad105f",
+    "artifacts/numeric/production-bundle.tar.gz": "56d94970f903742035b867395501b191013a938cb4485c63417166e699fb5721",
+    "artifacts/numeric/probe-evidence.tar.gz": "bf6dcdf070726851b01f985b131b3ad0a3d66a5617f57a0ade71fd0b75fe00b2",
+    "artifacts/numeric/first-export-red.tar.gz": "24794b0e6caac4c23bbe18982214fae07b284505bf0630d8d5bbdb6dfe9b6e3a",
+    "artifacts/numeric/numeric.wasm.gz": "5b8581de29a20504d4a0f527e693d38a1a1dbae4c2aa4711e0d935519280058b",
+    "artifacts/numeric/manifest.json": "d5a589bcc85257f7250d2af6c2138988f8b4c25c733e09c7c2685743c45d2214",
+    "artifacts/numeric/exported-signatures.json": "8e8afe6b4a4ce9e11b94611123e057deaa7d29e2cb210d5540d40c7357088c8b",
+    "artifacts/numeric/targets.json": "84a0b823e20a923deb5070b18ce4710a55090846ffc22d796bb468e9216d274e"
+  }
+}

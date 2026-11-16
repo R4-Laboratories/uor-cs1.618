@@ -1,0 +1,4 @@
+{
+  "numeric_mul32": "pub fn run(p0: u32, p1: u32) -> R<Option<u32>> {",
+  "numeric_mul64": "pub fn run(p0: u64, p1: u64) -> R<Option<u64>> {"
+}

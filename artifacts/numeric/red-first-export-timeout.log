@@ -1,0 +1,2 @@
+error[LLS8002]: child_timeout_ms exceeded by `lean` in phase LexLeanPreserve.C763617a2f3df455de181d0aaf6072b64.R0: configured 300000, observed 300008 ms
+  --> lexlean.toml:1:1

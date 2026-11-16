@@ -1,0 +1,21 @@
+\begin{lexlean}{Bounds}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{addition}
+\begin{semanticmodule}
+theorem{
+  name: limbAddBound,
+  parameters: [a : Nat, b : Nat, carry : Nat],
+  statement: ((a <= 4294967295) -> ((b <= 4294967295) -> ((carry <= 1) -> (((a + b) + carry) <= 8589934591)))),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: cellAddBound,
+  parameters: [product : Nat, out : Nat, carry : Nat],
+  statement: ((product <= 18446744065119617025) -> ((out <= 4294967295) -> ((carry <= 4294967295) -> (((product + out) + carry) <= 18446744073709551615)))),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

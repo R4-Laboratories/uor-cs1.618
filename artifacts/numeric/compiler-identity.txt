@@ -1,0 +1,10 @@
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+binary: rustc
+commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+commit-date: 2026-07-14
+host: x86_64-unknown-linux-gnu
+release: 1.97.1
+LLVM version: 22.1.6
+9cba65a6cf2db6c1afc24c60d98621409c6f7eb9a1dcb99298bb658310f6e5d6  /usr/local/bin/lexlean
+/usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/rustc
+d3a664c970a9fd8361b64194861bebc1ae37b9054e5ee3400dc1c9e691797eea  /usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/rustc

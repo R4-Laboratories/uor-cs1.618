@@ -1,0 +1,13 @@
+....Applying: first
+Applying: second
+...Applying: first
+Applying: second
+...Applying: first
+Applying: second
+...Applying: first
+Applying: second
+.....
+----------------------------------------------------------------------
+Ran 18 tests in 1.315s
+
+OK

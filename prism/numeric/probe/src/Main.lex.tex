@@ -1,0 +1,32 @@
+\begin{lexlean}{Main}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{addition}
+\begin{semanticmodule}
+structure{
+  name: Cell,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: low, type: UInt32}, {name: carry, type: UInt32}]
+}
+
+definition{
+  name: checkedRecord,
+  parameters: [a : UInt32],
+  result: (Option Cell),
+  body: (match (prim checked_add a (1 : UInt32) : (Option UInt32))
+    | Option.some b => (ctor Option.some [Cell] (record Cell {low := b, carry := a}))
+    | Option.none => (ctor Option.none [Cell])),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [], targets: [rust-std]}
+}
+
+theorem{
+  name: carryBound,
+  parameters: [a : Nat, b : Nat],
+  statement: ((a <= 4294967295) -> ((b <= 4294967295) -> ((a + b) <= 8589934590))),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}
