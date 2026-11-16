@@ -283,45 +283,45 @@
   "lastEvaluation": {
     "generation": 8,
     "author": null,
-    "at": "2026-11-16T09:19:21.797Z",
-    "base": "0c6c4fb14da3cf8d63a58da390c4561d5f8d1210",
+    "at": "2026-11-16T09:39:06.105Z",
+    "base": "f0bebf0d359aa0ae512a5af41549bf4ec0088d1e",
     "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-    "previous": "e1e616e7ecf5bc3dd5a77e027dcd648b27692bccb0b319348548aef8ad18ce89",
+    "previous": "08e6ee70bdb60885538f3852923341a893ac004f04a09c6e014e8af32d59e94a",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "art-synth-1",
+        "candidate": "art-synth-3",
         "family": "art",
         "author": "seeded-synthesis",
         "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "3d34e351a811181b13184ae4bd74e5af2937488f0bb6ad4b8c89b239192d52d6",
+        "configHash": "53666c444e3dbc32e52892c76d87aa10b85ff4e17aa27b5dafc24eded5e96fab",
         "baselineWork": 0.256539516293412,
-        "candidateWork": 0.2698668259839473,
+        "candidateWork": 0.3015587166548306,
         "fidelity": true,
         "bounds": true,
         "samples": 4,
         "comparisons": [
           {
-            "mean": 0.008015053104575164,
-            "changed": 0.02719921875
+            "mean": 0.008142386642156862,
+            "changed": 0.0267109375
           },
           {
-            "mean": 0.008665727124183006,
-            "changed": 0.0253046875
+            "mean": 0.008826128472222222,
+            "changed": 0.02540625
           },
           {
-            "mean": 0.013485513684640522,
-            "changed": 0.03794140625
+            "mean": 0.013802987132352942,
+            "changed": 0.03817578125
           },
           {
-            "mean": 0.014605203227124183,
-            "changed": 0.03728515625
+            "mean": 0.014963781658496732,
+            "changed": 0.03766796875
           }
         ],
         "reference": {
           "protectedEqual": true,
           "separation": 0.6615373610938612,
-          "evidence": "artifacts/evolution/art/art-synth-1-*.png"
+          "evidence": "artifacts/evolution/art/art-synth-3-*.png"
         },
         "before": {
           "textures": [
@@ -340,22 +340,22 @@
             {
               "calls": 121,
               "triangles": 3536,
-              "frameMs": 4.7000000000116415
+              "frameMs": 5.19999999999709
             },
             {
               "calls": 122,
               "triangles": 3596,
-              "frameMs": 3.1000000000349246
+              "frameMs": 2.2999999999883585
             },
             {
               "calls": 43,
               "triangles": 1404,
-              "frameMs": 1.1000000000349246
+              "frameMs": 0.9000000000087311
             },
             {
               "calls": 34,
               "triangles": 1212,
-              "frameMs": 0.7999999999883585
+              "frameMs": 0.40000000000873115
             }
           ]
         },
@@ -364,148 +364,92 @@
             {
               "site": "A",
               "contrast": 12.145723264040305,
-              "coverage": 0.20899028687598825
+              "coverage": 0.24061441156539418
             },
             {
               "site": "B",
               "contrast": 12.145723264040305,
-              "coverage": 0.2060763496724644
+              "coverage": 0.23783600632482493
             }
           ],
           "frames": [
             {
               "calls": 121,
               "triangles": 3536,
-              "frameMs": 1.8000000000465661
+              "frameMs": 1.6999999999970896
             },
             {
               "calls": 122,
               "triangles": 3596,
-              "frameMs": 1.2999999999883585
+              "frameMs": 2.400000000008731
             },
             {
               "calls": 43,
               "triangles": 1404,
-              "frameMs": 0.5
+              "frameMs": 0.8000000000029104
             },
             {
               "calls": 34,
               "triangles": 1212,
-              "frameMs": 1
+              "frameMs": 0.6999999999970896
             }
           ]
         }
       },
       {
-        "candidate": "art-synth-2",
-        "family": "art",
-        "author": "seeded-synthesis",
-        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "4eabebff2cd0fd21afddb35994e72be08204312779a87ea5a6549e1678079a17",
-        "baselineWork": 0.256539516293412,
-        "candidateWork": 0.2638433720575978,
-        "fidelity": true,
+        "candidate": "experience-0-3",
+        "family": "experience",
+        "author": "typed-recipe-compiler",
+        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+        "configHash": "86e62244a667177bbc7b97eb3feca12566c4828ff914f73440b5c7b67917b862",
+        "baselineWork": 2.0865833333333366,
+        "candidateWork": 2.3365833333333366,
+        "fidelity": false,
         "bounds": true,
-        "samples": 4,
-        "comparisons": [
-          {
-            "mean": 0.009919796772875817,
-            "changed": 0.02816015625
+        "samples": 780,
+        "comparisons": {
+          "r4Verdict": "RefusedNonZeroDefect",
+          "heldOut": {
+            "before": {
+              "loss": 2.0751190476190517,
+              "lateBursts": 0,
+              "loadPixelRatio": 0.5751190476190519,
+              "voiceHighWater": 16,
+              "frames": 420,
+              "fidelity": true
+            },
+            "after": {
+              "loss": 2.3251190476190517,
+              "lateBursts": 0,
+              "loadPixelRatio": 0.5751190476190519,
+              "voiceHighWater": 24,
+              "frames": 420,
+              "fidelity": true
+            }
           },
-          {
-            "mean": 0.010528211805555555,
-            "changed": 0.02726171875
-          },
-          {
-            "mean": 0.016972293709150328,
-            "changed": 0.0390078125
-          },
-          {
-            "mean": 0.017990573937908497,
-            "changed": 0.039015625
-          }
-        ],
-        "reference": {
-          "protectedEqual": true,
-          "separation": 0.6362254127708514,
-          "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+          "interactions": []
         },
+        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
         "before": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 12.145723264040305,
-              "coverage": 0.19548226790151343
-            },
-            {
-              "site": "B",
-              "contrast": 12.145723264040305,
-              "coverage": 0.19292974926586853
-            }
-          ],
-          "frames": [
-            {
-              "calls": 121,
-              "triangles": 3536,
-              "frameMs": 5.7000000000116415
-            },
-            {
-              "calls": 122,
-              "triangles": 3596,
-              "frameMs": 3.599999999976717
-            },
-            {
-              "calls": 43,
-              "triangles": 1404,
-              "frameMs": 0.7999999999883585
-            },
-            {
-              "calls": 34,
-              "triangles": 1212,
-              "frameMs": 0.8000000000465661
-            }
-          ]
+          "loss": 2.0865833333333366,
+          "lateBursts": 0,
+          "loadPixelRatio": 0.5865833333333367,
+          "voiceHighWater": 16,
+          "frames": 360,
+          "fidelity": true
         },
         "after": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 12.834688787207531,
-              "coverage": 0.20725096001807092
-            },
-            {
-              "site": "B",
-              "contrast": 12.834688787207531,
-              "coverage": 0.2046080867404563
-            }
-          ],
-          "frames": [
-            {
-              "calls": 121,
-              "triangles": 3536,
-              "frameMs": 2.2999999999883585
-            },
-            {
-              "calls": 122,
-              "triangles": 3596,
-              "frameMs": 1.5
-            },
-            {
-              "calls": 43,
-              "triangles": 1404,
-              "frameMs": 0.6000000000349246
-            },
-            {
-              "calls": 34,
-              "triangles": 1212,
-              "frameMs": 0.7000000000116415
-            }
-          ]
+          "loss": 2.3365833333333366,
+          "lateBursts": 0,
+          "loadPixelRatio": 0.5865833333333367,
+          "voiceHighWater": 24,
+          "frames": 360,
+          "fidelity": true
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "08e6ee70bdb60885538f3852923341a893ac004f04a09c6e014e8af32d59e94a"
+    "hash": "704abe789375bbdb6fd1fc9a30f42bfa28736d87575233baaf4cf02863e67935"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -2102,6 +2046,177 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "08e6ee70bdb60885538f3852923341a893ac004f04a09c6e014e8af32d59e94a"
+    },
+    {
+      "generation": 8,
+      "author": null,
+      "at": "2026-11-16T09:39:06.105Z",
+      "base": "f0bebf0d359aa0ae512a5af41549bf4ec0088d1e",
+      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
+      "previous": "08e6ee70bdb60885538f3852923341a893ac004f04a09c6e014e8af32d59e94a",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "art-synth-3",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "53666c444e3dbc32e52892c76d87aa10b85ff4e17aa27b5dafc24eded5e96fab",
+          "baselineWork": 0.256539516293412,
+          "candidateWork": 0.3015587166548306,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.008142386642156862,
+              "changed": 0.0267109375
+            },
+            {
+              "mean": 0.008826128472222222,
+              "changed": 0.02540625
+            },
+            {
+              "mean": 0.013802987132352942,
+              "changed": 0.03817578125
+            },
+            {
+              "mean": 0.014963781658496732,
+              "changed": 0.03766796875
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6615373610938612,
+            "evidence": "artifacts/evolution/art/art-synth-3-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19548226790151343
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19292974926586853
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 5.19999999999709
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 2.2999999999883585
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.9000000000087311
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.40000000000873115
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.24061441156539418
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.23783600632482493
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 1.6999999999970896
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 2.400000000008731
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.8000000000029104
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.6999999999970896
+              }
+            ]
+          }
+        },
+        {
+          "candidate": "experience-0-3",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "86e62244a667177bbc7b97eb3feca12566c4828ff914f73440b5c7b67917b862",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.3365833333333366,
+          "fidelity": false,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "RefusedNonZeroDefect",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.3251190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 24,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": []
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.3365833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 24,
+            "frames": 360,
+            "fidelity": true
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "704abe789375bbdb6fd1fc9a30f42bfa28736d87575233baaf4cf02863e67935"
     }
   ]
 }
