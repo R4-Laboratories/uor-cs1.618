@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createEngine} from '../shared/engine';
+import {createRoundKernel} from '../shared/round-kernel';
+import {Match} from '../server/match';
+const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm')),kernel=await createRoundKernel(await readFile('public/wasm/cs_round.wasm'));
+const dt=1/60;
+function setup(){const m=new Match('BOTS',engine,kernel);const a=m.join('a','Carrier','attack')!,d=m.join('d','Defuser','defend',true)!;m.phase='live';m.phaseLeft=90;Object.assign(a,{x:-20,z:22});Object.assign(d,{x:0,z:20,yaw:0});return {m,a,d};}
+test('bot team chooses one kit defuser while another takes cover, then replaces a dead defuser',()=>{const {m,a,d}=setup();Object.assign(a,{x:12,z:13});const cover=m.join('cover','Cover','defend',true)!;Object.assign(cover,{alive:true,x:1,z:20,kit:false});d.kit=true;m.bomb={state:'planted',carrier:null,x:0,y:0,z:20,site:'A',remaining:30};m.step(dt);assert.equal(d.input.use,true);assert.equal(cover.input.use,false);assert.equal(cover.progress,0);d.alive=false;m.step(dt);assert.equal(cover.input.use,true);});
+test('new visible targets require reaction time and automatic fire has recovery gaps',t=>{const {m,a,d}=setup();Object.assign(a,{x:0,z:16,health:10000});d.inventory[0]={id:'m4',ammo:30,reserve:90};d.slot=0;d.input.slot=0;for(let n=0;n<10;n++)m.step(dt);assert.equal(m.events.filter(e=>e.type==='shot').length,0);for(let n=0;n<100;n++)m.step(dt);const times=m.events.filter(e=>e.type==='shot'&&e.actor===d.id).map(e=>e.at!);assert.ok(times.length>=4);assert.ok(times[0]>=.2);assert.ok(times.some((t,n)=>n>0&&t-times[n-1]>.3));t.diagnostic(JSON.stringify({firstShotSeconds:times[0],shots:times.length,observedSeconds:m.time,largestGapSeconds:Math.max(...times.slice(1).map((t,n)=>t-times[n]))}));});
+test('occlusion and range revoke fire immediately, reacquisition requires another reaction',()=>{const {m,a,d}=setup();Object.assign(a,{x:0,z:16,health:10000});for(let n=0;n<40;n++)m.step(dt);Object.assign(a,{x:12,z:13});m.botInput(d,dt);assert.equal(d.input.fire,false);Object.assign(a,{x:0,z:16});m.botInput(d,dt);assert.equal(d.input.fire,false);Object.assign(a,{x:0,z:-26});m.botInput(d,dt);assert.equal(d.input.fire,false);});
+test('carrier can reach a navigable site and generated escort follows the carrier',()=>{const {m,a,d}=setup();a.bot=true;d.bot=false;Object.assign(d,{x:-20,z:-25});const escort=m.join('escort','Escort','attack',true)!;Object.assign(escort,{alive:true,x:-20,z:20});for(let n=0;n<2500&&m.bomb!.state!=='planted';n++)m.step(dt);assert.equal(m.bomb!.state,'planted');assert.ok(Math.hypot(escort.x-m.bomb!.x,escort.z-m.bomb!.z)<12);});

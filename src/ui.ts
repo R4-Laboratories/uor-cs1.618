@@ -1,3 +1,4 @@
+import {objectiveHint} from '../shared/objective-hud';
 import type {MatchListing} from '../shared/match-discovery';
 import {TEAM_NAMES,WEAPONS,EQUIPMENT,RULES} from '../shared/config';
 import {BOXES,MAP,zoneAt} from '../shared/map';
@@ -74,7 +75,7 @@ export class UI{
   if(self.health<this.lastHealth)this.hurtUntil=now+350;this.lastHealth=self.health;this.show('hurt',now<this.hurtUntil);
   $('score-a').textContent=String(s.score.attack);$('score-d').textContent=String(s.score.defend);
   for(const [team,id]of [['attack','alive-a'],['defend','alive-d']] as const)$(id).innerHTML=s.players.filter(p=>p.team===team).map(p=>`<i class="${p.alive?'':'dead'}"></i>`).join('');
-  const planted=s.bomb?.state==='planted'&&s.phase==='live';const time=planted?s.bomb!.remaining:s.remaining;
+  const planted=s.bomb?.state==='planted'&&!s.bomb.terminal&&s.phase==='live';const time=planted?s.bomb!.remaining:s.remaining;
   const seconds=Math.ceil(Math.max(0,time));$('clock').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
   $('clock').classList.toggle('urgent',planted||time<15&&s.phase==='live');
   $('phase-label').textContent=planted?`DEVICE AT ${s.bomb?.site}`:s.phase==='freeze'?'BUY PHASE':s.phase==='waiting'?'WAITING':s.phase==='matchEnd'?'MATCH COMPLETE':s.phase==='ended'?'ROUND COMPLETE':'LIVE ROUND';
@@ -83,15 +84,10 @@ export class UI{
   $('zone').textContent=zoneAt(pos.x,pos.z);$('health').textContent=String(self.health);$('armor').textContent=String(self.armor);$('money').textContent=`$${self.money.toLocaleString()}`;
   $('equipment').textContent=[s.bomb?.carrier===self.id?'◈ DEVICE':'',self.kit?'◇ KIT':''].filter(Boolean).join('  ');
   const g=self.inventory[self.slot];$('weapon-name').textContent=WEAPONS[g.id].name.toUpperCase();$('ammo').textContent=String(g.ammo).padStart(2,'0');$('reserve').textContent=String(g.reserve);$('reload-label').textContent=self.reloadLeft>0?`RELOADING  ${self.reloadLeft.toFixed(1)}s`:'1 PRIMARY  ·  2 SIDEARM';
-  this.show('objective',self.progress>0);$('objective-text').textContent=self.action;$('objective-progress').style.width=`${self.progress*100}%`;
-  let hint='';if(s.phase==='freeze')hint=`You are ${TEAM_NAMES[self.team]} · ${self.team==='attack'?'Plant at A or B':'Defend the relay'} · Press B to buy`;
-  if(s.phase==='waiting')hint='Waiting for the opposing team to join this room.';
-  if(self.alive&&s.phase==='live'){
-   if(s.bomb?.carrier===self.id&&MAP.sites.some(site=>Math.hypot(pos.x-site.x,pos.z-site.z)<site.radius))hint='HOLD E TO PLANT · stand still';
-   if(planted&&self.team==='defend'&&Math.hypot(pos.x-s.bomb!.x,pos.z-s.bomb!.z)<2.3)hint=`HOLD E TO DEFUSE · ${self.kit?'5':'10'} seconds`;
-   if(g.ammo===0)hint='PRESS R TO RELOAD';
-  }
-  $('context-hint').textContent=hint;
+  const duration=self.action==='PLANTING'?RULES.plantSeconds:self.kit?RULES.kitDefuseSeconds:RULES.defuseSeconds;
+  this.show('objective',self.progress>0);$('objective-text').textContent=`${self.action} · ${Math.max(0,(1-self.progress)*duration).toFixed(1)}s`;$('objective-progress').style.width=`${Math.min(100,self.progress*100)}%`;
+  const hint=objectiveHint(s,pos),interacting=self.progress>0||hint.startsWith('HOLD E');
+  $('context-hint').textContent=hint+(self.alive&&s.phase==='live'&&g.ammo===0&&!interacting?' · PRESS R TO RELOAD':'');
   const ended=s.phase==='ended'||s.phase==='matchEnd';this.show('round-banner',ended);if(ended){$('banner-label').textContent=s.phase==='matchEnd'?'MATCH COMPLETE':'ROUND COMPLETE';$('banner-title').textContent=`${s.winner?TEAM_NAMES[s.winner]:'ROUND'} WINS`;$('banner-detail').textContent=s.reason;}
   this.show('crosshair',self.alive&&!this.buyOpen&&!this.pauseOpen);this.show('spectator',!self.alive);$('spectator-name').textContent=spectating?.name??'Waiting for next round';
   this.killLines=this.killLines.filter(k=>k.until>now);$('kill-feed').innerHTML=this.killLines.map(k=>`<div>${k.text}</div>`).join('');
@@ -107,6 +103,6 @@ export class UI{
   for(const site of MAP.sites){c.fillStyle=site.id==='A'?'#de9e67':'#81bdc2';c.font='bold 14px sans-serif';c.fillText(site.id,coord(site.x)-4,coord(site.z)+5);}
   for(const p of s.players){if(!p.alive||p.team!==s.self.team)continue;c.fillStyle=p.id===s.self.id?'#d8efb7':'#86b6be';c.beginPath();c.arc(coord(p.id===s.self.id?pos.x:p.x),coord(p.id===s.self.id?pos.z:p.z),p.id===s.self.id?4:2.5,0,Math.PI*2);c.fill();}
   const view=s.self.alive?{...pos,yaw:s.self.yaw}:spectating;if(view){c.strokeStyle='#d8efb7';c.beginPath();c.moveTo(coord(view.x),coord(view.z));c.lineTo(coord(view.x)-Math.sin(view.yaw)*11,coord(view.z)-Math.cos(view.yaw)*11);c.stroke();}
-  if(s.bomb&&(s.bomb.state==='planted'||s.self.team==='attack')){c.fillStyle='#f6b069';c.fillRect(coord(s.bomb.x)-2,coord(s.bomb.z)-2,4,4);}
+  if(s.bomb&&!s.bomb.terminal&&(s.bomb.state==='planted'||s.self.team==='attack')){c.fillStyle='#f6b069';c.fillRect(coord(s.bomb.x)-2,coord(s.bomb.z)-2,4,4);}
  }
 }

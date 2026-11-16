@@ -13,7 +13,7 @@ export interface Player extends Motion {
  id:string;name:string;team:Team;bot:boolean;alive:boolean;health:number;armor:number;money:number;kit:boolean;kills:number;deaths:number;
  inventory:Gun[];slot:0|1;yaw:number;pitch:number;input:Input;queue:Input[];acceptedSeq:number;processedSeq:number;inputAge:number;
  cooldown:number;reloadLeft:number;recoil:number;burst:number;shotIdle:number;previousFire:boolean;previousJump:boolean;progress:number;action:string;stepTimer:number;
- botPath:number[];botPlan:number;botGoal:number;botShoot:number;
+ botPath:number[];botPlan:number;botGoal:number;botShoot:number;botTarget:string|null;botReaction:number;botBurst:number;
 }
 export type BuyError='unknown'|'dead'|'phase'|'zone'|'team'|'funds'|'owned'|null;
 const gun=(id:string):Gun=>({id,ammo:WEAPONS[id].mag,reserve:WEAPONS[id].reserve});
@@ -29,7 +29,7 @@ export class Match {
   const counts={attack:0,defend:0};for(const p of this.players.values())counts[p.team]++;
   let team:Team=wanted==='auto'?(counts.attack<=counts.defend?'attack':'defend'):wanted;
   if(counts[team]>=5)team=team==='attack'?'defend':'attack';
-  const p:Player={id,name:name.replace(/[\x00-\x1f<>]/g,'').trim().slice(0,18)||'Operator',team,bot,alive:false,health:100,armor:0,money:R.startMoney,kit:false,kills:0,deaths:0,inventory:[gun('sidearm'),gun('sidearm')],slot:1,x:0,y:0,z:0,vx:0,vy:0,vz:0,grounded:true,crouch:false,yaw:0,pitch:0,input:neutralInput(),queue:[],acceptedSeq:0,processedSeq:0,inputAge:0,cooldown:0,reloadLeft:0,recoil:0,burst:0,shotIdle:10,previousFire:false,previousJump:false,progress:0,action:'',stepTimer:0,botPath:[],botPlan:0,botGoal:-1,botShoot:0};
+  const p:Player={id,name:name.replace(/[\x00-\x1f<>]/g,'').trim().slice(0,18)||'Operator',team,bot,alive:false,health:100,armor:0,money:R.startMoney,kit:false,kills:0,deaths:0,inventory:[gun('sidearm'),gun('sidearm')],slot:1,x:0,y:0,z:0,vx:0,vy:0,vz:0,grounded:true,crouch:false,yaw:0,pitch:0,input:neutralInput(),queue:[],acceptedSeq:0,processedSeq:0,inputAge:0,cooldown:0,reloadLeft:0,recoil:0,burst:0,shotIdle:10,previousFire:false,previousJump:false,progress:0,action:'',stepTimer:0,botPath:[],botPlan:0,botGoal:-1,botShoot:0,botTarget:null,botReaction:0,botBurst:0};
   this.players.set(id,p);
   if(this.phase==='waiting'||this.phase==='freeze')this.spawn(p,counts[team]);
   if(this.phase==='waiting'&&this.hasBothTeams())this.beginRound();
@@ -44,12 +44,12 @@ export class Match {
  }
  evictBot(team:Team|'auto'){const p=[...this.players.values()].find(p=>p.bot&&(team==='auto'||p.team===team))??[...this.players.values()].find(p=>p.bot);if(p)this.leave(p.id);}
  hasBothTeams(){return [...this.players.values()].some(p=>p.team==='attack')&&[...this.players.values()].some(p=>p.team==='defend');}
- leave(id:string){const p=this.players.get(id);if(!p)return;this.dropBomb(p);this.players.delete(id);if(!this.hasBothTeams()){this.phase='waiting';this.reason='Waiting for both teams';this.bomb=null;}}
+ leave(id:string){const p=this.players.get(id);if(!p)return;this.cancelInteraction(p);this.dropBomb(p);this.players.delete(id);if(!this.hasBothTeams()){this.phase='waiting';this.reason='Waiting for both teams';this.bomb=null;}}
  spawn(p:Player,index:number){
   const pos=MAP.spawns[p.team][index%5];p.x=pos[0];p.y=0;p.z=pos[1];p.vx=p.vy=p.vz=0;p.grounded=true;p.crouch=false;
   if(!p.alive){p.inventory=[gun('sidearm'),gun('sidearm')];p.armor=0;p.kit=false;}
   for(const g of p.inventory){g.ammo=WEAPONS[g.id].mag;}
-  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;
+  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;p.botTarget=null;p.botReaction=0;p.botBurst=0;p.botShoot=0;
  }
  beginRound(){
   this.round++;this.phase='freeze';this.phaseLeft=R.freezeSeconds;this.winner=null;this.reason='Buy equipment. Prepare to deploy.';
@@ -92,17 +92,30 @@ export class Match {
    if(this.hasBothTeams())this.beginRound();else this.phase='waiting';return;
   }
   if(this.phase==='ended'||this.phase==='matchEnd')return;
+  if(this.phase==='live'&&this.phaseLeft<=1e-9&&this.bomb?.state!=='planted'){
+   const decision=this.roundKernel.decide({bomb:'absent',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:0});
+   if(decision!=='continue'){this.endRound(decision,'Time expired');return;}
+  }
+  // Expiry wins a fixed-tick tie with completion; resolve it before interactions,
+  // independent of player iteration order. A newly planted device gets a full timer.
+  if(this.phase==='live'&&this.bomb?.state==='planted'&&!this.bomb.terminal){
+   this.bomb.remaining=Math.max(0,this.bomb.remaining-dt);
+   if(this.bomb.remaining<=1e-9){this.detonate();return;}
+   const defuser=this.players.get(this.bomb.defuser??'');
+   if(defuser&&!defuser.alive)this.cancelInteraction(defuser);
+  }
   for(const p of this.players.values()){
+   if((this.phase as Phase)==='ended'||(this.phase as Phase)==='matchEnd')break;
    if(!p.alive)continue;
    if(p.bot)this.botInput(p,dt);else{p.inputAge+=dt;const next=p.queue.shift();if(next){p.input=next;p.processedSeq=next.seq;}else if(p.inputAge>0.25)p.input={...neutralInput(),seq:p.processedSeq,yaw:p.yaw,pitch:p.pitch,slot:p.slot};}
    const i=p.input;p.yaw=i.yaw;p.pitch=i.pitch;
    const requestedSlot=i.slot===0&&p.inventory[0].id==='sidearm'?1:i.slot;
-   if(p.slot!==requestedSlot){p.slot=requestedSlot;p.burst=0;p.shotIdle=10;p.recoil=0;p.reloadLeft=0;p.cooldown=Math.max(p.cooldown,0.2);}
+   if(p.slot!==requestedSlot){this.cancelReload(p);p.slot=requestedSlot;p.burst=0;p.shotIdle=10;p.recoil=0;p.reloadLeft=0;p.cooldown=Math.max(p.cooldown,0.2);}
    p.cooldown=Math.max(0,p.cooldown-dt);p.shotIdle+=dt;if(recoveredBurst(p.shotIdle)){p.burst=0;p.recoil=0;}else p.recoil=Math.max(0,p.recoil-dt*.18);
-   if(p.reloadLeft>0){p.reloadLeft=Math.max(0,p.reloadLeft-dt);if(p.reloadLeft===0){const g=p.inventory[p.slot];const amount=Math.min(WEAPONS[g.id].mag-g.ammo,g.reserve);g.ammo+=amount;g.reserve-=amount;}}
+   if(p.reloadLeft>0){p.reloadLeft=Math.max(0,p.reloadLeft-dt);if(p.reloadLeft===0){const g=p.inventory[p.slot];const amount=Math.min(WEAPONS[g.id].mag-g.ammo,g.reserve);g.ammo+=amount;g.reserve-=amount;this.emit({type:'reload-complete',actor:p.id,weapon:g.id,x:p.x,y:p.y,z:p.z});}}
    const previous={x:p.x,z:p.z};const jump=i.jump&&!p.previousJump;p.previousJump=i.jump;
    movePlayer(p,{...i,jump},dt,this.engine,this.phase==='live');
-   if(i.reload&&p.reloadLeft===0){const g=p.inventory[p.slot];if(g.ammo<WEAPONS[g.id].mag&&g.reserve>0)p.reloadLeft=WEAPONS[g.id].reload;}
+   if(i.reload&&p.reloadLeft===0){const g=p.inventory[p.slot];if(g.ammo<WEAPONS[g.id].mag&&g.reserve>0){p.reloadLeft=WEAPONS[g.id].reload;this.emit({type:'reload-start',actor:p.id,weapon:g.id,x:p.x,y:p.y,z:p.z});}}
    if(this.phase==='live'){
     p.stepTimer-=dt;if(p.grounded&&!i.walk&&!p.crouch&&Math.hypot(p.x-previous.x,p.z-previous.z)>dt*2&&p.stepTimer<=0){this.emit({type:'step',actor:p.id,x:p.x,y:p.y,z:p.z});p.stepTimer=0.34;}
     const w=WEAPONS[p.inventory[p.slot].id];
@@ -113,11 +126,10 @@ export class Match {
   }
   if(this.phase==='live'){
    let bombState:'absent'|'planted'|'exploded'='absent';
-   if(this.bomb?.state==='planted'){this.bomb.remaining-=dt;bombState=this.bomb.remaining<=0?'exploded':'planted';}
+   if(this.bomb?.state==='planted'&&!this.bomb.terminal)bombState='planted';
    const decision=this.roundKernel.decide({bomb:bombState,attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:this.phaseLeft>0?1:0});
    if(decision!=='continue'){
-    if(bombState==='exploded')this.emit({type:'explode',x:this.bomb!.x,y:this.bomb!.y,z:this.bomb!.z});
-    this.endRound(decision,bombState==='exploded'?'Device detonated':this.phaseLeft<=0&&bombState==='absent'?'Time expired':'Opposition eliminated');
+    this.endRound(decision,this.phaseLeft<=0&&bombState==='absent'?'Time expired':'Opposition eliminated');
    }
   }
  }
@@ -143,34 +155,58 @@ export class Match {
    let damage=Math.round(w.damage*(head?w.head:1)*(1-Math.min(distance,100)*0.002));
    if(target.armor>0){const absorbed=Math.min(target.armor,Math.ceil(damage*0.4));target.armor-=absorbed;damage-=absorbed;}
    target.health=Math.max(0,target.health-damage);this.emit({type:'hit',actor:p.id,target:target.id,head});
-   if(target.health===0){target.alive=false;target.deaths++;target.progress=0;target.action='';p.kills++;p.money=Math.min(R.maxMoney,p.money+R.killReward);this.dropBomb(target);this.emit({type:'kill',actor:p.id,target:target.id,head,weapon:g.id});}
+   if(target.health===0){target.alive=false;target.deaths++;this.cancelInteraction(target);this.cancelReload(target);p.kills++;p.money=Math.min(R.maxMoney,p.money+R.killReward);this.dropBomb(target);this.emit({type:'kill',actor:p.id,target:target.id,head,weapon:g.id});}
   }
  }
- dropBomb(p:Player){if(this.bomb?.carrier===p.id){this.bomb={...this.bomb,state:'dropped',carrier:null,x:p.x,y:p.y,z:p.z};}}
+ cancelReload(p:Player){if(p.reloadLeft>0)this.emit({type:'reload-cancel',actor:p.id,weapon:p.inventory[p.slot].id,x:p.x,y:p.y,z:p.z});p.reloadLeft=0;}
+ cancelInteraction(p:Player){
+  if(p.action)this.emit({type:'interaction-cancel',actor:p.id,action:p.action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});
+  p.progress=0;p.action='';if(this.bomb?.defuser===p.id)this.bomb.defuser=null;
+ }
+ dropBomb(p:Player){if(this.bomb?.carrier===p.id){this.cancelInteraction(p);this.bomb={...this.bomb,state:'dropped',carrier:null,x:p.x,y:p.y,z:p.z};this.emit({type:'bomb-drop',actor:p.id,x:p.x,y:p.y,z:p.z});}}
+ detonate(){
+  const b=this.bomb;if(!b||b.terminal)return;b.terminal='exploded';b.remaining=0;b.defuser=null;
+  // Original radial blast: 140 at the device, linear to zero at 16m; no wall
+  // attenuation or armor reduction. Maximum ten players, one authoritative pass.
+  for(const p of this.players.values())if(p.alive){const damage=Math.max(0,Math.round(140*(1-Math.hypot(p.x-b.x,p.y-b.y,p.z-b.z)/16)));p.health=Math.max(0,p.health-damage);if(p.health===0){p.alive=false;p.deaths++;this.cancelInteraction(p);this.emit({type:'kill',target:p.id,text:'Device blast'});}}
+  this.emit({type:'explode',x:b.x,y:b.y,z:b.z});
+  const decision=this.roundKernel.decide({bomb:'exploded',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:this.phaseLeft>0?1:0});
+  if(decision!=='continue')this.endRound(decision,'Device detonated');
+ }
  objective(p:Player,dt:number){
-  const b=this.bomb;if(!b){p.progress=0;p.action='';return;}
-  if(b.state==='dropped'&&p.team==='attack'&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<1.5){b.state='carried';b.carrier=p.id;}
+  const b=this.bomb;if(!b||b.terminal||this.phase!=='live'||!p.alive){this.cancelInteraction(p);return;}
+  if(b.state==='dropped'&&p.team==='attack'&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<1.5){b.state='carried';b.carrier=p.id;this.emit({type:'bomb-pickup',actor:p.id,x:p.x,y:p.y,z:p.z});}
   if(b.carrier===p.id){b.x=p.x;b.y=p.y;b.z=p.z;}
   let action='',duration=0,site='';
   if(p.input.use&&p.grounded&&Math.hypot(p.vx,p.vz)<0.25){
    if(b.state==='carried'&&b.carrier===p.id){const s=MAP.sites.find(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius);if(s){action='PLANTING';duration=R.plantSeconds;site=s.id;}}
-   if(b.state==='planted'&&p.team==='defend'&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<2.3){
-    const dx=b.x-p.x,dz=b.z-p.z,len=Math.hypot(dx,dz);if(len<0.1||this.engine.ray(p.x,p.y+0.5,p.z,dx/len,0,dz/len,len)>=len-0.1){action='DEFUSING';duration=p.kit?R.kitDefuseSeconds:R.defuseSeconds;}
+   if(b.state==='planted'&&p.team==='defend'&&(!b.defuser||b.defuser===p.id)&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<2.3){
+    const dx=b.x-p.x,dy=b.y+0.2-(p.y+0.5),dz=b.z-p.z,len=Math.hypot(dx,dy,dz);if(len<0.05||this.engine.ray(p.x,p.y+0.5,p.z,dx/len,dy/len,dz/len,len)>=len-0.05){action='DEFUSING';duration=p.kit?R.kitDefuseSeconds:R.defuseSeconds;}
    }
   }
-  if(action!==p.action)p.progress=0;p.action=action;if(!action){p.progress=0;return;}
+  if(action!==p.action){this.cancelInteraction(p);p.action=action;if(action)this.emit({type:'interaction-start',actor:p.id,action:action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});}
+  if(!action)return;if(action==='DEFUSING')b.defuser=p.id;
   p.progress+=dt/duration;
-  if(p.progress>=1){
+  if(p.progress>=1-1e-9){
+   this.emit({type:'interaction-complete',actor:p.id,action:action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});
    p.progress=0;p.action='';
    if(action==='PLANTING'){b.state='planted';b.carrier=null;b.site=site;b.remaining=R.bombSeconds;p.money=Math.min(R.maxMoney,p.money+300);this.emit({type:'plant',actor:p.id,text:`Device planted at ${site}`,x:p.x,y:p.y,z:p.z});}
-   else{this.emit({type:'defuse',actor:p.id,text:'Device defused'});const decision=this.roundKernel.decide({bomb:'defused',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:1});if(decision!=='continue')this.endRound(decision,'Device defused');}
+   else{b.terminal='defused';b.defuser=null;this.emit({type:'defuse',actor:p.id,text:'Device defused',x:b.x,y:b.y,z:b.z});const decision=this.roundKernel.decide({bomb:'defused',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:1});if(decision!=='continue')this.endRound(decision,'Device defused');}
   }
  }
  endRound(team:Team,reason:string){
   if(this.phase!=='live')return;
   this.winner=team;this.reason=reason;this.score[team]++;this.phase=this.score[team]>=R.matchWin?'matchEnd':'ended';this.phaseLeft=this.phase==='matchEnd'?14:R.endSeconds;
-  for(const p of this.players.values()){p.progress=0;p.action='';p.money=Math.min(R.maxMoney,p.money+(p.team===team?R.winReward:R.lossReward));}
+  for(const p of this.players.values()){this.cancelInteraction(p);this.cancelReload(p);p.money=Math.min(R.maxMoney,p.money+(p.team===team?R.winReward:R.lossReward));}
   this.emit({type:'round',team,text:reason});
+ }
+ botDefuser(){
+  const b=this.bomb;if(!b||b.state!=='planted'||b.terminal)return null;
+  const active=this.players.get(b.defuser??'');if(active?.alive)return active.id;
+  return [...this.players.values()].filter(p=>p.alive&&p.team==='defend'&&p.bot).sort((a,c)=>{
+   const cost=(p:Player)=>Math.hypot(p.x-b.x,p.z-b.z)/R.runSpeed+(p.kit?R.kitDefuseSeconds:R.defuseSeconds);
+   return cost(a)-cost(c)||a.id.localeCompare(c.id);
+  })[0]?.id??null;
  }
  botInput(p:Player,dt:number){
   p.botPlan-=dt;p.botShoot-=dt;
@@ -178,14 +214,21 @@ export class Match {
   if(this.phase!=='live'){p.input=i;return;}
   const enemies=[...this.players.values()].filter(e=>e.alive&&e.team!==p.team).map(e=>({e,d:Math.hypot(e.x-p.x,e.z-p.z)})).sort((a,b)=>a.d-b.d);
   const enemy=enemies.find(({e,d})=>d<45&&this.engine.ray(p.x,p.y+1.4,p.z,(e.x-p.x)/d,0,(e.z-p.z)/d,d)>=d-0.4)?.e;
-  const b=this.bomb;
+  if(p.botTarget!==(enemy?.id??null)){p.botTarget=enemy?.id??null;p.botReaction=.22;p.botBurst=0;}else p.botReaction=Math.max(0,p.botReaction-dt);
+  const b=this.bomb,assigned=this.botDefuser(),cover=b?.state==='planted'&&p.team==='defend'&&assigned!==p.id;
   let goal:{x:number;z:number}={x:MAP.sites[(this.round+(p.team==='defend'?1:0))%2].x,z:-11};
-  if(b?.state==='planted')goal={x:b.x,z:b.z};
+  if(b?.state==='planted'){
+   goal={x:b.x,z:b.z};
+   if(cover||p.team==='attack'){
+    const candidates=this.nav.nodes.filter(n=>{const d=Math.hypot(n.x-b.x,n.z-b.z);return d>=4&&d<=8;});
+    if(candidates.length)goal=candidates[(Array.from(p.id).reduce((sum,c)=>sum+c.charCodeAt(0),0))%candidates.length];
+   }
+  }
   else if(b?.state==='dropped'&&p.team==='attack')goal=b;
   else if(p.team==='defend')goal={x:p.id.charCodeAt(p.id.length-1)%2?-17:17,z:-11};
   const facts:BotFacts={enemy:!!enemy,empty:p.inventory[p.slot].ammo===0,lowAmmo:p.inventory[p.slot].ammo<8,
    canPlant:b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5),
-   canDefuse:b?.state==='planted'&&p.team==='defend'&&Math.hypot(b.x-p.x,b.z-p.z)<1.8,
+   canDefuse:b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&Math.hypot(b.x-p.x,b.z-p.z)<1.8,
    urgent:b?.state==='planted'&&b.remaining<=(p.kit?R.kitDefuseSeconds:R.defuseSeconds)+1.5,
    carrier:b?.carrier===p.id,attacker:p.team==='attack',planted:b?.state==='planted',dropped:b?.state==='dropped'};
   const tactic=this.tacticDecider(facts);
@@ -195,12 +238,16 @@ export class Match {
   if(enemy&&(tactic===null||tactic==='engage')){
    const dx=enemy.x-p.x,dz=enemy.z-p.z,dy=enemy.y+(enemy.crouch?0.75:1.2)-(p.y+R.eyeHeight);const d=Math.hypot(dx,dz);
    const aim=Math.atan2(-dx,-dz);let delta=Math.atan2(Math.sin(aim-p.yaw),Math.cos(aim-p.yaw));i.yaw=p.yaw+Math.max(-dt*4,Math.min(dt*4,delta));i.yaw=Math.atan2(Math.sin(i.yaw),Math.cos(i.yaw));i.pitch=Math.atan2(dy,d);
-   if(Math.abs(delta)<0.1&&p.botShoot<=0){i.fire=true;p.botShoot=WEAPONS[p.inventory[p.slot].id].automatic?0:0.35;}
+   if(Math.abs(delta)<0.1&&p.botReaction<=0&&p.botShoot<=0&&p.cooldown<=dt){
+    const friendly=[...this.players.values()].some(f=>f.alive&&f.team===p.team&&f!==p&&this.engine.hitbox(p.x,p.y+R.eyeHeight,p.z,dx/Math.hypot(dx,dy,dz),dy/Math.hypot(dx,dy,dz),dz/Math.hypot(dx,dy,dz),f.x,f.y,f.z,.36,R.standingHeight)>=0&&Math.hypot(f.x-p.x,f.z-p.z)<d);
+    if(!friendly){i.fire=true;const w=WEAPONS[p.inventory[p.slot].id];p.botBurst++;p.botShoot=w.automatic?(p.botBurst%3===0?.36:w.interval):.35;}
+   }
    if(d>25)goal={x:enemy.x,z:enemy.z};else {p.input=i;if(p.inventory[p.slot].ammo===0)i.reload=true;return;}
   }
+  if(b?.state==='carried'&&b.carrier===p.id){const site=MAP.sites[this.round%2];const candidates=this.nav.nodes.filter(n=>Math.hypot(n.x-site.x,n.z-site.z)<site.radius-1);candidates.sort((a,c)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(c.x-p.x,c.z-p.z));if(candidates[0])goal=candidates[0];}
   const dist=Math.hypot(goal.x-p.x,goal.z-p.z);
   const canPlant=b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5);
-  const canDefuse=b?.state==='planted'&&p.team==='defend'&&dist<1.8;
+  const canDefuse=b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&dist<1.8;
   if(canPlant||canDefuse){i.use=true;p.input=i;return;}
   if(dist>1.2){
    if(p.botPlan<=0){p.botPath=this.nav.path(p.x,p.z,goal.x,goal.z);p.botPlan=1+this.random();}
