@@ -1,0 +1,123 @@
+{
+  "schema": "cs1618/evolution-queue-evidence/1",
+  "release": "0.9.0",
+  "recorded_at": "2026-11-16T18:27:57.321406+00:00",
+  "repository": "R4-Laboratories/uor-cs1.618",
+  "run": {
+    "id": 43924605541,
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43924605541",
+    "api_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/runs/43924605541",
+    "head_sha": "382c45d7614842aa0b9ca99337cd1bada0d0f745",
+    "event": "workflow_dispatch",
+    "actor": "github-actions[bot]",
+    "created_at": "2026-11-16T18:02:20Z"
+  },
+  "read_only_inspection": {
+    "observer": "integration agent",
+    "observation_window": "2026-11-16 around 18:17\u201318:19 UTC; no fresh API request made while writing this note",
+    "status": "queued",
+    "conclusion": null,
+    "updated_at": "2026-11-16T18:02:20Z",
+    "jobs_count": 0,
+    "check_suite": {
+      "id": 118911347383,
+      "status": "queued",
+      "check_runs_count": 0
+    },
+    "pending_deployments": [],
+    "workflow_state": "active",
+    "other_active_evolution_runs": 0,
+    "other_active_repository_workflow": {
+      "id": 43924585630,
+      "name": "Manual numeric export validation",
+      "status": "in_progress"
+    },
+    "workflow_blob": "dcfcb8e55265bf3bf011d432bde8b7e216ab3d30",
+    "workflow_matches_successful_run": 43896152734,
+    "github_status_summary": "Actions operational; no listed incidents at inspection time",
+    "access_limits": [
+      "Repository variable API returned HTTP 403.",
+      "Continuation artifact blob downloads returned Forbidden; continuation logs were readable."
+    ]
+  },
+  "continuation": {
+    "pages_run": {
+      "id": 43923626809,
+      "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43923626809",
+      "decision": "dispatched",
+      "log_time": "2026-11-16T18:02:21.3309824Z"
+    },
+    "fallback_run": {
+      "id": 43924626967,
+      "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43924626967",
+      "decision": "already-run",
+      "log_time": "2026-11-16T18:02:42.8195602Z"
+    },
+    "cs_evolution_in_both_logs": "empty, therefore not disabled"
+  },
+  "parent_reported_followup": {
+    "observer": "parent agent",
+    "exact_attempt_timestamps": "not supplied",
+    "cli_cancel": {
+      "command": "gh run cancel 43924605541",
+      "reported_result": "Cannot cancel a workflow run that is completed"
+    },
+    "rest_cancel": {
+      "method": "POST",
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/runs/43924605541/cancel",
+      "status": 409,
+      "message": "Cannot cancel a workflow run that has not been queued yet."
+    },
+    "rest_force_cancel": {
+      "method": "POST",
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/runs/43924605541/force-cancel",
+      "status": 409,
+      "message": "Cannot cancel a workflow run that has not been queued yet."
+    },
+    "fresh_get_after_attempts": {
+      "status": "queued",
+      "jobs": []
+    },
+    "retry_dispatched": false,
+    "latest_parent_read": "2026-11-16T18:25:50Z: status queued, conclusion empty, jobs[]"
+  },
+  "assessment": "GitHub exposes inconsistent run state: GET reports queued with no jobs, CLI cancellation reports completed, and both cancellation endpoints report not yet queued. Continuation dispatch succeeded. The exact backend cause is unestablished; no workflow-code defect or successful cancellation/retry is claimed.",
+  "recording_scope": "Local evidence files only. No additional GitHub requests, cancellation, dispatch or repository edits performed while recording this note. No credentials or signed download URLs retained.",
+  "recovery": {
+    "dispatched_at": "2026-11-16T18:33:11Z",
+    "run_id": 43930018817,
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43930018817",
+    "ref": "main",
+    "family": "auto",
+    "continuation_from": "43923626809",
+    "observed_status": "completed",
+    "observed_step": "Run actions/setup-node@v4",
+    "attempts": 1,
+    "guard_review": "Fixed concurrency group serializes jobs; fresh tested/base/main equality and non-force push protect publication; all proof/browser gates remain mandatory.",
+    "limitation": "Not strictly idempotent: if the old queued run wakes, it may perform a subsequent serialized tick. No further retry planned.",
+    "conclusion": "success",
+    "result": "no-improvement",
+    "generation": 10,
+    "published_commit": "59ee1d7133ea7a2e4f25d2d633282584fa2e7b01",
+    "pages_run": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43930966329",
+    "history_hash": "a8ed38ebabe21758c7d6307ac9dcff87f152334754ed861c416ca7104a7a5855",
+    "checks": "complete-game-gates-passed",
+    "candidates": [
+      {
+        "id": "art-synth-0",
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "baseline": 0.23252706850815388,
+        "candidate": 0.32741143858841987
+      },
+      {
+        "id": "art-synth-1",
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "baseline": 0.23252706850815388,
+        "candidate": 0.28364233297921515
+      }
+    ],
+    "pages_conclusion": "success",
+    "served_commit": "59ee1d7133ea7a2e4f25d2d633282584fa2e7b01",
+    "served_history_hash": "a8ed38ebabe21758c7d6307ac9dcff87f152334754ed861c416ca7104a7a5855"
+  }
+}

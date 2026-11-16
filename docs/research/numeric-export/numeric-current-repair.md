@@ -1,5 +1,7 @@
 # Current upstream numeric export repair
 
+**Acceptance update:** cumulative candidate `0e3472ed` (including the generated-register correction) passed full unchanged `just vv` on amd64 in the exact SDK, followed by the production primitive/native/Wasm probe. See [actual receipts and scope](exact-sdk-accepted/README.md). The diagnostic narrative and `46bdbc56` identifiers below describe the original source-repair stage and remain historical evidence. No complete IEEE implementation or upstream release is claimed.
+
 Current candidate starts at `b04af3550bb49c4e5bfdc0747a1e50cd58f13b81` in
 `/workspace/scratch/uorust-export-current`, branch `fix/numeric-export-current`.
 Historical base `9d1f379` and repair commits `bee4de1` / `8716a9c`, their worktree,

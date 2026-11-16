@@ -1,0 +1,8 @@
+{
+  "schema": "cs1618/numeric-export-validation/1",
+  "scope": "Bounded significand primitive, not the full IEEE root",
+  "sdk_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+  "candidate_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+  "exit_code": 0,
+  "passed": true
+}

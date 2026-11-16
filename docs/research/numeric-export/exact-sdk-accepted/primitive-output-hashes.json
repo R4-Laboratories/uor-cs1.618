@@ -1,0 +1,62 @@
+[
+  {
+    "path": "libnumeric_significand_probe.rlib",
+    "bytes": 675956,
+    "sha256": "a3d87fca7123353d95f6a80acf05ef66a6ce2ee4159cbba8180ac25b858c562d"
+  },
+  {
+    "path": "libnumeric_significand_probe_wasm.rlib",
+    "bytes": 512404,
+    "sha256": "442bd3d7cd681a9dbd146460571c0f0ef8b1cea43143cfa4794754fd1693d50a"
+  },
+  {
+    "path": "native",
+    "bytes": 4367712,
+    "sha256": "dbf9a66e38476c313fdaa9407ccd1dee8801c567b76f388f70c28bb51d110f99"
+  },
+  {
+    "path": "probe.wasm",
+    "bytes": 1604124,
+    "sha256": "a2fd21eedbe73fdc48d19d9478274896b3930647e6c4af049e2588378c1b3edc"
+  },
+  {
+    "path": "project/lakefile.toml",
+    "bytes": 46,
+    "sha256": "64bbda1d8f6492d8e4a20b0eddffe2199e3654a1855324837a5a3bf3244f8abd"
+  },
+  {
+    "path": "project/lake-manifest.json",
+    "bytes": 150,
+    "sha256": "e2d7568929818723dcc8517bf677001b81a9bcdcd0c8efa4ac5779d50d5cf0ef"
+  },
+  {
+    "path": "project/lexlean.lock",
+    "bytes": 1597,
+    "sha256": "b3229fc00aa442441dc6fe09d305798d4a1ecc029521706624a69291ad1bd177"
+  },
+  {
+    "path": "project/lean-toolchain",
+    "bytes": 25,
+    "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+  },
+  {
+    "path": "project/request.json",
+    "bytes": 283,
+    "sha256": "e805ecd8aa36c369c0f56ddaa32da286c26da3fabd2c4c3966db99e0fa4d3eb2"
+  },
+  {
+    "path": "project/lexlean.toml",
+    "bytes": 647,
+    "sha256": "0f52832d8652ecac0f7be36869532afc5beb6c6ad42ba7dfb488d06c3dfdba08"
+  },
+  {
+    "path": "project/src/Main.lex.tex",
+    "bytes": 336,
+    "sha256": "9d7698bfa363485c9f60b1e827f810582e9b854665ca614a5b28150fa46ea498"
+  },
+  {
+    "path": "targets.json",
+    "bytes": 963,
+    "sha256": "2f97311f44fb0d49d1096925c1e3f36a15159826d708c07001e54fded0c6cc23"
+  }
+]

@@ -1,0 +1,23 @@
+wasm32-unknown-unknown
+lexlean 0.4.0
+language 1.0
+compiler-semantics 13010714d9dd3641400012ea75d0c25e801a9bfdde54fa3f1e78a52e5124bce1
+lean-toolchain leanprover/lean4:v4.32.1
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+initialized /home/runner/work/uor-cs1.618/uor-cs1.618/evidence/primitive/uorust-numeric-export.TJOZuG/project
+formatted 0 modules
+lexlean.lock is current
+exported 1 packages at .lexlean/production/c6b0193f05f6a07daf96d5af524bd0dad10d38ba5e92f35e9e7832078a59a009; result c6b0193f05f6a07daf96d5af524bd0dad10d38ba5e92f35e9e7832078a59a009
+replayed result c6b0193f05f6a07daf96d5af524bd0dad10d38ba5e92f35e9e7832078a59a009: 1 outputs, bindings verified; not re-run: axiom-audit, lean-elaboration, leanchecker-replay, named-root-extraction
+zero: Ok(0)
+u64-edge: Ok(18446744073709551615)
+binary32-one-product: Ok(70368744177664)
+binary64-one-product: Err(Overflow)
+binary64-max-significands: Err(Overflow)
+imports: []
+zero: overflow=0
+u64-edge: overflow=0
+binary32-one-product: overflow=0
+binary64-one-product: overflow=1
+binary64-max-significands: overflow=1
+Retained numeric export probe: /home/runner/work/uor-cs1.618/uor-cs1.618/evidence/primitive/uorust-numeric-export.TJOZuG
