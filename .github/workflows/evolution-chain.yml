@@ -1,0 +1,38 @@
+name: Continue evolution after publication
+on:
+  workflow_run:
+    workflows: [Verify and publish cs1.618]
+    types: [completed]
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: cs-evolution-continuation
+  cancel-in-progress: false
+jobs:
+  continue:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Start the next useful tick after verifying publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CS_EVOLUTION: ${{ vars.CS_EVOLUTION }}
+          NODE_USE_ENV_PROXY: '1'
+        run: npx tsx scripts/evolution/continue.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evolution-continuation-${{ github.run_id }}
+          path: artifacts/evolution-chain/
+          retention-days: 90

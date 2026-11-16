@@ -17,13 +17,14 @@ These optimization families now sit alongside authored mural and tactical progra
 
 ## Admission and publication
 
-1. An hourly Actions tick (minute 17 UTC; GitHub scheduling can be delayed) evaluates at most two untried candidates. Successful families gain a bounded search weight; rejected families lose weight. At most one generation is admitted per tick.
+1. Each Actions tick evaluates at most two untried candidates. A successful Pages publication automatically dispatches the next tick while the current source context has candidates. The hourly schedule (minute 17 UTC; GitHub scheduling can be delayed) is a recovery trigger. Successful families gain a bounded search weight; rejected families lose weight. At most one generation is admitted per tick.
 2. Navigation compares the entire ordered graph against independent all-pairs enumeration using real Verdant Wasm, plus 480 path samples. Rendering compares four fixed views with the unbatched scene, checks a complete geometry/material/transform inventory, and bounds the triangle increase. Pixel limits and minimum benefit are in `model/evolution/policy.json`.
 3. Rendering work is explicitly a proxy: sum of `100 × draw calls + triangles` over the camera corpus. Frame-time samples are recorded for inspection but are too noisy on CI software graphics to justify an FPS claim. At least 2% work reduction relative to the incumbent is required.
 4. Full game verification, rendered gameplay, real WebRTC multiplayer and creative studio/layer tests must pass. A separate **compiled Prism admission Wasm** admits only when fidelity, benefit, resource bounds and checks all pass; all 16 combinations are exhaustively tested. This policy does not prove that the host measurements are correct or formally verify the entire game.
 5. A hash-bound publisher commits only seven owned files: generated render/navigation/artwork/tactics/experience modules, `model/evolution/state.json`, and `public/evolution.json`. It checks source identity, exact output hashes and evidence age. A racing main update fails publication; it never force-pushes or rebases untested output.
 6. After a successful push, the engine explicitly dispatches `pages.yml`. GitHub does not normally trigger another push workflow from a `GITHUB_TOKEN` commit, so this dispatch is essential. Pages independently repeats game gates before deployment. Superseded builds skip deployment.
-7. The deployment watcher compares the live `build.json` commit with main. It can dispatch a missing deployment and retry a deploy-only failure once. Failed game checks block publication; they are not bypassed. It writes workflow summaries, not unsolicited issues or comments.
+7. `Continue evolution after publication` listens for successful official-main Pages runs, checks the current main and served commit, refuses duplicate dispatches for a commit that already has a tick, and queues the next `evolution.yml` run. The shared evolution concurrency group allows one executing tick. It uses an explicit dispatch, so it does not rely on recursively chaining `workflow_run` events past GitHub’s depth limit. Failed publication, paused evolution and a settled frontier cannot dispatch another tick. Each continuation and tick leaves an Actions summary and retained JSON receipt.
+8. The deployment watcher compares the live `build.json` commit with main. It can dispatch a missing deployment and retry a deploy-only failure once. Failed game checks block publication; they are not bypassed. It writes workflow summaries, not unsolicited issues or comments.
 
 The bounded candidate frontier eventually **settles**. Settled ticks make no commits and claim no improvement. A source/policy context change opens a new frontier. Rejected evaluations can produce an honest evidence-only commit and redeployment without increasing the generation. GitHub may disable inactive public-repository schedules after 60 days; workflows and repository limits still apply.
 
@@ -31,6 +32,7 @@ The bounded candidate frontier eventually **settles**. Settled ticks make no com
 
 - [Live generation and bounded history](https://r4-laboratories.github.io/uor-cs1.618/evolution.json)
 - [Live build identity](https://r4-laboratories.github.io/uor-cs1.618/build.json)
+- [Automatic next-tick continuation](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution-chain.yml)
 - [Evolution workflow and downloadable evidence](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml)
 - [Pages deployments](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/pages.yml)
 
@@ -71,7 +73,7 @@ prismpm check
 prismpm build
 ```
 
-See [kernel build evidence](evidence/evolution-kernel-build.txt). Check/build succeeded; **full `prismpm verify` is not claimed** for this new model. The existing round model's documented PP5004 application-regeneration closure failure remains open. This loop's full *game gates* mean the named application tests and integrity checks, not a newly satisfied formal proof gate.
+Full round, evolution and identity model verification now passes with the recorded upstream verifier repair: [official audit](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43825839193), [repair provenance and proof scope](proof-audit.md). Every shipped Holo/Wasm matches its verified build. The game/browser gates additionally test the host implementation; these model proofs do not prove the entire FPS.
 
 ## Free feature-development lane (v0.5)
 
@@ -82,3 +84,9 @@ The `experience` family now generates burst recovery, audio-voice admission and 
 The v0.6.0 Verdant character import remains covered by every autonomous promotion's full browser game checks: visible 22-joint animation, room exit cleanup and ten-player practice. The engine Wasm and game source are part of the search-context hash, so an engine upgrade invalidates stale candidate history. The publisher refuses a changed main revision; it cannot overwrite a concurrent engine update.
 
 Source discovery and code evolution are separate stages: discovery reports newer upstream commits, while the hourly compiler writes executable candidates within the implemented families. Importing a new upstream API or inventing a new feature family still requires a tested adapter or recipe. Neither a successful metadata check nor an evidence-only tick is called a gameplay improvement.
+
+## Observed operation and stopping
+
+Before consecutive continuation was added, the inspected Actions history contained manually dispatched evolution runs and no `schedule` events. A cron declaration alone was not evidence of unattended execution. The continuation workflow now provides a separate observable event: its summary identifies the successful Pages run, its decision, and the next tick; automatically dispatched ticks are titled `Evolution · after Pages #…`.
+
+Use `CS_EVOLUTION=off` to pause both evaluation and continuation. To resume after fixing a failure, dispatch `Autonomous game evolution` with family `auto` or publish a new passing main commit. Disabling only the continuation workflow stops chaining while leaving manual/cron ticks available. No paid model is required; `CS_AI_AUTHOR` stays opt-in.

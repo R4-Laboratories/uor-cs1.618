@@ -1,10 +1,15 @@
 # Generated from the evolution policy by scripts/evolution/generate.ts.
 name: Autonomous game evolution
+run-name: "Evolution · ${{ inputs.continuation_from && format('after Pages #{0}', inputs.continuation_from) || github.event_name }}"
 on:
   schedule:
     - cron: '@SCHEDULE@'
   workflow_dispatch:
     inputs:
+      continuation_from:
+        description: Preceding Pages run (set by automatic continuation)
+        type: string
+        default: ''
       family:
         description: Candidate family
         type: choice
@@ -25,6 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -40,6 +46,7 @@ jobs:
         run: npm run evolution:author
       - name: Generate, measure and validate candidate source
         env:
+          CS_CONTINUATION_FROM: ${{ inputs.continuation_from }}
           CS_EVOLUTION_FAMILY: ${{ inputs.family || 'auto' }}
         run: npm run evolution:tick -- --apply
       - name: Publish only hash-bound validated outputs

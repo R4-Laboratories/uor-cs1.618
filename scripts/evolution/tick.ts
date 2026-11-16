@@ -5,7 +5,7 @@ import {existsSync} from 'node:fs';
 import {validateArt,validateTactics} from '../../shared/creative-program';
 import type {Family} from './generate';
 import {execFileSync} from 'node:child_process';
-import {readFileSync,writeFileSync,mkdirSync,rmSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,rmSync,appendFileSync} from 'node:fs';
 import {AdmissionKernel} from './admission';
 import {validateState,generatedFiles,type EvolutionState} from './generate';
 import {chooseCandidates,evaluateEvidence,type Evidence} from './policy';
@@ -24,8 +24,12 @@ let author:any=null,proposal:undefined|{art:typeof state.config.art;tactics:type
 if(existsSync('artifacts/evolution/author.json')){author=JSON.parse(readFileSync('artifacts/evolution/author.json','utf8'));if(author.base===base&&author.seed===state.seed&&Date.now()-Date.parse(author.created)<3600000&&author.status==='authored'){validateArt(author.proposal.art);validateTactics(author.proposal.tactics);proposal=author.proposal;}}
 const candidates=chooseCandidates(state,policy,context,requested==='auto'?undefined:requested as Family|undefined,proposal),kernel=new AdmissionKernel();
 mkdirSync('artifacts/evolution',{recursive:true});
-const report:any={schema:'cs1618/evolution-tick/1',base,context,started:new Date().toISOString(),apply,author:author?{status:author.status,reason:author.reason}:null,proposals:[],changed:false,accepted:false,checks:false};
-const save=()=>writeFileSync('artifacts/evolution/tick.json',JSON.stringify(report,null,2)+'\n');
+const report:any={schema:'cs1618/evolution-tick/1',base,context,started:new Date().toISOString(),trigger:process.env.GITHUB_EVENT_NAME??'local',continuationFrom:process.env.CS_CONTINUATION_FROM??null,apply,author:author?{status:author.status,reason:author.reason}:null,proposals:[],changed:false,accepted:false,checks:false};
+const save=()=>{
+ writeFileSync('artifacts/evolution/tick.json',JSON.stringify(report,null,2)+'\n');
+ const summary=`Evolution: **${report.outcome}**; generation **${report.generation??state.generation}**. Trigger: ${report.trigger}${report.continuationFrom?' after Pages #'+report.continuationFrom:''}.\n\n${report.proposals.length} candidate(s) evaluated; game gates ${report.checks?'passed':'not completed'}. ${report.error??''}\n\n${report.proposals.map((p:any)=>`- ${p.candidate.id}: ${p.eligible?'eligible':'rejected'}; work ${p.evidence.baselineWork} → ${p.evidence.candidateWork}`).join('\n')}\n\nContinuation waits for verified Pages publication. Settled means no untried candidate remains in this source context.\n`;
+ if(process.env.GITHUB_STEP_SUMMARY)appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary);
+};
 function restore(){for(const [path,bytes]of original){if(bytes===null)rmSync(path,{force:true});else writeFileSync(path,bytes);}}
 function run(command:string,args:string[]){console.log(`Gate: ${command} ${args.join(' ')}`);execFileSync(command,args,{stdio:'inherit',timeout:15*60*1000});}
 try{
