@@ -20,7 +20,7 @@ concurrency:
 jobs:
   evolve:
     if: github.ref == 'refs/heads/main' && vars.CS_EVOLUTION != 'off'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
