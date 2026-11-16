@@ -37,7 +37,7 @@ export async function measureTactics(candidate:Candidate,incumbent:Configuration
  function run(program:TacticsProgram){
   const exports:any={};runInNewContext(ts.transpileModule(compileTactics(program),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports},{timeout:1000});const decide=exports.decideTactic as (f:BotFacts)=>ReturnType<typeof decideProgram>;
 
-  const errorSet=(held:boolean)=>cases(held).flatMap((c,i)=>(decide(c.facts)??legacy(c.facts))!==c.expected?[i]:[]);
+  const errorSet=(held:boolean)=>cases(held).flatMap((c,i)=>{const requested=decide(c.facts)??legacy(c.facts);const effective=requested==='engage'&&c.facts.enemy&&c.facts.empty?'reload':requested;return effective!==c.expected?[i]:[];});
   let completed=0,invalidInputs=0;const outcomes:string[]=[];
   // A separate actual simulation corpus proves that the program affects authoritative use inputs.
   for(const x of [-2,0,2])for(const kit of [true,false]){
@@ -51,7 +51,7 @@ export async function measureTactics(candidate:Candidate,incumbent:Configuration
  }
  const before=run(incumbent.tactics),after=run(candidate.config.tactics);
  const noRegression=after.trainingFailed.every(i=>before.trainingFailed.includes(i))&&after.holdoutFailed.every(i=>before.holdoutFailed.includes(i));
- return {family:'tactics',candidate:candidate.id,configHash:hash(candidate.config),metric:'tactical decision errors + failed emergency objective scenarios (lower is better)',baselineWork:1+before.trainingErrors+before.holdoutErrors+(6-before.completed)*16,candidateWork:1+after.trainingErrors+after.holdoutErrors+(6-after.completed)*16,fidelity:noRegression&&after.completed>=before.completed,samples:198,checks:false,bounds:after.invalidInputs===0,reference:{training:96,heldOut:96,realMatches:6,scope:'Fixed scenario corpus; not general match win rate'},before,after};
+ return {family:'tactics',candidate:candidate.id,configHash:hash(candidate.config),metric:'tactical decision errors + failed emergency objective scenarios (lower is better)',baselineWork:1+before.trainingErrors+before.holdoutErrors+(6-before.completed)*16,candidateWork:1+after.trainingErrors+after.holdoutErrors+(6-after.completed)*16,fidelity:noRegression&&after.completed>=before.completed,samples:198,checks:false,bounds:after.invalidInputs===0,reference:{metricVersion:2,training:96,heldOut:96,realMatches:6,scope:'Fixed scenario corpus; not general match win rate'},before,after};
 }
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {chromium} from 'playwright';

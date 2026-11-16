@@ -1,0 +1,171 @@
+{
+  "schema": "cs1618/creative-release/1",
+  "generation": 4,
+  "observedLiveCommit": "195be14b16913877bd18b9afe50ccb21a9da99f6",
+  "tacticsRun": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43805790219",
+  "artRun": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43806160614",
+  "proxyAuthorRun": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43806602191",
+  "serviceProbe": {
+    "status": 200,
+    "contentType": "text/plain",
+    "body": "OK",
+    "completionObserved": false
+  },
+  "admissions": [
+    {
+      "generation": 3,
+      "at": "2026-11-16T04:46:34.671Z",
+      "author": {
+        "status": "unavailable",
+        "reason": "invalid-response-or-network"
+      },
+      "hash": "92d2d9dabf89dc5c7a5d9ed645c084a3e4118ae38ecb90f36109921159d20bc0",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-0",
+          "author": "seeded-synthesis",
+          "before": 145,
+          "after": 1,
+          "fidelity": true,
+          "bounds": true
+        }
+      ]
+    },
+    {
+      "generation": 4,
+      "at": "2026-11-16T04:50:39.417Z",
+      "author": {
+        "status": "unavailable",
+        "reason": "invalid-response-or-network"
+      },
+      "hash": "4d8987423556ff82eb0f9defce5208963758b1e8a95f90f70da6e6f273597acf",
+      "proposals": [
+        {
+          "candidate": "art-synth-0",
+          "author": "seeded-synthesis",
+          "before": 1,
+          "after": 0.2777466925906902,
+          "fidelity": true,
+          "bounds": true
+        }
+      ]
+    },
+    {
+      "generation": 4,
+      "at": "2026-11-16T04:55:28.030Z",
+      "author": {
+        "status": "unavailable",
+        "reason": "invalid-response-envelope"
+      },
+      "hash": "58c442ba0276c666aec079defbc3c3678aee77970b139e92a814987c7239df4b",
+      "proposals": [
+        {
+          "candidate": "art-synth-0",
+          "author": "seeded-synthesis",
+          "before": 0.2777466925906902,
+          "after": 0.2758415266841958,
+          "fidelity": true,
+          "bounds": true
+        },
+        {
+          "candidate": "art-synth-1",
+          "author": "seeded-synthesis",
+          "before": 0.2777466925906902,
+          "after": 0.2761005945980568,
+          "fidelity": true,
+          "bounds": true
+        }
+      ]
+    }
+  ],
+  "correctedTacticalReplay": {
+    "evaluatedAt": "2026-11-16T04:59:44.009Z",
+    "evaluatorSha256": "74f72dddf46668e1571264df7de5eba3a359b58d18c3c115f92db2ae4dff72dc",
+    "evidence": {
+      "family": "tactics",
+      "candidate": "admitted-tactics-replay",
+      "configHash": "b431b5b976ff32821bd953f429cfec5c60abc13bb67123ee605c5b8feb65e52f",
+      "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+      "baselineWork": 129,
+      "candidateWork": 1,
+      "fidelity": true,
+      "samples": 198,
+      "checks": false,
+      "bounds": true,
+      "reference": {
+        "metricVersion": 2,
+        "training": 96,
+        "heldOut": 96,
+        "realMatches": 6,
+        "scope": "Fixed scenario corpus; not general match win rate"
+      },
+      "before": {
+        "trainingErrors": 16,
+        "holdoutErrors": 16,
+        "trainingFailed": [
+          0,
+          5,
+          12,
+          17,
+          24,
+          29,
+          36,
+          41,
+          48,
+          53,
+          60,
+          65,
+          72,
+          77,
+          84,
+          89
+        ],
+        "holdoutFailed": [
+          0,
+          5,
+          12,
+          17,
+          24,
+          29,
+          36,
+          41,
+          48,
+          53,
+          60,
+          65,
+          72,
+          77,
+          84,
+          89
+        ],
+        "completed": 0,
+        "invalidInputs": 0,
+        "outcomes": [
+          "Device detonated",
+          "Device detonated",
+          "Device detonated",
+          "Device detonated",
+          "Device detonated",
+          "Device detonated"
+        ]
+      },
+      "after": {
+        "trainingErrors": 0,
+        "holdoutErrors": 0,
+        "trainingFailed": [],
+        "holdoutFailed": [],
+        "completed": 6,
+        "invalidInputs": 0,
+        "outcomes": [
+          "Device defused",
+          "Device defused",
+          "Device defused",
+          "Device defused",
+          "Device defused",
+          "Device defused"
+        ]
+      }
+    }
+  },
+  "review": "One P1 baseline-test dependency reproduced and fixed; no other material reviewer findings. Effective-reload scoring subsequently calibrated against actual legacy bot behavior."
+}

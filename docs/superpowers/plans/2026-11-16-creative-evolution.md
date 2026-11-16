@@ -51,4 +51,4 @@ Files: evolution-studio.html; src/creative/studio.ts/css; vite.config.ts; README
 - [x] Build public studio with admitted art/tactics/evidence and baseline toggle; test in real Chromium.
 - [x] Update plan, proof scope, authorship/metrics limits, API fallback and operator controls.
 - [x] Run full tests/build/artifact/browser/WebRTC gates and fresh read-only code review; fix material findings.
-- [ ] Publish main, run actual GitHub creative ticks, inspect live generation/build identity and public multiplayer; publish release/evidence.
+- [x] Publish main, run actual GitHub creative ticks, inspect live generation/build identity and public multiplayer; publish release/evidence.

@@ -1,0 +1,16 @@
+{
+  "url": "https://r4-laboratories.github.io/uor-cs1.618/",
+  "signaling": "PeerJS Cloud default",
+  "stun": "Google and Cloudflare defaults",
+  "network": {
+    "mode": "guest",
+    "route": "direct",
+    "peers": 1,
+    "fast": true,
+    "host": false
+  },
+  "players": 10,
+  "humans": 2,
+  "phase": "freeze",
+  "errors": []
+}

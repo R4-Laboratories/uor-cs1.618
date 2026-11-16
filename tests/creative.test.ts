@@ -37,7 +37,7 @@ import {baselineArt,baselineTactics} from '../shared/creative-program';
 test('tactical promotion improves held-out decisions and real emergency outcomes, rejecting no-op policy',async()=>{
  const before={render:{cell:16,minimum:2},navigation:{cell:3},art:baselineArt,tactics:baselineTactics};
  const good={...before,tactics:synthesizeTactics(42)};const evidence=await measureTactics({id:'tactics-test',family:'tactics',config:good},before);
- assert.equal(evidence.fidelity,true);assert.equal(evidence.bounds,true);assert.ok(evidence.candidateWork<evidence.baselineWork);assert.ok((evidence.after as any).holdoutErrors<(evidence.before as any).holdoutErrors);assert.ok((evidence.after as any).completed>(evidence.before as any).completed);
+ assert.equal(evidence.fidelity,true);assert.equal(evidence.bounds,true);assert.ok(evidence.candidateWork<evidence.baselineWork);assert.ok((evidence.after as any).holdoutErrors<(evidence.before as any).holdoutErrors);assert.ok((evidence.after as any).completed>(evidence.before as any).completed);assert.equal((evidence.before as any).trainingFailed.includes(1),false,'Legacy bot already reloads an empty weapon near an enemy');
  const bad=await measureTactics({id:'bad',family:'tactics',config:{...before,tactics:{version:1,rules:[{when:{fact:'enemy'},action:'guard'}],fallback:'guard'}}},good);assert.equal(bad.fidelity,false);
 });
 import {compileArt} from '../shared/creative-program';
@@ -55,4 +55,9 @@ test('model feedback contains current programs and measured outcomes without unr
 test('author diagnostics distinguish transport failures from rejected program schemas',async()=>{
  const network=await requestModelProposal('token','brief',async()=>{throw new TypeError('fetch failed',{cause:{code:'ECONNREFUSED'}});});assert.equal(network.reason,'network-ECONNREFUSED');
  const program=await requestModelProposal('token','brief',async()=>new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({art:{},tactics:{}})}}]})));assert.equal(program.reason,'invalid-program-schema');
+});
+test('legacy empty-weapon engagement already reloads before firing',async()=>{
+ const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm')),kernel=await createRoundKernel(await readFile('public/wasm/cs_round.wasm'));
+ const m=new Match('RELOAD',engine,kernel,()=>null),p=m.join('a','Legacy','attack',true)!;m.join('d','Opponent','defend');m.phase='live';m.phaseLeft=80;Object.assign(p,{x:0,z:20,yaw:0});Object.assign(m.players.get('d')!,{x:0,z:16});p.inventory[p.slot].ammo=0;m.step(1/60);
+ assert.equal(p.input.reload,true);assert.ok(p.reloadLeft>0);assert.equal(m.events.some(e=>e.type==='shot'&&e.actor===p.id),false);
 });
