@@ -36,6 +36,7 @@ jobs:
         if: vars.CS_AI_AUTHOR != 'off'
         env:
           GH_MODELS_TOKEN: ${{ github.token }}
+          NODE_USE_ENV_PROXY: '1'
         run: npm run evolution:author
       - name: Generate, measure and validate candidate source
         env:

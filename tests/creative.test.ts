@@ -52,3 +52,7 @@ test('model feedback contains current programs and measured outcomes without unr
  const state={config:{art:synthesizeArt(42),tactics:synthesizeTactics(42)},history:[{proposals:[{candidate:'art-0',family:'art',baselineWork:1,candidateWork:.3,fidelity:true,bounds:true,unrelated:'private-value'}]}],unrelated:'private-value'};
  const prompt=authorContext(state);assert.ok(prompt.includes(JSON.stringify(state.config.art)));assert.ok(prompt.includes('0.3'));assert.equal(prompt.includes('private-value'),false);
 });
+test('author diagnostics distinguish transport failures from rejected program schemas',async()=>{
+ const network=await requestModelProposal('token','brief',async()=>{throw new TypeError('fetch failed',{cause:{code:'ECONNREFUSED'}});});assert.equal(network.reason,'network-ECONNREFUSED');
+ const program=await requestModelProposal('token','brief',async()=>new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({art:{},tactics:{}})}}]})));assert.equal(program.reason,'invalid-program-schema');
+});

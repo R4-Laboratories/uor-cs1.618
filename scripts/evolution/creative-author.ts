@@ -3,14 +3,15 @@ import {pathToFileURL} from 'node:url';
 import {validateArt,validateTactics,synthesizeArt,synthesizeTactics,type ArtProgram,type TacticsProgram} from '../../shared/creative-program';
 export interface CreativeProposal {art:ArtProgram;tactics:TacticsProgram;}
 export async function requestModelProposal(token:string,brief:string,fetcher:typeof fetch=fetch):Promise<{status:string;reason?:string;proposal:CreativeProposal|null}>{
+ let phase='network';
  try{
-  const response=await fetcher('https://models.github.ai/inference/chat/completions',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},signal:AbortSignal.timeout(45000),body:JSON.stringify({model:'openai/gpt-4.1-mini',temperature:.7,max_tokens:3500,response_format:{type:'json_object'},messages:[{role:'system',content:'Author a JSON object {art,tactics} for a browser tactical FPS. Return only data conforming to the supplied example structure and constraints. Never include source code, URLs, extra keys or explanations.'},{role:'user',content:brief}]})});
+  const response=await fetcher('https://models.github.ai/inference/chat/completions',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},signal:AbortSignal.timeout(45000),body:JSON.stringify({model:'openai/gpt-4.1-mini',temperature:.7,max_tokens:3500,response_format:{type:'json_object'},messages:[{role:'system',content:'Author a JSON object {art,tactics} for a browser tactical FPS. Return only data conforming to the supplied example structure and constraints. Never include source code, URLs, extra keys or explanations. For this request use at most 12 shapes and 9 rules, with coordinates rounded to three decimals, so the complete response fits the output budget.'},{role:'user',content:brief}]})});
   if(!response.ok)return {status:'unavailable',reason:`http-${response.status}`,proposal:null};
-  const body=await response.text();if(body.length>100000)throw Error('response-limit');
+  phase='response';const body=await response.text();if(body.length>100000)throw Error('response-limit');
   const content=JSON.parse(body).choices?.[0]?.message?.content;if(typeof content!=='string'||content.length>30000)throw Error('content-limit');
-  const proposal=JSON.parse(content);if(Object.keys(proposal).sort().join(',')!=='art,tactics')throw Error('schema');validateArt(proposal.art);validateTactics(proposal.tactics);
+  const proposal=JSON.parse(content);phase='schema';if(Object.keys(proposal).sort().join(',')!=='art,tactics')throw Error('schema');validateArt(proposal.art);validateTactics(proposal.tactics);
   return {status:'authored',proposal};
- }catch{return {status:'unavailable',reason:'invalid-response-or-network',proposal:null};}
+ }catch(error){const code=(error as any)?.cause?.code;const reason=phase==='schema'?'invalid-program-schema':phase==='response'?'invalid-response-envelope':typeof code==='string'&&/^[A-Z0-9_]+$/.test(code)?`network-${code}`:'network-or-timeout';return {status:'unavailable',reason,proposal:null};}
 }
 export function authorContext(state:any){
  validateArt(state.config.art);validateTactics(state.config.tactics);
