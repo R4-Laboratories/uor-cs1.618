@@ -4,11 +4,14 @@ import {pathToFileURL} from 'node:url';
 import {chooseCandidates} from './policy';
 import {validateState} from './generate';
 import {contextDigest} from './state';
-export interface ChainObservation {enabled:boolean;repo:string;head:string;checkout:string;live:string|null;hasCandidates:boolean;runs:{head_sha:string;status:string}[];trigger:any;}
+export interface ChainObservation {enabled:boolean;repo:string;head:string;checkout:string;live:string|null;hasCandidates:boolean;runs:{head_sha:string;status:string}[];trigger:any;publicationJobs?:{name:string;status:string;conclusion:string|null}[];}
 export function continuationDecision(s:ChainObservation):string{
  if(!s.enabled)return 'disabled';
  const t=s.trigger;
- if(t?.name!=='Verify and publish cs1.618'||t.status!=='completed'||t.conclusion!=='success'||t.head_branch!=='main'||!['push','workflow_dispatch'].includes(t.event)||t.head_repository?.full_name?.toLowerCase()!==s.repo.toLowerCase())return 'ignored';
+ if(t?.name!=='Verify and publish cs1.618'||t.head_branch!=='main'||!['push','workflow_dispatch'].includes(t.event)||t.head_repository?.full_name?.toLowerCase()!==s.repo.toLowerCase())return 'ignored';
+ const completed=t.status==='completed'&&t.conclusion==='success';
+ const publishedJobs=t.status==='in_progress'&&['build','deploy'].every(name=>s.publicationJobs?.some(j=>j.name===name&&j.status==='completed'&&j.conclusion==='success'));
+ if(!completed&&!publishedJobs)return 'ignored';
  if(!/^[a-f0-9]{40}$/.test(s.head)||s.head!==s.checkout||s.head!==t.head_sha)return 'superseded';
  if(!s.hasCandidates)return 'settled';
  // A repeated Pages delivery/retry must not retry a failed tick or dispatch a duplicate.
@@ -26,9 +29,11 @@ export async function continueEvolution(observe:()=>Promise<ChainObservation>,di
  throw Error('Verified Pages publication did not become visible; no next tick dispatched.');
 }
 export async function runContinuation(){
- const repo=process.env.GITHUB_REPOSITORY;if(!repo||!/^[\w.-]+\/[\w.-]+$/.test(repo)||process.env.GITHUB_EVENT_NAME!=='workflow_run')throw Error('Continuation requires a repository workflow completion');
- const trigger=JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH!,'utf8')).workflow_run;
+ const repo=process.env.GITHUB_REPOSITORY;if(!repo||!/^[\w.-]+\/[\w.-]+$/.test(repo))throw Error('Missing repository');
+ const direct=process.env.CS_CONTINUE_FROM_PAGES==='1'&&process.env.GITHUB_WORKFLOW==='Verify and publish cs1.618'&&['push','workflow_dispatch'].includes(process.env.GITHUB_EVENT_NAME??'')&&/^\d+$/.test(process.env.GITHUB_RUN_ID??'');
+ if(!direct&&process.env.GITHUB_EVENT_NAME!=='workflow_run')throw Error('Continuation requires verified Pages jobs or a workflow completion');
  const api=(path:string)=>JSON.parse(execFileSync('gh',['api',`repos/${repo}/${path}`],{encoding:'utf8',timeout:30000}));
+ const trigger=direct?api(`actions/runs/${process.env.GITHUB_RUN_ID}`):JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH!,'utf8')).workflow_run;
  const checkout=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
  const state=JSON.parse(readFileSync('model/evolution/state.json','utf8')),policy=JSON.parse(readFileSync('model/evolution/policy.json','utf8'));validateState(state,policy);
  const hasCandidates=chooseCandidates(state,policy,contextDigest()).length>0;
@@ -42,7 +47,8 @@ export async function runContinuation(){
    if(!Array.isArray(runs))throw Error('Invalid evolution run history');
    let live:string|null=null;
    try{const response=await fetch(liveUrl,{cache:'no-cache',signal:AbortSignal.timeout(15000)});if(response.ok)live=(await response.json()).commit??null;}catch{}
-   return {enabled:process.env.CS_EVOLUTION!=='off',repo,head,checkout,live,hasCandidates,runs,trigger};
+   const publicationJobs=direct?api(`actions/runs/${process.env.GITHUB_RUN_ID}/jobs?per_page=100`).jobs:undefined;
+   return {enabled:process.env.CS_EVOLUTION!=='off',repo,head,checkout,live,hasCandidates,runs,trigger,publicationJobs};
   },async()=>{
    execFileSync('gh',['workflow','run','evolution.yml','--repo',repo,'--ref','main','-f','family=auto','-f',`continuation_from=${trigger.id}`],{stdio:'inherit',timeout:30000});
   },()=>new Promise(resolve=>setTimeout(resolve,10000))));

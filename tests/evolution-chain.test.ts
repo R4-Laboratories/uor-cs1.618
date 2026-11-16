@@ -31,3 +31,10 @@ test('CDN timeout and API failures fail visibly without queuing a tick',async()=
  await assert.rejects(continueEvolution(async()=>ready,async()=>{throw Error('dispatch denied');},async()=>{},2),/dispatch denied/);
  assert.equal(dispatched,0);
 });
+test('a Pages job can continue after both verified jobs finish while the workflow is still running',()=>{
+ const publicationJobs=[{name:'build',status:'completed',conclusion:'success'},{name:'deploy',status:'completed',conclusion:'success'}];
+ const observation={...ready,trigger:{...ready.trigger,status:'in_progress',conclusion:null},publicationJobs};
+ assert.equal(continuationDecision(observation),'dispatch');
+ for(const jobs of [[],publicationJobs.slice(0,1),[{...publicationJobs[0],conclusion:'failure'},publicationJobs[1]],[publicationJobs[0],{...publicationJobs[1],status:'in_progress'}],[publicationJobs[0],{...publicationJobs[1],name:'unrelated'}]])assert.equal(continuationDecision({...observation,publicationJobs:jobs}),'ignored');
+ assert.equal(continuationDecision({...observation,trigger:{...observation.trigger,status:'completed',conclusion:'failure'}}),'ignored');
+});

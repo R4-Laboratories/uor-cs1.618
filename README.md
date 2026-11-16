@@ -1,6 +1,6 @@
 # cs1.618
 
-[![Evolution ticks](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml/badge.svg)](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml) [![Automatic continuation](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution-chain.yml/badge.svg)](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution-chain.yml)
+[![Evolution ticks](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml/badge.svg)](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml) [![Automatic continuation](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/pages.yml/badge.svg)](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/pages.yml)
 
 An original, playable tactical multiplayer FPS inspired by the round-based defusal play of Counter-Strike 1.4/1.5, built on **Verdant Engine** and modeled with the **Prism** toolchain. The repository is `uor-cs1.618`; the game is **cs1.618**.
 
@@ -18,7 +18,7 @@ PeerJS Cloud supplies default rendezvous signaling and public STUN helps find di
 
 ## GitHub-hosted improvement loop
 
-**[Watch ticks run](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml) · [Watch automatic continuation](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution-chain.yml) · [Live decisions and generation](https://r4-laboratories.github.io/uor-cs1.618/evolution.json)**
+**[Watch ticks run](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/evolution.yml) · [Watch automatic continuation](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/pages.yml) · [Live decisions and generation](https://r4-laboratories.github.io/uor-cs1.618/evolution.json)**
 
 Ticks now run consecutively: evaluate → validate → commit → deploy Pages → automatically queue the next tick. One evolution tick runs at a time. The hourly schedule is a recovery trigger, not the normal wait between ticks. Failed gates stop the chain; an exhausted candidate set settles until new tested recipes or a source change opens more work.
 
@@ -27,7 +27,7 @@ Ticks now run consecutively: evaluate → validate → commit → deploy Pages �
 | Generate candidates, measure and admit changes | [Tick engine](scripts/evolution/tick.ts), [candidate search](scripts/evolution/policy.ts) |
 | Compile real game code | [Generators](scripts/evolution/generate.ts), [experience compiler](shared/experience.ts) |
 | Commit only validated outputs and deploy | [Publisher](scripts/evolution/publish.ts) |
-| Start the next tick after verified publication | [Continuation](scripts/evolution/continue.ts), [GitHub workflow](.github/workflows/evolution-chain.yml) |
+| Start the next tick after verified publication | [Continuation](scripts/evolution/continue.ts), [Pages continuation job](.github/workflows/pages.yml), [completion-event fallback](.github/workflows/evolution-chain.yml) |
 | Remember decisions and remaining work | [State and history](model/evolution/state.json), [feature backlog](model/development/backlog.json) |
 
 The engine writes variants of rendering, navigation, procedural art, bot tactics and weapon/audio/render experience code. For example, [generation 7 changed executable experience code](https://github.com/R4-Laboratories/uor-cs1.618/commit/99dc1958d643638bdd31874986dca88ab12127d2). It does not independently invent arbitrary new game features: backlog items marked `needs-recipe` or `needs-design` still require implementation. [Mechanism, evidence and limits](docs/SELF-IMPROVEMENT.md).

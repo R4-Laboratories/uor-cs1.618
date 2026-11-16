@@ -63,3 +63,35 @@ jobs:
         if: steps.tip.outputs.current == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
+
+  continue-evolution:
+    if: github.ref == 'refs/heads/main'
+    needs: [build, deploy]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Continue after verified build and deployment jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CS_EVOLUTION: ${{ vars.CS_EVOLUTION }}
+          CS_CONTINUE_FROM_PAGES: '1'
+          NODE_USE_ENV_PROXY: '1'
+        run: npx tsx scripts/evolution/continue.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evolution-continuation-${{ github.run_id }}
+          path: artifacts/evolution-chain/
+          retention-days: 90
