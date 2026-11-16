@@ -6,24 +6,94 @@
 \title{feature}
 \begin{semanticmodule}
 definition{
+  name: acCsVerdantCsVerdantCharactersRealUpstreamMeshHas22JointsAndNormalizedWeights,
+  parameters: [],
+  result: String,
+  body: "real_upstream_mesh_has_22_joints_and_normalized_weights at crates/cs-verdant/src/characters.rs:147 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantCharactersPoseSlotsAreBoundedFiniteAndReleased,
+  parameters: [],
+  result: String,
+  body: "pose_slots_are_bounded_finite_and_released at crates/cs-verdant/src/characters.rs:163 passes."
+}
+
+definition{
   name: acCsVerdantCsVerdantWallBlocksShotsAndMovement,
   parameters: [],
   result: String,
-  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:8 passes."
+  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:9 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner,
   parameters: [],
   result: String,
-  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:17 passes."
+  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:18 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantRayMissesOpenSpace,
   parameters: [],
   result: String,
-  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:27 passes."
+  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:28 passes."
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_asset: extern \"C\" fn cs_character_asset(team: u32) -> u32"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_asset_ptr: extern \"C\" fn cs_character_asset_ptr() -> * const u8"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_asset_len: extern \"C\" fn cs_character_asset_len() -> usize"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_create: extern \"C\" fn cs_character_create(slot: u32, team: u32) -> u32"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_release: extern \"C\" fn cs_character_release(slot: u32)"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_step: extern \"C\" fn cs_character_step(slot: u32, dt: f64, time: f64, speed: f64, pitch: f64, grounded: u32,) -> u32"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_pose_ptr: extern \"C\" fn cs_character_pose_ptr() -> * const f32"
+}
+
+definition{
+  name: callCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::characters::cs_character_pose_len: extern \"C\" fn cs_character_pose_len() -> usize"
 }
 
 definition{
@@ -132,10 +202,17 @@ definition{
 }
 
 definition{
+  name: featureCsVerdantCharacters,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "cs_verdant::characters: Bounded rendering-only bridge to Verdant's new articulated character module.", calls := (cons "Interface::callCsVerdantCharactersCsCharacterAsset" (cons "Interface::callCsVerdantCharactersCsCharacterAssetPtr" (cons "Interface::callCsVerdantCharactersCsCharacterAssetLen" (cons "Interface::callCsVerdantCharactersCsCharacterCreate" (cons "Interface::callCsVerdantCharactersCsCharacterRelease" (cons "Interface::callCsVerdantCharactersCsCharacterStep" (cons "Interface::callCsVerdantCharactersCsCharacterPosePtr" (cons "Interface::callCsVerdantCharactersCsCharacterPoseLen" (nil String))))))))), acceptance := (cons "Interface::acCsVerdantCsVerdantCharactersPoseSlotsAreBoundedFiniteAndReleased" (nil String))})
+}
+
+definition{
   name: journeyLibraryCsVerdant,
   parameters: [],
   result: Foundation.Arch::Journey,
-  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (nil String))})
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (cons "Interface::featureCsVerdantCharacters" (nil String)))})
 }
 \end{semanticmodule}
 \end{lexlean}

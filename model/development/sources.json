@@ -58,6 +58,18 @@
       ],
       "purpose": "Exact imported bounded weight-update and Pareto acceptance semantic ASTs",
       "integration": "Restricted compiler; generated TypeScript used by the development engine, independently parity tested"
+    },
+    {
+      "repository": "afflom/verdant-engine",
+      "commit": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
+      "paths": [
+        "crates/verdant-core/src/character.rs",
+        "crates/verdant-core/src/collision.rs",
+        "crates/verdant-core/src/camera.rs",
+        "site/scene-renderer.mjs"
+      ],
+      "purpose": "Pinned game engine and 3D character/physics/rendering changes",
+      "integration": "Cargo dependency; character mesh, animation and IK execute in cs_verdant.wasm"
     }
   ]
 }

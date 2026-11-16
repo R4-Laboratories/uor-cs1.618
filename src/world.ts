@@ -1,3 +1,5 @@
+import {CharacterLayer} from './characters';
+import type {VerdantEngine} from '../shared/engine';
 import {adaptQuality} from '../shared/generated-experience';
 import {ArtworkLayer} from './creative/artwork';
 import {optimizeScenery} from './generated/render-policy';
@@ -28,6 +30,8 @@ export class WorldView{
  setQuality(mode:'auto'|'native'|'low'){this.qualityMode=mode;this.quality={scale:mode==='low'?.7:1,slow:0,fast:0};this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*this.quality.scale);this.resize();}
 
  artwork:ArtworkLayer;
+ characters:CharacterLayer|null=null;
+ setEngine(engine:VerdantEngine){this.characters=new CharacterLayer(engine);}
  constructor(public canvas:HTMLCanvasElement,options:{evolution?:boolean;preserveDrawingBuffer?:boolean}={}){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:options.preserveDrawingBuffer??false});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
   this.scene.background=new T.Color(0xc6d4d3);this.scene.fog=new T.Fog(0xc6d4d3,50,155);
@@ -88,6 +92,7 @@ export class WorldView{
  }
  makeBomb(){const g=new T.Group();this.mesh(0,.16,0,.55,.3,.36,this.mats.dark,g);this.mesh(0,.32,.02,.35,.05,.2,this.mats.metal,g);const led=new T.Mesh(new T.SphereGeometry(.035,6,6),new T.MeshBasicMaterial({color:0xff6544}));led.position.set(.15,.36,.04);g.add(led);return g;}
  makePlayer(p:PublicPlayer){
+  if(this.characters){const g=this.characters.create(p);this.mesh(.16,1.15,-.5,.12,.14,.75,this.mats.dark,g);this.mesh(.16,1.2,-.91,.06,.06,.2,this.mats.metal,g);this.scene.add(g);this.players.set(p.id,g);return g;}
   const g=new T.Group();const outfit=new T.MeshStandardMaterial({color:p.team==='attack'?0x9a6842:0x416f7d,roughness:.8});const vest=new T.MeshStandardMaterial({color:p.team==='attack'?0x453d33:0x263c43,roughness:.8});const skin=new T.MeshStandardMaterial({color:0xc39b75,roughness:.8});
   this.mesh(0,1.04,0,.52,.63,.33,outfit,g);this.mesh(0,1.08,-.07,.56,.46,.32,vest,g);
   const head=new T.Mesh(new T.SphereGeometry(.2,8,6),skin);head.position.y=1.57;head.scale.set(.9,1.12,.95);head.castShadow=true;g.add(head);this.mesh(0,1.65,.02,.37,.18,.37,vest,g);this.mesh(0,1.56,-.17,.32,.07,.06,this.mats.dark,g);
@@ -120,14 +125,14 @@ export class WorldView{
  render(dt:number,snapshot:Snapshot|null,position:Motion|null,yaw:number,pitch:number,scoped:boolean,spectating:PublicPlayer|null,active=false){
   if(this.qualityMode==='auto'){const next=adaptQuality(this.quality,active?dt:1);if(next.scale!==this.quality.scale){this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*next.scale);this.resize();}this.quality=next;}
   this.elapsed+=dt;this.recoil=Math.max(0,this.recoil-dt*8);this.flash.visible=this.recoil>.7;
-  if(!snapshot){const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
+  if(!snapshot){this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
   else{
    const self=snapshot.self;const view=self.alive&&position?position:spectating??{x:0,y:14,z:20,crouch:false};
    this.camera.position.set(view.x,view.y+('crouch'in view&&view.crouch?RULES.crouchEye:RULES.eyeHeight),view.z);
    this.camera.rotation.order='YXZ';this.camera.rotation.z=0;this.camera.rotation.y=self.alive?yaw:spectating?.yaw??0;this.camera.rotation.x=self.alive?pitch+(self.recoil*.25):spectating?.pitch??-.35;
    const fov=scoped&&self.weapon==='scout'?32:76;this.camera.fov=T.MathUtils.lerp(this.camera.fov,fov,Math.min(1,dt*15));this.camera.updateProjectionMatrix();
-   const ids=new Set(snapshot.players.map(p=>p.id));for(const[id,g]of this.players)if(!ids.has(id)){this.scene.remove(g);this.players.delete(id);}
-   for(const p of snapshot.players){const g=this.players.get(p.id)??this.makePlayer(p);g.visible=p.id!==self.id&&p.alive&&p.id!==spectating?.id;g.position.lerp(new T.Vector3(p.x,p.y,p.z),Math.min(1,dt*20));g.rotation.y=p.yaw;g.scale.y=p.crouch?.65:1;const walking=Math.hypot(p.vx,p.vz)>1;for(const side of ['legL','legR']){const leg=g.getObjectByName(side);if(leg)leg.rotation.x=walking?Math.sin(this.elapsed*12+(side==='legL'?0:Math.PI))*.35:0;}}
+   const ids=new Set(snapshot.players.map(p=>p.id));for(const[id,g]of this.players)if(!ids.has(id)){this.characters?.remove(id);this.scene.remove(g);this.players.delete(id);}
+   for(const p of snapshot.players){const g=this.players.get(p.id)??this.makePlayer(p);g.visible=p.id!==self.id&&p.alive&&p.id!==spectating?.id;g.position.lerp(new T.Vector3(p.x,p.y,p.z),Math.min(1,dt*20));g.rotation.y=p.yaw;g.scale.y=p.crouch?.65:1;if(g.visible)this.characters?.update(p,dt,this.elapsed);const walking=Math.hypot(p.vx,p.vz)>1;for(const side of ['legL','legR']){const leg=g.getObjectByName(side);if(leg)leg.rotation.x=walking?Math.sin(this.elapsed*12+(side==='legL'?0:Math.PI))*.35:0;}}
    const b=snapshot.bomb;this.bomb.visible=!!b&&b.state!=='carried';if(b){this.bomb.position.set(b.x,b.y,b.z);this.bomb.rotation.y=this.elapsed*.2;}
    this.setWeapon(self.weapon);
    const speed=position?Math.hypot(position.vx,position.vz):0;const bob=Math.sin(this.elapsed*11)*Math.min(1,speed/5);

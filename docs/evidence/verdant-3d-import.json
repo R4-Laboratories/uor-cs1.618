@@ -1,0 +1,55 @@
+{
+  "schema": "cs1618/verdant-3d-import/1",
+  "engineRevision": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
+  "version": "0.6.0",
+  "nativeRustTests": 5,
+  "typescriptTests": 60,
+  "artifactHashes": 42,
+  "wasmBytes": 203969,
+  "character": {
+    "joints": 22,
+    "vertices": 856,
+    "triangles": 1200,
+    "slots": 10,
+    "animationHz": 30,
+    "terrainIk": "flat local support plane"
+  },
+  "checks": {
+    "verify": "passed",
+    "rust": "passed",
+    "uorustProjection": "passed",
+    "browser": {
+      "passed": [
+        "Browser buy menu equips a server-issued rifle and deducts the exact price",
+        "WASD movement appears on both independently rendered clients",
+        "Upstream Verdant 22-joint operators render and animate in multiplayer",
+        "Mouse fire consumes server ammo and damages the remote opponent",
+        "Escape menu and leaving a room restore the lobby and release character slots",
+        "Static browser practice starts ten-player simulation without a WebSocket connection",
+        "No uncaught browser errors across online and local gameplay"
+      ],
+      "errors": []
+    },
+    "peerBrowser": {
+      "passed": [
+        "Wrong invitation is rejected before joining or evicting a bot",
+        "Isolated browser contexts join the same worker-hosted match with a real unordered WebRTC channel",
+        "Guest purchase is applied by the host and deducts the authoritative price",
+        "Guest input moves its authoritative player and reaches the host snapshot",
+        "Established gameplay continues when signaling sockets disconnect",
+        "No dedicated game-server endpoint or gameplay payload through signaling",
+        "Host departure closes the match and restores a usable guest lobby",
+        "No uncaught browser errors"
+      ],
+      "errors": []
+    },
+    "creativeBrowser": "passed",
+    "experienceBrowser": "passed"
+  },
+  "review": {
+    "fixed": "Clamp steep bot pitch to the character ABI range; real-Wasm regression passed",
+    "remainingImportantFindings": 0
+  },
+  "formalVerification": "Full Prism verification remains open (PP5004); renderer is not formally proved",
+  "renderingEnvironment": "Headless Chromium with software rendering"
+}

@@ -23,3 +23,16 @@ Feature: cs-verdant
     Then the acceptance row Interface::acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner holds
     And the acceptance row Interface::acCsVerdantCsVerdantRayMissesOpenSpace holds
     And the acceptance row Interface::acCsVerdantCsVerdantWallBlocksShotsAndMovement holds
+
+  @FT-02 @build
+  Scenario: cs_verdant::characters: Bounded rendering-only bridge to Verdant's new articulated character module.
+    Given the record Interface::featureCsVerdantCharacters
+    When the interface call Interface::callCsVerdantCharactersCsCharacterAsset is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterAssetPtr is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterAssetLen is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterCreate is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterRelease is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterStep is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterPosePtr is made
+    And the interface call Interface::callCsVerdantCharactersCsCharacterPoseLen is made
+    Then the acceptance row Interface::acCsVerdantCsVerdantCharactersPoseSlotsAreBoundedFiniteAndReleased holds

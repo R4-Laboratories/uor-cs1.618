@@ -6,6 +6,62 @@
 \title{design view}
 \begin{semanticmodule}
 definition{
+  name: processCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
   name: processCsVerdantSpatialWorldAddBox,
   parameters: [],
   result: Foundation.Arch::SystemProcess,
@@ -111,6 +167,13 @@ definition{
 }
 
 definition{
+  name: umlExtSerdeJson,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::umlComponents", component := "Architecture::componentExtSerdeJson"})
+}
+
+definition{
   name: umlExtVerdantCore,
   parameters: [],
   result: Foundation.Arch::UmlComponent,
@@ -122,6 +185,13 @@ definition{
   parameters: [],
   result: Foundation.Arch::UmlComponent,
   body: (record Foundation.Arch::UmlComponent {view := "Design::umlComponents", component := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: umlConnectorLibCsVerdantToExtSerdeJson,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::umlComponents", edge := "Architecture::edgeLibCsVerdantToExtSerdeJson"})
 }
 
 definition{
@@ -143,6 +213,118 @@ definition{
   parameters: [],
   result: Foundation.Arch::OpmThing,
   body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAsset"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAsset"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAssetPtr"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAssetPtr"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAssetLen"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAssetLen"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterCreate"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterCreate"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterRelease"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterRelease"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterStep"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterStep"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterPosePtr"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterPosePtr"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterPoseLen"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterPoseLen"})
 }
 
 definition{
@@ -654,6 +836,132 @@ definition{
   parameters: [],
   result: Foundation.Arch::OpmLink,
   body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsAudio"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharacters,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "cs_verdant::characters processes", viewpoint := "Architecture::viewpointMaintenance", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersObject,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAsset"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterAsset,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAsset"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAssetPtr"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterAssetPtr,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAssetPtr"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterAssetLen"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterAssetLen,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterAssetLen"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterCreate"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterCreate,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterCreate"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterRelease"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterRelease,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterRelease"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterStep"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterStep,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterStep"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterPosePtr"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterPosePtr,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterPosePtr"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersThingCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCharactersCsCharacterPoseLen"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantCharactersInstrumentCsVerdantCharactersCsCharacterPoseLen,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantCharacters", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCharactersCsCharacterPoseLen"})
 }
 \end{semanticmodule}
 \end{lexlean}

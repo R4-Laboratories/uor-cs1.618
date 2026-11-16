@@ -6,24 +6,38 @@
 \title{architectural component}
 \begin{semanticmodule}
 definition{
+  name: componentExtSerdeJson,
+  parameters: [],
+  result: Foundation.Arch::Component,
+  body: (record Foundation.Arch::Component {index := 0, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "serde_json", text := "Third-party crate serde_json 1.0.154, locked in Cargo.lock."})
+}
+
+definition{
   name: componentExtVerdantCore,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 0, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "verdant-core", text := "Third-party crate verdant-core 0.1.0, locked in Cargo.lock."})
+  body: (record Foundation.Arch::Component {index := 1, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "verdant-core", text := "Third-party crate verdant-core 0.1.0, locked in Cargo.lock."})
 }
 
 definition{
   name: componentLibCsVerdant,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 1, kind := (ctor Foundation.Arch::ComponentKind.service), name := "cs_verdant", text := "The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH."})
+  body: (record Foundation.Arch::Component {index := 2, kind := (ctor Foundation.Arch::ComponentKind.service), name := "cs_verdant", text := "The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH."})
+}
+
+definition{
+  name: edgeLibCsVerdantToExtSerdeJson,
+  parameters: [],
+  result: Foundation.Arch::Edge,
+  body: (record Foundation.Arch::Edge {index := 0, fromIndex := 2, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.controlFlow)})
 }
 
 definition{
   name: edgeLibCsVerdantToExtVerdantCore,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 0, fromIndex := 1, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.controlFlow)})
+  body: (record Foundation.Arch::Edge {index := 1, fromIndex := 2, toIndex := 1, kind := (ctor Foundation.Arch::EdgeKind.controlFlow)})
 }
 
 definition{

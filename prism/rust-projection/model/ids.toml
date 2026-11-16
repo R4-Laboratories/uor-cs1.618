@@ -8,3 +8,10 @@ level = "build"
 suite = "cs-verdant"
 record = "Interface::featureCsVerdant"
 statement = "cs_verdant: The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH."
+
+[[id]]
+id = "FT-02"
+level = "build"
+suite = "cs-verdant"
+record = "Interface::featureCsVerdantCharacters"
+statement = "cs_verdant::characters: Bounded rendering-only bridge to Verdant's new articulated character module."

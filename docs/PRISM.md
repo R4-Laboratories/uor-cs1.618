@@ -8,7 +8,7 @@ Exact source revisions are in [upstream-lock.json](../model/upstream-lock.json).
 
 | Upstream | Concrete use |
 | --- | --- |
-| `afflom/verdant-engine` | Pinned Cargo dependency. `verdant-core` BVH, ray/AABB, vectors and occluded binaural audio execute through `crates/cs-verdant` in the browser and server. |
+| `afflom/verdant-engine` | Pinned Cargo dependency. `verdant-core` BVH, ray/AABB, vectors, occluded binaural audio, and 22-joint character meshes/poses execute through `crates/cs-verdant` in the browser and server. |
 | `afflom/verdant-resonance` | Architectural reference for the Rust/Wasm plus web presentation delivery, and explicit distinction between model evidence and observed application behavior. No Resonance game assets are copied. |
 | `UOR-Foundation/lexlean` | The round model is LexLean, with the locked compiler and Lean toolchain used by the PrismPM SDK. Source checkout is pinned for inspection; executable compiler identity is pinned separately by the SDK image and `lexlean.lock`. |
 | `UOR-Foundation/prismpm` | Builds the actual core Wasm and binary HOLO archive from that model; runs the application verification pipeline. |

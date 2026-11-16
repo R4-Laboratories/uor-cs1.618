@@ -22,7 +22,7 @@ try{view=new WorldView(canvas);}catch(error){$('load-detail').textContent='WebGL
 let bytes:ArrayBuffer;
 try{const response=await fetch(`${import.meta.env.BASE_URL}wasm/cs_verdant.wasm`);if(!response.ok)throw Error('Engine download failed');bytes=await response.arrayBuffer();}catch(error){$('load-detail').textContent='Could not load the game engine. Check the connection and reload.';throw error;}
 const roundResponse=await fetch(`${import.meta.env.BASE_URL}wasm/cs_round.wasm`);if(!roundResponse.ok){$('load-detail').textContent='Could not load the Prism round kernel. Reload to try again.';throw Error('Missing Prism kernel');}const roundBytes=await roundResponse.arrayBuffer();
-const engine=await createEngine(bytes);const audio=new GameAudio(engine);
+const engine=await createEngine(bytes);view.setEngine(engine);const audio=new GameAudio(engine);
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;
 let peerRoom:PeerRoom|null=null;
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
@@ -164,4 +164,4 @@ function frame(now:number){
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',characters:view.characters?.diagnostics,evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

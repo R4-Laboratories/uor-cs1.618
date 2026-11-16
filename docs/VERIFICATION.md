@@ -64,3 +64,7 @@ GitHub Models authorship remains unverified operationally: after proxy configura
 ## v0.5 development verification
 
 The new experience contracts distinguish deterministic unit checks, synthetic frame-trace work, actual browser audio/render checks, and formal verification. The `LexLean and Prism proof audit` workflow reruns both applications under the pinned SDK and preserves failures as failures. See [DEVELOPMENT-ENGINE.md](DEVELOPMENT-ENGINE.md) for the SDK-version/projection mismatch lead and exact limits. No whole-game proof or real-GPU speedup is claimed.
+
+## v0.6.0 Verdant 3D import
+
+The engine dependency advances to `b2b29ca` and the browser uses its actual 22-joint character mesh and poses. Five Rust tests, 60 TypeScript tests, the production build, 42 artifact/source hashes and all four browser suites passed locally. UORust regenerated and checked the Rust inspection projection, including the new character ABI. The browser gameplay gate also checks active character poses, slot cleanup on leaving and a ten-player practice roster. See [integration scope](VERDANT-3D.md); the full Prism verification gate remains open.

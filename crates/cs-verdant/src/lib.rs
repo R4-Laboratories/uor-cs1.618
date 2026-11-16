@@ -1,6 +1,7 @@
 //! The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH.
 #![deny(unsafe_op_in_unsafe_fn)]
 
+mod characters;
 #[cfg(test)]
 mod tests {
     use super::*;

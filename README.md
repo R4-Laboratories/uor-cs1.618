@@ -39,7 +39,7 @@ The shipped Wasm binaries are committed. Rust and the Prism SDK are needed only 
 - P9 pistol, Kestrel assault rifle, Sentinel assault rifle, Vector SMG and scoped Longbow rifle. Recoil, movement spread, headshots, finite magazines, timed reloads, armor and defusal kits.
 - Hold-to-plant and hold-to-defuse, interrupted by movement or releasing E. Dropped-device pickup, elimination/timeout/detonation victory conditions, spectator mode and scoreboard.
 - Browser-local 5v5 practice in a worker; online bot fill. Static hosting can run practice without a server.
-- Verdant Core's BVH, ray/AABB intersection, vector mathematics and occluded binaural audio execute in the same custom Wasm bridge on client and server.
+- Verdant Core's BVH, ray/AABB intersection, vector mathematics and occluded binaural audio execute in the same custom Wasm bridge on client and server. The latest engine also supplies the visible 22-joint operator meshes, skeletal animation and flat-support foot IK, rendered with GPU skinning. See the [3D integration notes](docs/VERDANT-3D.md).
 
 This is a playable first release, not a feature-complete recreation of Counter-Strike. It has one map and the weapons above; grenades, hostages, ranked matchmaking, accounts, voice chat, lag-compensated rewind and production anti-cheat are not implemented. It uses WebGL2 for presentation, as Verdant Resonance does; it does not claim WebGPU rendering or formal verification of the entire game.
 

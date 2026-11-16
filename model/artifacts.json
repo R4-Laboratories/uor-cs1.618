@@ -1,25 +1,29 @@
 {
   "schema": "cs1618/artifacts/1",
   "engine": "verdant-core",
-  "engineRevision": "4c433f1c31792dae748e436d279fa7838131e3b8",
+  "engineRevision": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
   "evolutionBuild": "071558e95f9aa89316402ff5c6d6708e9a6b9d3608a9851a917d65dd88773181",
   "roundBuild": "3b66383a3d163668aae5e2d60725c77af763d6194aaf978f3869cfe621713620",
   "files": {
     "Cargo.lock": {
-      "sha256": "7bf8e22da710d14df5ed4e1ba3d627039a091e104750d372b88b86d24bd6519e",
-      "bytes": 18474
+      "sha256": "56d42f692742e8def96cc5865f919dae918c522be0511181aa65d9ab09266ee1",
+      "bytes": 18489
     },
     "Cargo.toml": {
       "sha256": "627f076a0488fdf09345e571ec99247d3417250d3df11e9aadb030f7b8fb402f",
       "bytes": 133
     },
     "crates/cs-verdant/Cargo.toml": {
-      "sha256": "07ddcaf3142903bb5bc1a2ea58da832e0b45c33062c9a9997d561ab8dd457289",
-      "bytes": 397
+      "sha256": "0cf763a30ec979363a1a5a2390bf1afbf99435088db1209d4c905a2954ea83f6",
+      "bytes": 420
+    },
+    "crates/cs-verdant/src/characters.rs": {
+      "sha256": "8a7d9371c6a33e7b3a4b58a024b843c25e0fe2724060b518b147e2004ea615df",
+      "bytes": 6380
     },
     "crates/cs-verdant/src/lib.rs": {
-      "sha256": "e2a01dd04da28f142e45dc6fe59eeaae00fd143796e1de6904dab94670eb533b",
-      "bytes": 6471
+      "sha256": "bf7f3f6a090f7849c32e6b27c746afabaee934a4a5bb3fe4115b55ddb7fc6ba3",
+      "bytes": 6487
     },
     "model/evolution/admission.prompt.json": {
       "sha256": "b5f402173bc77e84717c9dab55c678782f85ea6f5bf2900277ca566d23efda05",
@@ -166,8 +170,8 @@
       "bytes": 2558
     },
     "public/wasm/cs_verdant.wasm": {
-      "sha256": "5bc8c5a8eeceed5de1ab6e313daaf02ef210290d6bcb919eb00f6acdef234cce",
-      "bytes": 52551
+      "sha256": "cd6e2ec7b733a94f642359248d10fcef65da302a09a9478cc851c72d5a940709",
+      "bytes": 203969
     }
   }
 }
