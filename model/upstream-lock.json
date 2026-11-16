@@ -1,0 +1,32 @@
+[
+  {
+    "name": "verdant-engine",
+    "repository": "https://github.com/afflom/verdant-engine.git",
+    "commit": "4c433f1c31792dae748e436d279fa7838131e3b8"
+  },
+  {
+    "name": "verdant-resonance",
+    "repository": "https://github.com/afflom/verdant-resonance.git",
+    "commit": "533131e2cdf718d0c9c908866cd0829cf48bd14e"
+  },
+  {
+    "name": "lexlean",
+    "repository": "https://github.com/UOR-Foundation/lexlean.git",
+    "commit": "71defb4c663aaec5b9a3aab04cbc6a03e7106227"
+  },
+  {
+    "name": "prismpm",
+    "repository": "https://github.com/UOR-Foundation/prismpm.git",
+    "commit": "f465664167bdaccef13c37921c057e49d0883126"
+  },
+  {
+    "name": "prism-devrel",
+    "repository": "https://github.com/afflom/prism-devrel.git",
+    "commit": "e45f6dfab9ac4a1ab23a8eaefc1ecb72538a1ced"
+  },
+  {
+    "name": "UORust",
+    "repository": "https://github.com/afflom/UORust.git",
+    "commit": "9d1f379676aa1099c4b88093608a37a66ba819f6"
+  }
+]

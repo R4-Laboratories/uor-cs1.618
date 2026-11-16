@@ -1,0 +1,12 @@
+✔ CS-01 actual Verdant Wasm raycast hits Meridian walls (0.834336ms)
+✔ CS-01 swept player cannot tunnel through a building or wall (0.448636ms)
+✔ CS-01 diagonal input is normalized and no-input friction stops motion (4.537314ms)
+✔ CS-01 Verdant spatial audio pans sources and attenuates distance (0.450419ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 396.170282

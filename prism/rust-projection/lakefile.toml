@@ -1,0 +1,6 @@
+name = "Cs1618"
+version = "0.1.0"
+defaultTargets = ["Cs1618"]
+
+[[lean_lib]]
+name = "Cs1618"

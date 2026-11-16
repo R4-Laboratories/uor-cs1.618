@@ -1,0 +1,6 @@
+name = "PrismCsRound"
+version = "0.1.0"
+defaultTargets = ["PrismCsRound"]
+
+[[lean_lib]]
+name = "PrismCsRound"

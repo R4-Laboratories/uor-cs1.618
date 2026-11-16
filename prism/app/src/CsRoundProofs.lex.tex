@@ -1,0 +1,110 @@
+\begin{lexlean}{CsRoundProofs}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{CsRound}
+\title{Text application model}
+\begin{semanticmodule}
+definition{
+  name: breaksInv001,
+  parameters: [request : CsRound::Request],
+  result: Bool,
+  body: (((((((project request bomb) <? 4) && ((project request attackers) <=? 5)) && ((project request defenders) <=? 5)) && ((project request clock) <=? 1)) && ((project request bomb) =? (CsRound::bombDefused))) && (not ((CsRound::judge request) =? (CsRound::answerDefend))))
+}
+
+theorem{
+  name: inv001Holds,
+  parameters: [request : CsRound::Request],
+  statement: ((breaksInv001 request) = false),
+  proof: linear_arithmetic{
+    definitions: [
+      CsRound::answerAttack,
+      CsRound::answerContinue,
+      CsRound::answerDefend,
+      CsRound::bombAbsent,
+      CsRound::bombDefused,
+      CsRound::bombExploded,
+      CsRound::bombPlanted,
+      CsRound::judge,
+      CsRound::rule1,
+      CsRound::rule2,
+      CsRound::rule3,
+      CsRound::rule4,
+      CsRound::rule4Misses,
+      CsRound::rule5,
+      CsRound::rule5Misses,
+      breaksInv001
+    ]
+  },
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: breaksInv002,
+  parameters: [request : CsRound::Request],
+  result: Bool,
+  body: (((((((project request bomb) <? 4) && ((project request attackers) <=? 5)) && ((project request defenders) <=? 5)) && ((project request clock) <=? 1)) && ((project request bomb) =? (CsRound::bombExploded))) && (not ((CsRound::judge request) =? (CsRound::answerAttack))))
+}
+
+theorem{
+  name: inv002Holds,
+  parameters: [request : CsRound::Request],
+  statement: ((breaksInv002 request) = false),
+  proof: linear_arithmetic{
+    definitions: [
+      CsRound::answerAttack,
+      CsRound::answerContinue,
+      CsRound::answerDefend,
+      CsRound::bombAbsent,
+      CsRound::bombDefused,
+      CsRound::bombExploded,
+      CsRound::bombPlanted,
+      CsRound::judge,
+      CsRound::rule1,
+      CsRound::rule2,
+      CsRound::rule3,
+      CsRound::rule4,
+      CsRound::rule4Misses,
+      CsRound::rule5,
+      CsRound::rule5Misses,
+      breaksInv002
+    ]
+  },
+  axioms: [Quot.sound, propext]
+}
+
+definition{
+  name: breaksInv003,
+  parameters: [request : CsRound::Request],
+  result: Bool,
+  body: (((((((((project request bomb) <? 4) && ((project request attackers) <=? 5)) && ((project request defenders) <=? 5)) && ((project request clock) <=? 1)) && ((project request bomb) =? (CsRound::bombPlanted))) && ((project request attackers) =? 0)) && (0 <? (project request defenders))) && (not ((CsRound::judge request) =? (CsRound::answerContinue))))
+}
+
+theorem{
+  name: inv003Holds,
+  parameters: [request : CsRound::Request],
+  statement: ((breaksInv003 request) = false),
+  proof: linear_arithmetic{
+    definitions: [
+      CsRound::answerAttack,
+      CsRound::answerContinue,
+      CsRound::answerDefend,
+      CsRound::bombAbsent,
+      CsRound::bombDefused,
+      CsRound::bombExploded,
+      CsRound::bombPlanted,
+      CsRound::judge,
+      CsRound::rule1,
+      CsRound::rule2,
+      CsRound::rule3,
+      CsRound::rule4,
+      CsRound::rule4Misses,
+      CsRound::rule5,
+      CsRound::rule5Misses,
+      breaksInv003
+    ]
+  },
+  axioms: [Quot.sound, propext]
+}
+\end{semanticmodule}
+\end{lexlean}

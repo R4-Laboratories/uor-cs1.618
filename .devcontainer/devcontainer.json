@@ -1,0 +1,7 @@
+{
+  "name": "cs1.618 game development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "forwardPorts": [3000],
+  "portsAttributes": {"3000": {"label": "cs1.618 multiplayer", "onAutoForward": "openPreview"}},
+  "postCreateCommand": "npm ci"
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+target/
+artifacts/
+*.log
+prism/.prism/
+prism/app/.prism/
+prism/app/.lake/
+.DS_Store
+prism/**/.lexlean/
+prism/**/.prism/
+prism/**/.lake/

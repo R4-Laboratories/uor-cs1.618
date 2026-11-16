@@ -1,0 +1,157 @@
+\begin{lexlean}{Security}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\useglossary{prism.sec@1.0.0}
+\importmodule{Foundation.Sec}
+\importmodule{Production.ThreatModel}
+\title{security threat}
+\begin{semanticmodule}
+definition{
+  name: assetLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 0, componentIndex := 1})
+}
+
+definition{
+  name: assetLockedDependencies,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 1, componentIndex := 1})
+}
+
+definition{
+  name: threatDependencySubstitution,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 0})
+}
+
+definition{
+  name: threatLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 1})
+}
+
+definition{
+  name: riskDependencySubstitution,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 0, assetIndex := 1, threatIndex := 0, likelihood := (ctor Foundation.Sec::Likelihood.low), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: riskLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 1, assetIndex := 0, threatIndex := 1, likelihood := (ctor Foundation.Sec::Likelihood.low), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: controlDependencySubstitution,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 0, riskIndex := 0})
+}
+
+definition{
+  name: controlLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 1, riskIndex := 1})
+}
+
+definition{
+  name: activityDependencySubstitution,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 0, controlIndex := 0})
+}
+
+definition{
+  name: activityLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 1, controlIndex := 1})
+}
+
+definition{
+  name: measurementDependencySubstitution,
+  parameters: [],
+  result: Foundation.Sec::VerificationMeasurement,
+  body: (record Foundation.Sec::VerificationMeasurement {index := 0, controlIndex := 0, passed := true})
+}
+
+definition{
+  name: measurementLibCsVerdantMemory,
+  parameters: [],
+  result: Foundation.Sec::VerificationMeasurement,
+  body: (record Foundation.Sec::VerificationMeasurement {index := 1, controlIndex := 1, passed := false})
+}
+
+definition{
+  name: controlSet,
+  parameters: [],
+  result: Production.ThreatModel::ControlSet,
+  body: (record Production.ThreatModel::ControlSet {title := "cs1.618 security controls", text := "Controls uorust derived from the cs1.618 workspace: memory safety, capability sites and the locked dependency graph.", version := "0.1.0", lastModified := "2026-11-16T00:00:00Z"})
+}
+
+definition{
+  name: modeledAssetLibCsVerdantMemory,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Security::assetLibCsVerdantMemory", name := "cs_verdant memory", text := "The memory of cs_verdant while it runs."})
+}
+
+definition{
+  name: modeledAssetLockedDependencies,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Security::assetLockedDependencies", name := "Locked dependency graph", text := "The 82 packages Cargo.lock pins."})
+}
+
+definition{
+  name: modeledThreatDependencySubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Security::threatDependencySubstitution", name := "Dependency substitution", text := "A dependency is replaced by a package with the same name and different code.", category := (ctor Production.ThreatModel::Stride.tampering)})
+}
+
+definition{
+  name: modeledThreatLibCsVerdantMemory,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Security::threatLibCsVerdantMemory", name := "Memory corruption in cs_verdant", text := "Unsafe code breaks an invariant the borrow checker would have kept.", category := (ctor Production.ThreatModel::Stride.elevationOfPrivilege)})
+}
+
+definition{
+  name: modeledControlDependencySubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Security::controlDependencySubstitution", name := "Locked and checked dependencies", text := "Every dependency is pinned with its checksum and checked against advisories and licences.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "Cargo.lock pins 82 packages, 74 with a registry checksum"}) (nil Production.ThreatModel::Evidence))})
+}
+
+definition{
+  name: modeledControlLibCsVerdantMemory,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Security::controlLibCsVerdantMemory", name := "Safe Rust only", text := "cs_verdant is checked by the borrow checker throughout; no unsafe code is admitted.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "uorust found no unsafe block, unsafe fn or unsafe impl in cs_verdant"}) (nil Production.ThreatModel::Evidence))})
+}
+
+definition{
+  name: mappingThreatDependencySubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Security::threatDependencySubstitution", controls := (cons "Security::controlDependencySubstitution" (nil String))})
+}
+
+definition{
+  name: mappingThreatLibCsVerdantMemory,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Security::threatLibCsVerdantMemory", controls := (cons "Security::controlLibCsVerdantMemory" (nil String))})
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,205 @@
+{
+  "schema": "prism/prompt/1",
+  "goal": "Resolve a tactical multiplayer defusal round with explicit objective priority.",
+  "pattern": "decisionTable",
+  "license": "MIT",
+  "app": {
+    "name": "cs-round",
+    "title": "CS Round",
+    "purpose": "Resolve one authoritative defusal round from objective state, living teams, and the round clock.",
+    "fields": [
+      {
+        "name": "bomb",
+        "kind": "choice",
+        "values": [
+          "absent",
+          "planted",
+          "defused",
+          "exploded"
+        ],
+        "means": "Authoritative objective state"
+      },
+      {
+        "name": "attackers",
+        "kind": "number",
+        "min": 0,
+        "max": 5,
+        "means": "Living attackers"
+      },
+      {
+        "name": "defenders",
+        "kind": "number",
+        "min": 0,
+        "max": 5,
+        "means": "Living defenders"
+      },
+      {
+        "name": "clock",
+        "kind": "number",
+        "min": 0,
+        "max": 1,
+        "means": "One if time remains, zero at timeout"
+      }
+    ],
+    "outcomes": [
+      "continue",
+      "attack",
+      "defend"
+    ],
+    "meanings": {
+      "continue": "The round remains live",
+      "attack": "Ember wins this round",
+      "defend": "Tidal wins this round"
+    },
+    "rules": [
+      {
+        "when": [
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "defused"
+          }
+        ],
+        "then": "defend",
+        "why": "A completed defusal wins immediately."
+      },
+      {
+        "when": [
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "exploded"
+          }
+        ],
+        "then": "attack",
+        "why": "A completed detonation wins immediately."
+      },
+      {
+        "when": [
+          {
+            "field": "defenders",
+            "op": "=",
+            "value": 0
+          }
+        ],
+        "then": "attack",
+        "why": "No living defenders remain."
+      },
+      {
+        "when": [
+          {
+            "field": "attackers",
+            "op": "=",
+            "value": 0
+          },
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "absent"
+          }
+        ],
+        "then": "defend",
+        "why": "No attackers remain and no device is ticking."
+      },
+      {
+        "when": [
+          {
+            "field": "clock",
+            "op": "=",
+            "value": 0
+          },
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "absent"
+          }
+        ],
+        "then": "defend",
+        "why": "The unplanted round clock expired."
+      }
+    ],
+    "otherwise": "continue",
+    "otherwiseWhy": "Both teams remain and the objective is unresolved.",
+    "properties": [
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "defused"
+          }
+        ],
+        "then": "defend",
+        "why": "Defusal is authoritative."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "exploded"
+          }
+        ],
+        "then": "attack",
+        "why": "Detonation is authoritative."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "bomb",
+            "op": "is",
+            "value": "planted"
+          },
+          {
+            "field": "attackers",
+            "op": "=",
+            "value": 0
+          },
+          {
+            "field": "defenders",
+            "op": ">",
+            "value": 0
+          }
+        ],
+        "then": "continue",
+        "why": "A planted device remains a threat after attackers die."
+      }
+    ],
+    "examples": [
+      {
+        "request": "absent 5 5 1",
+        "response": "continue"
+      },
+      {
+        "request": "planted 0 2 0",
+        "response": "continue"
+      },
+      {
+        "request": "defused 2 1 1",
+        "response": "defend"
+      },
+      {
+        "request": "exploded 0 1 0",
+        "response": "attack"
+      },
+      {
+        "request": "absent 3 0 1",
+        "response": "attack"
+      },
+      {
+        "request": "absent 3 2 0",
+        "response": "defend"
+      }
+    ]
+  },
+  "stakeholders": [],
+  "concerns": [],
+  "components": [],
+  "threats": [],
+  "quality": [],
+  "journeys": [],
+  "axioms": {}
+}

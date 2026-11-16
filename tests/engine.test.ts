@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createEngine} from '../shared/engine';
+import {movePlayer} from '../shared/movement';
+import {neutralInput} from '../shared/protocol';
+const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm'));
+test('CS-01 actual Verdant Wasm raycast hits Meridian walls',()=>{assert.equal(engine.ray(0,1,20,0,0,1,100),7);assert.equal(engine.ray(0,1,20,0,1,0,100),100);});
+test('CS-01 swept player cannot tunnel through a building or wall',()=>{const p=engine.move(0,0,24,0,50,.34,1.78);assert.ok(p.z<26.661&&p.z>26.65);const q=engine.move(-12,0,22,0,-20,.34,1.78);assert.ok(q.z>19.33);});
+test('CS-01 diagonal input is normalized and no-input friction stops motion',()=>{const a={x:0,y:0,z:24,vx:0,vy:0,vz:0,grounded:true,crouch:false};const b={...a};for(let i=0;i<20;i++){movePlayer(a,{...neutralInput(),forward:1},1/60,engine);movePlayer(b,{...neutralInput(),forward:1,strafe:1},1/60,engine);}assert.ok(Math.abs(Math.hypot(a.vx,a.vz)-Math.hypot(b.vx,b.vz))<.001);for(let i=0;i<30;i++)movePlayer(a,neutralInput(),1/60,engine);assert.equal(a.vx,0);assert.equal(a.vz,0);});
+test('CS-01 Verdant spatial audio pans sources and attenuates distance',()=>{const right=engine.audio(5,1,20,0,1,20,0);const left=engine.audio(-5,1,20,0,1,20,0);assert.ok(right.pan>0.9);assert.ok(left.pan<-.9);assert.ok(engine.audio(1,1,20,0,1,20,0).gain>right.gain);});

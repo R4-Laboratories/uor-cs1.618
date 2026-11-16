@@ -1,0 +1,101 @@
+{
+  "name": "CS Round",
+  "shortName": "CS",
+  "live": "https://owner.github.io/prism-cs-round/",
+  "purpose": "Resolve one authoritative defusal round from objective state, living teams, and the round clock. Send bomb, attackers, defenders or clock, separated by spaces; it answers continue, attack or defend, and invalid request for anything else.",
+  "inputLabel": "Request: bomb attackers defenders clock",
+  "placeholder": "absent 5 5 1",
+  "submitLabel": "Decide",
+  "outputLabel": "Answer",
+  "answers": {
+    "positive": [
+      "continue"
+    ],
+    "negative": [
+      "attack",
+      "defend"
+    ],
+    "refusal": "invalid request"
+  },
+  "promise": {
+    "headline": "Says conformant exactly when every policy file matches its lock.",
+    "detail": "Each of the six universal policy files is compared with the digest the lock records, and any file that drifted is named."
+  },
+  "claim": "CR-01: the app always answers defend when bomb is defused. CR-02: the app always answers attack when bomb is exploded. CR-03: the app always answers continue when bomb is planted and attackers equals 0 and defenders is above 0.",
+  "proposition": {
+    "name": "judge",
+    "text": "judge request :=\n  bomb is defused → defend\n  bomb is exploded → attack\n  defenders equals 0 → attack\n  attackers equals 0 and bomb is absent → defend\n  clock equals 0 and bomb is absent → defend\n  otherwise → continue",
+    "plain": "Resolve one authoritative defusal round from objective state, living teams, and the round clock."
+  },
+  "theorems": [
+    {
+      "name": "inv001Holds",
+      "statement": "no request meets breaksInv001: the app always answers defend when bomb is defused",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsRoundProofs.lex.tex"
+    },
+    {
+      "name": "inv002Holds",
+      "statement": "no request meets breaksInv002: the app always answers attack when bomb is exploded",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsRoundProofs.lex.tex"
+    },
+    {
+      "name": "inv003Holds",
+      "statement": "no request meets breaksInv003: the app always answers continue when bomb is planted and attackers equals 0 and defenders is above 0",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsRoundProofs.lex.tex"
+    }
+  ],
+  "pinned": [
+    {
+      "name": "cs_round_cr_01",
+      "what": "CR-01's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_round.rs"
+    },
+    {
+      "name": "cs_round_cr_02",
+      "what": "CR-02's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_round.rs"
+    },
+    {
+      "name": "cs_round_cr_03",
+      "what": "CR-03's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_round.rs"
+    }
+  ],
+  "trusted": [
+    {
+      "name": "SDK image",
+      "value": "the digest prismpm.lock pins; see the bootstrap workflow's log"
+    },
+    {
+      "name": "Lean toolchain",
+      "value": "leanprover/lean4:v4.32.1"
+    },
+    {
+      "name": "LexLean compiler semantics",
+      "value": "5262e5b4c8b5668ae7066ad686757a6bb7f80c941d515fb9d586894fbc7de69a"
+    },
+    {
+      "name": "prism-code runtime, vendored",
+      "value": "0.2.0, see try/vendor/prism-code/VENDOR.md"
+    },
+    {
+      "name": "Your browser",
+      "value": "runs the WebAssembly guest and this page"
+    }
+  ],
+  "attestations": {
+    "proof": {
+      "id": "not recorded: the proof ran in the SDK image, not on the UOR MCP server",
+      "url": "https://github.com/OWNER/prism-cs-round/actions/workflows/bootstrap.yml"
+    },
+    "build": {
+      "id": "printed by prismpm verify in every pages run",
+      "url": "https://github.com/OWNER/prism-cs-round/actions/workflows/pages.yml"
+    }
+  },
+  "repository": "https://github.com/OWNER/prism-cs-round",
+  "report": "https://github.com/OWNER/prism-cs-round/blob/main/TEMPLATE-VERIFICATION.md"
+}

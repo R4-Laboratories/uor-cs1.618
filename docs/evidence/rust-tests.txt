@@ -1,0 +1,93 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling version_check v0.9.5
+   Compiling simd-adler32 v0.3.10
+   Compiling generic-array v0.14.7
+   Compiling autocfg v1.5.1
+   Compiling crc32fast v1.5.5
+   Compiling adler2 v2.0.1
+   Compiling cfg-if v1.0.5
+   Compiling num-traits v0.2.19
+   Compiling syn v3.0.10
+   Compiling syn v2.0.119
+   Compiling typenum v1.20.1
+   Compiling zmij v1.0.23
+   Compiling serde v1.0.229
+   Compiling rustversion v1.0.23
+   Compiling miniz_oxide v0.9.1
+   Compiling bitflags v2.13.2
+   Compiling serde_json v1.0.154
+   Compiling flate2 v1.1.11
+   Compiling bytemuck_derive v1.12.1
+   Compiling serde_derive v1.0.229
+   Compiling bytemuck v1.25.2
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling uor-matmul-core v0.1.0 (https://github.com/UOR-Foundation/uor-matmul?branch=main#3cc5882f)
+   Compiling inflections v1.1.1
+   Compiling uor-matmul-kernels v0.1.0 (https://github.com/UOR-Foundation/uor-matmul?branch=main#3cc5882f)
+   Compiling uor-matmul-codec v0.1.0 (https://github.com/UOR-Foundation/uor-matmul?branch=main#3cc5882f)
+   Compiling thiserror v2.0.21
+   Compiling pxfm v0.1.30
+   Compiling cfg_aliases v0.2.2
+   Compiling zune-core v0.5.3
+   Compiling heck v0.5.0
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.19
+   Compiling strum_macros v0.26.4
+   Compiling moxcms v0.8.1
+   Compiling zune-jpeg v0.5.15
+   Compiling uor-matmul-gemm v0.1.0 (https://github.com/UOR-Foundation/uor-matmul?branch=main#3cc5882f)
+   Compiling naga v24.0.0
+   Compiling gltf-derive v1.4.1
+   Compiling png v0.18.1
+   Compiling thiserror-impl v2.0.21
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling hashbrown v0.17.1
+   Compiling byteorder-lite v0.1.0
+   Compiling unicode-width v0.1.14
+   Compiling termcolor v1.4.1
+   Compiling bit-vec v0.8.0
+   Compiling equivalent v1.0.3
+   Compiling indexmap v2.14.2
+   Compiling bit-set v0.8.0
+   Compiling codespan-reporting v0.11.1
+   Compiling image v0.25.10
+   Compiling digest v0.10.7
+   Compiling uor-matmul v0.1.0 (https://github.com/UOR-Foundation/uor-matmul?branch=main#3cc5882f)
+   Compiling gltf-json v1.4.1
+   Compiling strum v0.26.3
+   Compiling arrayvec v0.7.8
+   Compiling cpufeatures v0.2.17
+   Compiling byteorder v1.5.0
+   Compiling rustc-hash v1.1.0
+   Compiling unicode-xid v0.2.6
+   Compiling hexf-parse v0.2.1
+   Compiling log v0.4.35
+   Compiling lazy_static v1.5.1
+   Compiling base64 v0.13.1
+   Compiling urlencoding v2.1.3
+   Compiling gltf v1.4.1
+   Compiling sha2 v0.10.9
+   Compiling verdant-tensor v0.1.0 (https://github.com/afflom/verdant-engine?rev=4c433f1c31792dae748e436d279fa7838131e3b8#4c433f1c)
+   Compiling verdant-core v0.1.0 (https://github.com/afflom/verdant-engine?rev=4c433f1c31792dae748e436d279fa7838131e3b8#4c433f1c)
+   Compiling cs-verdant v0.1.0 (/workspace/cs1.618/crates/cs-verdant)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 59.27s
+     Running unittests src/lib.rs (target/debug/build/cs-verdant/4d1bd8c28597b11c/out/cs_verdant-4d1bd8c28597b11c)
+
+running 3 tests
+test tests::wall_blocks_shots_and_movement ... ok
+test tests::diagonal_motion_slides_and_radius_cannot_clip_corner ... ok
+test tests::ray_misses_open_space ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests cs_verdant
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

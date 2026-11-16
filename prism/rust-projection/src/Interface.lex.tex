@@ -1,0 +1,141 @@
+\begin{lexlean}{Interface}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{Foundation.Arch}
+\title{feature}
+\begin{semanticmodule}
+definition{
+  name: acCsVerdantCsVerdantWallBlocksShotsAndMovement,
+  parameters: [],
+  result: String,
+  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:8 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner,
+  parameters: [],
+  result: String,
+  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:17 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantRayMissesOpenSpace,
+  parameters: [],
+  result: String,
+  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:27 passes."
+}
+
+definition{
+  name: callCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::SpatialWorld::add_box: fn add_box(&mut self, x0: f64, y0: f64, z0: f64, x1: f64, y1: f64, z1: f64)"
+}
+
+definition{
+  name: callCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::SpatialWorld::build: fn build(&mut self)"
+}
+
+definition{
+  name: callCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::SpatialWorld::ray: fn ray(&self, origin: Vec3, direction: Vec3, max: f64) -> f64"
+}
+
+definition{
+  name: callCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::SpatialWorld::slide: fn slide(&self, foot: Vec3, delta: Vec3, radius: f64, height: f64) -> Vec3"
+}
+
+definition{
+  name: callCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::SpatialWorld::support: fn support(&self, x: f64, z: f64, ceiling: f64, r: f64) -> f64"
+}
+
+definition{
+  name: callCsVerdantCsClear,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_clear: extern \"C\" fn cs_clear()"
+}
+
+definition{
+  name: callCsVerdantCsBox,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_box: extern \"C\" fn cs_box(x: f64, y: f64, z: f64, w: f64, h: f64, d: f64)"
+}
+
+definition{
+  name: callCsVerdantCsBuild,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_build: extern \"C\" fn cs_build()"
+}
+
+definition{
+  name: callCsVerdantCsRay,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_ray: extern \"C\" fn cs_ray(x: f64, y: f64, z: f64, dx: f64, dy: f64, dz: f64, max: f64) -> f64"
+}
+
+definition{
+  name: callCsVerdantCsMove,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_move: extern \"C\" fn cs_move(x: f64, y: f64, z: f64, dx: f64, dz: f64, r: f64, h: f64)"
+}
+
+definition{
+  name: callCsVerdantCsSupport,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_support: extern \"C\" fn cs_support(x: f64, z: f64, ceiling: f64, r: f64) -> f64"
+}
+
+definition{
+  name: callCsVerdantCsResult,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_result: extern \"C\" fn cs_result(i: u32) -> f64"
+}
+
+definition{
+  name: callCsVerdantCsHitbox,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_hitbox: extern \"C\" fn cs_hitbox(x: f64, y: f64, z: f64, dx: f64, dy: f64, dz: f64, bx: f64, by: f64, bz: f64, r: f64, h: f64,) -> f64"
+}
+
+definition{
+  name: callCsVerdantCsAudio,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::cs_audio: extern \"C\" fn cs_audio(sx: f64, sy: f64, sz: f64, lx: f64, ly: f64, lz: f64, yaw: f64)"
+}
+
+definition{
+  name: featureCsVerdant,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "cs_verdant: The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH.", calls := (cons "Interface::callCsVerdantSpatialWorldAddBox" (cons "Interface::callCsVerdantSpatialWorldBuild" (cons "Interface::callCsVerdantSpatialWorldRay" (cons "Interface::callCsVerdantSpatialWorldSlide" (cons "Interface::callCsVerdantSpatialWorldSupport" (cons "Interface::callCsVerdantCsClear" (cons "Interface::callCsVerdantCsBox" (cons "Interface::callCsVerdantCsBuild" (cons "Interface::callCsVerdantCsRay" (cons "Interface::callCsVerdantCsMove" (cons "Interface::callCsVerdantCsSupport" (cons "Interface::callCsVerdantCsResult" (cons "Interface::callCsVerdantCsHitbox" (cons "Interface::callCsVerdantCsAudio" (nil String))))))))))))))), acceptance := (cons "Interface::acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner" (cons "Interface::acCsVerdantCsVerdantRayMissesOpenSpace" (cons "Interface::acCsVerdantCsVerdantWallBlocksShotsAndMovement" (nil String))))})
+}
+
+definition{
+  name: journeyLibraryCsVerdant,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (nil String))})
+}
+\end{semanticmodule}
+\end{lexlean}

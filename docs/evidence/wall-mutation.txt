@@ -1,0 +1,33 @@
+✖ CS-01 actual Verdant Wasm raycast hits Meridian walls (3.604279ms)
+✔ CS-01 swept player cannot tunnel through a building or wall (0.800596ms)
+✔ CS-01 diagonal input is normalized and no-input friction stops motion (2.872897ms)
+✔ CS-01 Verdant spatial audio pans sources and attenuates distance (5.496189ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 440.45031
+
+✖ failing tests:
+
+test at tests/engine.test.ts:1:317
+✖ CS-01 actual Verdant Wasm raycast hits Meridian walls (3.604279ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  100 !== 7
+  
+      at TestContext.<anonymous> (/workspace/cs1.618/tests/engine.test.ts:8:74)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 100,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

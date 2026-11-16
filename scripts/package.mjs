@@ -1,0 +1,10 @@
+import {mkdirSync,readFileSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+execFileSync(process.execPath,['scripts/verify-artifacts.mjs'],{stdio:'inherit'});mkdirSync('artifacts',{recursive:true});
+const version=JSON.parse(readFileSync('package.json')).version;
+const source=`uor-cs1.618-${version}.tar.gz`,client=`uor-cs1.618-client-${version}.tar.gz`;
+execFileSync('tar',['--exclude=./node_modules','--exclude=./target','--exclude=./.git','--exclude=./artifacts','--exclude=.prism','--exclude=.lexlean','--exclude=.lake','-czf',`artifacts/${source}`,'.']);
+execFileSync('tar',['-czf',`artifacts/${client}`,'-C','dist','.']);
+const lines=[source,client].map(name=>`${createHash('sha256').update(readFileSync('artifacts/'+name)).digest('hex')}  ${name}`);
+writeFileSync('artifacts/SHA256SUMS',lines.join('\n')+'\n');console.log(lines.join('\n'));

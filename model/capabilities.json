@@ -1,0 +1,8 @@
+[
+ {"id":"CS-01","claim":"Verdant BVH blocks movement and shots through map walls","test":"engine.test.ts"},
+ {"id":"CS-02","claim":"Server caps movement, rejects invalid inputs and owns damage/ammo","test":"match.test.ts"},
+ {"id":"CS-03","claim":"Buying validates phase, team, balance and spawn zone","test":"match.test.ts"},
+ {"id":"CS-04","claim":"Plant, defuse, detonation and elimination resolve rounds once","test":"match.test.ts"},
+ {"id":"CS-05","claim":"Independent clients share room state, late joins spectate and disconnects clean up","test":"network.test.ts"},
+ {"id":"CS-06","claim":"Browser presents a playable FPS with synchronized client prediction","test":"browser-test.ts"}
+]

@@ -1,0 +1,162 @@
+# frontier.toml: what uorust did not admit or lift, each with a typed reason.
+# A refusal is an open claim: the router proposed it and admission would
+# not decide it. A residue row is a pure function outside the lift's floor.
+# An effect row is the I/O shell: a function that performs an operating-system
+# effect (file system, process, environment, network), or calls one that does;
+# the security facet records each effect as a capability of its crate.
+# A foreign row is a function whose parameter or result is a type of a registry
+# dependency (syn, toml, serde_json, ...) that has no LexLean model.
+# A lifted row names the definition a function lifted to and, where that
+# definition parts from the Rust function, its divergence. Every function of
+# product code has exactly one residue, foreign, effect or lifted row, keyed
+# by the κ of its question (crate path and tokens): a lifted κ never turns
+# unlifted in a later projection.
+
+spec = "uorust/frontier/1"
+
+[[refusal]]
+status = "open"
+reason = "advisories-unconsulted"
+route = "UR-R21"
+span = "Cargo.lock"
+detail = "no RustSec advisory database was given (--advisories), so no locked package was checked against advisories"
+
+[[refusal]]
+status = "open"
+reason = "undefined-slot"
+route = "UR-R29"
+span = "cs-verdant/Cargo.toml"
+detail = "the library profile's acceptanceRoots is undefined: the crate yields no acceptanceRoots"
+
+[[refusal]]
+status = "open"
+reason = "undefined-slot"
+route = "UR-R29"
+span = "cs-verdant/Cargo.toml"
+detail = "the library profile's exportRoots is undefined: the crate yields no exportRoots"
+
+[[refusal]]
+status = "open"
+reason = "undefined-slot"
+route = "UR-R29"
+span = "cs-verdant/Cargo.toml"
+detail = "the library profile's homepage is undefined: Cargo declares no homepage and no rule infers one"
+
+[[refusal]]
+status = "open"
+reason = "undefined-slot"
+route = "UR-R29"
+span = "cs-verdant/Cargo.toml"
+detail = "the library profile's repository is undefined: Cargo declares no repository and no rule infers one"
+
+[[residue]]
+status = "open"
+kappa = "557d19a8e7370ad9a349fdce84afb95c361b558d0299765c60d764e1b62cac9c"
+function = "cs_verdant::SpatialWorld::add_box"
+span = "crates/cs-verdant/src/lib.rs:46"
+reason = "type"
+detail = "type outside the lift: SpatialWorld"
+
+[[residue]]
+status = "open"
+kappa = "d3e6eb729b657fa0addc139ff733ec52078780182489d77504f6661ee331307a"
+function = "cs_verdant::SpatialWorld::build"
+span = "crates/cs-verdant/src/lib.rs:50"
+reason = "type"
+detail = "type outside the lift: SpatialWorld"
+
+[[residue]]
+status = "open"
+kappa = "a23b7a0543ee3db0dd193b7bf608fe85118680909210b7707ef26549118463d1"
+function = "cs_verdant::SpatialWorld::ray"
+span = "crates/cs-verdant/src/lib.rs:59"
+reason = "type"
+detail = "type outside the lift: SpatialWorld"
+
+[[residue]]
+status = "open"
+kappa = "17d5e53caffd773ad1c8e6752384faba940cd1f071fcbd828ed32ad57172c7f2"
+function = "cs_verdant::SpatialWorld::slide"
+span = "crates/cs-verdant/src/lib.rs:64"
+reason = "type"
+detail = "type outside the lift: SpatialWorld"
+
+[[residue]]
+status = "open"
+kappa = "f6f0dddbbf7619c36557a76877592532d78b0a63a78e7fbae8164f099b7d7a08"
+function = "cs_verdant::SpatialWorld::support"
+span = "crates/cs-verdant/src/lib.rs:95"
+reason = "type"
+detail = "type outside the lift: SpatialWorld"
+
+[[residue]]
+status = "open"
+kappa = "4535109428e050a4e418bde8132b5ed7710d7c72940a346ddc389c87240160b4"
+function = "cs_verdant::cs_audio"
+span = "crates/cs-verdant/src/lib.rs:170"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "45513a50b23e0e3512215641d7c78aa13e189d2d225a7b9bc1ddf524f8649e29"
+function = "cs_verdant::cs_box"
+span = "crates/cs-verdant/src/lib.rs:114"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "45693f94cb88ddd12b421cfe927eb8ae51ae884573e8c296406195d2d27589ee"
+function = "cs_verdant::cs_build"
+span = "crates/cs-verdant/src/lib.rs:122"
+reason = "statements"
+detail = "the body has statements other than let"
+
+[[residue]]
+status = "open"
+kappa = "06e2c37585dbdd309b4c061653a5dc2297dc197c4db7562f6e4a477b1edce378"
+function = "cs_verdant::cs_clear"
+span = "crates/cs-verdant/src/lib.rs:110"
+reason = "statements"
+detail = "the body has statements other than let"
+
+[[residue]]
+status = "open"
+kappa = "c3f190fa8f2e5119ba21505d3852ecba2ef6c2a37b27ad1cb362ebf020751287"
+function = "cs_verdant::cs_hitbox"
+span = "crates/cs-verdant/src/lib.rs:149"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "65062b4a4c8a3e89e525870889e14723eae8b0fac0da4379a90df036bce604d8"
+function = "cs_verdant::cs_move"
+span = "crates/cs-verdant/src/lib.rs:133"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "79df6fe12cc26d7b40fe9e939c93f474670ae5bbe6b49897cf7bc830b8a5204e"
+function = "cs_verdant::cs_ray"
+span = "crates/cs-verdant/src/lib.rs:126"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "6c5b51da509c8ecc00f99d0b8c7d924375544dae733dd44da37eb1d964b8d9e1"
+function = "cs_verdant::cs_result"
+span = "crates/cs-verdant/src/lib.rs:145"
+reason = "type"
+detail = "type outside the lift: f64"
+
+[[residue]]
+status = "open"
+kappa = "5badccbc293a352f535429aeb6259b01d9a72b8ca75cc91e5425a058dc6ec67e"
+function = "cs_verdant::cs_support"
+span = "crates/cs-verdant/src/lib.rs:141"
+reason = "type"
+detail = "type outside the lift: f64"

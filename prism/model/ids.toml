@@ -1,0 +1,64 @@
+# model/ids.toml --- the conformance ID register.
+#
+# Every ID this repository claims, in one place, so that nothing is referenced
+# without being defined. `CONFORMANCE.md` is generated from this file. A test
+# whose name ends in an ID not listed here fails `check-model`, and an ID listed
+# here with no scenario and no test fails it too (CM-02).
+#
+# `level` is the honesty level (R2):
+#   some-true  a fact reproduced from an authority; not established here
+#   build      constructed here and validated against its oracle
+#   open       measured and reported, never asserted
+#
+# Every row here has a scenario in `features/suites/` and a test whose name ends
+# in the ID, lowercased with underscores (R3, CM-02). There is no "pending"
+# state: a capability that is not built does not get a row, and every row in this
+# file is built.
+#
+# The first row is the template's own Prism application in `app/` (TC-01).
+# A capability starts with a row here; `just new-capability` writes the row,
+# its scenario and its failing test in the order `AGENTS.md` sets out.
+
+spec = "template/1"
+
+[[id]]
+id = "CR-01"
+level = "build"
+suite = "cs_round"
+statement = "The app always answers defend when bomb is defused"
+
+[[id]]
+id = "CR-02"
+level = "build"
+suite = "cs_round"
+statement = "The app always answers attack when bomb is exploded"
+
+[[id]]
+id = "CR-03"
+level = "build"
+suite = "cs_round"
+statement = "The app always answers continue when bomb is planted and attackers equals 0 and defenders is above 0"
+
+[[id]]
+id = "CR-04"
+level = "build"
+suite = "cs_round"
+statement = "The architecture description declares every stakeholder, concern, component, edge, viewpoint and view it references"
+
+[[id]]
+id = "CR-05"
+level = "build"
+suite = "cs_round"
+statement = "The ISO/IEC 25010:2023 quality model declares all 9 characteristics and 40 subcharacteristics, states each subcharacteristic by a requirement or lists it open, and every parent it names is declared"
+
+[[id]]
+id = "CR-06"
+level = "build"
+suite = "cs_round"
+statement = "Every STRIDE category each component and data flow is open to is answered by a threat or stated open, and no other pair is stated open"
+
+[[id]]
+id = "CR-07"
+level = "build"
+suite = "cs_round"
+statement = "Every compliance obligation is numbered in order and names its evidence"

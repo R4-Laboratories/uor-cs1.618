@@ -1,0 +1,659 @@
+\begin{lexlean}{Design}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{Foundation.Arch}
+\title{design view}
+\begin{semanticmodule}
+definition{
+  name: processCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsClear,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsBox,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsBuild,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsRay,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsMove,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsSupport,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsResult,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsHitbox,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantCsAudio,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: umlComponents,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Components and dependencies", viewpoint := "Architecture::viewpointMaintenance", diagram := (ctor Foundation.Arch::DesignDiagram.umlComponent)})
+}
+
+definition{
+  name: umlExtVerdantCore,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::umlComponents", component := "Architecture::componentExtVerdantCore"})
+}
+
+definition{
+  name: umlLibCsVerdant,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::umlComponents", component := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: umlConnectorLibCsVerdantToExtVerdantCore,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::umlComponents", edge := "Architecture::edgeLibCsVerdantToExtVerdantCore"})
+}
+
+definition{
+  name: opmLibCsVerdant,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "cs_verdant processes", viewpoint := "Architecture::viewpointMaintenance", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: opmLibCsVerdantObject,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsClear,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsClear"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsClear,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsClear"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsBox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsBox"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsBox"})
+}
+
+definition{
+  name: opmLibCsVerdantInvokesCsVerdantCsBoxCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsBox", target := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsBuild"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsBuild"})
+}
+
+definition{
+  name: opmLibCsVerdantInvokesCsVerdantCsBuildCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsBuild", target := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsRay,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsRay"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsRay"})
+}
+
+definition{
+  name: opmLibCsVerdantInvokesCsVerdantCsRayCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsRay", target := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsMove,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsMove"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsMove,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsMove"})
+}
+
+definition{
+  name: opmLibCsVerdantInvokesCsVerdantCsMoveCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsMove", target := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsSupport"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsSupport"})
+}
+
+definition{
+  name: opmLibCsVerdantInvokesCsVerdantCsSupportCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsSupport", target := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsResult,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsResult"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsResult,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsResult"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsHitbox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsHitbox"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsHitbox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsHitbox"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantCsAudio,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsAudio"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantCsAudio,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsAudio"})
+}
+
+definition{
+  name: opmModuleLibCsVerdant,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "cs_verdant processes", viewpoint := "Architecture::viewpointMaintenance", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: opmModuleLibCsVerdantObject,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsClear,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsClear"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsClear,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsClear"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsBox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsBox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsBox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInvokesCsVerdantCsBoxCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsBox", target := "Design::processCsVerdantSpatialWorldAddBox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantZoomCsVerdantCsBoxCsVerdantSpatialWorldAddBox,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::opmModuleLibCsVerdant", process := "Design::processCsVerdantCsBox", subprocess := "Design::processCsVerdantSpatialWorldAddBox", order := 0})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsBuild"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsBuild"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInvokesCsVerdantCsBuildCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsBuild", target := "Design::processCsVerdantSpatialWorldBuild"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantZoomCsVerdantCsBuildCsVerdantSpatialWorldBuild,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::opmModuleLibCsVerdant", process := "Design::processCsVerdantCsBuild", subprocess := "Design::processCsVerdantSpatialWorldBuild", order := 0})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsRay,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsRay"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsRay"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInvokesCsVerdantCsRayCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsRay", target := "Design::processCsVerdantSpatialWorldRay"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantZoomCsVerdantCsRayCsVerdantSpatialWorldRay,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::opmModuleLibCsVerdant", process := "Design::processCsVerdantCsRay", subprocess := "Design::processCsVerdantSpatialWorldRay", order := 0})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsMove,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsMove"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsMove,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsMove"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInvokesCsVerdantCsMoveCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsMove", target := "Design::processCsVerdantSpatialWorldSlide"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantZoomCsVerdantCsMoveCsVerdantSpatialWorldSlide,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::opmModuleLibCsVerdant", process := "Design::processCsVerdantCsMove", subprocess := "Design::processCsVerdantSpatialWorldSlide", order := 0})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsSupport"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsSupport"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInvokesCsVerdantCsSupportCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processCsVerdantCsSupport", target := "Design::processCsVerdantSpatialWorldSupport"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantZoomCsVerdantCsSupportCsVerdantSpatialWorldSupport,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::opmModuleLibCsVerdant", process := "Design::processCsVerdantCsSupport", subprocess := "Design::processCsVerdantSpatialWorldSupport", order := 0})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsResult,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsResult"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsResult,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsResult"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsHitbox,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsHitbox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsHitbox,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsHitbox"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantThingCsVerdantCsAudio,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantCsAudio"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantInstrumentCsVerdantCsAudio,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantCsAudio"})
+}
+\end{semanticmodule}
+\end{lexlean}

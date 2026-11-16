@@ -1,0 +1,109 @@
+
+> cs1-618@0.1.0 verify
+> npm test && npm run build && node scripts/verify-artifacts.mjs
+
+
+> cs1-618@0.1.0 test
+> tsx --test tests/*.test.ts
+
+✔ CS-01 actual Verdant Wasm raycast hits Meridian walls (2.303647ms)
+✔ CS-01 swept player cannot tunnel through a building or wall (0.502346ms)
+✔ CS-01 diagonal input is normalized and no-input friction stops motion (1.701441ms)
+✔ CS-01 Verdant spatial audio pans sources and attenuates distance (0.527314ms)
+✔ CS-02 invalid input and client positions cannot grant speed or damage (35.689323ms)
+✔ CS-03 buying is atomic and bounded by phase, money, team and spawn (13.984338ms)
+✔ CS-04 planted bomb keeps round alive after attackers eliminated (17.047378ms)
+✔ CS-04 defenders win on timeout without plant (14.130308ms)
+✔ CS-05 late joins spectate until next round (16.150859ms)
+✔ CS-02 shots damage opponents, consume ammunition, and respect cooldown (16.272812ms)
+✔ CS-02 walls and friendly bodies occlude hits (15.875825ms)
+✔ CS-02 reload transfers only available reserves after elapsed duration (21.683997ms)
+✔ CS-04 planting requires sustained still interaction inside a site (20.581007ms)
+✔ CS-04 kit defusal completes in five seconds and awards one round (18.228356ms)
+✔ CS-04 carrier disconnect drops device at authoritative position (13.619029ms)
+✔ CS-02 duplicate or flooded packets never advance more than one movement tick (13.311946ms)
+✔ CS-05 snapshots expose ammo and money only for the receiving player (13.432588ms)
+✔ CS-03 empty primary slot cannot grant a second free pistol magazine (13.496214ms)
+✔ CS-05 two real sockets see movement, authoritative combat, room isolation and cleanup (610.550963ms)
+✔ compiled Prism Wasm agrees with all 288 finite decision-table inputs (29.037245ms)
+✔ Prism round boundary rejects requests outside the modeled domain (0.642196ms)
+✔ Prism Hologram is a binary HOLO v4 archive, not a JSON surrogate (7.786104ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1009.685921
+
+> cs1-618@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v7.2.2 building client environment for production...
+transforming...
+✓ 22 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                      0.67 kB │ gzip:   0.42 kB
+dist/assets/ibm-plex-mono-vietnamese-500-normal-C8zxqsMH.woff        5.62 kB
+dist/assets/ibm-plex-mono-vietnamese-400-normal-DDuiU_S-.woff        5.62 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BIfNGwUT.woff      5.77 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-DMdlQ8Kv.woff      5.82 kB
+dist/assets/ibm-plex-mono-vietnamese-400-normal-BulugwFq.woff2       5.87 kB
+dist/assets/ibm-plex-mono-vietnamese-500-normal-DZ4AoWbu.woff2       6.04 kB
+dist/assets/barlow-condensed-vietnamese-500-normal-CsrJDWc5.woff     6.04 kB
+dist/assets/barlow-condensed-vietnamese-600-normal-CNlPk46_.woff     6.08 kB
+dist/assets/barlow-vietnamese-400-normal-BFeobeCK.woff               6.09 kB
+dist/assets/barlow-condensed-vietnamese-700-normal-DhIzd8Tb.woff     6.10 kB
+dist/assets/barlow-vietnamese-500-normal-GNfB7rCE.woff               6.15 kB
+dist/assets/barlow-vietnamese-600-normal-CA_GiK2e.woff               6.23 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-400-normal-xuaO2J-f.woff2     6.91 kB
+dist/assets/ibm-plex-mono-cyrillic-ext-500-normal-BqneJy0T.woff2     6.97 kB
+dist/assets/ibm-plex-mono-cyrillic-400-normal-CEL4l2ZJ.woff          7.20 kB
+dist/assets/ibm-plex-mono-cyrillic-500-normal-Ael50iVv.woff          7.21 kB
+dist/assets/barlow-condensed-vietnamese-500-normal-DjeaNLFD.woff2    7.52 kB
+dist/assets/barlow-vietnamese-400-normal-Dpl4UHAZ.woff2              7.59 kB
+dist/assets/barlow-condensed-vietnamese-700-normal-DYeBwlKR.woff2    7.64 kB
+dist/assets/barlow-vietnamese-500-normal-zTViEIzf.woff2              7.67 kB
+dist/assets/barlow-condensed-vietnamese-600-normal-A5AYRdjN.woff2    7.70 kB
+dist/assets/barlow-vietnamese-600-normal-DcjprdFV.woff2              7.90 kB
+dist/assets/ibm-plex-mono-cyrillic-400-normal-BSMlKf0J.woff2         8.36 kB
+dist/assets/ibm-plex-mono-cyrillic-500-normal-Bq9vWWag.woff2         8.46 kB
+dist/assets/ibm-plex-mono-latin-ext-500-normal-CZ70TYgx.woff        11.77 kB
+dist/assets/ibm-plex-mono-latin-ext-400-normal-D3D2R8hC.woff        11.77 kB
+dist/assets/barlow-condensed-latin-ext-500-normal-B1RE8WP7.woff     11.86 kB
+dist/assets/barlow-condensed-latin-ext-600-normal-Clv9cIcR.woff     11.97 kB
+dist/assets/barlow-condensed-latin-ext-700-normal-BIHFfxf0.woff     11.99 kB
+dist/assets/barlow-latin-ext-400-normal-CvBsJvxq.woff               12.31 kB
+dist/assets/barlow-latin-ext-500-normal-CJPcKP2Q.woff               12.41 kB
+dist/assets/barlow-latin-ext-600-normal-DMVRjfRT.woff               12.60 kB
+dist/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff            13.14 kB
+dist/assets/ibm-plex-mono-latin-500-normal-CB9ihrfo.woff            13.16 kB
+dist/assets/ibm-plex-mono-latin-ext-400-normal-BmRBH3aV.woff2       13.35 kB
+dist/assets/ibm-plex-mono-latin-ext-500-normal-CAhNIIs5.woff2       13.43 kB
+dist/assets/barlow-condensed-latin-ext-500-normal-yA5ONLQ9.woff2    14.18 kB
+dist/assets/barlow-latin-ext-400-normal-HxX4XjxC.woff2              14.27 kB
+dist/assets/barlow-latin-ext-500-normal-DOaysfXq.woff2              14.42 kB
+dist/assets/barlow-condensed-latin-ext-600-normal-18ESti3H.woff2    14.52 kB
+dist/assets/barlow-condensed-latin-ext-700-normal-CwuXbfVR.woff2    14.64 kB
+dist/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2           14.71 kB
+dist/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2           14.89 kB
+dist/assets/barlow-latin-ext-600-normal-B8NK_A3D.woff2              14.97 kB
+dist/assets/barlow-condensed-latin-500-normal-HIEiP5Ov.woff         18.60 kB
+dist/assets/barlow-condensed-latin-700-normal-Dmwat-ge.woff         18.82 kB
+dist/assets/barlow-condensed-latin-600-normal-BFJEwTuo.woff         18.89 kB
+dist/assets/barlow-latin-500-normal-C1h8hMer.woff                   19.52 kB
+dist/assets/practice-worker-DQd7EKdD.js                             19.53 kB
+dist/assets/barlow-latin-400-normal-fsAxiSwU.woff                   19.58 kB
+dist/assets/barlow-latin-600-normal-CNwfPWQD.woff                   19.88 kB
+dist/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2        21.42 kB
+dist/assets/barlow-latin-500-normal-BPAOfeC8.woff2                  22.01 kB
+dist/assets/barlow-latin-400-normal-qiz4-Cze.woff2                  22.20 kB
+dist/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2        22.31 kB
+dist/assets/barlow-condensed-latin-700-normal-v1xN8_Wq.woff2        22.44 kB
+dist/assets/barlow-latin-600-normal-DILqtrty.woff2                  22.77 kB
+dist/assets/index-Cy1Jc9Sq.css                                      29.10 kB │ gzip:   5.91 kB
+dist/assets/index-3PeV2KfG.js                                      543.62 kB │ gzip: 146.31 kB
+✓ built in 1.97s
+Verified 23 source/artifact hashes, six upstream pins, import-free Wasm and mandatory Prism runtime.

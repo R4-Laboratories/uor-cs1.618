@@ -1,0 +1,11 @@
+[package]
+name = "cs-verdant"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.89"
+license = "MIT"
+description = "Verdant Engine spatial kernel for cs1.618 client prediction and server authority"
+[lib]
+crate-type = ["cdylib", "rlib"]
+[dependencies]
+verdant-core = { git = "https://github.com/afflom/verdant-engine", rev = "4c433f1c31792dae748e436d279fa7838131e3b8", default-features = false }
