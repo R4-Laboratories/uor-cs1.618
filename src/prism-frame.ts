@@ -5,6 +5,8 @@ export const frame=document.createElement('prism-frame');
 frame.id='prism-frame';
 for(const [key,value]of Object.entries({name:'cs1.618',address:'cs1.618',live:'https://r4-laboratories.github.io/uor-cs1.618/',repo:'https://github.com/R4-Laboratories/uor-cs1.618',identity:'./identity.html',purpose:'Original Verdant-powered browser tactical multiplayer FPS',verdict:'wait','verdict-label':'Checking identity component',proof:'Identity handoff requires all four admission observations; this is not a proof of the whole game.'}))frame.setAttribute(key,value);
 document.body.prepend(frame);
+// The shared bar wraps on narrow screens; retain its height while gameplay hides it.
+new ResizeObserver(([entry])=>{const height=entry.borderBoxSize?.[0]?.blockSize??frame.getBoundingClientRect().height;if(height>0)document.documentElement.style.setProperty('--cs-prism-height',`${height}px`);}).observe(frame);
 const notice=document.createElement('span');notice.slot='status';notice.textContent='Identity & app details';notice.addEventListener('click',()=>location.assign('./identity.html'));frame.append(notice);
 export const frameReady=(async()=>{
  const response=await fetch(`${import.meta.env.BASE_URL}prism-frame/frame.mjs`);if(!response.ok)throw Error('Prism frame unavailable');const bytes=await response.arrayBuffer();
