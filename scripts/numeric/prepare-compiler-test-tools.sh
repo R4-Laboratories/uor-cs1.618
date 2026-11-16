@@ -1,8 +1,28 @@
 #!/usr/bin/env bash
 # Supplemental source-test tools only; never writes into SDK compiler/bin paths.
-set -euo pipefail
+set -Eeuo pipefail
+trap 'printf "ERROR stage=%s file=%s line=%s exit=%s command=%q\n" "$diagnostic_stage" "${BASH_SOURCE[0]}" "$LINENO" "$?" "$BASH_COMMAND" >&2' ERR
+diagnostic_stage=test-tool-preparation/resolve-sdk-wasm-tools
 testroot=/tmp/compiler-test-tools
 mkdir -p "$testroot/downloads" "$testroot/bin" /evidence/test-tools
+# CARGO_HOME may identify only the SDK cache. Resolve the original executable
+# from PATH before adding helper paths or selecting the isolated Cargo home.
+resolved_sdk_wasm_tools=$(command -v wasm-tools)
+resolved_sdk_wasm_tools=$(readlink -f "$resolved_sdk_wasm_tools")
+test -x "$resolved_sdk_wasm_tools"
+if test -n "${sdk_wasm_tools:-}"; then
+  test "$resolved_sdk_wasm_tools" = "$sdk_wasm_tools"
+else
+  sdk_wasm_tools=$resolved_sdk_wasm_tools
+fi
+readonly sdk_wasm_tools
+printf '%s\n' "$sdk_wasm_tools" > /evidence/test-tools/original-wasm-tools-path.txt
+if test -f /evidence/test-tools/original-wasm-tools.sha256; then
+  sha256sum -c /evidence/test-tools/original-wasm-tools.sha256
+else
+  sha256sum "$sdk_wasm_tools" > /evidence/test-tools/original-wasm-tools.sha256
+fi
+diagnostic_stage=test-tool-preparation/verified-downloads
 fetch_checked() {
   local url=$1 destination=$2 expected=$3
   curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location --retry 3 "$url" -o "$destination"
@@ -18,12 +38,14 @@ fetch_checked https://github.com/JetBrains/kotlin/releases/download/v1.9.25/kotl
   "$testroot/downloads/kotlin.zip" 6ab72d6144e71cbbc380b770c2ad380972548c63ab6ed4c79f11c88f2967332e
 fetch_checked https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.13%2B11/OpenJDK17U-jdk_x64_linux_hotspot_17.0.13_11.tar.gz \
   "$testroot/downloads/jdk.tar.gz" 8682892fc02965930b9022c066fa164dd6f458ef4a5dc262016aa28333b30f49
+diagnostic_stage=test-tool-preparation/archive-extraction
 for name in wasm-pack bindgen binaryen jdk; do
   mkdir -p "$testroot/$name"
   tar -xzf "$testroot/downloads/$name.tar.gz" --strip-components=1 -C "$testroot/$name"
 done
 python3 -m zipfile -e "$testroot/downloads/kotlin.zip" "$testroot/kotlin"
 chmod +x "$testroot/kotlin/kotlinc/bin/"*
+diagnostic_stage=test-tool-preparation/typescript
 curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location --retry 3 \
   https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz -o "$testroot/downloads/typescript.tgz"
 python3 - "$testroot/downloads/typescript.tgz" <<'PY'
@@ -39,6 +61,7 @@ ln -s "$testroot/typescript/bin/tsc" "$testroot/bin/tsc"
 ln -s "$testroot/wasm-pack/wasm-pack" "$testroot/bin/wasm-pack"
 ln -s "$testroot/binaryen/bin/wasm-opt" "$testroot/bin/wasm-opt"
 
+diagnostic_stage=test-tool-preparation/isolated-cargo-home
 sdk_cargo_home=${CARGO_HOME:?SDK Cargo home must be set}
 mkdir -p "$testroot/cargo-home/bin"
 for cache in registry git; do
@@ -46,8 +69,8 @@ for cache in registry git; do
     ln -s "$sdk_cargo_home/$cache" "$testroot/cargo-home/$cache"
   fi
 done
-test -x "$sdk_cargo_home/bin/wasm-tools"
-ln -s "$(readlink -f "$sdk_cargo_home/bin/wasm-tools")" "$testroot/cargo-home/bin/wasm-tools"
+ln -s "$sdk_wasm_tools" "$testroot/cargo-home/bin/wasm-tools"
+test "$(readlink -f "$testroot/cargo-home/bin/wasm-tools")" = "$sdk_wasm_tools"
 ln -s "$testroot/bindgen/wasm-bindgen" "$testroot/cargo-home/bin/wasm-bindgen"
 export CARGO_HOME="$testroot/cargo-home"
 export JAVA_HOME="$testroot/jdk"
@@ -58,6 +81,7 @@ unset CARGO_NET_OFFLINE
 
 # Seed the existing fixtures' exact dependency family without changing their
 # manifests or the compiler workspace lock. Retain the resolved auxiliary lock.
+diagnostic_stage=test-tool-preparation/fixture-dependencies
 mkdir -p "$testroot/view-deps/src"
 cat > "$testroot/view-deps/Cargo.toml" <<'EOF'
 [package]
@@ -74,6 +98,7 @@ cargo generate-lockfile --manifest-path "$testroot/view-deps/Cargo.toml"
 cargo fetch --locked --manifest-path "$testroot/view-deps/Cargo.toml" --target wasm32-unknown-unknown
 cp "$testroot/view-deps/Cargo.lock" /evidence/test-tools/view-deps.Cargo.lock
 
+diagnostic_stage=test-tool-preparation/browser
 mkdir -p /opt/lean4-prod/browser-tests
 cp /source/scripts/browser-tests/package.json /source/scripts/browser-tests/package-lock.json /opt/lean4-prod/browser-tests/
 npm ci --ignore-scripts --prefix /opt/lean4-prod/browser-tests
@@ -86,6 +111,7 @@ const load=createRequire('/opt/lean4-prod/browser-tests/package.json');
 assert.equal(load('playwright/package.json').version,'1.62.1');
 (async()=>{const browser=await load('playwright').chromium.launch({headless:true});await browser.close();})().catch(e=>{console.error(e);process.exitCode=1;});
 JS
+diagnostic_stage=test-tool-preparation/tool-identities
 {
   tsc --version
   kotlinc -version

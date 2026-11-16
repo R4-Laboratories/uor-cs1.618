@@ -8,6 +8,7 @@ on:
       - 'scripts/numeric/restore-compiler-candidate.py'
       - 'scripts/numeric/check-compiler-source-stage.sh'
       - 'scripts/numeric/prepare-compiler-test-tools.sh'
+      - 'scripts/numeric/test-compiler-source-diagnostics.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,17 +43,25 @@ jobs:
         run: |
           set -euo pipefail
           docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
-      - name: Run source gates and retain actual failures
+      - name: Run preflight, focused test, and full source gates
         run: |
           set -euo pipefail
-          docker run --rm --platform linux/amd64 --user 0:0 \
+          if docker run --rm --platform linux/amd64 --user 0:0 \
             --entrypoint /bin/bash \
             -v "$GITHUB_WORKSPACE/compiler:/source" \
             -v "$GITHUB_WORKSPACE/game:/game:ro" \
             -v "$GITHUB_WORKSPACE/evidence:/evidence" \
             -w /source \
             ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c \
-            /game/scripts/numeric/check-compiler-source-stage.sh 2>&1 | tee evidence/run.log
+            /game/scripts/numeric/check-compiler-source-stage.sh 2>&1 | tee evidence/run.log; then
+            run_status=("${PIPESTATUS[@]}")
+          else
+            run_status=("${PIPESTATUS[@]}")
+          fi
+          printf '%s\n' "${run_status[0]}" > evidence/container-exit-code.txt
+          printf '%s\n' "${run_status[1]}" > evidence/log-capture-exit-code.txt
+          if test "${run_status[0]}" -ne 0; then exit "${run_status[0]}"; fi
+          exit "${run_status[1]}"
       - name: Capture generated changes for review
         if: always()
         run: |
