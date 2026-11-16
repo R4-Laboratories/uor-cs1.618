@@ -2,8 +2,8 @@
   "schema": "cs1618/compiler-diagnostic/1",
   "source": "https://github.com/afflom/lean4-prod",
   "base": "991956fe427bb646498fd0912c89b71be71e7beb",
-  "candidate": "3a1520fb2e3b9e57fb70979d732aa0340ffab847",
-  "tree": "7fb42bc2e0867efb12a242ecd2b0725fc33fcefa",
-  "bundle_sha256": "86bdbf984095a7933c6a3718203121d66b926aad38dec821195cb3908d4e9ec5",
-  "patch_sha256": "63c23ee0c4d1654ad49ff68bba2d2b9f44d4a3192f4facd5bd4e2e4ea48e9721"
+  "candidate": "2a13f942b04f0828e03c5d7db7e4db6ecb626d6e",
+  "tree": "747d3c5c4ed0d7984a9ebcadc665b10417e5ea84",
+  "bundle_sha256": "ad555eb1d133fa3cbe04362606da005c112565ba9255806c4e67d47e390734e4",
+  "patch_sha256": "0278ee47e9210484a4481b0afe1589a1da29f31fc5e624adb94580c065e31373"
 }

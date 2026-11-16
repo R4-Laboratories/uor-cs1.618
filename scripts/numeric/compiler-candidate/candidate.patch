@@ -62,7 +62,7 @@ index 0000000000000000000000000000000000000000..c870ffff26f84eac2fde1a38e5cc8ce9
 +  logInfo "ordinary helper and renamed signed helper exported"
 diff --git a/lean/Conformance/NumericClosureFixture.lean b/lean/Conformance/NumericClosureFixture.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..aa737405f8f3342e5a4066634ab52be70a93445e
+index 0000000000000000000000000000000000000000..8b0e3b2de09c8231862db9494a17712cb534da5b
 --- /dev/null
 +++ b/lean/Conformance/NumericClosureFixture.lean
 @@ -0,0 +1,90 @@
@@ -135,12 +135,12 @@ index 0000000000000000000000000000000000000000..aa737405f8f3342e5a4066634ab52be7
 +-- cannot remove the eager computations before the production pass is tested.
 +def maxNat : Nat := 18446744073709551615
 +def oneNat : Nat := 1
-+def canonicalAfter (_ : Nat) : LexLeanRuntime.Fixed UInt64 := inferInstance
-+def canonicalAfterAlias : Nat → LexLeanRuntime.Fixed UInt64 := canonicalAfter
++@[implicit_reducible] def canonicalAfter (_ : Nat) : LexLeanRuntime.Fixed UInt64 := inferInstance
++@[implicit_reducible] def canonicalAfterAlias : Nat → LexLeanRuntime.Fixed UInt64 := canonicalAfter
 +def overflowAlias : Nat := maxNat + oneNat
-+def hiddenScalarDictionary : LexLeanRuntime.Fixed UInt64 :=
++@[implicit_reducible] def hiddenScalarDictionary : LexLeanRuntime.Fixed UInt64 :=
 +  canonicalAfterAlias overflowAlias
-+def hiddenBranchDictionary : LexLeanRuntime.Fixed UInt64 :=
++@[implicit_reducible] def hiddenBranchDictionary : LexLeanRuntime.Fixed UInt64 :=
 +  if maxNat + oneNat == 0 then badMaximum else inferInstance
 +
 +def alteredSource (x : UInt32) : Option UInt64 :=
@@ -158,7 +158,7 @@ index 0000000000000000000000000000000000000000..aa737405f8f3342e5a4066634ab52be7
 +end NumericFixture
 diff --git a/lean/Conformance/NumericConversion.lean b/lean/Conformance/NumericConversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..f2fcd95fbf14a9c9ed1880525ece136f3c65fcc7
+index 0000000000000000000000000000000000000000..322278c5014537590af1e78d3ffb35d4ecb65b0f
 --- /dev/null
 +++ b/lean/Conformance/NumericConversion.lean
 @@ -0,0 +1,130 @@
@@ -186,7 +186,7 @@ index 0000000000000000000000000000000000000000..f2fcd95fbf14a9c9ed1880525ece136f
 +    match decl.value with
 +    | .const name _ args =>
 +      if Prod.isLexLeanRuntimeName name && Prod.lastComponent name == "checkedConvert" then
-+        match args[3]? with
++        match (args[3]? : Option (Arg .pure)) with
 +        | some (.fvar id) => some id
 +        | _ => none
 +      else conversionTarget? rest
@@ -674,20 +674,66 @@ index 2fd3a730769e97744d7dddf50b19fc75e59e589c..27ee5b9f6d747a2ea666dd60ce08bd6b
        let d ← toDecl name
        d.simp {}
      out := out.push { name, decl? := some decl, skipReason := "" }
+diff --git a/lean/Prod/Lower.lean b/lean/Prod/Lower.lean
+index d0ad47a9d5a4939416ceb68d0f1c023286aa69c9..bc7424790721ce60db15f3ec223ba53014ef37ff 100644
+--- a/lean/Prod/Lower.lean
++++ b/lean/Prod/Lower.lean
+@@ -878,10 +878,24 @@ partial def codeTypeNames (env : Environment) : Code .pure → Array Name
+       | .default c => acc ++ codeTypeNames env c
+   | _ => #[]
+ 
+-/-- Every named type a declaration needs declared: the head constant of each
+-    parameter and return type, **plus** every type its body constructs or
+-    projects. Only the head constant matters — parameterised types are out of
+-    scope.
++/-- Follow exactly the builtin containers that `lowerType` lowers recursively.
++    A named type inside a tuple/option/list/result still needs a declaration,
++    including unsupported dictionary residue whose value LCNF has erased. Other
++    parameterised types remain unsupported and need only their head declared. -/
++private def signatureTypeNames : Expr → Array Name
++  | .app (.app (.const ``Prod _) a) b =>
++    #[``Prod] ++ signatureTypeNames a ++ signatureTypeNames b
++  | .app (.const ``List _) a => #[``List] ++ signatureTypeNames a
++  | .app (.const ``Option _) a => #[``Option] ++ signatureTypeNames a
++  | .app (.app (.const ``Except _) error) ok =>
++    #[``Except] ++ signatureTypeNames error ++ signatureTypeNames ok
++  | type => match type.getAppFn with
++    | .const name _ => #[name]
++    | _ => #[]
++
++/-- Every named type a declaration needs declared: the names in each parameter
++    and return type (including supported builtin containers), **plus** every type
++    its body constructs or projects.
+ 
+     The body half is not an optimization. A definition like
+     `def f (n : Nat) := (NoProp.mk n n).alpha` mentions `NoProp` nowhere in its
+@@ -894,9 +908,8 @@ partial def codeTypeNames (env : Environment) : Code .pure → Array Name
+ def declTypeNames (env : Environment) (d : Decl .pure) : Array Name := Id.run do
+   let mut out : Array Name := #[]
+   for p in d.params do
+-    if let .const n _ := p.type.getAppFn then out := out.push n
+-  if let .const n _ := (stripForalls d.params.size d.type).getAppFn then
+-    out := out.push n
++    out := out ++ signatureTypeNames p.type
++  out := out ++ signatureTypeNames (stripForalls d.params.size d.type)
+   match d.value with
+   | .code c => return out ++ codeTypeNames env c
+   | _ => return out
 diff --git a/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs b/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..a0fb2f0324dd80f9f6a60cb5da05a045c24abc03
+index 0000000000000000000000000000000000000000..671da37c79f5ec1ce7237018431b9289d4a4b6d7
 --- /dev/null
 +++ b/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,48 @@
 +// Compiler-owned replay oracle. Implementations are generated from Lean LCNF.
 +#[path = "compute-error.rs"]
 +mod compute_error;
 +pub use compute_error::ComputeError;
-+include!("numeric-generated.rs");
-+mod unused {
-+    include!("failure-generated.rs");
-+}
++#[path = "numeric-generated.rs"]
++mod generated;
++pub use generated::*;
++#[path = "failure-generated.rs"]
++mod unused;
 +
 +#[unsafe(no_mangle)]
 +pub extern "C" fn numeric_check() -> u32 {
@@ -846,10 +892,10 @@ index 0000000000000000000000000000000000000000..a5bc2c4f33910c0fe90aebd21c090486
 +  "$output/kernel.ir" --output "$output/generated.rs"
 diff --git a/specs/designs/numeric-conversion-normalization.md b/specs/designs/numeric-conversion-normalization.md
 new file mode 100644
-index 0000000000000000000000000000000000000000..16c7f3fac4553da7ae2dec33c8cdbe44152a4fc7
+index 0000000000000000000000000000000000000000..eca97e4f04a4d3644e697a2f019892a8ce900c38
 --- /dev/null
 +++ b/specs/designs/numeric-conversion-normalization.md
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,88 @@
 +# Canonical checked conversion normalization
 +
 +Named extraction disables only the pinned compiler's opportunistic small-body
@@ -899,6 +945,13 @@ index 0000000000000000000000000000000000000000..16c7f3fac4553da7ae2dec33c8cdbe44
 +lowering receive the same normalized declaration, and coverage reports retained
 +unsupported types.
 +
++Signature type discovery follows the same builtin containers as type lowering
++(`Prod`, `List`, `Option`, and `Except`). In particular, a live `Fixed` dictionary
++nested in a tuple result must still produce its unsupported type declaration and
++coverage entry, even if LCNF represents its value as erased. The existing live
++dictionary fixture requires this declaration; the focused codegen gate separately
++requires rejection of the generated IR.
++
 +The consumed-dependency regressions insert calls after LCNF extraction, then
 +use production `emitKernelIr` (normalization, type discovery, and lowering).
 +They assert exactly `noncanonical checkedConvert non-inert dictionary dependency`
@@ -924,7 +977,10 @@ index 0000000000000000000000000000000000000000..16c7f3fac4553da7ae2dec33c8cdbe44
 +guards remain in place. Compiler-owned fixtures are test inputs, not substituted
 +application Lean or handwritten target implementations.
 +
-+The repair has no local Lean SDK execution evidence. It requires fresh pinned-SDK
-+compilation, regression results, and independent review. See
++Component-only diagnostics using Lean 4.32.1 and Rust 1.97.1 compiler binaries
++matching the pinned SDK have passed the focused Lean/refusal checks and generated
++native/import-free Wasm replay at optimization levels 0 and 2. These results are
++not full SDK acceptance: the local Node version differs, and fresh pinned-SDK
++regression results and independent review remain required. See
 +scripts/check-numeric-source-stage.sh for the full source-stage command contract;
 +every failed gate remains recorded.
