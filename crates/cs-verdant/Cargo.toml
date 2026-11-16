@@ -8,5 +8,5 @@ description = "Verdant Engine spatial kernel for cs1.618 client prediction and s
 [lib]
 crate-type = ["cdylib", "rlib"]
 [dependencies]
-verdant-core = { git = "https://github.com/afflom/verdant-engine", rev = "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4", default-features = false }
+verdant-core = { git = "https://github.com/afflom/verdant-engine", rev = "9b6c14d4b756b09faecf61b9f61cf894155f52c9", default-features = false }
 serde_json = "1.0.140"

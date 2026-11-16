@@ -133,3 +133,7 @@ MIT for original game code. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 Weapon spray/recovery, distinct bounded audio, adaptive render quality and saved player settings now run in the browser. The scheduled engine generates and tests variants without paid model access. See the [development mechanism and feature frontier](docs/DEVELOPMENT-ENGINE.md), [live studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html), and [formal proof audit](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/proofs.yml). The repaired formal audit checks the round, evolution and identity applications and binds their exact published bytes; its scope remains smaller than the whole game.
 
 The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity.html) and canonical address bar connect the game to the same registry/account ecosystem as Me. See [Holo packaging, discovery and identity limits](docs/HOLOGRAM.md) and the [verifier repair](docs/proof-audit.md).
+
+## Latest engine integration
+
+[Verdant 3D upgrade](docs/VERDANT-3D.md): pinned `9b6c14d`, HD exterior geometry at LOD0–4, worker generation, triangle-guarded first-person cameras, and the upstream frame-budget governor. Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.

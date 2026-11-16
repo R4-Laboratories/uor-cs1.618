@@ -44,6 +44,8 @@ try{
  });
  await a.waitForFunction(()=>{const s=(window as any).cs1618;return Math.abs(s.yaw)<.003&&Math.abs(s.pitch)<.003&&Math.abs(s.snapshot.self.yaw)<.003&&Math.abs(s.snapshot.self.pitch)<.003;});
  results.push('Relative pointer-lock aiming reaches the authoritative host before combat');
+ await a.waitForFunction(()=>(window as any).cs1618.hd?.status==='ready'&&(window as any).cs1618.cameraGuard?.guarded);
+ const guard=(await state(a)).cameraGuard;assert(guard.clearance>=guard.guard);results.push('HD worker scenery and triangle-guarded camera are active in multiplayer');
  await a.waitForFunction(()=>(window as any).cs1618.characters?.joints===22&&(window as any).cs1618.characters.poseUpdates>1);await a.screenshot({path:'artifacts/verdant-operator.png',timeout:20000});results.push('Upstream Verdant 22-joint operators render and animate in multiplayer');console.log('Aim',JSON.stringify({yaw:(await state(a)).yaw,pitch:(await state(a)).pitch,locked:(await state(a)).locked,weapon:pa.inventory[pa.slot].id}));await a.dispatchEvent('#world','mousedown',{button:0});await a.waitForTimeout(800);await a.dispatchEvent('#world','mouseup',{button:0});
  console.log('Combat result',JSON.stringify({ammo:pa.inventory[pa.slot].ammo,health:pb.health,yaw:pa.yaw,pitch:pa.pitch,phase:room.phase,events:room.events.slice(-5)}));await b.waitForFunction(()=>(window as any).cs1618.snapshot.self.health<100);assert.ok(pb.health<100);results.push('Mouse fire consumes server ammo and damages the remote opponent');
  await a.keyboard.press('Tab');await a.waitForTimeout(150);await a.keyboard.down('Tab');await a.waitForSelector('#scoreboard:not(.hidden)');await a.screenshot({path:'artifacts/multiplayer-scoreboard.png',timeout:20000});await a.keyboard.up('Tab');

@@ -12,3 +12,5 @@ prism/**/.prism/
 prism/**/.lake/
 
 public/build.json
+
+/public/engine.json

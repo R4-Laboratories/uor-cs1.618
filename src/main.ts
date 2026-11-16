@@ -142,7 +142,7 @@ window.addEventListener('blur',()=>{keys.clear();fire=false;scope=false;});
 let previousJump=false,lastRender=0;
 function tick(){
  if(!snapshot||!position)return;
- const active=locked&&!ui.buyOpen&&!ui.pauseOpen&&snapshot.self.alive;
+ const active=locked&&!ui.buyOpen&&!ui.pauseOpen&&snapshot.self.alive&&!view.cameraError;
  if(active){if(keys.has('ArrowLeft'))yaw+=.025;if(keys.has('ArrowRight'))yaw-=.025;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));}
  const i:Input={...neutralInput(),seq:++seq,yaw,pitch,slot,forward:active?(Number(keys.has('KeyW'))-Number(keys.has('KeyS'))):0,strafe:active?(Number(keys.has('KeyD'))-Number(keys.has('KeyA'))):0,jump:active&&keys.has('Space'),crouch:active&&(keys.has('ControlLeft')||keys.has('KeyC')),walk:active&&keys.has('ShiftLeft'),fire:active&&fire,reload:active&&keys.has('KeyR'),use:active&&keys.has('KeyE'),scope:active&&scope};
  send({type:'input',input:i});
@@ -152,7 +152,9 @@ function tick(){
 function frame(now:number){
  const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;accumulator+=dt;
  while(accumulator>=1/60){tick();accumulator-=1/60;}
+ if(ui.pauseOpen&&view.hd){const h=view.hd.diagnostics;$('hd-status').textContent=h.status==='failed'?'HD geometry unavailable':`Verdant HD${Math.max(0,h.lod)} · ${h.triangles.toLocaleString()} exterior triangles · ${h.status}`;}
  prismFrame.hidden=!!snapshot&&!ui.pauseOpen;const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target,!!snapshot&&!ui.pauseOpen);lastRender=now;}
+ ui.show('camera-warning',!!view.cameraError);
  if(snapshot&&position){
   uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target);uiTime=0;}
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
@@ -165,4 +167,4 @@ function frame(now:number){
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',characters:view.characters?.diagnostics,evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',hd:view.hd?.diagnostics,cameraGuard:view.cameraGuard,cameraError:view.cameraError,characters:view.characters?.diagnostics,evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

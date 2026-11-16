@@ -7,5 +7,6 @@ for(const [path,expected] of Object.entries(manifest.files)){const data=readFile
 for(const path of ['public/wasm/cs_verdant.wasm','public/wasm/cs_round.wasm','public/wasm/cs_evolution.wasm','public/wasm/cs_identity.wasm']){const module=new WebAssembly.Module(readFileSync(path));assert.equal(WebAssembly.Module.imports(module).length,0,`${path} must be import-free`);}
 const lock=JSON.parse(readFileSync('model/upstream-lock.json'));assert.equal(lock.length,6);for(const p of lock)assert.match(p.commit,/^[0-9a-f]{40}$/);
 const engineRevision=lock.find(p=>p.name==='verdant-engine').commit;assert.equal(manifest.engineRevision,engineRevision);assert.ok(readFileSync('crates/cs-verdant/Cargo.toml','utf8').includes('rev = "'+engineRevision+'"'));
+assert.equal(JSON.parse(readFileSync('model/verdant-3d.json')).revision,engineRevision,'3D integration record must identify the engine actually pinned');
 const source=readFileSync('server/match.ts','utf8');assert.ok(source.includes('roundKernel.decide('));assert.ok(!source.includes('round.generated'),'Runtime cannot use the unverified JS oracle');
 console.log(`Verified ${Object.keys(manifest.files).length} source/artifact hashes, six upstream pins, import-free Wasm and mandatory Prism runtime.`);

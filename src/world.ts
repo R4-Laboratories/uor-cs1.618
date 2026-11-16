@@ -1,3 +1,6 @@
+import {HdBudget} from './hd-budget';
+import {quality as hdQuality} from '../model/verdant-3d.json';
+import {HdLayer,createHdLoader} from './hd-layer';
 import {CharacterLayer} from './characters';
 import type {VerdantEngine} from '../shared/engine';
 import {adaptQuality} from '../shared/generated-experience';
@@ -27,11 +30,21 @@ export class WorldView{
  evolutionStatus='baseline';
  qualityMode:'auto'|'native'|'low'='auto';
  quality={scale:1,slow:0,fast:0};
- setQuality(mode:'auto'|'native'|'low'){this.qualityMode=mode;this.quality={scale:mode==='low'?.7:1,slow:0,fast:0};this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*this.quality.scale);this.resize();}
+ setQuality(mode:'auto'|'native'|'low'){this.qualityMode=mode;this.hdBudget?.reset();this.requestHd(mode==='native'?hdQuality.nativePin:mode==='low'?hdQuality.performancePin:hdQuality.initialAuto);this.quality={scale:mode==='low'?.7:1,slow:0,fast:0};this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*this.quality.scale);this.resize();}
 
  artwork:ArtworkLayer;
  characters:CharacterLayer|null=null;
- setEngine(engine:VerdantEngine){this.characters=new CharacterLayer(engine);}
+ private engine:VerdantEngine|null=null;
+ hd:HdLayer|null=null;private hdWorker:ReturnType<typeof createHdLoader>|null=null;
+ private hdBudget:HdBudget|null=null;private hdRequested=-1;
+ cameraError='';
+ cameraGuard:{guard:number;clearance:number;guarded:boolean;obstructed:boolean}|null=null;
+ private requestHd(lod:number){if(!this.hd||lod===this.hdRequested)return;this.hdRequested=lod;void this.hd.setLod(lod).catch(error=>{if(this.hd?.diagnostics.status==='failed'&&this.hdRequested===lod){this.hdRequested=-1;console.error('Verdant HD detail failed',error);}});}
+ setEngine(engine:VerdantEngine){
+  this.characters?.clear();this.hd?.dispose();this.hdWorker?.dispose();this.engine=engine;this.hdBudget=new HdBudget(engine);this.characters=new CharacterLayer(engine);
+  this.hdWorker=createHdLoader();this.hd=new HdLayer(this.scene,this.hdWorker.load);this.hdRequested=-1;
+  this.requestHd(this.qualityMode==='native'?hdQuality.nativePin:this.qualityMode==='low'?hdQuality.performancePin:hdQuality.initialAuto);
+ }
  constructor(public canvas:HTMLCanvasElement,options:{evolution?:boolean;preserveDrawingBuffer?:boolean}={}){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:options.preserveDrawingBuffer??false});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
   this.scene.background=new T.Color(0xc6d4d3);this.scene.fog=new T.Fog(0xc6d4d3,50,155);
@@ -124,13 +137,15 @@ export class WorldView{
  resize(){const w=innerWidth,h=innerHeight;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.weaponCamera.aspect=w/h;this.weaponCamera.updateProjectionMatrix();}
  render(dt:number,snapshot:Snapshot|null,position:Motion|null,yaw:number,pitch:number,scoped:boolean,spectating:PublicPlayer|null,active=false){
   if(this.qualityMode==='auto'){const next=adaptQuality(this.quality,active?dt:1);if(next.scale!==this.quality.scale){this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*next.scale);this.resize();}this.quality=next;}
+  if(this.hdBudget&&this.hd?.diagnostics.status==='ready'&&this.qualityMode==='auto')this.requestHd(this.hdBudget.sample(this.hd.diagnostics.lod,dt,active));
   this.elapsed+=dt;this.recoil=Math.max(0,this.recoil-dt*8);this.flash.visible=this.recoil>.7;
-  if(!snapshot){this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
+  if(!snapshot){this.cameraError='';this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
   else{
    const self=snapshot.self;const view=self.alive&&position?position:spectating??{x:0,y:14,z:20,crouch:false};
    this.camera.position.set(view.x,view.y+('crouch'in view&&view.crouch?RULES.crouchEye:RULES.eyeHeight),view.z);
    this.camera.rotation.order='YXZ';this.camera.rotation.z=0;this.camera.rotation.y=self.alive?yaw:spectating?.yaw??0;this.camera.rotation.x=self.alive?pitch+(self.recoil*.25):spectating?.pitch??-.35;
    const fov=scoped&&self.weapon==='scout'?32:76;this.camera.fov=T.MathUtils.lerp(this.camera.fov,fov,Math.min(1,dt*15));this.camera.updateProjectionMatrix();
+   if(this.engine){try{const p=this.camera.position;const frame=this.engine.cameraFrame(p.x,p.y,p.z,this.camera.rotation.y,this.camera.rotation.x,this.camera.fov,this.camera.aspect);this.camera.position.set(frame.x,frame.y,frame.z);this.cameraGuard=frame;this.cameraError='';}catch(error){this.cameraGuard=null;this.cameraError=String(error);return;}}
    const ids=new Set(snapshot.players.map(p=>p.id));for(const[id,g]of this.players)if(!ids.has(id)){this.characters?.remove(id);this.scene.remove(g);this.players.delete(id);}
    for(const p of snapshot.players){const g=this.players.get(p.id)??this.makePlayer(p);g.visible=p.id!==self.id&&p.alive&&p.id!==spectating?.id;g.position.lerp(new T.Vector3(p.x,p.y,p.z),Math.min(1,dt*20));g.rotation.y=p.yaw;g.scale.y=p.crouch?.65:1;if(g.visible)this.characters?.update(p,dt,this.elapsed);const walking=Math.hypot(p.vx,p.vz)>1;for(const side of ['legL','legR']){const leg=g.getObjectByName(side);if(leg)leg.rotation.x=walking?Math.sin(this.elapsed*12+(side==='legL'?0:Math.PI))*.35:0;}}
    const b=snapshot.bomb;this.bomb.visible=!!b&&b.state!=='carried';if(b){this.bomb.position.set(b.x,b.y,b.z);this.bomb.rotation.y=this.elapsed*.2;}

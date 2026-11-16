@@ -22,6 +22,7 @@ Feature: cs-verdant
     And the interface call Interface::callCsVerdantCsAudio is made
     Then the acceptance row Interface::acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner holds
     And the acceptance row Interface::acCsVerdantCsVerdantRayMissesOpenSpace holds
+    And the acceptance row Interface::acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics holds
     And the acceptance row Interface::acCsVerdantCsVerdantWallBlocksShotsAndMovement holds
 
   @FT-02 @build
@@ -36,3 +37,17 @@ Feature: cs-verdant
     And the interface call Interface::callCsVerdantCharactersCsCharacterPosePtr is made
     And the interface call Interface::callCsVerdantCharactersCsCharacterPoseLen is made
     Then the acceptance row Interface::acCsVerdantCsVerdantCharactersPoseSlotsAreBoundedFiniteAndReleased holds
+
+  @FT-03 @build
+  Scenario: cs_verdant::scene3d: Bounded HD geometry and camera/governor bridges to the pinned Verdant Prism kernels.
+    Given the record Interface::featureCsVerdantScene3d
+    When the interface call Interface::callCsVerdantScene3dMapBvh is made
+    And the interface call Interface::callCsVerdantScene3dCsHdAsset is made
+    And the interface call Interface::callCsVerdantScene3dCsHdPtr is made
+    And the interface call Interface::callCsVerdantScene3dCsHdLen is made
+    And the interface call Interface::callCsVerdantScene3dCsLod is made
+    And the interface call Interface::callCsVerdantScene3dCsCamera is made
+    And the interface call Interface::callCsVerdantScene3dCsCameraResult is made
+    Then the acceptance row Interface::acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics holds
+    And the acceptance row Interface::acCsVerdantCsVerdantScene3dGovernorPreservesExplicitPinsAndRefusesNonfiniteSamples holds
+    And the acceptance row Interface::acCsVerdantCsVerdantScene3dHdDetailIsBoundedAndInvalidRequestsClearOldAsset holds

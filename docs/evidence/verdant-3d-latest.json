@@ -1,0 +1,194 @@
+{
+  "schema": "cs1618/verdant-3d-import/2",
+  "engineRevision": "9b6c14d4b756b09faecf61b9f61cf894155f52c9",
+  "version": "0.8.0",
+  "localValidation": {
+    "nativeRustTests": 8,
+    "typescriptTests": 94,
+    "uorustProjection": "current",
+    "browser": {
+      "passed": [
+        "Browser buy menu equips a server-issued rifle and deducts the exact price",
+        "WASD movement appears on both independently rendered clients",
+        "Relative pointer-lock aiming reaches the authoritative host before combat",
+        "HD worker scenery and triangle-guarded camera are active in multiplayer",
+        "Upstream Verdant 22-joint operators render and animate in multiplayer",
+        "Mouse fire consumes server ammo and damages the remote opponent",
+        "Escape menu and leaving a room restore the lobby and release character slots",
+        "Static browser practice starts ten-player simulation without a WebSocket connection",
+        "No uncaught browser errors across online and local gameplay"
+      ],
+      "errors": []
+    },
+    "peer": {
+      "passed": [
+        "Wrong invitation is rejected before joining or evicting a bot",
+        "Isolated browser contexts join the same worker-hosted match with a real unordered WebRTC channel",
+        "Guest purchase is applied by the host and deducts the authoritative price",
+        "Guest input moves its authoritative player and reaches the host snapshot",
+        "Established gameplay continues when signaling sockets disconnect",
+        "No dedicated game-server endpoint or gameplay payload through signaling",
+        "Host departure closes the match and restores a usable guest lobby",
+        "No uncaught browser errors"
+      ],
+      "errors": []
+    },
+    "creative": "passed",
+    "identity": "passed",
+    "experience": {
+      "url": "http://127.0.0.1:36987/",
+      "sound": {
+        "rows": [
+          {
+            "weapon": "sidearm",
+            "occluded": false,
+            "peak": 0.025459162890911102,
+            "left": 4.9933371206238914e-8,
+            "right": 0.0000019905170912976327,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "sidearm",
+            "occluded": true,
+            "peak": 0.01971926912665367,
+            "left": 3.3159009411014114e-8,
+            "right": 0.0000013218329546700415,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "kestrel",
+            "occluded": false,
+            "peak": 0.037420112639665604,
+            "left": 1.603148960177026e-7,
+            "right": 0.000006390706973397324,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "kestrel",
+            "occluded": true,
+            "peak": 0.01787423901259899,
+            "left": 7.566388091604048e-8,
+            "right": 0.0000030162242905819847,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "m4",
+            "occluded": false,
+            "peak": 0.03713112697005272,
+            "left": 1.250514751647259e-7,
+            "right": 0.0000049849848596896465,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "m4",
+            "occluded": true,
+            "peak": 0.018432503566145897,
+            "left": 4.76021074331089e-8,
+            "right": 0.0000018975848451894548,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "smg",
+            "occluded": false,
+            "peak": 0.040368933230638504,
+            "left": 6.332793918163258e-8,
+            "right": 0.0000025244710032085697,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "smg",
+            "occluded": true,
+            "peak": 0.0202109906822443,
+            "left": 2.3510289924018474e-8,
+            "right": 9.372015805584654e-7,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "scout",
+            "occluded": false,
+            "peak": 0.04547908529639244,
+            "left": 3.59365148718423e-7,
+            "right": 0.000014325539227743487,
+            "tail": 0,
+            "ended": 1
+          },
+          {
+            "weapon": "scout",
+            "occluded": true,
+            "peak": 0.025255147367715836,
+            "left": 2.0799322189647917e-7,
+            "right": 0.000008291330155243541,
+            "tail": 0,
+            "ended": 1
+          }
+        ],
+        "stress": {
+          "voices": 16,
+          "peak": 0.4061315655708313,
+          "ended": 16
+        }
+      },
+      "voices": {
+        "high": 16,
+        "after": 0,
+        "limit": 16
+      },
+      "render": {
+        "low": 0.7,
+        "native": 1,
+        "count": 249,
+        "after": 249
+      },
+      "hd": {
+        "hd0": {
+          "lod": 0,
+          "triangles": 5212,
+          "status": "ready",
+          "error": ""
+        },
+        "hd4": {
+          "lod": 4,
+          "triangles": 92036,
+          "status": "ready",
+          "error": ""
+        }
+      },
+      "cameraResizeRecovery": true,
+      "settingsPersist": true,
+      "mobileFits": true,
+      "errors": []
+    }
+  },
+  "engineWasm": {
+    "bytes": 261647,
+    "sha256": "b4d9096a739d6dd7fec457155c751fb1851d2230bd147015f3ed561b0697e2ce"
+  },
+  "retainedGuests": {
+    "cs_round": "ab75a7806437f5611bc2e28afbdd6e2d56b941390fee8d6a9f033d0b255618fa",
+    "cs_evolution": "b4763ff9796f52129b1c45f3669b43fe4b82c7841bfbcbd14f56a419cd195bf1",
+    "cs_identity": "7326a2b1d4b8f6b3a66d1125c16a57a2e6368fe0a5db9e98cee69bd2a166045d"
+  },
+  "scope": "Compiled LexLean/PrismPM round, evolution and identity guests remain mandatory and unchanged. Engine source contains its upstream generated Prism kernels. Local adapters and browser rendering remain empirical/open claims, not a proof of the complete game.",
+  "renderingEnvironment": "Headless Chromium with SwiftShader software rendering; no hardware GPU or player preference benchmark",
+  "authorship": "Assistant implementation requested by owner; not an autonomous tick",
+  "githubValidation": "Recorded separately by Pages workflow for the published commit",
+  "review": {
+    "status": "approved after fixes",
+    "fixed": [
+      "Camera refusal no longer terminates animation/input loop; normal ultrawide ratios supported, extreme rejection recovers after resizing",
+      "Failed worker download can retry; fatal worker errors reject future requests"
+    ],
+    "remainingMinor": [
+      "Rapid quality changes can queue redundant worker generations",
+      "Repeated setEngine calls retain prior character shared assets; startup invokes it once"
+    ]
+  }
+}

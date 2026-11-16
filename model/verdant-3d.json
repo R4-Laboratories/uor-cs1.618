@@ -1,0 +1,45 @@
+{
+  "schema": "cs1618/verdant-integration/1",
+  "revision": "9b6c14d4b756b09faecf61b9f61cf894155f52c9",
+  "previous": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
+  "claims": [
+    {
+      "id": "V3D-01",
+      "level": "built-and-tested",
+      "behavior": "HD hall, bridge and canopy meshes at LOD0 through LOD4, generated in a worker and presented in Meridian's exterior",
+      "gate": "tests/verdant-3d.test.ts; tests/hd-layer.test.ts; scripts/experience-browser-test.ts"
+    },
+    {
+      "id": "V3D-02",
+      "level": "built-and-tested",
+      "behavior": "First-person optical guard against triangle-indexed authoritative map boxes and floor",
+      "gate": "tests/verdant-3d.test.ts; scripts/browser-test.ts"
+    },
+    {
+      "id": "V3D-03",
+      "level": "built-and-tested",
+      "behavior": "Upstream compiled Prism runtime governor recommends detail from observed frame intervals; native and performance settings pin detail",
+      "gate": "tests/verdant-3d.test.ts; scripts/experience-browser-test.ts"
+    },
+    {
+      "id": "V3D-04",
+      "level": "imported-source",
+      "behavior": "Upstream universe/portal, narrative, glTF/UORC, XPBD, software rasterization and studio facilities are in the pinned dependency; not activated in the FPS",
+      "gate": "Cargo.lock; model/upstream-lock.json"
+    }
+  ],
+  "boundary": "Compiled LexLean/PrismPM round, evolution and identity guests remain mandatory and unchanged. Engine source contains its upstream generated Prism kernels. Local adapters and browser rendering remain empirical/open claims, not a proof of the complete game.",
+  "geometry": "Exterior scenery only. Meridian movement, shots, objectives and bot navigation retain the same authoritative map.",
+  "quality": {
+    "lodMin": 0,
+    "lodMax": 4,
+    "initialAuto": 2,
+    "sampleSeconds": 3,
+    "targetHz": 60,
+    "nativePin": 4,
+    "performancePin": 0,
+    "headroomMicros": 8000,
+    "overloadMicros": 20000
+  },
+  "authorship": "Human-requested upstream integration; not counted as an autonomous evolution promotion."
+}

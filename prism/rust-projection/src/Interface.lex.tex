@@ -23,21 +23,42 @@ definition{
   name: acCsVerdantCsVerdantWallBlocksShotsAndMovement,
   parameters: [],
   result: String,
-  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:9 passes."
+  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:10 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner,
   parameters: [],
   result: String,
-  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:18 passes."
+  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:19 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantRayMissesOpenSpace,
   parameters: [],
   result: String,
-  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:28 passes."
+  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:29 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantScene3dHdDetailIsBoundedAndInvalidRequestsClearOldAsset,
+  parameters: [],
+  result: String,
+  body: "hd_detail_is_bounded_and_invalid_requests_clear_old_asset at crates/cs-verdant/src/scene3d.rs:182 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantScene3dGovernorPreservesExplicitPinsAndRefusesNonfiniteSamples,
+  parameters: [],
+  result: String,
+  body: "governor_preserves_explicit_pins_and_refuses_nonfinite_samples at crates/cs-verdant/src/scene3d.rs:192 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics,
+  parameters: [],
+  result: String,
+  body: "camera_keeps_near_plane_outside_wall_and_refuses_invalid_optics at crates/cs-verdant/src/scene3d.rs:200 passes."
 }
 
 definition{
@@ -195,10 +216,59 @@ definition{
 }
 
 definition{
+  name: callCsVerdantScene3dMapBvh,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::map_bvh: fn map_bvh(boxes: &[Aabb]) -> TwoLevelBvh"
+}
+
+definition{
+  name: callCsVerdantScene3dCsHdAsset,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_hd_asset: extern \"C\" fn cs_hd_asset(kind: u32, lod: u32) -> u32"
+}
+
+definition{
+  name: callCsVerdantScene3dCsHdPtr,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_hd_ptr: extern \"C\" fn cs_hd_ptr() -> * const u8"
+}
+
+definition{
+  name: callCsVerdantScene3dCsHdLen,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_hd_len: extern \"C\" fn cs_hd_len() -> usize"
+}
+
+definition{
+  name: callCsVerdantScene3dCsLod,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_lod: extern \"C\" fn cs_lod(lod: u32, micros: f64, pinned: u32) -> i32"
+}
+
+definition{
+  name: callCsVerdantScene3dCsCamera,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_camera: extern \"C\" fn cs_camera(x: f64, y: f64, z: f64, yaw: f64, pitch: f64, fov: f64, aspect: f64,) -> u32"
+}
+
+definition{
+  name: callCsVerdantScene3dCsCameraResult,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::scene3d::cs_camera_result: extern \"C\" fn cs_camera_result(i: u32) -> f64"
+}
+
+definition{
   name: featureCsVerdant,
   parameters: [],
   result: Foundation.Arch::Feature,
-  body: (record Foundation.Arch::Feature {statement := "cs_verdant: The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH.", calls := (cons "Interface::callCsVerdantSpatialWorldAddBox" (cons "Interface::callCsVerdantSpatialWorldBuild" (cons "Interface::callCsVerdantSpatialWorldRay" (cons "Interface::callCsVerdantSpatialWorldSlide" (cons "Interface::callCsVerdantSpatialWorldSupport" (cons "Interface::callCsVerdantCsClear" (cons "Interface::callCsVerdantCsBox" (cons "Interface::callCsVerdantCsBuild" (cons "Interface::callCsVerdantCsRay" (cons "Interface::callCsVerdantCsMove" (cons "Interface::callCsVerdantCsSupport" (cons "Interface::callCsVerdantCsResult" (cons "Interface::callCsVerdantCsHitbox" (cons "Interface::callCsVerdantCsAudio" (nil String))))))))))))))), acceptance := (cons "Interface::acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner" (cons "Interface::acCsVerdantCsVerdantRayMissesOpenSpace" (cons "Interface::acCsVerdantCsVerdantWallBlocksShotsAndMovement" (nil String))))})
+  body: (record Foundation.Arch::Feature {statement := "cs_verdant: The game-specific safe ABI over Verdant Engine. All geometry queries use Verdant's BVH.", calls := (cons "Interface::callCsVerdantSpatialWorldAddBox" (cons "Interface::callCsVerdantSpatialWorldBuild" (cons "Interface::callCsVerdantSpatialWorldRay" (cons "Interface::callCsVerdantSpatialWorldSlide" (cons "Interface::callCsVerdantSpatialWorldSupport" (cons "Interface::callCsVerdantCsClear" (cons "Interface::callCsVerdantCsBox" (cons "Interface::callCsVerdantCsBuild" (cons "Interface::callCsVerdantCsRay" (cons "Interface::callCsVerdantCsMove" (cons "Interface::callCsVerdantCsSupport" (cons "Interface::callCsVerdantCsResult" (cons "Interface::callCsVerdantCsHitbox" (cons "Interface::callCsVerdantCsAudio" (nil String))))))))))))))), acceptance := (cons "Interface::acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner" (cons "Interface::acCsVerdantCsVerdantRayMissesOpenSpace" (cons "Interface::acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics" (cons "Interface::acCsVerdantCsVerdantWallBlocksShotsAndMovement" (nil String)))))})
 }
 
 definition{
@@ -209,10 +279,17 @@ definition{
 }
 
 definition{
+  name: featureCsVerdantScene3d,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "cs_verdant::scene3d: Bounded HD geometry and camera/governor bridges to the pinned Verdant Prism kernels.", calls := (cons "Interface::callCsVerdantScene3dMapBvh" (cons "Interface::callCsVerdantScene3dCsHdAsset" (cons "Interface::callCsVerdantScene3dCsHdPtr" (cons "Interface::callCsVerdantScene3dCsHdLen" (cons "Interface::callCsVerdantScene3dCsLod" (cons "Interface::callCsVerdantScene3dCsCamera" (cons "Interface::callCsVerdantScene3dCsCameraResult" (nil String)))))))), acceptance := (cons "Interface::acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics" (cons "Interface::acCsVerdantCsVerdantScene3dGovernorPreservesExplicitPinsAndRefusesNonfiniteSamples" (cons "Interface::acCsVerdantCsVerdantScene3dHdDetailIsBoundedAndInvalidRequestsClearOldAsset" (nil String))))})
+}
+
+definition{
   name: journeyLibraryCsVerdant,
   parameters: [],
   result: Foundation.Arch::Journey,
-  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (cons "Interface::featureCsVerdantCharacters" (nil String)))})
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (cons "Interface::featureCsVerdantCharacters" (cons "Interface::featureCsVerdantScene3d" (nil String))))})
 }
 \end{semanticmodule}
 \end{lexlean}

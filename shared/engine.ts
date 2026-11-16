@@ -1,8 +1,22 @@
 import { BOXES } from './map';
 export interface CharacterAsset {positions:number[][];normals:number[][];colors:number[][];indices:number[];morphs:number[][][];bones:{parent:number;root:boolean;translation:number[];rotation:number[]}[];joints:number[][];weights:number[][];}
+export interface HdAsset {name:string;positions:number[][];normals:number[][];uvs:number[][];colors:number[][];indices:number[];}
 type Exports=Record<string,(...args:number[])=>number>;
 export class VerdantEngine {
  constructor(private ex:Exports,private memory:WebAssembly.Memory) {ex.cs_clear();for(const b of BOXES)ex.cs_box(b.x,b.y,b.z,b.w,b.h,b.d);ex.cs_build();}
+ hdAsset(kind:number,lod:number):HdAsset{
+  if(!Number.isInteger(kind)||!Number.isInteger(lod)||kind<0||kind>2||lod<0||lod>4||!this.ex.cs_hd_asset(kind,lod))throw new RangeError('Invalid Verdant HD asset');
+  return JSON.parse(new TextDecoder().decode(new Uint8Array(this.memory.buffer,this.ex.cs_hd_ptr(),this.ex.cs_hd_len())));
+ }
+ recommendLod(lod:number,micros:number,pinned:boolean){
+  if(!Number.isInteger(lod)||lod<0||lod>4||!Number.isFinite(micros)||micros<0||micros>1_000_000)throw new RangeError('Invalid Verdant frame sample');
+  const next=this.ex.cs_lod(lod,micros,pinned?1:0);if(next<0)throw new RangeError('Verdant governor refused');return next;
+ }
+ cameraFrame(x:number,y:number,z:number,yaw:number,pitch:number,fov:number,aspect:number){
+  if(!this.ex.cs_camera(x,y,z,yaw,pitch,fov,aspect))throw new RangeError('Verdant camera guard refused');
+  const r=this.ex.cs_camera_result;
+  return {x:r(0),y:r(1),z:r(2),guard:r(3),clearance:r(4),guarded:r(5)===1,obstructed:r(6)===1};
+ }
  characterAsset(team:0|1):CharacterAsset{
   if(!this.ex.cs_character_asset(team))throw Error('Verdant character asset refused');
   const bytes=new Uint8Array(this.memory.buffer,this.ex.cs_character_asset_ptr(),this.ex.cs_character_asset_len());

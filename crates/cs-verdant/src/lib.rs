@@ -2,6 +2,7 @@
 #![deny(unsafe_op_in_unsafe_fn)]
 
 mod characters;
+mod scene3d;
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -42,6 +43,7 @@ use verdant_core::math::{Aabb, Ray, Vec3};
 pub struct SpatialWorld {
     boxes: Vec<Aabb>,
     bvh: BoundingVolumeHierarchy,
+    triangles: Option<verdant_core::ecs::TwoLevelBvh>,
 }
 impl SpatialWorld {
     pub fn add_box(&mut self, x0: f64, y0: f64, z0: f64, x1: f64, y1: f64, z1: f64) {
@@ -49,6 +51,7 @@ impl SpatialWorld {
             .push(Aabb::new(Vec3::new(x0, y0, z0), Vec3::new(x1, y1, z1)));
     }
     pub fn build(&mut self) {
+        self.triangles = Some(scene3d::map_bvh(&self.boxes));
         self.bvh = BoundingVolumeHierarchy::build(
             self.boxes
                 .iter()

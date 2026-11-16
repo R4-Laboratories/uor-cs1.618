@@ -15,3 +15,10 @@ level = "build"
 suite = "cs-verdant"
 record = "Interface::featureCsVerdantCharacters"
 statement = "cs_verdant::characters: Bounded rendering-only bridge to Verdant's new articulated character module."
+
+[[id]]
+id = "FT-03"
+level = "build"
+suite = "cs-verdant"
+record = "Interface::featureCsVerdantScene3d"
+statement = "cs_verdant::scene3d: Bounded HD geometry and camera/governor bridges to the pinned Verdant Prism kernels."

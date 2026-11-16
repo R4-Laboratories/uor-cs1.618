@@ -633,7 +633,7 @@ checksum = "daf8dba3b7eb870caf1ddeed7bc9d2a049f3cfdfae7cb521b087cc33ae4c49da"
 [[package]]
 name = "verdant-core"
 version = "0.1.0"
-source = "git+https://github.com/afflom/verdant-engine?rev=b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4#b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4"
+source = "git+https://github.com/afflom/verdant-engine?rev=9b6c14d4b756b09faecf61b9f61cf894155f52c9#9b6c14d4b756b09faecf61b9f61cf894155f52c9"
 dependencies = [
  "gltf",
  "naga",
@@ -647,7 +647,7 @@ dependencies = [
 [[package]]
 name = "verdant-tensor"
 version = "0.1.0"
-source = "git+https://github.com/afflom/verdant-engine?rev=b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4#b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4"
+source = "git+https://github.com/afflom/verdant-engine?rev=9b6c14d4b756b09faecf61b9f61cf894155f52c9#9b6c14d4b756b09faecf61b9f61cf894155f52c9"
 dependencies = [
  "serde",
  "uor-matmul",

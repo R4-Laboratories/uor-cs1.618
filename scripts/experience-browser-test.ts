@@ -16,10 +16,25 @@ try{
  const render=await page.evaluate(()=>{const world=(window as any).evolutionLab.world;world.setQuality('low');const low=world.renderer.getPixelRatio();const count=world.scene.children.length;world.setQuality('native');const native=world.renderer.getPixelRatio();return {low,native,count,after:world.scene.children.length};});
  assert(Math.abs(render.low/render.native-.7)<.001);assert.equal(render.count,render.after);
  await page.goto(url);await page.waitForFunction(()=>(window as any).cs1618);
+ await page.waitForFunction(()=>(window as any).cs1618.hd?.status==='ready');
+ await page.locator('#render-quality').selectOption('native',{force:true});
+ await page.waitForFunction(()=>(window as any).cs1618.hd?.lod===4&&(window as any).cs1618.hd.status==='ready');
+ const hd4=await page.evaluate(()=>(window as any).cs1618.hd);
+ await mkdir('artifacts/experience',{recursive:true});await page.screenshot({path:'artifacts/experience/verdant-hd4.png'});
  await page.locator('#render-quality').selectOption('low',{force:true});
+ await page.waitForFunction(()=>(window as any).cs1618.hd?.lod===0&&(window as any).cs1618.hd.status==='ready');
+ const hd0=await page.evaluate(()=>(window as any).cs1618.hd);assert(hd4.triangles>hd0.triangles*2);assert(hd0.triangles>100);
+
+ await page.click('#practice');await page.waitForSelector('#deploy-overlay:not(.hidden)');await page.click('#deploy');
+ await page.waitForFunction(()=>(window as any).cs1618.cameraGuard?.guarded);
+ const seqBefore=await page.evaluate(()=>(window as any).cs1618.snapshot.self.seq);
+ await page.setViewportSize({width:1200,height:1});await page.waitForFunction(()=>!!(window as any).cs1618.cameraError);
+ await page.setViewportSize({width:960,height:640});
+ await page.waitForFunction(seq=>{const s=(window as any).cs1618;return !s.cameraError&&s.cameraGuard?.guarded&&s.snapshot.self.seq>seq;},seqBefore);
+ await page.keyboard.press('Escape');
  await page.locator('#volume').evaluate((el:any)=>{el.value='.25';el.dispatchEvent(new Event('input'));});
  await page.reload();await page.waitForFunction(()=>(window as any).cs1618?.quality.mode==='low');assert.equal(await page.locator('#volume').inputValue(),'.25'.replace(/^\./,'0.'));
  await page.setViewportSize({width:390,height:844});
  const fits=await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth);assert(fits,'Mobile page overflows');
- assert.deepEqual(errors,[]);await mkdir('artifacts/experience',{recursive:true});await writeFile('artifacts/experience/browser-results.json',JSON.stringify({url,sound,voices,render,settingsPersist:true,mobileFits:fits,errors},null,2)+'\n');console.log('Experience browser: waveform, occlusion, stereo, cleanup, voice budget, render modes and persisted settings passed.');
+ assert.deepEqual(errors,[]);await mkdir('artifacts/experience',{recursive:true});await writeFile('artifacts/experience/browser-results.json',JSON.stringify({url,sound,voices,render,hd:{hd0,hd4},cameraResizeRecovery:true,settingsPersist:true,mobileFits:fits,errors},null,2)+'\n');console.log('Experience browser: waveform, occlusion, stereo, cleanup, voice budget, render modes and persisted settings passed.');
 }finally{await browser.close();if(server)await new Promise<void>(resolve=>server.httpServer.close(()=>resolve()));}

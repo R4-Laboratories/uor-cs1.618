@@ -1,12 +1,12 @@
 {
   "schema": "cs1618/artifacts/1",
   "engine": "verdant-core",
-  "engineRevision": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
+  "engineRevision": "9b6c14d4b756b09faecf61b9f61cf894155f52c9",
   "evolutionBuild": "071558e95f9aa89316402ff5c6d6708e9a6b9d3608a9851a917d65dd88773181",
   "roundBuild": "3b66383a3d163668aae5e2d60725c77af763d6194aaf978f3869cfe621713620",
   "files": {
     "Cargo.lock": {
-      "sha256": "56d42f692742e8def96cc5865f919dae918c522be0511181aa65d9ab09266ee1",
+      "sha256": "84eb4c14e1908f2cb67abfd60cb7da22ededdb9eaffaeaf300e52975fca2cbe6",
       "bytes": 18489
     },
     "Cargo.toml": {
@@ -14,7 +14,7 @@
       "bytes": 133
     },
     "crates/cs-verdant/Cargo.toml": {
-      "sha256": "0cf763a30ec979363a1a5a2390bf1afbf99435088db1209d4c905a2954ea83f6",
+      "sha256": "da5a1cdce94af85cd76b9eb663ffc7a7b572fed918b1b7d5299bff1a758ec98b",
       "bytes": 420
     },
     "crates/cs-verdant/src/characters.rs": {
@@ -22,8 +22,12 @@
       "bytes": 6380
     },
     "crates/cs-verdant/src/lib.rs": {
-      "sha256": "bf7f3f6a090f7849c32e6b27c746afabaee934a4a5bb3fe4115b55ddb7fc6ba3",
-      "bytes": 6487
+      "sha256": "17a6d9f9da8db2cfb81ac54e57844b6201f616012b877f3c4ae41e15d5cfa6f3",
+      "bytes": 6617
+    },
+    "crates/cs-verdant/src/scene3d.rs": {
+      "sha256": "08bf56ef781478d135040eefac443bb6b804d51f438592215daba1176c04424a",
+      "bytes": 7027
     },
     "model/evolution/admission.prompt.json": {
       "sha256": "b5f402173bc77e84717c9dab55c678782f85ea6f5bf2900277ca566d23efda05",
@@ -48,6 +52,10 @@
     "model/round.prompt.json": {
       "sha256": "29f59605c4f00cf8dcf2bce31eb63d215c70876b98cb8b7f9ed3a7eca3740c38",
       "bytes": 4312
+    },
+    "model/verdant-3d.json": {
+      "sha256": "3db7868ff3bfe5f23b8ef9a4eb89534972fe35e790e2ffb2f19e859b8eb5ac31",
+      "bytes": 2061
     },
     "prism/app/lexlean.lock": {
       "sha256": "9072e93282587857079c0610066cee3651f37c6768f25fcdebc87bacf0c4371d",
@@ -258,8 +266,8 @@
       "bytes": 2558
     },
     "public/wasm/cs_verdant.wasm": {
-      "sha256": "cd6e2ec7b733a94f642359248d10fcef65da302a09a9478cc851c72d5a940709",
-      "bytes": 203969
+      "sha256": "b4d9096a739d6dd7fec457155c751fb1851d2230bd147015f3ed561b0697e2ce",
+      "bytes": 261647
     }
   }
 }
