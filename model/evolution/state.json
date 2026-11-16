@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 8,
-  "seed": 198234453,
+  "seed": 408509269,
   "config": {
     "render": {
       "cell": 16,
@@ -282,8 +282,8 @@
     }
   },
   "weights": {
-    "render": 8,
-    "navigation": 9,
+    "render": 7,
+    "navigation": 8,
     "art": 11,
     "tactics": 12,
     "experience": 7
@@ -302,7 +302,9 @@
     "render-16-4",
     "render-32-2",
     "experience-1-1",
-    "experience-1-2"
+    "experience-1-2",
+    "navigation-6",
+    "render-32-4"
   ],
   "history": [
     {
@@ -2504,6 +2506,152 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "4230373899399771fb80c0684420e4982a475d75cf8d7e5526f48d8cf7ea6118"
+    },
+    {
+      "generation": 8,
+      "author": null,
+      "at": "2026-11-16T10:15:52.709Z",
+      "base": "8f75752596868f66d12d365032be64e4af6083ec",
+      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
+      "previous": "4230373899399771fb80c0684420e4982a475d75cf8d7e5526f48d8cf7ea6118",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "navigation-6",
+          "family": "navigation",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "84f6f738a071a0fde53726faa1b900aba8303ca057762b836ac04c621100de78",
+          "baselineWork": 2651,
+          "candidateWork": 9349,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 480,
+          "comparisons": null,
+          "reference": {
+            "pairs": 101926,
+            "elapsed": 32.153462999999874,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "before": {
+            "pairs": 2651,
+            "elapsed": 16.01831799999991,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "after": {
+            "pairs": 9349,
+            "elapsed": 16.136236000000054,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          }
+        },
+        {
+          "candidate": "render-32-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "ed471686bfd8eb0f334cced045b10dc4ded071928743a7b86b538010c66dc226",
+          "baselineWork": 60636,
+          "candidateWork": 51316,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 1.0723039215686274e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000013020833333333333,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.787173202614379e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 279,
+              "triangles": 3418,
+              "frameMs": 4.5
+            },
+            {
+              "calls": 197,
+              "triangles": 2554,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 244,
+              "triangles": 2926,
+              "frameMs": 1.5999999999985448
+            },
+            {
+              "calls": 290,
+              "triangles": 3650,
+              "frameMs": 1.9000000000014552
+            }
+          ],
+          "before": [
+            {
+              "calls": 137,
+              "triangles": 3862,
+              "frameMs": 6.099999999998545
+            },
+            {
+              "calls": 100,
+              "triangles": 2950,
+              "frameMs": 1.3999999999941792
+            },
+            {
+              "calls": 103,
+              "triangles": 3058,
+              "frameMs": 2.400000000001455
+            },
+            {
+              "calls": 129,
+              "triangles": 3866,
+              "frameMs": 2.1999999999970896
+            }
+          ],
+          "after": [
+            {
+              "calls": 108,
+              "triangles": 3886,
+              "frameMs": 0.8000000000029104
+            },
+            {
+              "calls": 80,
+              "triangles": 3670,
+              "frameMs": 1.0999999999985448
+            },
+            {
+              "calls": 81,
+              "triangles": 3418,
+              "frameMs": 1.1000000000058208
+            },
+            {
+              "calls": 96,
+              "triangles": 3842,
+              "frameMs": 2.3999999999941792
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "d8a96cd9d42abb09a6e03af8e85e514bfb6ecfc83576be470f22ed6cf33ddf3d"
     }
   ]
 }
