@@ -1,23 +1,27 @@
 # GitHub-hosted game evolution
 
-cs1.618 uses a bounded source-rewriting loop inspired by [Verdant Resonance](https://github.com/afflom/verdant-resonance/tree/533131e2cdf718d0c9c908866cd0829cf48bd14e) and [LexLean-R4](https://github.com/Casey-allard/lexlean-r4/tree/f1cd751e12a60cafc2a61599cbbb15034941ba10). GitHub Actions evaluates candidates; GitHub stores accepted source and evidence; Pages serves the resulting game. There is no paid model endpoint or API key, and no compute runs on Pages itself.
+cs1.618 uses a bounded source-rewriting loop inspired by [Verdant Resonance](https://github.com/afflom/verdant-resonance/tree/533131e2cdf718d0c9c908866cd0829cf48bd14e) and [LexLean-R4](https://github.com/Casey-allard/lexlean-r4/tree/f1cd751e12a60cafc2a61599cbbb15034941ba10). GitHub Actions evaluates candidates; GitHub stores accepted source and evidence; Pages serves the resulting game. Seeded synthesis requires no model endpoint or API key. Optional GitHub Models authorship uses a workflow token subject to repository access and quota; no compute runs on Pages itself.
+
+## Creative authoring in v0.4.0
+
+The loop now also authors original procedural murals and bot decision programs, with seeded synthesis and an optional GitHub Models adapter. [Creative architecture, evaluation, limitations and controls](CREATIVE-EVOLUTION.md) · [Public evolution studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html).
 
 ## What can improve
 
-The current search rewrites two TypeScript modules from a versioned model:
+The original optimization search rewrites two TypeScript modules from a versioned model; creative authoring adds the two modules described above:
 
 - `src/generated/render-policy.ts`: spatial batching of identical opaque scenery into instanced draws. The search varies cell size and minimum group size. Players, weapons and other dynamic objects stay separate.
 - `shared/generated-navigation.ts`: replace exhaustive node-pair enumeration with spatial buckets. Exact ordered graph equivalence preserves the bot routes, while fewer candidate pairs reduce navigation construction work.
 
-These are useful optimization families, not a general intelligence capable of designing new maps, art or arbitrary gameplay. Graphics admission measures draw work and visual preservation, **not artistic quality or a guaranteed FPS increase**. Navigation admission improves graph construction, not bot tactical intelligence. Adding a new family requires a human-reviewed generator, independent evaluator and falsifiers. The loop cannot edit its own evaluators, tests, workflow, policy or admission Wasm.
+These optimization families now sit alongside authored mural and tactical programs. The system does not autonomously design new maps or arbitrary gameplay. Graphics admission measures draw work and visual preservation, **not artistic quality or a guaranteed FPS increase**. Navigation admission improves graph construction, not bot tactical intelligence. Adding a new family requires a human-reviewed generator, independent evaluator and falsifiers. The loop cannot edit its own evaluators, tests, workflow, policy or admission Wasm.
 
 ## Admission and publication
 
 1. An hourly Actions tick (minute 17 UTC; GitHub scheduling can be delayed) evaluates at most two untried candidates. Successful families gain a bounded search weight; rejected families lose weight. At most one generation is admitted per tick.
 2. Navigation compares the entire ordered graph against independent all-pairs enumeration using real Verdant Wasm, plus 480 path samples. Rendering compares four fixed views with the unbatched scene, checks a complete geometry/material/transform inventory, and bounds the triangle increase. Pixel limits and minimum benefit are in `model/evolution/policy.json`.
 3. Rendering work is explicitly a proxy: sum of `100 × draw calls + triangles` over the camera corpus. Frame-time samples are recorded for inspection but are too noisy on CI software graphics to justify an FPS claim. At least 2% work reduction relative to the incumbent is required.
-4. Full game verification, rendered gameplay tests and real WebRTC multiplayer tests must pass. A separate **compiled Prism admission Wasm** admits only when fidelity, benefit, resource bounds and checks all pass; all 16 combinations are exhaustively tested. This policy does not prove that the host measurements are correct or formally verify the entire game.
-5. A hash-bound publisher commits only four owned files: the two generated modules, `model/evolution/state.json`, and `public/evolution.json`. It checks source identity, exact output hashes and evidence age. A racing main update fails publication; it never force-pushes or rebases untested output.
+4. Full game verification, rendered gameplay, real WebRTC multiplayer and creative studio/layer tests must pass. A separate **compiled Prism admission Wasm** admits only when fidelity, benefit, resource bounds and checks all pass; all 16 combinations are exhaustively tested. This policy does not prove that the host measurements are correct or formally verify the entire game.
+5. A hash-bound publisher commits only six owned files: generated render/navigation/artwork/tactics modules, `model/evolution/state.json`, and `public/evolution.json`. It checks source identity, exact output hashes and evidence age. A racing main update fails publication; it never force-pushes or rebases untested output.
 6. After a successful push, the engine explicitly dispatches `pages.yml`. GitHub does not normally trigger another push workflow from a `GITHUB_TOKEN` commit, so this dispatch is essential. Pages independently repeats game gates before deployment. Superseded builds skip deployment.
 7. The deployment watcher compares the live `build.json` commit with main. It can dispatch a missing deployment and retry a deploy-only failure once. Failed game checks block publication; they are not bypassed. It writes workflow summaries, not unsolicited issues or comments.
 

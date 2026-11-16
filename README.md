@@ -14,9 +14,9 @@ PeerJS Cloud supplies default rendezvous signaling and public STUN helps find di
 
 ## GitHub-hosted improvement loop
 
-An hourly workflow generates and measures bounded rendering and navigation optimizations, admits passing candidates through a real Prism Wasm policy, commits the generated source, and explicitly redeploys Pages after the full game gates. [How self-improvement works, its limits and controls](docs/SELF-IMPROVEMENT.md) · [Live generation/evidence](https://r4-laboratories.github.io/uor-cs1.618/evolution.json).
+An hourly workflow authors procedural murals and bot decision programs, measures rendering/navigation optimizations, admits passing candidates through a real Prism Wasm policy, commits the generated source, and explicitly redeploys Pages after the full game gates. [How self-improvement works, its limits and controls](docs/SELF-IMPROVEMENT.md) · [Live generation/evidence](https://r4-laboratories.github.io/uor-cs1.618/evolution.json).
 
-The current search optimizes scenery draw work and bot graph construction while preserving behavior. It has a finite frontier; it does not claim unrestricted AI code generation or continual artistic improvement.
+Explore the [Evolution Studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html) for admitted art, tactical rules and evidence. [Creative authorship](docs/CREATIVE-EVOLUTION.md) supports seeded generation and optional GitHub Models proposals. Publication remains typed and tested; a finite search does not guarantee continual artistic or gameplay improvement.
 
 ## Play locally
 
@@ -83,6 +83,7 @@ GitHub Pages hosts the client, browser-hosted WebRTC multiplayer, and practice m
 npm test                  # simulation, real Wasm, real WebSocket integration
 npm run build             # type check + static client production build
 npm run test:browser       # real Chromium clients, input, purchases, combat, practice
+npm run test:creative-browser # generated art, studio, controls and rejection cases
 npm run test:peer-browser  # static-only WebRTC hosting, invitations, authority, disconnects
 npm run verify            # tests, client build, artifact/source integrity
 npm run engine:build      # Rust tests + Verdant Wasm bridge (Rust + wasm32 target)
