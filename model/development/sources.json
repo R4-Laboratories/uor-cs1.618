@@ -48,6 +48,16 @@
       ],
       "purpose": "Reference engine evolution architecture",
       "integration": "reference; no unreviewed upstream code execution"
+    },
+    {
+      "repository": "Casey-allard/lexlean-r4",
+      "commit": "f1cd751e12a60cafc2a61599cbbb15034941ba10",
+      "paths": [
+        "src/R4/VerdantSynthesis.lex.tex",
+        "xtask/src/synthesis.rs"
+      ],
+      "purpose": "Exact imported bounded weight-update and Pareto acceptance semantic ASTs",
+      "integration": "Restricted compiler; generated TypeScript used by the development engine, independently parity tested"
     }
   ]
 }

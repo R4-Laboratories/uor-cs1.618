@@ -1,0 +1,336 @@
+{
+  "schema": "cs1618/lexlean-r4-decision-import/1",
+  "repository": "Casey-allard/lexlean-r4",
+  "commit": "f1cd751e12a60cafc2a61599cbbb15034941ba10",
+  "source": "src/R4/VerdantSynthesis.lex.tex",
+  "sourceSha256": "e127da83266a0f74c78a3db4cec812a21d46b55a1e0d6a7467a4e22ea4ef5867",
+  "declarations": [
+    {
+      "body": {
+        "condition": {
+          "kind": "blt",
+          "left": {
+            "kind": "nat",
+            "value": "0"
+          },
+          "right": {
+            "field": "candidateDefects",
+            "kind": "project",
+            "value": {
+              "kind": "var",
+              "name": "c"
+            }
+          }
+        },
+        "else_value": {
+          "condition": {
+            "kind": "not",
+            "value": {
+              "field": "ratchetClean",
+              "kind": "project",
+              "value": {
+                "kind": "var",
+                "name": "c"
+              }
+            }
+          },
+          "else_value": {
+            "condition": {
+              "kind": "or",
+              "left": {
+                "kind": "blt",
+                "left": {
+                  "field": "banditWeight",
+                  "kind": "project",
+                  "value": {
+                    "kind": "var",
+                    "name": "c"
+                  }
+                },
+                "right": {
+                  "kind": "nat",
+                  "value": "1"
+                }
+              },
+              "right": {
+                "kind": "blt",
+                "left": {
+                  "kind": "nat",
+                  "value": "16"
+                },
+                "right": {
+                  "field": "banditWeight",
+                  "kind": "project",
+                  "value": {
+                    "kind": "var",
+                    "name": "c"
+                  }
+                }
+              }
+            },
+            "else_value": {
+              "condition": {
+                "kind": "and",
+                "left": {
+                  "kind": "ble",
+                  "left": {
+                    "field": "incumbentScoreMilli",
+                    "kind": "project",
+                    "value": {
+                      "kind": "var",
+                      "name": "c"
+                    }
+                  },
+                  "right": {
+                    "field": "candidateScoreMilli",
+                    "kind": "project",
+                    "value": {
+                      "kind": "var",
+                      "name": "c"
+                    }
+                  }
+                },
+                "right": {
+                  "kind": "and",
+                  "left": {
+                    "kind": "ble",
+                    "left": {
+                      "field": "candidateComplexity",
+                      "kind": "project",
+                      "value": {
+                        "kind": "var",
+                        "name": "c"
+                      }
+                    },
+                    "right": {
+                      "field": "incumbentComplexity",
+                      "kind": "project",
+                      "value": {
+                        "kind": "var",
+                        "name": "c"
+                      }
+                    }
+                  },
+                  "right": {
+                    "kind": "or",
+                    "left": {
+                      "kind": "blt",
+                      "left": {
+                        "field": "incumbentScoreMilli",
+                        "kind": "project",
+                        "value": {
+                          "kind": "var",
+                          "name": "c"
+                        }
+                      },
+                      "right": {
+                        "field": "candidateScoreMilli",
+                        "kind": "project",
+                        "value": {
+                          "kind": "var",
+                          "name": "c"
+                        }
+                      }
+                    },
+                    "right": {
+                      "kind": "blt",
+                      "left": {
+                        "field": "candidateComplexity",
+                        "kind": "project",
+                        "value": {
+                          "kind": "var",
+                          "name": "c"
+                        }
+                      },
+                      "right": {
+                        "field": "incumbentComplexity",
+                        "kind": "project",
+                        "value": {
+                          "kind": "var",
+                          "name": "c"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "else_value": {
+                "arguments": [],
+                "constructor": {
+                  "name": "ParetoSynthesisVerdict.RefusedNotParetoImproving"
+                },
+                "kind": "constructor"
+              },
+              "kind": "if",
+              "then_value": {
+                "arguments": [],
+                "constructor": {
+                  "name": "ParetoSynthesisVerdict.CandidateAdmitted"
+                },
+                "kind": "constructor"
+              }
+            },
+            "kind": "if",
+            "then_value": {
+              "arguments": [],
+              "constructor": {
+                "name": "ParetoSynthesisVerdict.RefusedWeightOutOfBounds"
+              },
+              "kind": "constructor"
+            }
+          },
+          "kind": "if",
+          "then_value": {
+            "arguments": [],
+            "constructor": {
+              "name": "ParetoSynthesisVerdict.RefusedRatchetViolation"
+            },
+            "kind": "constructor"
+          }
+        },
+        "kind": "if",
+        "then_value": {
+          "arguments": [],
+          "constructor": {
+            "name": "ParetoSynthesisVerdict.RefusedNonZeroDefect"
+          },
+          "kind": "constructor"
+        }
+      },
+      "kind": "definition",
+      "name": "admitParetoSynthesisTick",
+      "parameters": [
+        {
+          "name": "c",
+          "type": {
+            "arguments": [],
+            "kind": "named",
+            "member": {
+              "name": "ParetoSynthesisCheck"
+            }
+          }
+        }
+      ],
+      "result": {
+        "arguments": [],
+        "kind": "named",
+        "member": {
+          "name": "ParetoSynthesisVerdict"
+        }
+      }
+    },
+    {
+      "body": {
+        "condition": {
+          "kind": "var",
+          "name": "improved"
+        },
+        "else_value": {
+          "condition": {
+            "kind": "ble",
+            "left": {
+              "arguments": [
+                {
+                  "kind": "var",
+                  "name": "weight"
+                },
+                {
+                  "kind": "nat",
+                  "value": "1"
+                }
+              ],
+              "kind": "primitive",
+              "operation": "subtract",
+              "result": {
+                "kind": "nat"
+              }
+            },
+            "right": {
+              "kind": "nat",
+              "value": "1"
+            }
+          },
+          "else_value": {
+            "arguments": [
+              {
+                "kind": "var",
+                "name": "weight"
+              },
+              {
+                "kind": "nat",
+                "value": "1"
+              }
+            ],
+            "kind": "primitive",
+            "operation": "subtract",
+            "result": {
+              "kind": "nat"
+            }
+          },
+          "kind": "if",
+          "then_value": {
+            "kind": "nat",
+            "value": "1"
+          }
+        },
+        "kind": "if",
+        "then_value": {
+          "condition": {
+            "kind": "ble",
+            "left": {
+              "kind": "nat",
+              "value": "16"
+            },
+            "right": {
+              "kind": "add",
+              "left": {
+                "kind": "var",
+                "name": "weight"
+              },
+              "right": {
+                "kind": "nat",
+                "value": "2"
+              }
+            }
+          },
+          "else_value": {
+            "kind": "add",
+            "left": {
+              "kind": "var",
+              "name": "weight"
+            },
+            "right": {
+              "kind": "nat",
+              "value": "2"
+            }
+          },
+          "kind": "if",
+          "then_value": {
+            "kind": "nat",
+            "value": "16"
+          }
+        }
+      },
+      "kind": "definition",
+      "name": "updateBanditWeight",
+      "parameters": [
+        {
+          "name": "weight",
+          "type": {
+            "kind": "nat"
+          }
+        },
+        {
+          "name": "improved",
+          "type": {
+            "kind": "bool"
+          }
+        }
+      ],
+      "result": {
+        "kind": "nat"
+      }
+    }
+  ],
+  "scope": "Exact two semantic AST definitions; no claim of the entire upstream model or a coding LLM."
+}

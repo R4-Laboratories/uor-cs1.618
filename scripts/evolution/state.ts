@@ -7,7 +7,7 @@ export function contextDigest(){
  const paths:string[]=[];
  function walk(dir:string){for(const e of readdirSync(dir,{withFileTypes:true})){const p=dir+'/'+e.name;if(e.isDirectory())walk(p);else if(/\.(ts|mjs|json|css|html|yml)$/.test(p)&&!ownedPaths.includes(p))paths.push(p);}}
  for(const dir of ['src','shared','server','scripts','tests'])walk(dir);
- paths.push('model/evolution/policy.json','model/evolution/brief.json','model/development/backlog.json','model/development/sources.json','package-lock.json','package.json','index.html','evolution-lab.html','evolution-studio.html','vite.config.ts','tsconfig.json','public/wasm/cs_verdant.wasm','public/wasm/cs_evolution.wasm');
+ paths.push('model/evolution/policy.json','model/evolution/brief.json','model/development/r4-decisions.json','model/development/backlog.json','model/development/sources.json','package-lock.json','package.json','index.html','evolution-lab.html','evolution-studio.html','vite.config.ts','tsconfig.json','public/wasm/cs_verdant.wasm','public/wasm/cs_evolution.wasm');
  return digest(paths.sort().map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));
 }
 export function stateFiles(state:EvolutionState){

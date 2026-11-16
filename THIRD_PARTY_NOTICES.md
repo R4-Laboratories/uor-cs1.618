@@ -12,3 +12,12 @@ Original game code, map, models, textures and synthesized sounds are MIT license
 - **Barlow**, **Barlow Condensed**, **IBM Plex Mono** — self-hosted through pinned Fontsource packages; SIL Open Font License. Licenses are copied to `docs/licenses`. There are no runtime requests to Google Fonts.
 
 Cargo.lock records the complete Rust dependency closure; package-lock.json records the JavaScript dependency closure. The custom Wasm artifact's hash and source provenance are recorded in `model/artifacts.json`.
+
+## LexLean-R4 synthesis decisions
+
+Two semantic definitions from `Casey-allard/lexlean-r4`, commit
+`f1cd751e12a60cafc2a61599cbbb15034941ba10`, `src/R4/VerdantSynthesis.lex.tex`,
+are retained in `model/development/r4-decisions.json` and compiled into
+`shared/r4-synthesis.generated.ts` by the restricted local compiler.
+Copyright (c) 2026 The UOR Foundation. Upstream offers MIT OR Apache-2.0;
+complete license texts are retained in `vendor/lexlean-r4/`.

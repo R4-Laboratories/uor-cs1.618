@@ -1,3 +1,4 @@
+import {admitParetoSynthesisTick} from '../../shared/r4-synthesis.generated';
 import ts from 'typescript';
 import {runInNewContext} from 'node:vm';
 import {compileExperience,qualityStep,validateExperience,type Experience} from '../../shared/experience';
@@ -34,7 +35,10 @@ export function scoreExperience(config:Experience,heldOut=false){
 }
 export async function measureExperience(candidate:Candidate,before:Configuration):Promise<Evidence>{
  const baseline=scoreExperience(before.experience),after=scoreExperience(candidate.config.experience),holdBefore=scoreExperience(before.experience,true),holdAfter=scoreExperience(candidate.config.experience,true);
- const fidelity=after.fidelity&&holdAfter.fidelity&&holdAfter.loss<=holdBefore.loss;
+ // Keep every measured axis non-regressing, then apply the imported R4 model.
+ const axes=['lateBursts','loadPixelRatio','voiceHighWater'] as const;
+ const fidelity=after.fidelity&&holdAfter.fidelity&&axes.every(k=>after[k]<=baseline[k]&&holdAfter[k]<=holdBefore[k]);
+ const r4Verdict=admitParetoSynthesisTick({candidateDefects:fidelity?0:1,ratchetClean:fidelity,banditWeight:8,candidateScoreMilli:Math.round(1000/after.loss),incumbentScoreMilli:Math.round(1000/baseline.loss),candidateComplexity:compileExperience(candidate.config.experience).length,incumbentComplexity:compileExperience(before.experience).length});
  // Attribute pair effects using actual evaluations of the four configurations.
  const changed=(Object.keys(before.experience) as (keyof Experience)[]).filter(k=>before.experience[k]!==candidate.config.experience[k]);
  const interactions=[];
@@ -42,5 +46,5 @@ export async function measureExperience(candidate:Candidate,before:Configuration
   const a=changed[i],b=changed[j],one={...before.experience,[a]:candidate.config.experience[a]},two={...before.experience,[b]:candidate.config.experience[b]},both={...one,[b]:candidate.config.experience[b]};
   interactions.push({a,b,mixedLoss:mixedDifference(baseline.loss,scoreExperience(one).loss,scoreExperience(two).loss,scoreExperience(both).loss)});
  }
- return {family:'experience',candidate:candidate.id,configHash:hash(candidate.config),baselineWork:baseline.loss,candidateWork:after.loss,fidelity,bounds:after.fidelity,samples:baseline.frames+holdBefore.frames,checks:false,metric:'burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)',before:baseline,after,comparisons:{heldOut:{before:holdBefore,after:holdAfter},interactions},reference:'Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.'};
+ return {family:'experience',r4Verdict,candidate:candidate.id,configHash:hash(candidate.config),baselineWork:baseline.loss,candidateWork:after.loss,fidelity,bounds:after.fidelity,samples:baseline.frames+holdBefore.frames,checks:false,metric:'burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)',before:baseline,after,comparisons:{r4Verdict,heldOut:{before:holdBefore,after:holdAfter},interactions},reference:'Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.'};
 }

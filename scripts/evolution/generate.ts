@@ -1,3 +1,4 @@
+import {r4Source} from './r4-model';
 import {validateExperience,compileExperience,type Experience} from '../../shared/experience';
 import {validateArt,validateTactics,compileArt,compileTactics,type ArtProgram,type TacticsProgram} from '../../shared/creative-program';
 import {readFileSync,writeFileSync} from 'node:fs';
@@ -32,7 +33,7 @@ export const generatedFiles=(state:EvolutionState)=>({'src/generated/render-poli
 export function sync(check=false){
  const state=JSON.parse(readFileSync('model/evolution/state.json','utf8')),policy=JSON.parse(readFileSync('model/evolution/policy.json','utf8'));validateState(state,policy);
  const schedule=policy.schedule;if(typeof schedule!=='string'||!/^[0-9*,/ -]+$/.test(schedule)||schedule.split(' ').length!==5)throw Error('Invalid modeled schedule');
- const files={...generatedFiles(state),'public/evolution.json':publicProjection(state),'.github/workflows/evolution.yml':readFileSync('scripts/evolution/engine-workflow.template.yml','utf8').replace('@SCHEDULE@',schedule)};
+ const files={'shared/r4-synthesis.generated.ts':r4Source(),...generatedFiles(state),'public/evolution.json':publicProjection(state),'.github/workflows/evolution.yml':readFileSync('scripts/evolution/engine-workflow.template.yml','utf8').replace('@SCHEDULE@',schedule)};
  for(const [path,content]of Object.entries(files)){if(check){if(readFileSync(path,'utf8')!==content)throw Error(`Evolution projection drift: ${path}`);}else writeFileSync(path,content);}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)sync(process.argv.includes('--check'));

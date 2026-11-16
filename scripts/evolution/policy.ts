@@ -4,7 +4,7 @@ export interface Candidate {id:string;family:Family;config:Configuration;author?
 export interface Evidence {family:string;candidate:string;configHash:string;baselineWork:number;candidateWork:number;fidelity:boolean;samples:number;checks:boolean;bounds:boolean;[key:string]:unknown;}
 export function evaluateEvidence(e:Evidence,expectedHash:string,policy:any){
  const finite=[e.baselineWork,e.candidateWork,e.samples].every(Number.isFinite);
- const bounds=finite&&e.baselineWork>0&&e.candidateWork>=0&&Number.isSafeInteger(e.samples)&&e.samples>0&&e.configHash===expectedHash&&e.bounds===true;
+ const bounds=(e.family!=='experience'||e.r4Verdict==='CandidateAdmitted')&&finite&&e.baselineWork>0&&e.candidateWork>=0&&Number.isSafeInteger(e.samples)&&e.samples>0&&e.configHash===expectedHash&&e.bounds===true;
  const benefit=bounds&&e.candidateWork<e.baselineWork*(1-policy.minimumWorkGain);
  const fidelity=e.fidelity===true,checks=e.checks===true;
  return {admit:bounds&&benefit&&fidelity&&checks,bounds,benefit,fidelity,checks};

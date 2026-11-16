@@ -51,3 +51,25 @@ test('free experience synthesis emits measured candidates, detects interactions 
  const tried:string[]=[];for(let i=0;i<100;i++){const batch=chooseCandidates({...state,context:'new',tried} as any,policy,'new','experience');if(!batch.length)break;tried.push(...batch.map(c=>c.id));}
  assert(tried.length>3&&tried.length<100);assert.equal(chooseCandidates({...state,context:'new',tried} as any,policy,'new','experience').length,0);
 });
+import {admitParetoSynthesisTick,updateBanditWeight} from '../shared/r4-synthesis.generated';
+test('imported LexLean-R4 decision model rejects defects, regressions and invalid weights',()=>{
+ for(let w=1;w<=16;w++){assert.equal(updateBanditWeight(w,true),Math.min(16,w+2));assert.equal(updateBanditWeight(w,false),Math.max(1,w-1));}
+ let count=0;for(const candidateDefects of [0,1])for(const ratchetClean of [false,true])for(const banditWeight of [0,1,8,16,17])for(const score of [899,900,901])for(const complexity of [11,12,13]){
+  const c={candidateDefects,ratchetClean,banditWeight,candidateScoreMilli:score,incumbentScoreMilli:900,candidateComplexity:complexity,incumbentComplexity:12};
+  const expected=candidateDefects?'RefusedNonZeroDefect':!ratchetClean?'RefusedRatchetViolation':banditWeight<1||banditWeight>16?'RefusedWeightOutOfBounds':score>=900&&complexity<=12&&(score>900||complexity<12)?'CandidateAdmitted':'RefusedNotParetoImproving';
+  assert.equal(admitParetoSynthesisTick(c),expected);count++;
+ }assert.equal(count,180);
+});
+import {compileR4} from '../scripts/evolution/r4-model';
+import r4Model from '../model/development/r4-decisions.json';
+test('R4 compiler refuses executable escape hatches and non-natural interop values',()=>{
+ assert.throws(()=>compileR4({...r4Model,declarations:r4Model.declarations.map(d=>({...d,body:{kind:'javascript',source:'process.exit()'}}))}));
+ assert.throws(()=>updateBanditWeight(NaN,true));assert.throws(()=>updateBanditWeight(-1,false));
+});
+test('R4 experience admission refuses an aggregate win that worsens a protected axis',async()=>{
+ const before={...state.config,experience:{...DEFAULT_EXPERIENCE,recoveryMs:280}};
+ const config={...before,experience:{...before.experience,recoveryMs:320,voices:16}};
+ const result=await measureExperience({id:'tradeoff',family:'experience',config:config as any},before as any);
+ assert(result.candidateWork<result.baselineWork,'Fixture must improve the aggregate');assert.equal(result.fidelity,false);assert.equal(result.r4Verdict,'RefusedNonZeroDefect');
+ assert.equal(evaluateEvidence({...result,checks:true},hash(config),policy).admit,false);
+});

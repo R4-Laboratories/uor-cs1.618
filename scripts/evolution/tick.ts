@@ -1,3 +1,4 @@
+import {updateBanditWeight} from '../../shared/r4-synthesis.generated';
 import {measureExperience} from './measure-experience';
 import {measureArt,measureTactics} from './measure-creative';
 import {existsSync} from 'node:fs';
@@ -43,7 +44,7 @@ try{
    const eligible=obligations.fidelity&&obligations.benefit&&obligations.bounds;
    report.proposals.push({candidate, evidence,eligible});state.tried.push(candidate.id);
    if(eligible){state.config=candidate.config;selected=evidence;break;}
-   state.weights[candidate.family]=Math.max(policy.weights.minimum,state.weights[candidate.family]-1);
+   state.weights[candidate.family]=updateBanditWeight(state.weights[candidate.family],false);
    for(const [path,source]of Object.entries(generatedFiles(state)))writeFileSync(path,source);
   }
   // Stage the selected projection and state for the complete game gates.
@@ -53,7 +54,7 @@ try{
   if(selected){
    selected.checks=true;const obligations=evaluateEvidence(selected,hash(state.config),policy);
    if(kernel.decide(obligations)!=='admit')throw Error('Prism rejected the generation after validation');
-   state.generation++;state.weights[selected.family as Family]=Math.min(policy.weights.maximum,state.weights[selected.family as Family]+2);report.accepted=true;
+   state.generation++;state.weights[selected.family as Family]=updateBanditWeight(state.weights[selected.family as Family],true);report.accepted=true;
   }
   const previous=state.history.at(-1)?.hash??'genesis';
   const row={generation:state.generation,author:report.author,at:new Date().toISOString(),base,context,previous,result:selected?'admitted':'no-improvement',proposals:report.proposals.map((p:any)=>({candidate:p.candidate.id,family:p.candidate.family,author:p.candidate.author??'optimizer',metric:p.evidence.metric??'work count',configHash:p.evidence.configHash,baselineWork:p.evidence.baselineWork,candidateWork:p.evidence.candidateWork,fidelity:p.evidence.fidelity,bounds:p.evidence.bounds,samples:p.evidence.samples,comparisons:p.evidence.comparisons??null,reference:p.evidence.reference,before:p.evidence.before,after:p.evidence.after})),checks:'complete-game-gates-passed'};
