@@ -1,0 +1,35 @@
+{
+  "url": "http://127.0.0.1:44455/",
+  "checks": [
+    "Actual public ntfy service relayed a verified listing across isolated browser contexts; no HTTP interception.",
+    "Actual PeerJS cloud signaling and real WebRTC joined with live Prism host verification.",
+    "Host departure ended guest match and withdrew its listing."
+  ],
+  "relayResponses": [
+    {
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "status": 200
+    }
+  ],
+  "errors": []
+}

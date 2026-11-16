@@ -1,0 +1,63 @@
+{
+  "schema": "cs1618/stitch-modern-validation/1",
+  "date": "2026-11-16",
+  "version": "0.9.0",
+  "baseCommit": "c0adac1bb871296cbabcae3a54256b616af3e754",
+  "publication": "not performed; final commit rebuild and deployed-origin probe pending",
+  "verify": {
+    "tests": 130,
+    "failures": 0,
+    "skipped": 0,
+    "pinnedVendorFiles": 18,
+    "sourceArtifactHashes": 66,
+    "upstreamPins": 6,
+    "typecheckBuild": "passed"
+  },
+  "browser": {
+    "gameplay": {
+      "checks": 9,
+      "result": "passed after Performance-mode fixture retry",
+      "initialFailure": "primary client disconnected before scoreboard; exact socket cause not captured"
+    },
+    "peer": {
+      "checks": 8,
+      "result": "passed"
+    },
+    "creative": {
+      "checks": 6,
+      "result": "passed"
+    },
+    "identity": {
+      "checks": 9,
+      "result": "passed"
+    },
+    "experience": {
+      "result": "passed",
+      "weaponOcclusionAudioRows": 10,
+      "nativeAndPerformance": true
+    },
+    "discovery": {
+      "checks": 7,
+      "result": "passed",
+      "externalHttpIntercepted": true
+    },
+    "objective": {
+      "checks": 4,
+      "result": "passed",
+      "timing": "real input/cancel plus late-progress/expiry host fixtures",
+      "rendering": "HUD-only"
+    },
+    "presentation": {
+      "result": "passed from cold generated Vite cache",
+      "audioWaveforms": 14,
+      "rendering": "real WorldView fixed snapshots"
+    }
+  },
+  "allBrowserReceiptsHaveZeroPageErrors": true,
+  "postHarnessTypecheck": "passed",
+  "rustProjection": "not regenerated; Rust and pins unchanged",
+  "proofScope": "existing mandatory round/evolution/identity guests; no new whole-game proof",
+  "graphicsScope": "Chromium SwiftShader; no physical-GPU FPS claim",
+  "liveRelayProbe": "earlier actual ntfy/PeerJS Cloud/WebRTC local-preview origin; no HTTP interception; deployed-origin probe pending",
+  "numericExport": "independent bounded primitive checked overflow reproduced; full float root and guard review pending"
+}

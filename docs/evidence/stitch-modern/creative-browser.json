@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:42983/",
+  "checks": [
+    "Studio displays bundled programs",
+    "Original/evolved mural toggle is reversible",
+    "Mobile layout fits viewport",
+    "Invalid artwork preserves scene",
+    "Artwork disable restores baseline visibility",
+    "Unreadable lettering fails contrast threshold"
+  ],
+  "errors": []
+}

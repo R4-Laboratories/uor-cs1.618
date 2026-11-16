@@ -1,0 +1,5 @@
+
+> cs1-618@0.9.0 test:experience-browser
+> tsx scripts/experience-browser-test.ts
+
+Experience browser: waveform, occlusion, stereo, cleanup, voice budget, render modes and persisted settings passed.

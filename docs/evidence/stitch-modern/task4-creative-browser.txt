@@ -1,0 +1,10 @@
+
+> cs1-618@0.9.0 test:creative-browser
+> tsx scripts/creative-browser-test.ts
+
+Studio displays bundled programs
+Original/evolved mural toggle is reversible
+Mobile layout fits viewport
+Invalid artwork preserves scene
+Artwork disable restores baseline visibility
+Unreadable lettering fails contrast threshold

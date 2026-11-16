@@ -26,6 +26,9 @@ jobs:
       - run: npm run test:creative-browser
       - run: npm run test:identity-browser
       - run: npm run test:experience-browser
+      - run: npm run test:discovery-browser
+      - run: npm run test:objective-browser
+      - run: npm run test:presentation-browser
       - uses: actions/upload-artifact@v4
         if: always()
         with:

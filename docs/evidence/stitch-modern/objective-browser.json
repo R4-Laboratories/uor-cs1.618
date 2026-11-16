@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "Persistent team-specific site instructions and distance in real client HUD",
+    "Real keyboard plant progress crosses WebSocket host and outranks empty-magazine hint; host fixture completes plant through normal objective/kernel path",
+    "Real keyboard defuse interruption resets progress; host completion fixture produces exactly one compiled-kernel defender award and HUD result",
+    "Host expiry fixture detonates once, kills nearby planter, spares distant defender and displays compiled-kernel attacker result; exact40s timing is unit-tested"
+  ],
+  "errors": [],
+  "timing": "Late-progress/expiry host fixtures after real input observations; exact3s/5s/10s/40s lifecycle timings are verified by real-engine unit tests",
+  "rendering": "HUD-only: document.hidden override pauses software 3D rendering; normal keyboard, WebSocket and host ticks remain active"
+}

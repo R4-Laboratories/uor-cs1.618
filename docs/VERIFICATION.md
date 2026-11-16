@@ -1,5 +1,9 @@
 # Verification evidence
 
+## 0.9.0 integration
+
+[Release scope and current validation](RELEASE-0.9.0.md) documents signed discovery, objective/tactical fixes, presentation/audio, all eight browser gates and their fixture/software-rendering limits. [Rendering research](THREE-PRISM-RENDERING.md) and [numeric export tracking](research/NUMERIC-EXPORT-TRACKER.md) describe follow-up work without changing shipped guests or extending their proof claims.
+
 ## Release 0.2.0 — browser-hosted WebRTC
 
 - `npm run verify`: **28 tests passed**, TypeScript/Vite production build passed, existing engine/Prism source and artifact integrity checks passed.

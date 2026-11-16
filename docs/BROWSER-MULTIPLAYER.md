@@ -3,11 +3,11 @@
 Open https://r4-laboratories.github.io/uor-cs1.618/ on a desktop browser with WebGL2 and WebRTC support.
 
 1. Enter your callsign and choose a team. Leave **Browser-hosted · WebRTC** selected.
-2. Click **Create browser room**. The browser starts the authoritative game in a Web Worker.
+2. Choose **Public** (default) to publish your invitation and public Prism identity, or **Private** for invitation-only access, then click **Create browser room**. The browser starts the authoritative game in a Web Worker. Public listings can also be joined directly from the lobby.
 3. Copy the invitation on the deploy screen and send it to friends. You can copy it again from the Escape menu.
 4. Friends open that link and click **Join invitation**. They can also paste it into the lobby. Click **Deploy** to capture the mouse.
 
-The room supports ten players. Its creator controls bot filling. A human replaces a bot when joining a full bot-filled room. Late arrivals spectate until the next round. Anyone with the invitation can join and share it; treat it as a room access key. Room identifiers are random, and the 128-bit invitation key is sent over the encrypted data channel for admission, not through signaling metadata. The URL fragment is not sent in ordinary HTTP requests to Pages.
+The room supports ten players. Its creator controls bot filling. A human replaces a bot when joining a full bot-filled room. Late arrivals spectate until the next round. Anyone with the invitation can join and share it; treat it as a room access key. Room identifiers are random, and the 128-bit invitation key is sent over the encrypted data channel for admission, not through signaling metadata. The URL fragment is not sent in ordinary HTTP requests to Pages. Public room creation deliberately publishes that invitation key inside the signed relay listing; private rooms publish no listing.
 
 **Keep the host tab open and active.** The browser host owns movement, shots, ammo, purchases, bots and round outcomes. Closing it ends the room. Browser background throttling, laptop sleep and weak devices can stall the simulation. This release does not migrate the host or restore a closed match. For unattended games, the dedicated-server mode remains available.
 
@@ -25,7 +25,7 @@ The room supports ten players. Its creator controls bot filling. A human replace
 
 The realtime channel falls back to the reliable channel while opening. Backpressure drops stale realtime traffic; excessive control queues disconnect. The host enforces a ten-connection limit, invitation admission, message size/rate limits, input validation and join/idle deadlines. Established game traffic continues if the signaling connection drops; joining additional players still needs signaling. The client attempts to reconnect signaling.
 
-This is **no dedicated game server**, not zero infrastructure. Third-party signaling/STUN availability is outside this project's control. Signaling receives connection metadata and IP information; STUN discovers the public route. A TURN relay forwards encrypted WebRTC traffic and incurs bandwidth use. The current browser host is trusted and can cheat if modified. No identity verification, competitive anti-cheat or guaranteed NAT traversal is claimed.
+This is **no dedicated game server**, not zero infrastructure. Third-party signaling/STUN availability is outside this project's control. Signaling receives connection metadata and IP information; STUN discovers the public route. A TURN relay forwards encrypted WebRTC traffic and incurs bandwidth use. The current browser host is trusted and can cheat if modified. Discovery joins verify the listing Prism and a fresh live host challenge before admitting gameplay. This does not verify a human identity, trust the host implementation, provide competitive anti-cheat or guarantee NAT traversal.
 
 ## STUN cannot run on GitHub Pages
 
@@ -61,4 +61,12 @@ For your own STUN/TURN, use a persistent host and a maintained implementation su
 
 `npm run test:peer-browser` starts only static-file hosting and a local PeerServer. Two isolated browser contexts use real WebRTC and the production worker/Wasm. It checks bad-invitation rejection, private identity, guest purchase and movement, no gameplay on signaling, survival of signaling disconnect, and host departure. STUN is disabled in that local test; it is not a cross-ISP or TURN reliability test. The existing browser suite separately checks rendered dedicated-server gameplay and local practice.
 
-A release's successful live smoke confirms only the observed browser environment, not every router/firewall combination. Host migration and authenticated competitive play remain future work. The previously documented PrismPM full-verification failure is unchanged; this transport change does not add a formal networking proof.
+A release's successful live smoke confirms only the observed browser environment, not every router/firewall combination. Host migration and authenticated competitive play remain future work. The prior PP5004 verification blocker was repaired in 0.7.0; see [proof audit](proof-audit.md). Discovery and transport remain tested host code, without a formal networking proof.
+
+## Signed public discovery (0.9.0)
+
+The unchanged pinned Stitch `createRelayBus` publishes signed 45-second leases via the hosted ntfy service, refreshed every 20 seconds. A listing binds application audience, protocol, original Meridian map, room invitation, occupancy and supported signaling endpoint. Receivers check shape, signature, freshness and compiled identity admission. Joining a listing also requires a one-use fresh challenge tied to both transport peers, the invitation and the pinned Prism; a copied or substituted listing cannot bypass that host proof. Normal leave withdraws the listing; crashes rely on expiry.
+
+The bounded directory permits PeerJS Cloud and canonical same-origin HTTP(S) signaling. Use Private for arbitrary custom signaling. Publication acknowledgement is not delivery assurance. Outages are reported, and direct invitations remain usable where signaling/WebRTC work. Browser throttling and clock skew can expire otherwise live listings. Private keys, frame-account sessions and TURN credentials are excluded. Signatures do not prevent identity spam, withheld revocations or relay denial of service.
+
+`npm run test:discovery-browser` uses isolated contexts, real Stitch framing/signatures, the compiled identity guest, local PeerServer and real WebRTC, with only the external ntfy HTTP boundary intercepted. Seven checks cover public disclosure/discovery, host proof/substitution refusal, withdrawal, private silence, outage fallback and mobile/desktop list bounds. A separate observed public-service probe used real ntfy and PeerJS Cloud from a local preview origin; it is not an availability guarantee or a deployed-origin test. See [release evidence](RELEASE-0.9.0.md).

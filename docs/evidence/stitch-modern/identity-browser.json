@@ -1,0 +1,14 @@
+{
+  "passed": [
+    "Canonical Prism frame and address bar load",
+    "Actual Holo identity policy loads and replays examples",
+    "Nonextractable identity persists after reload",
+    "Wrong confirmation code refuses device linking",
+    "Two isolated browser contexts link and retain the same Stitch identity",
+    "Explicit approval downloads only a public signed proof",
+    "Published shared frame creates and signs a verified Stitch session binding",
+    "Wrapped mobile Prism bar leaves the game header visible without overflow",
+    "No uncaught browser errors"
+  ],
+  "errors": []
+}

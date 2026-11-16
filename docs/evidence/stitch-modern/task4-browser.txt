@@ -1,0 +1,24 @@
+
+> cs1-618@0.9.0 test:browser
+> tsx scripts/browser-test.ts
+
+Opening first client
+Opening second client
+Testing locomotion
+Testing combat
+Aim {"yaw":0,"pitch":0,"locked":true,"weapon":"kestrel"}
+Combat result {"ammo":29,"health":0,"yaw":0,"pitch":0,"phase":"ended","events":[{"id":3,"at":99.91666666666228,"type":"step","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","x":0,"y":0,"z":21.319999999999993},{"id":4,"at":132.19999999999735,"type":"shot","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","weapon":"kestrel","x":0,"y":1.62,"z":20,"ex":0.017727741899743514,"ey":1.6190599980411888,"ez":16.31},{"id":5,"at":132.19999999999735,"type":"hit","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","target":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","head":true},{"id":6,"at":132.19999999999735,"type":"kill","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","target":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","head":true,"weapon":"kestrel"},{"id":7,"at":132.19999999999735,"type":"round","team":"attack","text":"Opposition eliminated"}]}
+Failure state {"a":{"snapshot":null,"position":null,"yaw":0,"pitch":0,"locked":false,"engine":"Verdant Core","hd":{"lod":0,"triangles":5492,"status":"ready","error":""},"cameraGuard":{"x":0,"y":1.62,"z":20,"guard":0.08898726798588308,"clearance":0.3639490719435323,"guarded":true,"obstructed":false},"cameraError":"","characters":{"source":"Verdant Engine","joints":22,"poseUpdates":66,"actors":0,"trianglesPerActor":1200},"evolution":"active","artwork":"active","quality":{"mode":"auto","scale":1},"audioVoices":0,"pending":0,"network":{"mode":"offline"}},"b":{"snapshot":{"type":"snapshot","room":"BROWSER","time":176.06666666669892,"tick":10564,"phase":"waiting","round":2,"remaining":2.866666666666487,"score":{"attack":1,"defend":0},"players":[{"id":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","name":"Beryl","team":"defend","alive":true,"x":-5,"y":0,"z":-23,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":3.141592653589793,"pitch":0,"weapon":"sidearm","kills":0,"deaths":1,"bot":false}],"self":{"id":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","name":"Beryl","team":"defend","alive":true,"x":-5,"y":0,"z":-23,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false,"yaw":3.141592653589793,"pitch":0,"weapon":"sidearm","kills":0,"deaths":1,"bot":false,"health":100,"armor":0,"money":2700,"kit":false,"inventory":[{"id":"sidearm","ammo":15,"reserve":60},{"id":"sidearm","ammo":15,"reserve":60}],"slot":1,"reloadLeft":0,"progress":0,"action":"","seq":228,"recoil":0},"bomb":null,"events":[{"id":1,"at":59.36666666666458,"type":"round","text":"Round 1 · buy phase"},{"id":2,"at":99.21666666666232,"type":"step","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","x":0,"y":0,"z":22.93},{"id":3,"at":99.91666666666228,"type":"step","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","x":0,"y":0,"z":21.319999999999993},{"id":4,"at":132.19999999999735,"type":"shot","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","weapon":"kestrel","x":0,"y":1.62,"z":20,"ex":0.017727741899743514,"ey":1.6190599980411888,"ez":16.31},{"id":5,"at":132.19999999999735,"type":"hit","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","target":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","head":true},{"id":6,"at":132.19999999999735,"type":"kill","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","target":"09dffc9a-ba93-4481-82b5-56f6bbb35c02","head":true,"weapon":"kestrel"},{"id":7,"at":132.19999999999735,"type":"round","team":"attack","text":"Opposition eliminated"},{"id":8,"at":138.2166666666688,"type":"round","text":"Round 2 · buy phase"},{"id":9,"at":147.3500000000094,"type":"bomb-drop","actor":"368ff83c-6e67-460c-985c-9c99b2c80284","x":-5,"y":0,"z":22}],"winner":null,"reason":"Waiting for both teams"},"position":{"x":-5,"y":0,"z":-23,"vx":0,"vy":0,"vz":0,"grounded":true,"crouch":false},"yaw":3.141592653589793,"pitch":0,"locked":false,"engine":"Verdant Core","hd":{"lod":0,"triangles":5492,"status":"ready","error":""},"cameraGuard":{"x":-5,"y":1.62,"z":-23,"guard":0.08898726798588308,"clearance":0.3639490719435323,"guarded":true,"obstructed":false},"cameraError":"","characters":{"source":"Verdant Engine","joints":22,"poseUpdates":77,"actors":1,"trianglesPerActor":1200},"evolution":"active","artwork":"active","quality":{"mode":"auto","scale":1},"audioVoices":0,"pending":66,"network":{"mode":"server"}}}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForSelector: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#scoreboard:not(.hidden)') to be visible[22m
+
+    at <anonymous> (/workspace/cs1.618/scripts/browser-test.ts:51:97) {
+  name: 'TimeoutError'
+}
+
+Node.js v24.22.1

@@ -10,7 +10,7 @@ Two teams, five players per team, two objective sites, one original map: **Merid
 
 ## Play from GitHub Pages
 
-**[Launch cs1.618](https://r4-laboratories.github.io/uor-cs1.618/)** → **Create browser room** → copy the invitation → friends open it and choose **Join invitation**. WebRTC carries gameplay directly between browsers; no dedicated game server is needed. Keep the host tab open and active. Closing it ends the room.
+**[Launch cs1.618](https://r4-laboratories.github.io/uor-cs1.618/)** → join a verified public listing, or **Create browser room**. Rooms are public by default: the disclosure explains that your invitation and public Prism identity are published. Choose **Private** before creating an invitation-only room. WebRTC carries gameplay directly between browsers; no dedicated game server is needed. Keep the host tab open and active. Closing it ends the room.
 
 You can also open [Me](https://afflom.github.io/me/), click its address bar, search **cs1.618**, and choose the **R4-Laboratories** result. Use the shared person icon and the game’s [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity.html) to link identities.
 
@@ -49,11 +49,12 @@ The shipped Wasm binaries are committed. Rust and the Prism SDK are needed only 
 
 ## What you can play
 
-- Browser-hosted WebRTC rooms with shareable invitation links, worker authority, reliable control and unordered realtime data channels. Optional TURN and custom signaling.
+- Browser-hosted WebRTC rooms with signed Stitch discovery, fresh pinned-host identity verification, private invitations, worker authority, reliable control and unordered realtime data channels. Optional TURN and custom signaling.
 - Authoritative 60 Hz server, 20 Hz snapshots, client movement prediction and reconciliation, remote interpolation, isolated named rooms and up to ten players.
 - Freeze/buy, live, planted, round-end and match-end phases. Equipment and money persist for survivors; eliminations reset equipment. Win, loss, kill and plant rewards.
 - P9 pistol, Kestrel assault rifle, Sentinel assault rifle, Vector SMG and scoped Longbow rifle. Recoil, movement spread, headshots, finite magazines, timed reloads, armor and defusal kits.
-- Hold-to-plant and hold-to-defuse, interrupted by movement or releasing E. Dropped-device pickup, elimination/timeout/detonation victory conditions, spectator mode and scoreboard.
+- Hold-to-plant and hold-to-defuse with persistent objective directions, countdowns and interruption feedback. Single-defuser bot coordination, carrier escort, bounded reaction and burst fire. Dropped-device pickup, defusal kits, blast damage, elimination/timeout/detonation outcomes and scoreboard.
+- Five original procedural weapon finishes, reload/switch motion, readable site wayfinding and a stable planted device, with distinct spatial objective and round audio.
 - Browser-local 5v5 practice in a worker; online bot fill. Static hosting can run practice without a server.
 - Verdant Core's BVH, ray/AABB intersection, vector mathematics and occluded binaural audio execute in the same custom Wasm bridge on client and server. The latest engine also supplies the visible 22-joint operator meshes, skeletal animation and flat-support foot IK, rendered with GPU skinning. See the [3D integration notes](docs/VERDANT-3D.md).
 
@@ -101,6 +102,11 @@ npm run build             # type check + static client production build
 npm run test:browser       # real Chromium clients, input, purchases, combat, practice
 npm run test:creative-browser # generated art, studio, controls and rejection cases
 npm run test:peer-browser  # static-only WebRTC hosting, invitations, authority, disconnects
+npm run test:identity-browser # real frame, persistence, linking and binding
+npm run test:experience-browser # render quality, HD, camera and sound
+npm run test:discovery-browser # signed listings, live host proof, private/outage cases
+npm run test:objective-browser # real input/HUD plus explicit outcome timing fixtures
+npm run test:presentation-browser # rendered weapon/map fixtures and real audio
 npm run verify            # tests, client build, artifact/source integrity
 npm run engine:build      # Rust tests + Verdant Wasm bridge (Rust + wasm32 target)
 npm run prism:generate    # prism-devrel builder from the checked-in round prompt
@@ -137,3 +143,7 @@ The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity
 ## Latest engine integration
 
 [Verdant 3D upgrade](docs/VERDANT-3D.md): pinned `9b6c14d`, HD roofline and exterior geometry at LOD0–4, worker generation, triangle-guarded first-person cameras, and the upstream frame-budget governor. Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.
+
+## Release evidence and rendering research
+
+[0.9.0 scope and validation](docs/RELEASE-0.9.0.md) records the browser fixtures, software-rendering limits and external relay evidence. [Three.js and Prism rendering research](docs/THREE-PRISM-RENDERING.md) explains the existing GPU/Wasm boundary and bounded follow-up experiments; [numeric export tracking](docs/research/NUMERIC-EXPORT-TRACKER.md) separates confirmed source facts from pending export investigations.

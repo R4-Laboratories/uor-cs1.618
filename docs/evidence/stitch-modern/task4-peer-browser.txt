@@ -1,0 +1,17 @@
+
+> cs1-618@0.9.0 test:peer-browser
+> tsx scripts/peer-browser-test.ts
+
+Opening static-only browser host
+Checking invitation rejection
+Joining real WebRTC connection
+Testing input and remote snapshots
+Testing host departure
+Wrong invitation is rejected before joining or evicting a bot
+Isolated browser contexts join the same worker-hosted match with a real unordered WebRTC channel
+Guest purchase is applied by the host and deducts the authoritative price
+Guest input moves its authoritative player and reaches the host snapshot
+Established gameplay continues when signaling sockets disconnect
+No dedicated game-server endpoint or gameplay payload through signaling
+Host departure closes the match and restores a usable guest lobby
+No uncaught browser errors

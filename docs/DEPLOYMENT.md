@@ -4,7 +4,7 @@
 
 The Pages workflow builds and tests the client on pushes to `main`. Enable **Settings → Pages → Source: GitHub Actions**. Assets use relative paths, so the repository subpath works without changes. The workflow never tries to run a WebSocket process on Pages.
 
-Open the deployed URL and choose Create browser room, then share its invitation. Friends join through WebRTC; the creator's browser runs the match. See [browser networking](BROWSER-MULTIPLAYER.md) for signaling, STUN and optional TURN. Practice still plays entirely locally. For the optional dedicated server, select Dedicated game server and enter its secure WebSocket URL in Connection settings. That URL is saved only in that browser. Room codes are case-insensitive and contain 1–20 letters, digits or hyphens.
+Open the deployed URL and join a verified public listing, or choose Create browser room and share its invitation. Public is the default and publishes the invitation/public Prism identity; choose Private before creation for invitation-only access. Friends join through WebRTC; the creator's browser runs the match. See [browser networking](BROWSER-MULTIPLAYER.md) for signaling, STUN and optional TURN. Practice still plays entirely locally. For the optional dedicated server, select Dedicated game server and enter its secure WebSocket URL in Connection settings. That URL is saved only in that browser. Room codes are case-insensitive and contain 1–20 letters, digits or hyphens.
 
 ## A single host: client plus multiplayer
 

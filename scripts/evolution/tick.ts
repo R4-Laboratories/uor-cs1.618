@@ -53,7 +53,7 @@ try{
   }
   // Stage the selected projection and state for the complete game gates.
   writeState(state);
-  run('npm',['run','verify']);run('npm',['run','test:browser']);run('npm',['run','test:peer-browser']);run('npm',['run','test:creative-browser']);run('npm',['run','test:experience-browser']);run('npm',['run','test:identity-browser']);
+  run('npm',['run','verify']);run('npm',['run','test:browser']);run('npm',['run','test:peer-browser']);run('npm',['run','test:creative-browser']);run('npm',['run','test:experience-browser']);run('npm',['run','test:identity-browser']);run('npm',['run','test:discovery-browser']);run('npm',['run','test:objective-browser']);run('npm',['run','test:presentation-browser']);
   report.checks=true;
   if(selected){
    selected.checks=true;const obligations=evaluateEvidence(selected,hash(state.config),policy);

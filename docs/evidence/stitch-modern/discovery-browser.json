@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "Public default discloses publication; real signed multi-frame Stitch listing crosses isolated contexts",
+    "Desktop and mobile verified listings fit horizontally and scroll within a bounded list",
+    "Discovery pins Prism and completes a fresh host proof before real WebRTC welcome",
+    "A real signed substitute listing cannot authenticate a different live host or deliver a welcome",
+    "Normal host close withdraws the signed listing and closes the guest",
+    "Private invitation hosts emit no relay publication and still join over WebRTC",
+    "Relay 503 is reported honestly while invitation joins remain available"
+  ],
+  "errors": [],
+  "relayFrames": 74
+}

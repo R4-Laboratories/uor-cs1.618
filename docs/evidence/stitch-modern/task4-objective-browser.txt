@@ -1,0 +1,15 @@
+
+> cs1-618@0.9.0 test:objective-browser
+> tsx scripts/objective-browser-test.ts
+
+Joining Planter
+Joined Planter
+Joining Defuser
+Joined Defuser
+Holding plant
+Planted
+Holding plant
+Persistent team-specific site instructions and distance in real client HUD
+Real keyboard plant progress crosses WebSocket host and outranks empty-magazine hint; host fixture completes plant through normal objective/kernel path
+Real keyboard defuse interruption resets progress; host completion fixture produces exactly one compiled-kernel defender award and HUD result
+Host expiry fixture detonates once, kills nearby planter, spares distant defender and displays compiled-kernel attacker result; exact40s timing is unit-tested

@@ -1,0 +1,44 @@
+# Three.js, Verdant and Prism rendering
+
+Research snapshot: 2026-11-16, Three 0.181.1, Verdant `9b6c14d4b756b09faecf61b9f61cf894155f52c9`. The recommendation is to retain Three as the browser/GPU renderer and improve narrow data and policy boundaries. Neither moving code to Wasm nor expressing a mathematical model in LexLean automatically improves graphics, performance or proof coverage.
+
+## Existing architecture
+
+Three already supplies WebGL2 rendering, PBR materials, ACES/sRGB output, static spatial instancing and GPU skeletal animation. World and first-person weapons are separate render passes. The 0.9 presentation adds original weapon geometry/materials and RoomEnvironment/PMREM lighting; that reuse is implemented, not a proposed future addition. At most ten characters use 22-joint poses computed by Verdant Wasm and consumed by GPU skinning.
+
+The persistent `cs_verdant.wasm` instance provides numeric collision, camera, pose and LOD functions plus procedural geometry. Its worker generates HD geometry as JSON; nested arrays are parsed, structured-cloned to the main thread and flattened for Three buffers. This is a concrete opportunity to reduce transfer/conversion work. The shipped engine measured 261,647 bytes, no imports and 25 exports during research. The round guest measured 2,558 bytes, no imports and the Text/1 `memory`, `holo_alloc`, `holo_run` exports.
+
+Round/evolution/identity decisions use separately compiled Prism guests. Text/1 involves bounded text encoding, copies and a fresh instance for uncached requests because its allocator is cumulative. The round application's 112-byte request, 64-byte response and 224-byte allocation bounds are application-specific, not universal Wasm limits. Rebuilding/exporting a new function or creating a sidecar is required; a new LexLean function cannot be injected into the current binary.
+
+## Prioritized experiments
+
+| Follow-up | Bounded implementation and acceptance |
+| --- | --- |
+| Worker-owned transferable geometry | First keep Rust JSON and the shipped binary unchanged. Flatten position/normal/UV/RGB arrays in the worker, choose Uint16/Uint32 indices from bounds, transfer unique owned buffers and use plain BufferAttribute. Compare every array/index/placement with the existing conversion for LOD 0–4; preserve cancellation, errors, native=4/Performance=0 and disposal. Measure 0→2→4→0 transition duration and main-thread long tasks before asserting a win. |
+| Surface response | A/B normal and roughness maps for one original material family. Use NoColorSpace for these data maps, sRGB for albedo, and deliberate UV channels for AO. Two mipmapped 512² RGBA8 maps cost roughly 2.67 MiB; preserve readable enemies, batching and material bounds. |
+| Shadow invalidation | The inspected static shadow policy disables automatic updates. Reproduce moving-character shadow behavior before calling it a defect; test bounded motion/appearance invalidation and measure the extra caster pass. Tighten coverage before increasing resolution or adding cascades. |
+| Small bounded LOD policy | Model rank 0–4, integer elapsed microseconds 0–1,000,000, pin Boolean and a 16,666 μs budget. Prove rank/pin/step bounds, compare existing cs_lod and an independent oracle around all thresholds, then compare Text/1 overhead against generated Rust inside the persistent engine. |
+| Selective batching | Existing static boxes are already instanced. Investigate the two hall/six canopy placements only if submission cost matters. BatchedMesh can combine compatible materials/geometries with culling; measure both passes, extension fallback and inventory fidelity. |
+| Optional GPU contact AO | Prototype GTAOPass on the world before the weapon overlay, with one output conversion and quality-aware target sizing. Three RGBA16F targets alone cost about 47.5 MiB at 1080p. Start off in Performance mode; ≤1.5 ms GPU overhead is a proposed acceptance budget, not a result. |
+
+A source probe at LOD2 found 12,018 vertices, 11,512 triangles and 1,225,839 JSON bytes. Proposed Float32 attributes/Uint32 indices total 666,936 bytes (45.6% below JSON); actual maxima permit Uint16 and 597,864 bytes. These are payload calculations, not measured structured-clone savings or FPS gains. Single-run generation/serialization and decode/parse times (31.34/29.63 ms) are diagnostic, affected by JIT/allocation/contention. The worker-only stage still pays JSON generation/parsing. A subsequent versioned binary ABI must validate lengths/alignment/finite values/indices, reacquire views after Wasm memory growth and transfer owned copies rather than live Wasm memory.
+
+Record world plus weapon draw calls/triangles with `renderer.info.autoReset=false` and a single explicit frame reset. Separate CPU submission from GPU timings; use disjoint timer queries when supported and discard disjoint results. The existing 640×400 `gl.finish()` evolution lab and three-second HD cadence averages are not representative hardware gameplay benchmarks. Report software rendering and named physical devices separately.
+
+## Numerical and proof boundary
+
+LexLean production maps Nat/Int to checked u64/i64; its documented IEEE decoding yields exact dyadic rational models, not a general native float library. UORust has useful integer-bit-pattern IEEE arithmetic models and host differential tests, but its evaluator uses arbitrary-size naturals. Two binary64 53-bit significands can require a 106-bit product, so source models alone do not establish production export eligibility, overflow freedom or deployed Wasm equivalence. Trigonometric support was not found in the inspected adapter tables. [The numeric tracker](research/NUMERIC-EXPORT-TRACKER.md) records these separately; a subsequent pinned-SDK primitive export/replay produced explicit checked overflow in native/Wasm execution, while full float-root export and eligibility-guard review remain pending.
+
+For the LOD prototype, test all rank/pin combinations and 0, 8,332, 8,333, 8,334, 16,665, 16,666, 16,667 and 1,000,000 μs, including malformed text, excessive requests, invalid ranks and explicit host conversion of fractions/NaN/infinity. Exhaustively check the bounded scalar policy independently of expensive Text/1 instantiation. Benchmark cold compile/instantiate, warm execution, complete encoding/copy/dispatch, p50/p95/p99, allocations, memory growth and binary delta; separate cached and uncached paths. Accept only exact bounded-policy agreement and controlled memory, and claim speed only after end-to-end measurement.
+
+Later conservative fixed-point frustum tests need explicit coordinate bounds, quantization error and a no-false-negative margin against Three. Verdant's Wasm tensor path quantizes to i32, and tropical max-of-sums is not interchangeable with Euclidean plane-dot-point math. A function constructing a tensor specification is not evidence of actual scene culling. UORust ingests Rust/Cargo, not Three's JavaScript. An import-free guest cannot acquire a canvas or issue browser WebGL commands. GPU shaders, resource lifecycle, browser/driver behavior, visual quality and the whole game remain outside a bounded policy proof. WebGPURenderer and software PBR are possible separate prototypes, not automatic drop-in improvements.
+
+## Sources and licensing
+
+The complete source investigations preserve line-level references and their methods: [Three/renderer report](research/THREEJS-RENDERING-RESEARCH.md), [Prism/numeric report](research/PRISM-RENDER-MATH-RESEARCH.md). Their absolute paths describe the research workspace and inspected snapshots, not portable build requirements. Useful immutable upstream references include:
+
+- [Three r181 MeshStandardMaterial](https://github.com/mrdoob/three.js/blob/r181/src/materials/MeshStandardMaterial.js), [WebGLShadowMap](https://github.com/mrdoob/three.js/blob/r181/src/renderers/webgl/WebGLShadowMap.js), [BatchedMesh](https://github.com/mrdoob/three.js/blob/r181/src/objects/BatchedMesh.js), [GTAOPass](https://github.com/mrdoob/three.js/blob/r181/examples/jsm/postprocessing/GTAOPass.js).
+- [LexLean specification at the inspected commit](https://github.com/UOR-Foundation/lexlean/blob/71defb4c663aaec5b9a3aab04cbc6a03e7106227/SPEC.md), especially IEEE decoding and bounded production.
+- Local integration: [WorldView](../src/world.ts), [HD layer](../src/hd-layer.ts), [worker](../src/hd-worker.ts), [engine adapter](../shared/engine.ts), [round adapter](../shared/round-kernel.ts), [Rust scene adapter](../crates/cs-verdant/src/scene3d.rs), [pins](../model/upstream-lock.json).
+
+Three's [MIT notice](licenses/three-MIT.txt) remains distributed; copying or translating substantial shader/algorithm code must retain it. Other assets require their own provenance. Research did not benchmark GPU performance, run proof/export replays or implement these follow-ups. The release's presentation evidence is separately scoped in [0.9.0 notes](RELEASE-0.9.0.md).

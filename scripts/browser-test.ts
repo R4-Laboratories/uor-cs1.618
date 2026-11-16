@@ -5,7 +5,10 @@ import {createGameServer} from '../server/index';
 const game=await createGameServer({port:0,host:'127.0.0.1'});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
 const errors:string[]=[];const results:string[]=[];
-const context=await browser.newContext({viewport:{width:1100,height:760},deviceScaleFactor:1});
+// Keep both clients fully rendered, but bound software-GPU load with the real
+// Performance setting. Native HD/render fidelity has separate browser gates.
+const context=await browser.newContext({viewport:{width:1100,height:760},deviceScaleFactor:.5});
+await context.addInitScript("localStorage.setItem('cs1618-quality','low');");
 const a=await context.newPage(),b=await context.newPage();
 for(const page of [a,b]){page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));}
 const state=(page:Page)=>page.evaluate(()=>JSON.parse(JSON.stringify((window as any).cs1618)));
@@ -28,7 +31,7 @@ try{
  console.log('Testing locomotion');room.phase='live';room.phaseLeft=100;
  Object.assign(pa,{x:0,z:23,vx:0,vz:0});Object.assign(pb,{x:20,z:-18,vx:0,vz:0});
  await a.waitForFunction(()=>(window as any).cs1618.snapshot.phase==='live');await a.keyboard.down('KeyW');await a.waitForTimeout(900);await a.keyboard.up('KeyW');
- const moved=await state(a);assert.ok(moved.snapshot.self.z<22,`Expected motion, got ${moved.snapshot.self.z}`);await b.waitForFunction(id=>(window as any).cs1618.snapshot.players.find((p:any)=>p.id===id).z<22,pa.id);results.push('WASD movement appears on both independently rendered clients');
+ const moved=await state(a);assert.equal(moved.quality.mode,'low');assert(await a.evaluate(()=>!document.hidden));assert(await b.evaluate(()=>!document.hidden));assert.ok(moved.snapshot.self.z<22,`Expected motion, got ${moved.snapshot.self.z}`);await b.waitForFunction(id=>(window as any).cs1618.snapshot.players.find((p:any)=>p.id===id).z<22,pa.id);results.push('WASD movement appears on both independently rendered clients');
  console.log('Testing combat');Object.assign(pa,{x:0,z:20,vx:0,vz:0,recoil:0,cooldown:0});Object.assign(pb,{x:0,z:16,vx:0,vz:0,health:100});
  await a.waitForTimeout(300);
  // Pointer lock consumes relative deltas. Absolute Playwright cursor coordinates
@@ -55,5 +58,5 @@ try{
  console.log('Testing standalone practice');await a.click('#practice');await a.waitForSelector('#deploy-overlay:not(.hidden)');await a.waitForFunction(()=>(window as any).cs1618.snapshot?.players.length===10);await a.click('#deploy');await a.waitForTimeout(300);assert.equal((await state(a)).snapshot.room,'PRACTICE');results.push('Static browser practice starts ten-player simulation without a WebSocket connection');
  await a.waitForFunction(()=>(window as any).cs1618.characters.actors===10);await a.screenshot({path:'artifacts/practice.png',timeout:20000});
  assert.deepEqual(errors,[]);results.push('No uncaught browser errors across online and local gameplay');
- await writeFile('artifacts/browser-results.json',JSON.stringify({passed:results,errors},null,2)+'\n');console.log(results.join('\n'));
-}catch(error){console.error('Failure state',JSON.stringify({a:await state(a).catch(()=>null),b:await state(b).catch(()=>null)}));throw error;}finally{await browser.close();await game.close();}
+ await writeFile('artifacts/browser-results.json',JSON.stringify({passed:results,errors,rendering:'Both clients render real scenes; Performance mode, 1100x760 CSS viewport, deviceScaleFactor 0.5; no hidden override'},null,2)+'\n');console.log(results.join('\n'));
+}catch(error){console.error('Failure state',JSON.stringify({a:await state(a).catch(()=>null),b:await state(b).catch(()=>null)}));for(const page of [a,b])console.error('Failure UI',await page.evaluate(()=>({status:document.querySelector('#lobby-status')?.textContent,focused:document.hasFocus(),active:document.activeElement?.id,locked:document.pointerLockElement?.id,scoreboard:document.querySelector('#scoreboard')?.className,scoreboardDisplay:getComputedStyle(document.querySelector('#scoreboard')!).display,hidden:document.hidden})).catch(()=>null));throw error;}finally{await browser.close();await game.close();}
