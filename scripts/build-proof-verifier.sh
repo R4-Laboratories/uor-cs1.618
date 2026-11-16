@@ -6,8 +6,11 @@ build_root=/workspace/artifacts/proof-toolchain
 mkdir -p artifacts/proofs "$build_root"
 source_root="$build_root/source"
 # Recreate sources each run; only locked Cargo compilation outputs are cached.
+if [ -d "$source_root" ]; then chmod -R u+w "$source_root"; fi
 rm -rf "$source_root"
 cp -a "$sdk_source" "$source_root"
+# The immutable SDK sources are read-only; only our private build copy is writable.
+chmod -R u+w "$source_root"
 node scripts/prism-verifier-backport.mjs "$source_root"
 # The complete compiler source and offline dependencies come from the immutable
 # SDK image. Refuse any different source before applying the upstream backport.
