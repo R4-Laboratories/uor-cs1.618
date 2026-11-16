@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/retained-ci-artifact/1",
+  "run": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43975905108",
+  "gameCommit": "73f15d903e014dfae7a7d9e4f9e7e5f7e9b47600",
+  "compilerCandidate": "3a1520fb2e3b9e57fb70979d732aa0340ffab847",
+  "artifactId": 14281097973,
+  "sha256": "6d3abc4bb74fef75b51c6825cdbb73bdda3f0b17f7d24150ad0a38714c4467f6",
+  "conclusion": "failure",
+  "productionAdmission": false
+}
