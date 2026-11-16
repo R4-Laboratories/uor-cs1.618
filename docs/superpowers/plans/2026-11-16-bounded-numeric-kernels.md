@@ -48,10 +48,20 @@
 
 **Interfaces:** `div32(a:UInt32,b:UInt32)->UInt32`, `div64(a:UInt64,b:UInt64)->UInt64`; wrapper op2/op3. Consume Task1's canonical representation/rounder only after inspecting the actual report. Use bounded quotient/remainder recurrence, never old huge-Nat numerator construction.
 
+- [ ] First validate bounded exponent/comparison/iteration primitives through the actual pinned PrismPM LCNF export and Rust codegen. Its mathematical Int rejection requires a checked fixed-width or biased-unsigned internal representation; keep every multiplication regression and unchanged exporter limits.
 - [ ] Add failing exact-bit division vectors: zero/zero, finite/zero, infinity/infinity, tiny/huge, smallest-normal seams, signs and ties; include `1/1` that previously required160-bit intermediate in the old algorithm.
 - [ ] Implement fixed-format division with explicit per-step remainder/iteration bounds and sticky information carried into one rounding step.
 - [ ] Export/replay all four roots; run at least10,000 seeded division pairs per format and preserve multiply regression results after shared helper changes.
 - [ ] Record exact source/target hashes and proof/conformance scope; commit and review.
+
+### Task 2b: Isolated bitwise multiplier comparison
+
+User-requested follow-up: assess replacing word multiplication with bitwise operations. XOR/popcount alone computes different arithmetic; an exact shift/add limb product is the candidate.
+
+- [ ] Isolate a source-owned bitwise shift/add product with explicit carry bounds; retain the reviewed production baseline and its evidence.
+- [ ] Try the unchanged production export/certification gates; retain a precise refusal or timeout if export fails, without weakening limits.
+- [ ] For successful exports, replay the same IEEE multiplication corpus and independent full-product controls, then measure native/Wasm cost and artifact sizes on identical inputs.
+- [ ] Adopt only with exact contract parity and measured benefit; otherwise retain the baseline and publish the experiment result. No GPU/FPS claim or new unproved target primitive.
 
 ### Task 3: Measured rendering integration and Prism delivery
 

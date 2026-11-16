@@ -38,3 +38,9 @@ Compare the same numeric root through a persistent Wasm instance and the existin
 ## Acceptance
 
 Each admitted operation must export and replay successfully, pass exact-bit boundary/random corpora in native and Wasm, expose failures honestly, and have its actual proof scope recorded. The renderer must preserve reference decisions and pins, expose guest status, and stay within a declared measured sampling budget. Retain LexLean/PrismPM package custody and run relevant game/proof/browser gates before publishing the integration. Unsupported generic compiler roots stay refused. Upstream PR creation is outside this phase.
+
+## Discovered backend constraint and bitwise investigation
+
+The raw LexLean production roots and canonical PrismPM Text/1 app have distinct export backends. Pinned PrismPM Rust codegen rejects mathematical Int, even where the raw exporter provides a checked64-bit representation. Validate a minimal bounded signed or biased-unsigned exponent/loop fixture through actual LCNF and Rust codegen before refactoring shared arithmetic; retain each backend identity and proof scope. Do not infer support or rejection of simplified helper calls from source tables alone.
+
+The user proposed XOR/popcount to avoid multiplication. Exact ordinary significand products require positional weights and carries; carryless XOR multiplication and bipolar popcount dot products have different semantics. Investigate an isolated checked shift/add limb alternative, keeping the tested baseline unchanged until export, exact-bit replay and measured costs justify adoption. A failed export is an experimental result, not admitted arithmetic. This experiment adds no generic compiler primitive and does not imply graphics/FPS improvement.
