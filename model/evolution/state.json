@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 1371510101,
+  "seed": 3665884501,
   "config": {
     "render": {
       "cell": 16,
@@ -284,15 +284,17 @@
   "weights": {
     "render": 3,
     "navigation": 8,
-    "art": 14,
-    "tactics": 10,
+    "art": 13,
+    "tactics": 9,
     "experience": 1
   },
   "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
   "tried": [
     "art-synth-0",
     "art-synth-1",
-    "art-synth-2"
+    "art-synth-2",
+    "art-synth-3",
+    "tactics-synth-1"
   ],
   "history": [
     {
@@ -4355,6 +4357,178 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-16T15:30:12.390Z",
+      "base": "5b6f25cc58256938c3e964f67cb0c14b49f075e1",
+      "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
+      "previous": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "art-synth-3",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "ec8e6b02fc01771c2289ba12debad7ea4d69d65c38a6923cdf0558a2e96c4abf",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.291144642486017,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.008453186274509803,
+              "changed": 0.0254140625
+            },
+            {
+              "mean": 0.00900875714869281,
+              "changed": 0.02410546875
+            },
+            {
+              "mean": 0.014015196078431373,
+              "changed": 0.036203125
+            },
+            {
+              "mean": 0.014958992034313726,
+              "changed": 0.0355703125
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6347007638190333,
+            "evidence": "artifacts/evolution/art/art-synth-3-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 3.6000000000058208
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 3.5
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.6000000000058208
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.8999999999941792
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.22859724418341992
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.22563812965891122
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 1.1000000000058208
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 1.3000000000029104
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.5
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "7c00a0f619029b97840018c39e86840cc93ff0ae92940d8e0c1680e2af3d9598"
     }
   ]
 }

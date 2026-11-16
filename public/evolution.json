@@ -283,83 +283,47 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-16T15:19:42.164Z",
-    "base": "cfc25b255e3979245f932790388a28dd24596353",
+    "at": "2026-11-16T15:30:12.390Z",
+    "base": "5b6f25cc58256938c3e964f67cb0c14b49f075e1",
     "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
-    "previous": "126eabe11eebe87334bce592dc0d52a52c47e93fc1a9821d1d4c671cfe20a09e",
-    "result": "admitted",
+    "previous": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e",
+    "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "art-synth-2",
+        "candidate": "art-synth-3",
         "family": "art",
         "author": "seeded-synthesis",
         "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "ece4b2dba88f51b113c3a7115d6154f185210d0594abb49036aa285add259ea1",
-        "baselineWork": 0.24722941226541348,
-        "candidateWork": 0.23252706850815388,
+        "configHash": "ec8e6b02fc01771c2289ba12debad7ea4d69d65c38a6923cdf0558a2e96c4abf",
+        "baselineWork": 0.23252706850815388,
+        "candidateWork": 0.291144642486017,
         "fidelity": true,
         "bounds": true,
         "samples": 4,
         "comparisons": [
           {
-            "mean": 0.009573994076797385,
-            "changed": 0.09171875
+            "mean": 0.008453186274509803,
+            "changed": 0.0254140625
           },
           {
-            "mean": 0.010034788602941177,
-            "changed": 0.0892734375
+            "mean": 0.00900875714869281,
+            "changed": 0.02410546875
           },
           {
-            "mean": 0.015964128880718954,
-            "changed": 0.15900390625
+            "mean": 0.014015196078431373,
+            "changed": 0.036203125
           },
           {
-            "mean": 0.016791937295751635,
-            "changed": 0.15811328125
+            "mean": 0.014958992034313726,
+            "changed": 0.0355703125
           }
         ],
         "reference": {
           "protectedEqual": true,
           "separation": 0.6347007638190333,
-          "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+          "evidence": "artifacts/evolution/art/art-synth-3-*.png"
         },
         "before": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 12.834688787207531,
-              "coverage": 0.19098712446351931
-            },
-            {
-              "site": "B",
-              "contrast": 12.834688787207531,
-              "coverage": 0.18764400271063925
-            }
-          ],
-          "frames": [
-            {
-              "calls": 121,
-              "triangles": 3536,
-              "frameMs": 5.599999999991269
-            },
-            {
-              "calls": 122,
-              "triangles": 3596,
-              "frameMs": 3.6000000000058208
-            },
-            {
-              "calls": 43,
-              "triangles": 1404,
-              "frameMs": 1.3999999999941792
-            },
-            {
-              "calls": 34,
-              "triangles": 1212,
-              "frameMs": 1
-            }
-          ]
-        },
-        "after": {
           "textures": [
             {
               "site": "A",
@@ -376,29 +340,117 @@
             {
               "calls": 121,
               "triangles": 3536,
-              "frameMs": 2.3999999999941792
+              "frameMs": 3.6000000000058208
             },
             {
               "calls": 122,
               "triangles": 3596,
-              "frameMs": 3
+              "frameMs": 3.5
             },
             {
               "calls": 43,
               "triangles": 1404,
-              "frameMs": 1.4000000000087311
+              "frameMs": 0.6000000000058208
             },
             {
               "calls": 34,
               "triangles": 1212,
-              "frameMs": 0.9000000000087311
+              "frameMs": 0.8999999999941792
             }
+          ]
+        },
+        "after": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 11.900942897165983,
+              "coverage": 0.22859724418341992
+            },
+            {
+              "site": "B",
+              "contrast": 11.900942897165983,
+              "coverage": 0.22563812965891122
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 1.1000000000058208
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 1.3000000000029104
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.5
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.5
+            }
+          ]
+        }
+      },
+      {
+        "candidate": "tactics-synth-1",
+        "family": "tactics",
+        "author": "seeded-synthesis",
+        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+        "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+        "baselineWork": 1,
+        "candidateWork": 1,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 198,
+        "comparisons": null,
+        "reference": {
+          "metricVersion": 2,
+          "training": 96,
+          "heldOut": 96,
+          "realMatches": 6,
+          "scope": "Fixed scenario corpus; not general match win rate"
+        },
+        "before": {
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
+          ]
+        },
+        "after": {
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
           ]
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e"
+    "hash": "7c00a0f619029b97840018c39e86840cc93ff0ae92940d8e0c1680e2af3d9598"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -4462,6 +4514,178 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-16T15:30:12.390Z",
+      "base": "5b6f25cc58256938c3e964f67cb0c14b49f075e1",
+      "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
+      "previous": "5cbd6b78c42b4f595f268846b337b60abfd75e4a5203b88a0493e929c9049e7e",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "art-synth-3",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "ec8e6b02fc01771c2289ba12debad7ea4d69d65c38a6923cdf0558a2e96c4abf",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.291144642486017,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.008453186274509803,
+              "changed": 0.0254140625
+            },
+            {
+              "mean": 0.00900875714869281,
+              "changed": 0.02410546875
+            },
+            {
+              "mean": 0.014015196078431373,
+              "changed": 0.036203125
+            },
+            {
+              "mean": 0.014958992034313726,
+              "changed": 0.0355703125
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6347007638190333,
+            "evidence": "artifacts/evolution/art/art-synth-3-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 3.6000000000058208
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 3.5
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.6000000000058208
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.8999999999941792
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.22859724418341992
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.22563812965891122
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 1.1000000000058208
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 1.3000000000029104
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.5
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "7c00a0f619029b97840018c39e86840cc93ff0ae92940d8e0c1680e2af3d9598"
     }
   ]
 }
