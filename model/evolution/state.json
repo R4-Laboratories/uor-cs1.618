@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 7,
-  "seed": 1600085,
+  "seed": 2927573,
   "config": {
     "render": {
       "cell": 16,
@@ -285,13 +285,13 @@
     "render": 10,
     "navigation": 9,
     "art": 12,
-    "tactics": 14,
+    "tactics": 12,
     "experience": 12
   },
-  "context": "c02d479b5c34fb1f29c1042a098b9dcec114df57f4d1ca5b961b7c373e33d110",
+  "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
   "tried": [
-    "experience-0-3",
-    "experience-0-5"
+    "tactics-synth-1",
+    "tactics-synth-3"
   ],
   "history": [
     {
@@ -1423,6 +1423,123 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "85129a8c17ead2fe4f0eba187f3493eb59f3d731a8e3516b49f869a9b470b6a6"
+    },
+    {
+      "generation": 7,
+      "author": null,
+      "at": "2026-11-16T09:00:25.734Z",
+      "base": "cbe7a00461b746e61292af9eeae99e71c52b3a10",
+      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
+      "previous": "85129a8c17ead2fe4f0eba187f3493eb59f3d731a8e3516b49f869a9b470b6a6",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "52fdf4538a4840a5bb515a0bde29452e8ee87a44f2de9452d49db9c5f7eebe85",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        },
+        {
+          "candidate": "tactics-synth-3",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "52fdf4538a4840a5bb515a0bde29452e8ee87a44f2de9452d49db9c5f7eebe85",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "6ddc4d61d05a2e8e861dad63274808f4e52cee736f9da32d393a610056e44626"
     }
   ]
 }
