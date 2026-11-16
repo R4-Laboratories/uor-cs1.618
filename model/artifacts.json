@@ -29,6 +29,22 @@
       "sha256": "b5f402173bc77e84717c9dab55c678782f85ea6f5bf2900277ca566d23efda05",
       "bytes": 3341
     },
+    "model/hologram-policy.json": {
+      "sha256": "7bf32b953f20fc906e406e2e49d03d4cc7efd8e3e6763fda56ef5f4f400737ca",
+      "bytes": 202
+    },
+    "model/hologram-vendor.json": {
+      "sha256": "027801b09d8a4cfae288d5a3b649d20ca54c2f7126c0d8c225cf763611957e55",
+      "bytes": 7289
+    },
+    "model/identity.prompt.json": {
+      "sha256": "fe9581ea1e5962a20929f206c29468550c368d32bf305c65d0e462cbdb3f7fe9",
+      "bytes": 3772
+    },
+    "model/prism-frame.json": {
+      "sha256": "502e296bccbbec759d20dafc4e1b73e3db3502be2c1a1f518d6b846d697face2",
+      "bytes": 678
+    },
     "model/round.prompt.json": {
       "sha256": "29f59605c4f00cf8dcf2bce31eb63d215c70876b98cb8b7f9ed3a7eca3740c38",
       "bytes": 4312
@@ -153,9 +169,77 @@
       "sha256": "bb591fd77cc8771cac50aebce928e56c59d39c6c2a77541295ff07b3bd592b25",
       "bytes": 47228
     },
+    "prism/identity/app/lexlean.lock": {
+      "sha256": "1387d7492709c85451a5e9d63dfe70bdd828671574c4b1cf6a10581dbb5380f5",
+      "bytes": 2695
+    },
+    "prism/identity/app/src/Architecture.lex.tex": {
+      "sha256": "6fc2167bbc418f7ce57e452b7693ed17ddc7056be714d89104db5793ea522ed4",
+      "bytes": 12022
+    },
+    "prism/identity/app/src/Compliance.lex.tex": {
+      "sha256": "a084dcaa9cf15e5b7be1c956d157e34e67503602c7bb68c13709e830225d91a2",
+      "bytes": 4198
+    },
+    "prism/identity/app/src/Cs1618.lex.tex": {
+      "sha256": "03a4b06720684282a3c4a688941b34217685e903e1ed661abe6ddd7d2179c59a",
+      "bytes": 14134
+    },
+    "prism/identity/app/src/Cs1618Proofs.lex.tex": {
+      "sha256": "0d0c60ee9e62a11cbb162523ae66940170d5a0c00d79f54a0e9b150be93b01bd",
+      "bytes": 3990
+    },
+    "prism/identity/app/src/Design.lex.tex": {
+      "sha256": "47b2180478736d5a9a01a846f7ad73f9a6d6eff9c6d0d542e767964b02e7b5e3",
+      "bytes": 15978
+    },
+    "prism/identity/app/src/Features.lex.tex": {
+      "sha256": "de582c3588d936da7066390bf48103b265f8b39c09e20162b8074905cf4d6027",
+      "bytes": 3643
+    },
+    "prism/identity/app/src/Foundation/Arch.lex.tex": {
+      "sha256": "ac98d00c82c37d523361ef2fa01419e796c359b74c4a87ac39d53d4821aa80d8",
+      "bytes": 8936
+    },
+    "prism/identity/app/src/Foundation/Bytes.lex.tex": {
+      "sha256": "ce16e5b439128db3231979381f4599d3ff0617f62c2bf00c348bba35393abcd6",
+      "bytes": 1494
+    },
+    "prism/identity/app/src/Foundation/Qual.lex.tex": {
+      "sha256": "6a0dbe7026dbdce3e52fa6082eac54d0155ca6bc40ac2abf25fd5e225de239bd",
+      "bytes": 2422
+    },
+    "prism/identity/app/src/Foundation/Sec.lex.tex": {
+      "sha256": "518b968cbcf6251785d8bc450df0de8737b7e491235361a46f9b20684810a5b2",
+      "bytes": 2644
+    },
+    "prism/identity/app/src/Foundation/View/Text/V1/Model.lex.tex": {
+      "sha256": "db124343ad8fe1295bc8eb305c7f59f83cf6ad76d46a5cabea500fe66f3ad5dc",
+      "bytes": 1739
+    },
+    "prism/identity/app/src/Production/ThreatModel.lex.tex": {
+      "sha256": "bc6acde21335954805485e15c86d9f35178dceda8563d1dabdc062dcff6acc29",
+      "bytes": 6214
+    },
+    "prism/identity/app/src/Quality.lex.tex": {
+      "sha256": "5c5169c98ac58e6139672cd6cc99a40bf9ccbe4651036a8f9b78287000523016",
+      "bytes": 29220
+    },
+    "prism/identity/app/src/Security.lex.tex": {
+      "sha256": "a9de6cad3065c4fcc364a91e8ffa272bd481ba207f8cc47ebfd62211018bf3f4",
+      "bytes": 46999
+    },
+    "public/app.holo": {
+      "sha256": "22ecc71e5e61ac1b94e3afa9732053cb1639149791977734586a6f567fab9359",
+      "bytes": 36816
+    },
     "public/prism/CS-Evolution.holo": {
       "sha256": "f04c030e29d917f99d8d0651e990dad6154233e194373fffb5f9a608a8685fa4",
       "bytes": 36810
+    },
+    "public/prism/CS-Identity.holo": {
+      "sha256": "22ecc71e5e61ac1b94e3afa9732053cb1639149791977734586a6f567fab9359",
+      "bytes": 36816
     },
     "public/prism/CS-Round.holo": {
       "sha256": "20bffd3d1512ce0d4abd9367d69928dabd9d197a8556f3000bc569392dd3058f",
@@ -164,6 +248,10 @@
     "public/wasm/cs_evolution.wasm": {
       "sha256": "b4763ff9796f52129b1c45f3669b43fe4b82c7841bfbcbd14f56a419cd195bf1",
       "bytes": 1841
+    },
+    "public/wasm/cs_identity.wasm": {
+      "sha256": "7326a2b1d4b8f6b3a66d1125c16a57a2e6368fe0a5db9e98cee69bd2a166045d",
+      "bytes": 1832
     },
     "public/wasm/cs_round.wasm": {
       "sha256": "ab75a7806437f5611bc2e28afbdd6e2d56b941390fee8d6a9f033d0b255618fa",

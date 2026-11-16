@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['prism/**', 'scripts/verify-prism.sh', 'scripts/proof-report.mjs', '.github/workflows/proofs.yml']
+    paths: ['prism/**', 'public/prism/**', 'public/wasm/cs_*.wasm', 'public/app.holo', 'scripts/verify-prism.sh', 'scripts/proof-report.mjs', 'scripts/proof-result.mjs', 'scripts/build-proof-verifier.sh', 'scripts/prism-verifier-backport.mjs', '.github/workflows/proofs.yml']
 permissions:
   contents: read
 jobs:
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [round, evolution]
+        project: [round, evolution, identity]
     steps:
       - uses: actions/checkout@v4
         with:

@@ -114,4 +114,6 @@ MIT for original game code. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 
 ### Free feature development
 
-Weapon spray/recovery, distinct bounded audio, adaptive render quality and saved player settings now run in the browser. The scheduled engine generates and tests variants without paid model access. See the [development mechanism and feature frontier](docs/DEVELOPMENT-ENGINE.md), [live studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html), and [formal proof audit](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/proofs.yml). Full Prism verification remains an explicit open gate.
+Weapon spray/recovery, distinct bounded audio, adaptive render quality and saved player settings now run in the browser. The scheduled engine generates and tests variants without paid model access. See the [development mechanism and feature frontier](docs/DEVELOPMENT-ENGINE.md), [live studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html), and [formal proof audit](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/proofs.yml). The repaired formal audit checks the round, evolution and identity applications and binds their exact published bytes; its scope remains smaller than the whole game.
+
+The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity.html) and canonical address bar connect the game to the same registry/account ecosystem as Me. See [Holo packaging, discovery and identity limits](docs/HOLOGRAM.md) and the [verifier repair](docs/proof-audit.md).

@@ -1,6 +1,6 @@
 {
   "name": "cs1-618",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
     "engine:build": "bash scripts/build-engine.sh",
     "prism:generate": "node scripts/prism-generate.mjs",
     "prism:verify": "bash scripts/verify-prism.sh",
-    "verify": "npm run evolution:check && npm test && npm run build && node scripts/verify-artifacts.mjs",
+    "verify": "npm run evolution:check && node scripts/verify-hologram-vendor.mjs && node scripts/hologram-manifest.mjs --check && npm test && npm run build && node scripts/verify-artifacts.mjs",
     "package": "node scripts/package.mjs",
     "test:peer-browser": "tsx scripts/peer-browser-test.ts",
     "evolution:generate": "tsx scripts/evolution/generate.ts",
@@ -22,13 +22,15 @@
     "evolution:watch": "tsx scripts/evolution/deploy-watch.ts",
     "evolution:author": "tsx scripts/evolution/creative-author.ts",
     "test:creative-browser": "tsx scripts/creative-browser-test.ts",
-    "test:experience-browser": "tsx scripts/experience-browser-test.ts"
+    "test:experience-browser": "tsx scripts/experience-browser-test.ts",
+    "test:identity-browser": "tsx scripts/identity-browser-test.ts"
   },
   "dependencies": {
     "@fontsource/barlow": "5.3.0",
     "@fontsource/barlow-condensed": "5.3.0",
     "@fontsource/ibm-plex-mono": "5.3.0",
     "peerjs": "1.5.5",
+    "prism-code": "0.7.2",
     "three": "0.181.1",
     "tsx": "4.20.6",
     "ws": "8.18.3"

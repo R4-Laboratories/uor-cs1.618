@@ -1,0 +1,443 @@
+\begin{lexlean}{Design}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{Architecture}
+\importmodule{Foundation.Arch}
+\title{design view}
+\begin{semanticmodule}
+definition{
+  name: processSendRequest,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentBrowser"})
+}
+
+definition{
+  name: processDecide,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: processParseRequest,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: processJudge,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: processEncodeAnswer,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: processBuildAndVerify,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentPrismBuild"})
+}
+
+definition{
+  name: processRule1,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: processOtherwise,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: stateIdle,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: stateDeciding,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: stateRefused,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: stateAnsweredAllow,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: stateAnsweredDeny,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: viewOpmDecide,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Deciding a cs1.618 request", viewpoint := "Architecture::viewpointUserCorrectAnswers", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: viewUmlComponents,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Components of cs1.618", viewpoint := "Architecture::viewpointVerifierIntegrityOfThePublishedApp", diagram := (ctor Foundation.Arch::DesignDiagram.umlComponent)})
+}
+
+definition{
+  name: viewUmlRequest,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Answering a cs1.618 request", viewpoint := "Architecture::viewpointUserCorrectAnswers", diagram := (ctor Foundation.Arch::DesignDiagram.umlSequence)})
+}
+
+definition{
+  name: viewUmlStates,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "States of the cs1.618 guest", viewpoint := "Architecture::viewpointVerifierRefusedMalformedRequests", diagram := (ctor Foundation.Arch::DesignDiagram.umlStateMachine)})
+}
+
+definition{
+  name: opmBrowser,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentBrowser"})
+}
+
+definition{
+  name: opmGuest,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: opmDecide,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processDecide"})
+}
+
+definition{
+  name: opmParseRequest,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processParseRequest"})
+}
+
+definition{
+  name: opmJudge,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processJudge"})
+}
+
+definition{
+  name: opmEncodeAnswer,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processEncodeAnswer"})
+}
+
+definition{
+  name: opmGuestIdle,
+  parameters: [],
+  result: Foundation.Arch::OpmState,
+  body: (record Foundation.Arch::OpmState {view := "Design::viewOpmDecide", thing := "Architecture::componentCs1618Guest", state := "Design::stateIdle"})
+}
+
+definition{
+  name: opmGuestDeciding,
+  parameters: [],
+  result: Foundation.Arch::OpmState,
+  body: (record Foundation.Arch::OpmState {view := "Design::viewOpmDecide", thing := "Architecture::componentCs1618Guest", state := "Design::stateDeciding"})
+}
+
+definition{
+  name: opmGuestAgent,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmLinkKind.agent), source := "Architecture::componentCs1618Guest", target := "Design::processDecide"})
+}
+
+definition{
+  name: opmBrowserInstrument,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentBrowser", target := "Design::processParseRequest"})
+}
+
+definition{
+  name: opmParseInvokesJudge,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processParseRequest", target := "Design::processJudge"})
+}
+
+definition{
+  name: opmJudgeInvokesEncode,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Design::processJudge", target := "Design::processEncodeAnswer"})
+}
+
+definition{
+  name: opmEncodeAffectsBrowser,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::viewOpmDecide", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Architecture::componentBrowser", target := "Design::processEncodeAnswer"})
+}
+
+definition{
+  name: opmZoomParseRequest,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::viewOpmDecide", process := "Design::processDecide", subprocess := "Design::processParseRequest", order := 0})
+}
+
+definition{
+  name: opmZoomJudge,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::viewOpmDecide", process := "Design::processDecide", subprocess := "Design::processJudge", order := 1})
+}
+
+definition{
+  name: opmZoomEncodeAnswer,
+  parameters: [],
+  result: Foundation.Arch::OpmZoom,
+  body: (record Foundation.Arch::OpmZoom {view := "Design::viewOpmDecide", process := "Design::processDecide", subprocess := "Design::processEncodeAnswer", order := 2})
+}
+
+definition{
+  name: umlBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentBrowser"})
+}
+
+definition{
+  name: umlCs1618Guest,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentCs1618Guest"})
+}
+
+definition{
+  name: umlCs1618Page,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentCs1618Page"})
+}
+
+definition{
+  name: umlGitHubPages,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentGitHubPages"})
+}
+
+definition{
+  name: umlPrismBuild,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentPrismBuild"})
+}
+
+definition{
+  name: umlSourceRepository,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Design::viewUmlComponents", component := "Architecture::componentSourceRepository"})
+}
+
+definition{
+  name: umlBrowserToCs1618Guest,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgeBrowserToCs1618Guest"})
+}
+
+definition{
+  name: umlCs1618GuestToBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgeCs1618GuestToBrowser"})
+}
+
+definition{
+  name: umlCs1618PageToGitHubPages,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgeCs1618PageToGitHubPages"})
+}
+
+definition{
+  name: umlGitHubPagesToBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgeGitHubPagesToBrowser"})
+}
+
+definition{
+  name: umlPrismBuildToCs1618Guest,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgePrismBuildToCs1618Guest"})
+}
+
+definition{
+  name: umlPrismBuildToCs1618Page,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgePrismBuildToCs1618Page"})
+}
+
+definition{
+  name: umlSourceRepositoryToPrismBuild,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Design::viewUmlComponents", edge := "Architecture::edgeSourceRepositoryToPrismBuild"})
+}
+
+definition{
+  name: seqBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Design::viewUmlRequest", component := "Architecture::componentBrowser", order := 0})
+}
+
+definition{
+  name: seqCs1618Guest,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Design::viewUmlRequest", component := "Architecture::componentCs1618Guest", order := 1})
+}
+
+definition{
+  name: seqRequest,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Design::viewUmlRequest", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 0, source := "Architecture::componentBrowser", target := "Architecture::componentCs1618Guest", process := "Design::processDecide"})
+}
+
+definition{
+  name: seqReply,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Design::viewUmlRequest", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 1, source := "Architecture::componentCs1618Guest", target := "Architecture::componentBrowser", process := "Design::processDecide"})
+}
+
+definition{
+  name: stIdle,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Design::viewUmlStates", state := "Design::stateIdle", initial := true})
+}
+
+definition{
+  name: stDeciding,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Design::viewUmlStates", state := "Design::stateDeciding", initial := false})
+}
+
+definition{
+  name: stRefused,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Design::viewUmlStates", state := "Design::stateRefused", initial := false})
+}
+
+definition{
+  name: stAnsweredAllow,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Design::viewUmlStates", state := "Design::stateAnsweredAllow", initial := false})
+}
+
+definition{
+  name: stAnsweredDeny,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Design::viewUmlStates", state := "Design::stateAnsweredDeny", initial := false})
+}
+
+definition{
+  name: trAccept,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 0, source := "Design::stateIdle", target := "Design::stateDeciding", trigger := "Design::processParseRequest"})
+}
+
+definition{
+  name: trRefuse,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 1, source := "Design::stateIdle", target := "Design::stateRefused", trigger := "Design::processParseRequest"})
+}
+
+definition{
+  name: trRule1,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 2, source := "Design::stateDeciding", target := "Design::stateAnsweredAllow", trigger := "Design::processRule1"})
+}
+
+definition{
+  name: trOtherwise,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 3, source := "Design::stateDeciding", target := "Design::stateAnsweredDeny", trigger := "Design::processOtherwise"})
+}
+
+definition{
+  name: trResetAllow,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 4, source := "Design::stateAnsweredAllow", target := "Design::stateIdle", trigger := "Design::processEncodeAnswer"})
+}
+
+definition{
+  name: trResetDeny,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 5, source := "Design::stateAnsweredDeny", target := "Design::stateIdle", trigger := "Design::processEncodeAnswer"})
+}
+
+definition{
+  name: trResetRefused,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Design::viewUmlStates", order := 6, source := "Design::stateRefused", target := "Design::stateIdle", trigger := "Design::processEncodeAnswer"})
+}
+\end{semanticmodule}
+\end{lexlean}

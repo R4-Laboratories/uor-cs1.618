@@ -1,0 +1,52 @@
+{
+  "schema": "cs1618/hologram-host/1",
+  "base": "../",
+  "name": "cs1.618",
+  "live": "https://r4-laboratories.github.io/uor-cs1.618/",
+  "repository": "https://github.com/R4-Laboratories/uor-cs1.618",
+  "entry": "./index.html",
+  "identityPage": "./identity.html",
+  "holo": {
+    "url": "./app.holo",
+    "bytes": 36816,
+    "sha256": "22ecc71e5e61ac1b94e3afa9732053cb1639149791977734586a6f567fab9359",
+    "fingerprint": "dad8090fe2019d846545cda501d933410f5cf5ee2624ed5044939f8ff505ff00",
+    "format": "HOLO v4",
+    "contract": "hologram:guest/core-wasm@1",
+    "scope": "Identity handoff admission, not the complete WebGL game"
+  },
+  "dependencies": [
+    {
+      "url": "./wasm/cs_verdant.wasm",
+      "bytes": 203969,
+      "sha256": "cd6e2ec7b733a94f642359248d10fcef65da302a09a9478cc851c72d5a940709"
+    },
+    {
+      "url": "./prism/CS-Round.holo",
+      "bytes": 39724,
+      "sha256": "20bffd3d1512ce0d4abd9367d69928dabd9d197a8556f3000bc569392dd3058f"
+    },
+    {
+      "url": "./prism/CS-Evolution.holo",
+      "bytes": 36810,
+      "sha256": "f04c030e29d917f99d8d0651e990dad6154233e194373fffb5f9a608a8685fa4"
+    }
+  ],
+  "identity": {
+    "stitch": "prism/genesis/1 + prism/action/1",
+    "accounts": "prism/session/1 (current canonical frame); prism/identity/1 (legacy Me)",
+    "binding": "cs1618/me-binding/1",
+    "storage": "origin-local IndexedDB; nonextractable signing keys",
+    "sharing": "explicit local gesture; no identity upload to GitHub"
+  },
+  "hostRequirements": [
+    "WebGL2",
+    "WebAssembly",
+    "WebCrypto",
+    "IndexedDB",
+    "WebRTC for browser rooms"
+  ],
+  "vendorLock": "./hologram/vendor.json",
+  "registry": "https://registry.uor.foundation",
+  "proofScope": "The compiled decision model consumes observations; it does not prove the host cryptography, browser or multiplayer game."
+}

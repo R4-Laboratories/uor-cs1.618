@@ -1,0 +1,39 @@
+name: Register app in Prism ecosystem
+on:
+  workflow_run:
+    workflows: [Verify and publish cs1.618]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '47 */6 * * *'
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: prism-registration
+  cancel-in-progress: false
+jobs:
+  register:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Register published Holo with repository-bound OIDC
+        env:
+          NODE_USE_ENV_PROXY: '1'
+        run: node scripts/register-prism.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prism-registration-${{ github.run_id }}
+          path: artifacts/registry/
+          retention-days: 90

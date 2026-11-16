@@ -50,3 +50,7 @@ cd ../../cs1.618
 ```
 
 Read [frontier.toml](../prism/rust-projection/frontier.toml) before interpreting the projection: dependency types and engine behavior are not automatically lifted into Lean, advisory checks were not supplied, and open claims remain open. See [verification evidence](VERIFICATION.md) for the actual checks performed and environmental limits.
+
+## Ecosystem identity component
+
+`prism/identity/app` compiles the four-observation identity admission table into the root discoverable `public/app.holo`, its `CS-Identity.holo` alias and `cs_identity.wasm`. The browser uses the actual Holo guest. Stitch and Me imports are independently pinned in `model/hologram-vendor.json`; they are not substituted for compiled proof artifacts. See [identity integration](HOLOGRAM.md) and [actual verifier repair](proof-audit.md).

@@ -1,0 +1,16 @@
+{
+  "name": "cs1.618",
+  "shortName": "cs1.618",
+  "live": "https://r4-laboratories.github.io/uor-cs1.618/",
+  "repository": "https://github.com/R4-Laboratories/uor-cs1.618",
+  "registry": "registry.uor.foundation",
+  "index": true,
+  "purpose": "Play an original Verdant-powered browser tactical multiplayer FPS with 5v5 rounds, bots and WebRTC rooms. Its portable identity component admits a handoff only when origin, freshness, signature and explicit consent observations all pass; browser rendering, cryptography and networking remain host responsibilities.",
+  "proposition": {"name":"identityAdmission", "text":"Every failed identity observation produces deny", "plain":"Identity handoff requires all four checks. This is not a proof of the entire game."},
+  "inputLabel": "origin fresh signature consent (pass or fail)",
+  "placeholder": "pass pass pass pass",
+  "submitLabel": "Check admission",
+  "outputLabel": "Identity handoff decision",
+  "answers": {"positive":["allow"],"negative":["deny"],"refusal":"invalid request"},
+  "icon": "./mark.svg"
+}

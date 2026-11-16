@@ -1,0 +1,166 @@
+{
+  "schema": "prism/prompt/1",
+  "goal": "Admit a browser identity handoff only after the host establishes origin, freshness, signature validity and explicit consent.",
+  "pattern": "decisionTable",
+  "license": "MIT",
+  "app": {
+    "name": "cs1618",
+    "title": "cs1.618",
+    "purpose": "Identity handoff admission for the cs1.618 browser tactical multiplayer FPS. Browser rendering, networking and cryptographic observations are supplied by the named host; this component admits a handoff only when all four checks pass.",
+    "fields": [
+      {
+        "name": "origin",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "The sender is an explicitly allowed origin and the reply audience matches"
+      },
+      {
+        "name": "fresh",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "A bounded single-use challenge is current"
+      },
+      {
+        "name": "signature",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "The actual upstream cryptographic verifier accepted the identity action"
+      },
+      {
+        "name": "consent",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "The person approved this exact handoff"
+      }
+    ],
+    "outcomes": [
+      "allow",
+      "deny"
+    ],
+    "meanings": {
+      "allow": "Admit this checked identity handoff",
+      "deny": "Refuse the handoff"
+    },
+    "rules": [
+      {
+        "when": [
+          {
+            "field": "origin",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "fresh",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "signature",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "consent",
+            "op": "is",
+            "value": "pass"
+          }
+        ],
+        "then": "allow",
+        "why": "All independent admission obligations hold."
+      }
+    ],
+    "otherwise": "deny",
+    "otherwiseWhy": "An unchecked, invalid or unapproved handoff is refused.",
+    "properties": [
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "origin",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "deny",
+        "why": "This required obligation is missing."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "fresh",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "deny",
+        "why": "This required obligation is missing."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "signature",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "deny",
+        "why": "This required obligation is missing."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "consent",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "deny",
+        "why": "This required obligation is missing."
+      }
+    ],
+    "examples": [
+      {
+        "request": "pass pass pass pass",
+        "response": "allow"
+      },
+      {
+        "request": "fail pass pass pass",
+        "response": "deny"
+      },
+      {
+        "request": "pass fail pass pass",
+        "response": "deny"
+      },
+      {
+        "request": "pass pass fail pass",
+        "response": "deny"
+      },
+      {
+        "request": "pass pass pass fail",
+        "response": "deny"
+      }
+    ]
+  },
+  "stakeholders": [],
+  "concerns": [],
+  "components": [],
+  "threats": [],
+  "quality": [],
+  "journeys": [],
+  "axioms": {}
+}

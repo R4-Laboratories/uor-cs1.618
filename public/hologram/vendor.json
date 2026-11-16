@@ -1,0 +1,172 @@
+{
+  "schema": "cs1618/hologram-vendor/1",
+  "licenses": {
+    "stitch": {
+      "declared": "MIT",
+      "copyright": "Syntra Labs",
+      "evidence": [
+        "vendor/stitch/README.md",
+        "vendor/stitch/package.json"
+      ],
+      "limitation": "Upstream does not include a standalone project license text; declarations and attribution preserved unchanged."
+    },
+    "me": {
+      "declared": "MIT OR Apache-2.0",
+      "selected": "MIT",
+      "text": "vendor/me/LICENSE-MIT"
+    },
+    "template": {
+      "declared": "MIT OR Apache-2.0",
+      "selected": "MIT",
+      "text": "vendor/template/LICENSE-MIT",
+      "identityBundle": "Unchanged upstream generated Stitch bundle; its header pins afflom/stitch@68a9222a075ba11473ae804c47b223daa7d162ce. Stitch MIT declaration and attribution retained under vendor/stitch."
+    }
+  },
+  "fidelity": "Unmodified pinned source modules and transitive dependencies. Runtime behavior is imported, not locally proved. No relay, registry or account writes are invoked by the adapter. Offline revocation depends on verifier-known records. Current published frame sessions use Stitch prism/session/1 actions; the older pinned Me WebAuthn protocol remains separately supported. Current template verifier runs with hear:false and fresh:0; its delegated session key must sign a fresh local binding.",
+  "files": [
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/prism-id.js",
+      "path": "vendor/stitch/src/prism-id.js",
+      "sha256": "9b32ec3e3d98e959887b2092f370d97b970eb75928b636faf96527e6d9b79a48",
+      "bytes": 99640
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/layer1-uor/generated-model.js",
+      "path": "vendor/stitch/src/layer1-uor/generated-model.js",
+      "sha256": "fae51244e2b96601978233863e86aee96f35ef5a15ad4af4d3e687a9d770fb11",
+      "bytes": 1262320
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/layer5-transport/relay-framing.js",
+      "path": "vendor/stitch/src/layer5-transport/relay-framing.js",
+      "sha256": "35672c5720f5f1e5d009f1875a1c63de3a6badea2546d66baf73c77fb7c90ae0",
+      "bytes": 15145
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/layer1-uor/custody.js",
+      "path": "vendor/stitch/src/layer1-uor/custody.js",
+      "sha256": "597b34d6740b6b371e30af24ee18cd10f8c4142da38e616b9ec5e04d042ab74c",
+      "bytes": 16869
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/layer1-uor/contracts.js",
+      "path": "vendor/stitch/src/layer1-uor/contracts.js",
+      "sha256": "94c67e0811f78029b251c55edbf365b2335040106b8125fa5298e59315d2c2d3",
+      "bytes": 1357
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "src/layer2-schedulers/policy.js",
+      "path": "vendor/stitch/src/layer2-schedulers/policy.js",
+      "sha256": "8f2074f8fe07a7b1fda51896d78f11a797564afb64accebc7291261e5c00639f",
+      "bytes": 5894
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "README.md",
+      "path": "vendor/stitch/README.md",
+      "sha256": "eee856a847a299265aac59aa11e2d068ef21a0c98625acddf220c0452c8040ca",
+      "bytes": 12043
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "package.json",
+      "path": "vendor/stitch/package.json",
+      "sha256": "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4",
+      "bytes": 1337
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "docs/prism-id.md",
+      "path": "vendor/stitch/docs/prism-id.md",
+      "sha256": "b37ca11b5124cd34cf38a5038c077b9ee6c77d5197caac1911e1a419df6af20b",
+      "bytes": 18039
+    },
+    {
+      "repository": "https://github.com/afflom/stitch",
+      "commit": "1607d53dfc5a34324f8102123d166d727cc66634",
+      "sourcePath": "docs/vendor-provenance.md",
+      "path": "vendor/stitch/docs/vendor-provenance.md",
+      "sha256": "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b",
+      "bytes": 7746
+    },
+    {
+      "repository": "https://github.com/afflom/me",
+      "commit": "ee7a2d81c6b5d2146f7a4199bcbfe0aa2c8b6c85",
+      "sourcePath": "frame/panels.mjs",
+      "path": "vendor/me/frame/panels.mjs",
+      "sha256": "b888d5d9f5e253d942e1980419a9de6d4b5ba8071fa0d51053a1a9c18dfdd6ba",
+      "bytes": 32323
+    },
+    {
+      "repository": "https://github.com/afflom/me",
+      "commit": "ee7a2d81c6b5d2146f7a4199bcbfe0aa2c8b6c85",
+      "sourcePath": "identity/PROTOCOL.md",
+      "path": "vendor/me/identity/PROTOCOL.md",
+      "sha256": "72c2c0c125522348cb78d636bd281836b94e2316560dd17b4a003157fb88ce77",
+      "bytes": 6096
+    },
+    {
+      "repository": "https://github.com/afflom/me",
+      "commit": "ee7a2d81c6b5d2146f7a4199bcbfe0aa2c8b6c85",
+      "sourcePath": "identity/test.mjs",
+      "path": "vendor/me/identity/test.mjs",
+      "sha256": "58d502e46d487603ebc336284316925118fe1d5b9a2428a51d65cae97d448907",
+      "bytes": 15468
+    },
+    {
+      "repository": "https://github.com/afflom/me",
+      "commit": "ee7a2d81c6b5d2146f7a4199bcbfe0aa2c8b6c85",
+      "sourcePath": "LICENSE-MIT",
+      "path": "vendor/me/LICENSE-MIT",
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee",
+      "bytes": 1075
+    },
+    {
+      "repository": "https://github.com/afflom/me",
+      "commit": "ee7a2d81c6b5d2146f7a4199bcbfe0aa2c8b6c85",
+      "sourcePath": "LICENSE-APACHE",
+      "path": "vendor/me/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "bytes": 9723
+    },
+    {
+      "repository": "https://github.com/UOR-Foundation/template",
+      "commit": "5b712b9d7b123af6c4545534ffa7c8b1647e7110",
+      "sourcePath": "frame/panels.mjs",
+      "path": "vendor/template/frame/panels.mjs",
+      "sha256": "f2db1617f0a6d14e4447c54bafc7aeb45c7cb152b0f5a0b27b5615f8ce8d7b92",
+      "bytes": 54295
+    },
+    {
+      "repository": "https://github.com/UOR-Foundation/template",
+      "commit": "5b712b9d7b123af6c4545534ffa7c8b1647e7110",
+      "sourcePath": "identity/prism-id.mjs",
+      "path": "vendor/template/identity/prism-id.mjs",
+      "sha256": "68482230e97b35a042295ec003687e745b34ba92275f0fc6a671bc1510f6d0d0",
+      "bytes": 174762
+    },
+    {
+      "repository": "https://github.com/UOR-Foundation/template",
+      "commit": "5b712b9d7b123af6c4545534ffa7c8b1647e7110",
+      "sourcePath": "LICENSE-MIT",
+      "path": "vendor/template/LICENSE-MIT",
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee",
+      "bytes": 1075
+    }
+  ]
+}

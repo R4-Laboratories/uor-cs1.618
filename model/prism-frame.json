@@ -1,0 +1,16 @@
+{
+  "schema": "cs1618/prism-frame/1",
+  "upstream": {
+    "spec": "prism/frame/1",
+    "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
+    "module": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849/prism-frame.mjs",
+    "source": {
+      "repository": "UOR-Foundation/template",
+      "commit": "5b712b9d7b123af6c4545534ffa7c8b1647e7110"
+    }
+  },
+  "url": "https://uor-foundation.github.io/template/frame/7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849/prism-frame.mjs",
+  "path": "public/prism-frame/frame.mjs",
+  "sha256": "7087830654aff9ba7f53ec4fe521330a3b0b42bcf9435bdd00f2cb76210df849",
+  "bytes": 62343
+}

@@ -1,0 +1,111 @@
+{
+  "name": "cs1.618",
+  "shortName": "cs1.618",
+  "live": "https://owner.github.io/prism-cs1618/",
+  "purpose": "Identity handoff admission for the cs1.618 browser tactical multiplayer FPS. Browser rendering, networking and cryptographic observations are supplied by the named host; this component admits a handoff only when all four checks pass. Send origin, fresh, signature or consent, separated by spaces; it answers allow or deny, and invalid request for anything else.",
+  "inputLabel": "Request: origin fresh signature consent",
+  "placeholder": "pass pass pass pass",
+  "submitLabel": "Decide",
+  "outputLabel": "Answer",
+  "answers": {
+    "positive": [
+      "allow"
+    ],
+    "negative": [
+      "deny"
+    ],
+    "refusal": "invalid request"
+  },
+  "promise": {
+    "headline": "Says conformant exactly when every policy file matches its lock.",
+    "detail": "Each of the six universal policy files is compared with the digest the lock records, and any file that drifted is named."
+  },
+  "claim": "CS-01: the app always answers deny when origin is fail. CS-02: the app always answers deny when fresh is fail. CS-03: the app always answers deny when signature is fail. CS-04: the app always answers deny when consent is fail.",
+  "proposition": {
+    "name": "judge",
+    "text": "judge request :=\n  origin is pass and fresh is pass and signature is pass and consent is pass → allow\n  otherwise → deny",
+    "plain": "Identity handoff admission for the cs1.618 browser tactical multiplayer FPS. Browser rendering, networking and cryptographic observations are supplied by the named host; this component admits a handoff only when all four checks pass."
+  },
+  "theorems": [
+    {
+      "name": "inv001Holds",
+      "statement": "no request meets breaksInv001: the app always answers deny when origin is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/Cs1618Proofs.lex.tex"
+    },
+    {
+      "name": "inv002Holds",
+      "statement": "no request meets breaksInv002: the app always answers deny when fresh is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/Cs1618Proofs.lex.tex"
+    },
+    {
+      "name": "inv003Holds",
+      "statement": "no request meets breaksInv003: the app always answers deny when signature is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/Cs1618Proofs.lex.tex"
+    },
+    {
+      "name": "inv004Holds",
+      "statement": "no request meets breaksInv004: the app always answers deny when consent is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/Cs1618Proofs.lex.tex"
+    }
+  ],
+  "pinned": [
+    {
+      "name": "cs1618_cs_01",
+      "what": "CS-01's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs1618.rs"
+    },
+    {
+      "name": "cs1618_cs_02",
+      "what": "CS-02's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs1618.rs"
+    },
+    {
+      "name": "cs1618_cs_03",
+      "what": "CS-03's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs1618.rs"
+    },
+    {
+      "name": "cs1618_cs_04",
+      "what": "CS-04's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs1618.rs"
+    }
+  ],
+  "trusted": [
+    {
+      "name": "SDK image",
+      "value": "the digest prismpm.lock pins; see the bootstrap workflow's log"
+    },
+    {
+      "name": "Lean toolchain",
+      "value": "leanprover/lean4:v4.32.1"
+    },
+    {
+      "name": "LexLean compiler semantics",
+      "value": "5262e5b4c8b5668ae7066ad686757a6bb7f80c941d515fb9d586894fbc7de69a"
+    },
+    {
+      "name": "prism-code runtime, vendored",
+      "value": "0.2.0, see try/vendor/prism-code/VENDOR.md"
+    },
+    {
+      "name": "Your browser",
+      "value": "runs the WebAssembly guest and this page"
+    }
+  ],
+  "attestations": {
+    "proof": {
+      "id": "not recorded: the proof ran in the SDK image, not on the UOR MCP server",
+      "url": "https://github.com/OWNER/prism-cs1618/actions/workflows/bootstrap.yml"
+    },
+    "build": {
+      "id": "printed by prismpm verify in every pages run",
+      "url": "https://github.com/OWNER/prism-cs1618/actions/workflows/pages.yml"
+    }
+  },
+  "repository": "https://github.com/OWNER/prism-cs1618",
+  "report": "https://github.com/OWNER/prism-cs1618/blob/main/TEMPLATE-VERIFICATION.md"
+}

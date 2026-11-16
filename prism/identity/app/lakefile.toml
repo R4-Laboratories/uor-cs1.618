@@ -1,0 +1,6 @@
+name = "PrismCs1618"
+version = "0.1.0"
+defaultTargets = ["PrismCs1618"]
+
+[[lean_lib]]
+name = "PrismCs1618"

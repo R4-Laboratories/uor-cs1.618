@@ -9,7 +9,7 @@ export class UI{
  $('app').innerHTML=`
  <div id="loading" class="loading"><div class="brand-mark">φ</div><span>LOADING MERIDIAN</span><small id="load-detail">Initializing Verdant Engine…</small></div>
  <main id="lobby" class="lobby hidden">
-  <header class="lobby-header"><a class="wordmark" href="./">cs<span>1.618</span><i>®</i></a><span class="header-label">TACTICAL HARMONY</span><a class="docs-link" href="./manual.html" target="_blank">FIELD MANUAL ↗</a></header>
+  <header class="lobby-header"><a class="wordmark" href="./">cs<span>1.618</span><i>®</i></a><span class="header-label">TACTICAL HARMONY</span><a class="docs-link" href="./identity.html">PRISM IDENTITY ↗</a><a class="docs-link" href="./manual.html" target="_blank">FIELD MANUAL ↗</a></header>
   <div class="lobby-body"><section class="intro"><div class="eyebrow"><span class="live-dot"></span> MULTIPLAYER TACTICAL FPS <span class="version">01 / MERIDIAN</span></div><h1>Every move.<br>In <em>proportion.</em></h1><p class="lede">Old-school precision. A new playing field.<br>Two teams. Two sites. One decisive round.</p>
    <form id="join-form" class="deploy-card"><div class="card-heading"><span>ENTER THE OPERATION</span><span class="square-mark">↗</span></div>
     <div class="form-grid"><label>CALLSIGN<input id="name" maxlength="18" placeholder="Your callsign" value="Operator" autocomplete="nickname" required></label><label id="server-room-field">ROOM CODE<input id="room" maxlength="20" pattern="[A-Za-z0-9-]+" value="MERIDIAN" aria-label="Room code" required></label></div>

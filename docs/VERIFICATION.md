@@ -68,3 +68,16 @@ The new experience contracts distinguish deterministic unit checks, synthetic fr
 ## v0.6.0 Verdant 3D import
 
 The engine dependency advances to `b2b29ca` and the browser uses its actual 22-joint character mesh and poses. Five Rust tests, 60 TypeScript tests, the production build, 42 artifact/source hashes and all four browser suites passed locally. UORust regenerated and checked the Rust inspection projection, including the new character ABI. The browser gameplay gate also checks active character poses, slot cleanup on leaving and a ten-player practice roster. See [integration scope](VERDANT-3D.md); the full Prism verification gate remains open.
+
+
+## 0.7.0 Prism integration and audit repair (2026-11-16)
+
+The repaired complete local verifier passed for round, evolution and identity, retaining real Lean attestations and application-acceptance evidence. Exact shipped Holo/WASM bindings were checked. Attestation ids:
+
+- Round: `a7269be0b54b1a28d650434824cad92d66cf54eabf63de089718b7f3da8c814f`
+- Evolution: `0ae7b36af2d737884064876d689a0061adc48c57304aba06128d0b5d2740ced3`
+- Identity: `8395125ead5d8bba66a50624b97959da87f3b51f8ce0227f61cc853ef49666ae`
+
+The recorded upstream verifier backport fixes PP5004 while retaining strict artifact closure and SDK checks; see [proof audit](proof-audit.md). This supersedes the earlier PP5004 blocker, not the documented limits of what the models prove.
+
+Runtime/build/custody checks and game, two-browser WebRTC, creative, sound/render-experience and identity browser suites passed locally. Identity checks exercise the actual published canonical frame, Holo examples, persisted nonextractable keys, wrong-code refusal, cross-device linking and explicit account-binding download. Registry acceptance and official GitHub audit results must be checked independently after publication.

@@ -1,0 +1,81 @@
+\begin{lexlean}{Features}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{Cs1618}
+\importmodule{Architecture}
+\importmodule{Foundation.Arch}
+\title{feature}
+\begin{semanticmodule}
+definition{name: acceptINV001, parameters: [], result: String, body: "Cs1618Proofs::inv001Holds"}
+
+definition{name: acceptINV002, parameters: [], result: String, body: "Cs1618Proofs::inv002Holds"}
+
+definition{name: acceptINV003, parameters: [], result: String, body: "Cs1618Proofs::inv003Holds"}
+
+definition{name: acceptINV004, parameters: [], result: String, body: "Cs1618Proofs::inv004Holds"}
+
+definition{
+  name: featureRule1,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "When origin is pass and fresh is pass and signature is pass and consent is pass, the answer is allow.", calls := (cons "Cs1618::rule1" (cons "Cs1618::judge" (nil String))), acceptance := (cons "Cs1618::application" (nil String))})
+}
+
+definition{
+  name: featureOtherwise,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "When no rule matches, the answer is deny.", calls := (cons "Cs1618::judge" (nil String)), acceptance := (cons "Cs1618::application" (nil String))})
+}
+
+definition{
+  name: featureRefuseMalformed,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "A request that is not origin, fresh, signature, consent in order, separated by single spaces, or is over 112 bytes, is answered invalid.", calls := (cons "Cs1618::dispatch" (cons "Cs1618::decodeField1" (nil String))), acceptance := (cons "Cs1618::application" (nil String))})
+}
+
+definition{
+  name: featureINV001,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers deny when origin is fail.", calls := (cons "Cs1618::judge" (nil String)), acceptance := (cons "Features::acceptINV001" (nil String))})
+}
+
+definition{
+  name: featureINV002,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers deny when fresh is fail.", calls := (cons "Cs1618::judge" (nil String)), acceptance := (cons "Features::acceptINV002" (nil String))})
+}
+
+definition{
+  name: featureINV003,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers deny when signature is fail.", calls := (cons "Cs1618::judge" (nil String)), acceptance := (cons "Features::acceptINV003" (nil String))})
+}
+
+definition{
+  name: featureINV004,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers deny when consent is fail.", calls := (cons "Cs1618::judge" (nil String)), acceptance := (cons "Features::acceptINV004" (nil String))})
+}
+
+definition{
+  name: journeyUser,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderUser", steps := (cons "Features::featureRule1" (cons "Features::featureOtherwise" (nil String)))})
+}
+
+definition{
+  name: journeyVerifier,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderVerifier", steps := (cons "Features::featureRefuseMalformed" (cons "Features::featureINV001" (cons "Features::featureINV002" (cons "Features::featureINV003" (cons "Features::featureINV004" (nil String))))))})
+}
+\end{semanticmodule}
+\end{lexlean}

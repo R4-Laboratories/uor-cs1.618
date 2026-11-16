@@ -1,0 +1,13 @@
+# Prism proof audit
+
+The audit runs `lexlean lock`, `lexlean fmt --check`, `prismpm check`, `prismpm build`, and the complete `prismpm verify` for the round, evolution, and identity applications. A successful report also requires the shipped core WASM and `.holo` archive to equal that verified build byte for byte. The identity application additionally binds `public/app.holo`, the discoverable copy.
+
+The pinned PrismPM 0.4.0 SDK has an upstream application replay defect: its build manifest contains the checked design projections, but application regeneration omits those inputs. Consequently the unchanged full verifier fails with `PP5004: application regeneration artifact closure differs`. The round manifest includes four `design/` projections.
+
+[Upstream commit 359d7f5](https://github.com/UOR-Foundation/prismpm/commit/359d7f5bfa8e01272ba6028c30c94459420ebb6a) fixes this by retaining `design/` and `oscal/` projections alongside the other separately attested snapshot inputs. The audit backports exactly those two conditions to the compiler source embedded in the immutable SDK image. The original source SHA-256, the resulting source SHA-256, and the reproducibly built compiler binary SHA-256 are pinned in `scripts/prism-verifier-backport.mjs`. It builds offline with the SDK's locked Cargo dependencies and runs the upstream regression test that rejects missing, extra, modified, and duplicate regenerated artifacts.
+
+The backported verifier is invoked by absolute path. The SDK PATH and inventory are unchanged, and the full verifier's proof, artifact, runtime, browser, and toolchain checks remain enabled. This is a recorded verifier backport, not a claim that the original SDK binary succeeds. `artifacts/proofs/verifier.json` records the upstream origin, source hashes, compiler binary hash, and mutation-test result. Each project report includes the full verification build/attestation IDs and shipped artifact hashes. The GitHub workflow retains the report and untruncated command log even on failure; successful runs also retain the verifier’s actual Lean attestation, application acceptance record, and verification manifest.
+
+Run `PRISM_PROJECT=round node scripts/proof-report.mjs` (or `evolution` / `identity`) with Docker available. `SDK_RUNNER` may instead name an executable wrapper that exposes the same pinned SDK and mounts this checkout at `/workspace`.
+
+These are application proofs. The identity component proves its modeled admission policy conditional on the host-supplied origin, freshness, signature, and consent observations. It does not itself prove browser cryptography, user consent, multiplayer networking, or the whole game.
