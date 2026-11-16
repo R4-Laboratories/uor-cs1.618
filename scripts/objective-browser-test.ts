@@ -27,6 +27,9 @@ try{
   Object.assign(pa,{x:-16,z:-11,vx:0,vz:0});Object.assign(pd,{x:0,z:-23,vx:0,vz:0});pa.inventory[pa.slot].ammo=0;
   await deploy(a);await a.waitForFunction(()=>document.getElementById('context-hint')!.textContent!.includes('HOLD E TO PLANT'));
   console.log('Holding plant');await a.keyboard.down('KeyE');await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress>.03);
+  // Snapshot delivery precedes the throttled HUD refresh. Assert the rendered
+  // interaction only after the visible DOM catches up to the real input state.
+  await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress>.03&&!document.getElementById('objective')!.classList.contains('hidden')&&parseFloat(document.getElementById('objective-progress')!.style.width)>0&&/PLANTING.*s/.test(document.getElementById('objective-text')!.textContent??''));
   assert.match(await a.locator('#objective-text').innerText(),/PLANTING.*s/);assert.doesNotMatch(await a.locator('#context-hint').innerText(),/PRESS R/);
   await a.screenshot({scale:'css',path:`artifacts/objective-plant-progress${plants===1?'':'-2'}.png`});
   // Exact3s timing is covered by real-engine unit tests. Advance only fixture
@@ -37,7 +40,9 @@ try{
  }
  await plant();console.log('Planted');passed.push('Real keyboard plant progress crosses WebSocket host and outranks empty-magazine hint; host fixture completes plant through normal objective/kernel path');
  Object.assign(pd,{x:-16,z:-11,vx:0,vz:0,kit:true});await deploy(d);await d.keyboard.down('KeyE');
- await d.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress>.03);assert.match(await d.locator('#objective-text').innerText(),/DEFUSING.*s/);
+ await d.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress>.03);
+ await d.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress>.03&&!document.getElementById('objective')!.classList.contains('hidden')&&parseFloat(document.getElementById('objective-progress')!.style.width)>0&&/DEFUSING.*s/.test(document.getElementById('objective-text')!.textContent??''));
+ assert.match(await d.locator('#objective-text').innerText(),/DEFUSING.*s/);
  await d.screenshot({scale:'css',path:'artifacts/objective-defuse-progress.png'});
  await d.keyboard.up('KeyE');await d.waitForFunction(()=>(window as any).cs1618.snapshot.self.progress===0);
  assert.equal(match.phase,'live');await d.keyboard.down('KeyE');await until(()=>pd.input.use&&pd.inputAge<.1);pd.progress=.999;pd.action='DEFUSING';await d.waitForFunction(()=>(window as any).cs1618.snapshot.bomb?.terminal==='defused');await d.keyboard.up('KeyE');

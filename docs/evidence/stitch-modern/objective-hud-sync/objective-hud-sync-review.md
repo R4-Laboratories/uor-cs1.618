@@ -1,0 +1,11 @@
+# Scoped objective HUD synchronization review
+
+**APPROVE — no blocking findings.** Reviewed only the uncommitted `scripts/objective-browser-test.ts` delta on `de43a992`, the failing Pages receipt, relevant snapshot/HUD scheduling lines, and focused normal/delayed-label evidence. Reviewed file SHA-256: `f78719d3de3bb34e4b1b0527280d3ecc2866d9095adb075940ec4c13c4037e96`. No source edits or duplicate suite runs were performed by this reviewer.
+
+The failure in Pages run `43932719362` is consistent with a synchronization race: the client snapshot already contains `action: PLANTING` and progress above .03, but the immediate text assertion reads the previous idle label ` · 10.0s`. `receive()` assigns the snapshot immediately; `frame()` refreshes the HUD only when accumulated UI time exceeds .08 seconds. Waiting on snapshot state alone did not establish rendered DOM state.
+
+The fix retains the original real-input and snapshot waits, then requires current positive snapshot progress, a non-hidden objective container, positive rendered progress width and the appropriate PLANTING/DEFUSING label. Existing text, empty-magazine priority, interruption, terminal state, winner/score, blast and once-only event assertions remain intact. Incorrect or absent HUD output still fails the existing bounded wait. No production behavior, timeout, input, timing fixture or rendering isolation changes; no unconditional sleep or assertion removal.
+
+Inspected `artifacts/objective-hud-delay-repro.ts` and its log: the isolated 400ms label-setter delay reproduces real positive progress with the stale label, confirms the old text predicate would fail, then passes the new synchronization and full focused gate. That injection exists only in the diagnostic artifact. The exact final mandatory script also passes all four focused checks in `artifacts/objective-hud-sync-green-final.log`. The implementer reports TypeScript passed; I independently confirmed the diff check. No broad game/build rerun is justified by this test-only delta.
+
+The existing HUD-only and late-progress/expiry fixture limits remain unchanged; these results do not become full-duration rendered-game evidence. Final remote Pages success and publication are still separate release outcomes. No actionable severity/file/line/reproduction finding remains.
