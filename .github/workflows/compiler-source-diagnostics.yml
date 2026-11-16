@@ -7,6 +7,7 @@ on:
       - 'scripts/numeric/compiler-candidate/**'
       - 'scripts/numeric/restore-compiler-candidate.py'
       - 'scripts/numeric/check-compiler-source-stage.sh'
+      - 'scripts/numeric/prepare-compiler-test-tools.sh'
   workflow_dispatch:
 permissions:
   contents: read
@@ -36,6 +37,7 @@ jobs:
           printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
           df -h > evidence/disk-before.txt
           docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
+          printf '%s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}" > evidence/runner-image.txt
       - name: Pull the unchanged pinned SDK
         run: |
           set -euo pipefail

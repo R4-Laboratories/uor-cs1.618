@@ -17,6 +17,8 @@ export PATH="$(dirname "$(elan which lean)"):$PATH"
   sha256sum "$(command -v lean)" "$(rustup which rustc)" "$(rustup which cargo)" "$(command -v node)"
   sha256sum /opt/prismpm/share/inventory.json
 } > /evidence/tool-identities.txt
+sha256sum "$(command -v lean)" "$(rustup which rustc)" "$(rustup which cargo)" "$(command -v node)" \
+  /opt/prismpm/share/inventory.json > /evidence/original-sdk-files.sha256
 
 # The SDK's registry cache predates this source lock. Cargo verifies the exact
 # lockfile checksums; neither dependency versions nor the lockfile are changed.
@@ -33,6 +35,8 @@ export PATH="/tmp/compiler-test-tools/bin:$PATH"
 rg --version > /evidence/test-tools/ripgrep-version.txt
 sha256sum /tmp/compiler-test-tools/bin/rg > /evidence/test-tools/ripgrep-sha256.txt
 cp /tmp/compiler-test-tools/.crates.toml /evidence/test-tools/
+source /game/scripts/numeric/prepare-compiler-test-tools.sh > /evidence/test-tool-preparation.log 2>&1
+sha256sum -c /evidence/original-sdk-files.sha256
 
 if ! (cd lean && lake build ProdLib) > /evidence/compiler-preflight.log 2>&1; then
   printf '%s\n' 'Compiler build failed; downstream source gates were not run.' > /evidence/preflight-failure.txt
@@ -54,4 +58,8 @@ if test -s /tmp/numeric-evidence-paths; then
   tar --null -T /tmp/numeric-evidence-paths -czf /evidence/focused-generated-evidence.tar.gz
 fi
 sha256sum -c /evidence/cargo-lock-before.txt
+sha256sum -c /evidence/original-sdk-files.sha256
+if test -d "$WASM_PACK_CACHE"; then
+  find "$WASM_PACK_CACHE" -type f -print0 | sort -z | xargs -0 -r sha256sum > /evidence/test-tools/wasm-pack-cache.sha256
+fi
 exit "$gate_status"
