@@ -6,7 +6,7 @@
     {
       "id": "V3D-01",
       "level": "built-and-tested",
-      "behavior": "HD hall, bridge and canopy meshes at LOD0 through LOD4, generated in a worker and presented in Meridian's exterior",
+      "behavior": "HD hall, bridge and canopy meshes at LOD0 through LOD4, generated in a worker and presented on Meridian's inaccessible roofline and exterior",
       "gate": "tests/verdant-3d.test.ts; tests/hd-layer.test.ts; scripts/experience-browser-test.ts"
     },
     {
@@ -29,7 +29,7 @@
     }
   ],
   "boundary": "Compiled LexLean/PrismPM round, evolution and identity guests remain mandatory and unchanged. Engine source contains its upstream generated Prism kernels. Local adapters and browser rendering remain empirical/open claims, not a proof of the complete game.",
-  "geometry": "Exterior scenery only. Meridian movement, shots, objectives and bot navigation retain the same authoritative map.",
+  "geometry": "Visual geometry is above the 6 m playable clearance envelope or outside the map boundary. Meridian movement, shots, objectives and bot navigation retain the same authoritative map.",
   "quality": {
     "lodMin": 0,
     "lodMax": 4,
@@ -41,5 +41,79 @@
     "headroomMicros": 8000,
     "overloadMicros": 20000
   },
-  "authorship": "Human-requested upstream integration; not counted as an autonomous evolution promotion."
+  "authorship": "Human-requested upstream integration; not counted as an autonomous evolution promotion.",
+  "placements": [
+    {
+      "asset": 0,
+      "x": -12,
+      "y": 7.5,
+      "z": 13,
+      "rotation": 0,
+      "scale": 1
+    },
+    {
+      "asset": 0,
+      "x": 12,
+      "y": 7.5,
+      "z": 13,
+      "rotation": 0,
+      "scale": 1
+    },
+    {
+      "asset": 1,
+      "x": 0,
+      "y": 7,
+      "z": 13,
+      "rotation": 0,
+      "scale": 1
+    },
+    {
+      "asset": 2,
+      "x": -35,
+      "y": 0,
+      "z": -20,
+      "rotation": 0,
+      "scale": 3
+    },
+    {
+      "asset": 2,
+      "x": 35,
+      "y": 0,
+      "z": -20,
+      "rotation": 0,
+      "scale": 3
+    },
+    {
+      "asset": 2,
+      "x": -35,
+      "y": 0,
+      "z": 15,
+      "rotation": 0,
+      "scale": 3
+    },
+    {
+      "asset": 2,
+      "x": 35,
+      "y": 0,
+      "z": 15,
+      "rotation": 0,
+      "scale": 3
+    },
+    {
+      "asset": 2,
+      "x": -18,
+      "y": 0,
+      "z": 36,
+      "rotation": 0,
+      "scale": 3
+    },
+    {
+      "asset": 2,
+      "x": 18,
+      "y": 0,
+      "z": 36,
+      "rotation": 0,
+      "scale": 3
+    }
+  ]
 }

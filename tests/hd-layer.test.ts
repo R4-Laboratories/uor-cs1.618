@@ -18,3 +18,15 @@ test('late worker results cannot override a newer quality choice',async()=>{
  const layer=new HdLayer(new T.Scene(),lod=>lod===4?new Promise(r=>finish=r):Promise.resolve(assets));
  const high=layer.setLod(4);await layer.setLod(0);finish(assets);await high;assert.equal(layer.diagnostics.lod,0);layer.dispose();
 });
+test('imported bridge is visible from the attack approach and detail clears playable space',async()=>{
+ const layer=new HdLayer(new T.Scene(),async lod=>[0,1,2].map(k=>engine.hdAsset(k,lod)));
+ await layer.setLod(2);layer.group.updateMatrixWorld(true);
+ const origin=new T.Vector3(0,1.62,22),direction=new T.Vector3(0,8.5,13).sub(origin).normalize();
+ const hits=new T.Raycaster(origin,direction,0,30).intersectObject(layer.group,true);
+ assert(hits.length>0,'HD architecture must actually appear along the attack approach');
+ assert(engine.ray(origin.x,origin.y,origin.z,direction.x,direction.y,direction.z,30)>=hits[0].distance,'Map walls must not hide the imported landmark');
+ for(const child of layer.group.children){const b=new T.Box3().setFromObject(child);
+  assert(b.min.y>=6||b.max.x< -27||b.min.x>27||b.max.z< -27||b.min.z>27,'Visual geometry must clear the playable routes and target silhouettes');
+ }
+ layer.dispose();
+});

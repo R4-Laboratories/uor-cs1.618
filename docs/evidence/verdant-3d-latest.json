@@ -4,7 +4,7 @@
   "version": "0.8.0",
   "localValidation": {
     "nativeRustTests": 8,
-    "typescriptTests": 94,
+    "typescriptTests": 95,
     "uorustProjection": "current",
     "browser": {
       "passed": [
@@ -36,7 +36,7 @@
     "creative": "passed",
     "identity": "passed",
     "experience": {
-      "url": "http://127.0.0.1:36987/",
+      "url": "http://127.0.0.1:34353/",
       "sound": {
         "rows": [
           {
@@ -106,8 +106,8 @@
             "weapon": "smg",
             "occluded": true,
             "peak": 0.0202109906822443,
-            "left": 2.3510289924018474e-8,
-            "right": 9.372015805584654e-7,
+            "left": 2.351028992101064e-8,
+            "right": 9.372015804385616e-7,
             "tail": 0,
             "ended": 1
           },
@@ -150,13 +150,13 @@
       "hd": {
         "hd0": {
           "lod": 0,
-          "triangles": 5212,
+          "triangles": 5492,
           "status": "ready",
           "error": ""
         },
         "hd4": {
           "lod": 4,
-          "triangles": 92036,
+          "triangles": 127612,
           "status": "ready",
           "error": ""
         }
@@ -165,7 +165,8 @@
       "settingsPersist": true,
       "mobileFits": true,
       "errors": []
-    }
+    },
+    "visibility": "Real Three raycast reaches the imported bridge before authoritative map geometry; HD bounds clear playable space"
   },
   "engineWasm": {
     "bytes": 261647,
@@ -190,5 +191,13 @@
       "Rapid quality changes can queue redundant worker generations",
       "Repeated setEngine calls retain prior character shared assets; startup invokes it once"
     ]
+  },
+  "formalAudit": {
+    "run": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43884108122",
+    "commit": "c9b282aeef3b6ae9cb8a88b65da562afdb705435",
+    "round": "success",
+    "evolution": "success",
+    "identity": "success",
+    "scope": "Same retained compiled guests and engine Wasm; subsequent roofline placement is empirically checked host code, not a new formal proof"
   }
 }

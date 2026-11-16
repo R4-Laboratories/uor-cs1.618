@@ -1,7 +1,8 @@
 import * as T from 'three';
+import {placements} from '../model/verdant-3d.json';
 import type {HdAsset} from '../shared/engine';
 export type HdLoader=(lod:number)=>Promise<HdAsset[]>;
-/** Exterior detail is visual only; it never inserts unmatched cover into the multiplayer map. */
+/** Roofline and exterior detail is visual only; it never inserts unmatched cover into the multiplayer map. */
 export class HdLayer {
  readonly group=new T.Group();private serial=0;private released=false;
  diagnostics={lod:-1,triangles:0,status:'loading',error:''};
@@ -13,11 +14,9 @@ export class HdLayer {
    const assets=await this.load(lod);if(this.released||serial!==this.serial)return;
    const geometries=assets.map(a=>{const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(a.positions.flat(),3));g.setAttribute('normal',new T.Float32BufferAttribute(a.normals.flat(),3));g.setAttribute('uv',new T.Float32BufferAttribute(a.uvs.flat(),2));g.setAttribute('color',new T.Float32BufferAttribute(a.colors.map(c=>c.slice(0,3)).flat(),3));g.setIndex(a.indices);g.computeBoundingSphere();return g;});
    this.clear();const material=new T.MeshStandardMaterial({vertexColors:true,roughness:.88,metalness:.02});
-   // Hall north of defender spawn, two bridges and six canopy silhouettes outside the boundary walls.
-   const placements=[[0,0,0,-43,0],[1,-43,0,0,Math.PI/2],[1,43,0,0,Math.PI/2],
-    [2,-35,0,-20,0],[2,35,0,-20,0],[2,-35,0,15,0],[2,35,0,15,0],[2,-18,0,36,0],[2,18,0,36,0]];
-   for(const [kind,x,y,z,rotation]of placements){const m=new T.Mesh(geometries[kind],material);m.position.set(x,y,z);m.rotation.y=rotation;m.receiveShadow=true;this.group.add(m);}
-   this.diagnostics={lod,triangles:placements.reduce((n,p)=>n+assets[p[0]].indices.length/3,0),status:'ready',error:''};
+   // Model-owned placements clear all playable routes and target silhouettes.
+   for(const {asset,x,y,z,rotation,scale}of placements){const m=new T.Mesh(geometries[asset],material);m.name=assets[asset].name;m.position.set(x,y,z);m.rotation.y=rotation;m.scale.setScalar(scale);m.receiveShadow=true;this.group.add(m);}
+   this.diagnostics={lod,triangles:placements.reduce((n,p)=>n+assets[p.asset].indices.length/3,0),status:'ready',error:''};
   }catch(error){if(serial===this.serial&&!this.released){this.diagnostics.status='failed';this.diagnostics.error=String(error);}throw error;}
  }
  private clear(){const geometry=new Set<T.BufferGeometry>(),materials=new Set<T.Material>();for(const child of this.group.children){const m=child as T.Mesh;geometry.add(m.geometry);materials.add(m.material as T.Material);}this.group.clear();geometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}

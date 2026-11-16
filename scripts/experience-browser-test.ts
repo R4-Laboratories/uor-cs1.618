@@ -27,6 +27,11 @@ try{
 
  await page.click('#practice');await page.waitForSelector('#deploy-overlay:not(.hidden)');await page.click('#deploy');
  await page.waitForFunction(()=>(window as any).cs1618.cameraGuard?.guarded);
+ await page.locator('#render-quality').selectOption('native',{force:true});
+ await page.waitForFunction(()=>(window as any).cs1618.hd?.lod===4&&(window as any).cs1618.hd.status==='ready');
+ await page.evaluate(()=>document.dispatchEvent(new MouseEvent('mousemove',{movementX:0,movementY:-100,bubbles:true})));
+ await page.screenshot({path:'artifacts/experience/verdant-play-hd4.png'});
+ await page.locator('#render-quality').selectOption('low',{force:true});
  const seqBefore=await page.evaluate(()=>(window as any).cs1618.snapshot.self.seq);
  await page.setViewportSize({width:1200,height:1});await page.waitForFunction(()=>!!(window as any).cs1618.cameraError);
  await page.setViewportSize({width:960,height:640});

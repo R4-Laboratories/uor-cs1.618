@@ -136,4 +136,4 @@ The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity
 
 ## Latest engine integration
 
-[Verdant 3D upgrade](docs/VERDANT-3D.md): pinned `9b6c14d`, HD exterior geometry at LOD0–4, worker generation, triangle-guarded first-person cameras, and the upstream frame-budget governor. Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.
+[Verdant 3D upgrade](docs/VERDANT-3D.md): pinned `9b6c14d`, HD roofline and exterior geometry at LOD0–4, worker generation, triangle-guarded first-person cameras, and the upstream frame-budget governor. Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.

@@ -152,7 +152,7 @@ function tick(){
 function frame(now:number){
  const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;accumulator+=dt;
  while(accumulator>=1/60){tick();accumulator-=1/60;}
- if(ui.pauseOpen&&view.hd){const h=view.hd.diagnostics;$('hd-status').textContent=h.status==='failed'?'HD geometry unavailable':`Verdant HD${Math.max(0,h.lod)} · ${h.triangles.toLocaleString()} exterior triangles · ${h.status}`;}
+ if(ui.pauseOpen&&view.hd){const h=view.hd.diagnostics;$('hd-status').textContent=h.status==='failed'?'HD geometry unavailable':`Verdant HD${Math.max(0,h.lod)} · ${h.triangles.toLocaleString()} detail triangles · ${h.status}`;}
  prismFrame.hidden=!!snapshot&&!ui.pauseOpen;const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target,!!snapshot&&!ui.pauseOpen);lastRender=now;}
  ui.show('camera-warning',!!view.cameraError);
  if(snapshot&&position){
