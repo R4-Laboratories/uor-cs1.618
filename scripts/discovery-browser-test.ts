@@ -29,14 +29,14 @@ for(const context of [ca,cb]){
  });
 }
 const a=await ca.newPage(),b=await cb.newPage();
-async function injectSubstitute(invite:string){
+async function injectSubstitute(invite:string,layoutRooms=false){
  const code=new URLSearchParams(new URL(invite).hash.slice(1)).get('p2p')!,[room,token]=code.split('.');
  const topic='prism-matches:'+Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`cs1618/matches/1 ${url}`))),b=>b.toString(16).padStart(2,'0')).join('');
  const bus=createRelayBus({WebSocket:null,BroadcastChannel:null,fetch:async(address:string,init:RequestInit)=>{
   const name=new URL(address).pathname.slice(1),list=events.get(name)??[];
   assert.equal(JSON.parse(String(init.body)).v,'stitch/1');list.push({id:String(++posts),time:Math.floor(Date.now()/1000),event:'message',topic:name,message:String(init.body)});events.set(name,list);return new Response('{}');
  }});
- try{await bus.publish(topic,encodeListing(await signListing(await createIdentity(),url,{room,token,name:'Substitute host',players:1,capacity:10,map:'meridian',signaling:url+'/signal'})));}finally{bus.close();}
+ try{const identity=await createIdentity();for(let i=0;i<(layoutRooms?8:1);i++)await bus.publish(topic,encodeListing(await signListing(identity,url,{room:layoutRooms?(1000+i).toString(16).padStart(12,'0'):room,token,name:layoutRooms?`Verified room ${i+1}`:'Substitute host',players:1,capacity:10,map:'meridian',signaling:url+'/signal'})));}finally{bus.close();}
 }
 for(const p of [a,b]){p.setDefaultTimeout(30000);p.on('pageerror',e=>errors.push(e.message));}
 async function setup(p:Page,name:string){await p.goto(url);await p.waitForSelector('#lobby:not(.hidden)');await p.fill('#name',name);await p.locator('#connection-settings').evaluate((e:HTMLDetailsElement)=>e.open=true);await p.fill('#signaling-server',url+'/signal');await p.fill('#stun-servers','');await p.uncheck('#fill-bots');}
@@ -49,6 +49,18 @@ try{
  assert.ok(posts>0);await b.click('#refresh-matches');await b.locator('[data-discovery-join]').first().waitFor();
  assert.match((await b.locator('#match-list').textContent())!,/Directory host/);
  checks.push('Public default discloses publication; real signed multi-frame Stitch listing crosses isolated contexts');
+ await injectSubstitute(await a.locator('.invitation-link').first().inputValue(),true);await b.click('#refresh-matches');await b.waitForFunction(()=>document.querySelectorAll('.match-row').length===9);
+ await b.locator('#connection-settings').evaluate((e:HTMLDetailsElement)=>e.open=false);
+ await mkdir('artifacts',{recursive:true});
+ for(const [name,width,height] of [['desktop',1280,900],['mobile',390,844]] as const){
+  await b.setViewportSize({width,height});await b.locator('#match-list').scrollIntoViewIfNeeded();
+  assert(await b.evaluate(()=>document.documentElement.scrollWidth<=innerWidth&&document.querySelector('#lobby')!.scrollWidth<=innerWidth),'Lobby must not overflow horizontally');
+  assert(await b.locator('#match-list').evaluate(el=>{el.scrollTop=50;return el.scrollHeight>el.clientHeight&&el.scrollTop>0;}),'Verified room list must scroll within its own bounded area');
+  await b.locator('#match-list').evaluate(el=>el.scrollTop=0);
+  await b.screenshot({path:`artifacts/discovery-lobby-${name}.png`});
+ }
+ await b.setViewportSize({width:1280,height:720});
+ checks.push('Desktop and mobile verified listings fit horizontally and scroll within a bounded list');
  await b.locator('[data-discovery-join]').first().click();await b.waitForFunction(()=>(window as any).cs1618.network.mode==='guest');
  await b.waitForFunction(()=>(window as any).cs1618.network.hostVerified===true);await a.waitForFunction(()=>(window as any).cs1618.snapshot.players.length===2);
  checks.push('Discovery pins Prism and completes a fresh host proof before real WebRTC welcome');

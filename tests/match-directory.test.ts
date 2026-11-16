@@ -26,3 +26,26 @@ test('real Stitch relay HTTP framing publishes, discovers, withdraws and reports
   down=true;await b.refresh();assert.match(status.at(-1)!,/unavailable/i);
  }finally{await a.stop();await b.stop();}
 });
+test('stop and stopHosting synchronously cancel queued or signing publications before relay writes',async()=>{
+ const [{runInNewContext},ts,discovery,stitch]=await Promise.all([
+  import('node:vm'),import('typescript'),import('../shared/match-discovery'),
+  // @ts-expect-error Unchanged upstream JS is the real framed transport.
+  import('../vendor/stitch/src/prism-id.js'),
+ ]);
+ const compiled=ts.default.transpileModule(readFileSync('src/match-directory.ts','utf8'),{compilerOptions:{target:ts.default.ScriptTarget.ES2022,module:ts.default.ModuleKind.CommonJS}}).outputText;
+ const policy=await HologramPolicy.load(readFileSync('public/app.holo')),host=await createIdentity();
+ const fields=()=>({room:'012345abcdef',token:'1'.repeat(32),name:'Host',players:1,capacity:10,map:'meridian',signaling:'peerjs-cloud'});
+ for(const method of ['stop','stopHosting'] as const)for(const phase of ['queued','signing']){
+  let release!:()=>void,entered!:()=>void,posts=0;const held=new Promise<void>(r=>release=r),signing=new Promise<void>(r=>entered=r),intervals=new Set<()=>void>();
+  const exports:Record<string,any>={};
+  runInNewContext(compiled,{exports,require:(name:string)=>name.includes('prism-id')?stitch:{...discovery,signListing:async(...args:Parameters<typeof discovery.signListing>)=>{entered();await held;return discovery.signListing(...args);}},crypto,TextEncoder,TextDecoder,URL,Response,Blob,AbortController,Uint8Array,setTimeout,clearTimeout,setInterval:(fn:()=>void)=>{intervals.add(fn);return fn;},clearInterval:(fn:()=>void)=>intervals.delete(fn)});
+  const d=new exports.MatchDirectory({audience:'https://game.example',policy,changed:()=>{},status:()=>{},fetch:async(_url:string,init:RequestInit)=>{if(init.method==='POST')posts++;return new Response('');}});
+  try{
+   await d.start();const publication=d.publishHost(host,fields);
+   if(phase==='signing')await signing;
+   const stopped=d[method]();release();await Promise.all([publication,stopped]);
+   for(const callback of intervals)callback();await new Promise(r=>setImmediate(r));
+   assert.equal(posts,0,`${method} must cancel ${phase} listing without a relay POST or later refresh`);
+  }finally{release();await d.stop();}
+ }
+});

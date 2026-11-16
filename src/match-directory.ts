@@ -3,7 +3,7 @@ import {createRelayBus} from '../vendor/stitch/src/prism-id.js';
 import {MatchRecords,signListing,encodeListing,MATCH_REFRESH_MS,type MatchFields} from '../shared/match-discovery';
 import type {HologramPolicy} from '../shared/hologram-policy';
 interface Options {audience:string;policy:HologramPolicy;changed:()=>void;status:(message:string)=>void;publication?:(message:string)=>void;fetch?:typeof fetch;}
-interface Publication {session:any;fields:()=>MatchFields;at:number;}
+interface Publication {session:any;fields:()=>MatchFields;at:number;published:boolean;}
 /** Polling uses upstream retained/framing; HTTP errors are surfaced before its empty-result fallback. */
 export class MatchDirectory {
  private records:MatchRecords;
@@ -12,6 +12,9 @@ export class MatchDirectory {
  private poll:ReturnType<typeof setInterval>|null=null;private lease:ReturnType<typeof setInterval>|null=null;
  private host:Publication|null=null;private publishing:Promise<void>|null=null;
  private requests=new Set<AbortController>();
+ private generation=0;
+ private retiring:Promise<void>=Promise.resolve();
+ private closing:Promise<void>|null=null;
  constructor(private options:Options){
   this.records=new MatchRecords(options.audience,options.policy);
   this.bus=createRelayBus({WebSocket:null,BroadcastChannel:null,fetch:async(url:string,init:RequestInit={})=>{
@@ -47,16 +50,21 @@ export class MatchDirectory {
   finally{this.refreshing=false;}
  }
  async publishHost(session:any,fields:()=>MatchFields){
-  await this.stopHosting();if(this.closed)throw Error('Directory closed');
-  this.host={session,fields,at:0};await this.publish();
+  if(this.closed)return;
+  const generation=++this.generation;await this.retireHost();
+  if(this.closed||generation!==this.generation)return;
+  this.host={session,fields,at:0,published:false};await this.publish();
  }
  private async publish(){
   if(!this.host||this.closed||this.publishing)return;
-  const held=this.host;
+  const held=this.host,generation=this.generation;
   this.publishing=(async()=>{
    try{
     held.at=Math.max(Date.now(),held.at+1);
     const proof=await signListing(held.session,this.options.audience,held.fields(),held.at);
+    if(this.closed||this.host!==held||generation!==this.generation)return;
+    // Even a partially acknowledged publication needs a deliberate withdrawal.
+    held.published=true;
     const acknowledged=await this.bus.publish(this.topic,encodeListing(proof));
     if(this.host!==held||this.closed)return;
     if(!acknowledged)throw Error('Not acknowledged');
@@ -66,18 +74,28 @@ export class MatchDirectory {
   })();
   try{await this.publishing;}finally{this.publishing=null;}
  }
- async stopHosting(){
-  const held=this.host;this.host=null;if(!held)return;
-  await this.publishing;
-  try{
-   const proof=await signListing(held.session,this.options.audience,held.fields(),Math.max(Date.now(),held.at+1),true);
-   await this.records.accept(encodeListing(proof));this.options.changed();
-   if(!await this.bus.publish(this.topic,encodeListing(proof)))throw Error('Not acknowledged');
-  }catch{this.options.status('Withdrawal unavailable; the last public listing expires within 45 seconds.');}
+ stopHosting(){
+  // Cancel queued starts and pending signing synchronously, before any await.
+  this.generation++;return this.retireHost();
  }
- async stop(){
-  if(this.closed)return;
+ private retireHost(){
+  const held=this.host,publishing=this.publishing,previous=this.retiring;this.host=null;
+  this.retiring=(async()=>{
+   await previous;await publishing;
+   // A cancelled signer which never called the relay has nothing to withdraw.
+   if(!held?.published)return;
+   try{
+    const proof=await signListing(held.session,this.options.audience,held.fields(),Math.max(Date.now(),held.at+1),true);
+    await this.records.accept(encodeListing(proof));this.options.changed();
+    if(!await this.bus.publish(this.topic,encodeListing(proof)))throw Error('Not acknowledged');
+   }catch{this.options.status('Withdrawal unavailable; the last public listing expires within 45 seconds.');}
+  })();return this.retiring;
+ }
+ stop(){
+  if(this.closing)return this.closing;
+  this.closed=true;
   if(this.poll)clearInterval(this.poll);if(this.lease)clearInterval(this.lease);
-  await this.stopHosting();this.closed=true;for(const request of this.requests)request.abort();this.bus.close();
+  this.closing=this.stopHosting().finally(()=>{for(const request of this.requests)request.abort();this.bus.close();});
+  return this.closing;
  }
 }

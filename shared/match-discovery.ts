@@ -10,12 +10,12 @@ const encoder=new TextEncoder();
 export function supportedSignaling(value:unknown,audience:string):value is string {
  if(value==='peerjs-cloud')return true;
  if(typeof value!=='string'||value.length>512)return false;
- try{const u=new URL(value);return u.origin===audience&&!u.username&&!u.password&&!u.search&&!u.hash&&u.href===value;}catch{return false;}
+ try{const u=new URL(value);return (u.protocol==='http:'||u.protocol==='https:')&&u.origin===audience&&!u.username&&!u.password&&!u.search&&!u.hash&&u.href===value;}catch{return false;}
 }
 function invitation(p:any){return /^[a-f0-9]{12}$/.test(p?.room)&&/^[a-f0-9]{32}$/.test(p?.token);}
 function fresh(at:unknown,expires:unknown,now:number,duration:number){return Number.isSafeInteger(at)&&Number.isSafeInteger(expires)&&(at as number)<=now+2000&&(at as number)>=now-duration&&(expires as number)>now&&(expires as number)<=(at as number)+duration;}
 function listingShape(p:any,audience:string,now:number):boolean {
- return !!p&&Object.keys(p).sort().join(',')==='at,capacity,expires,kind,map,name,players,protocol,room,signaling,token,visibility,withdrawn'&&p.kind==='cs1618/match/1'&&p.protocol===MATCH_PROTOCOL&&p.visibility==='public'&&typeof p.withdrawn==='boolean'&&invitation(p)&&p.map==='meridian'&&typeof p.name==='string'&&p.name.length>0&&p.name.length<=32&&Number.isInteger(p.players)&&p.players>=1&&p.players<=10&&p.capacity===10&&supportedSignaling(p.signaling,audience)&&fresh(p.at,p.expires,now,MATCH_LEASE_MS);
+ return !!p&&Object.keys(p).sort().join(',')==='at,capacity,expires,kind,map,name,players,protocol,room,signaling,token,visibility,withdrawn'&&p.kind==='cs1618/match/1'&&p.protocol===MATCH_PROTOCOL&&p.visibility==='public'&&typeof p.withdrawn==='boolean'&&invitation(p)&&p.map==='meridian'&&typeof p.name==='string'&&p.name.length>0&&p.name.length<=32&&Number.isInteger(p.players)&&p.players>=1&&p.players<=10&&p.capacity===10&&supportedSignaling(p.signaling,audience)&&p.expires===p.at+MATCH_LEASE_MS&&fresh(p.at,p.expires,now,MATCH_LEASE_MS);
 }
 export async function signListing(session:any,audience:string,fields:MatchFields,now=Date.now(),withdrawn=false):Promise<IdentityProof>{
  const {room,token,name,players,capacity,map,signaling}=fields;

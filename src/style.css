@@ -8,10 +8,13 @@
 /* Canonical Prism chrome stays available in the lobby and operator menu. */
 prism-frame{position:fixed;inset:0 0 auto;z-index:50}prism-frame[hidden]{display:none!important}.lobby{padding-top:var(--cs-prism-height,54px)}.pause-card{margin-top:var(--cs-prism-height,54px)}prism-frame [slot="status"]{cursor:pointer}
 /* Public discovery is visible before the hosting gesture; private invitations stay available. */
-.discovery-note,.match-directory p{font-size:.76rem;line-height:1.5;color:var(--muted,#b2c1c0)}
+.discovery-note,.match-directory p{font-size:.76rem;line-height:1.5;color:#b2c1c0}
 .match-directory{margin:14px 0;padding:14px;border:1px solid #354949;background:#12242680}
 .directory-heading,.match-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .directory-heading>strong{font-size:.76rem;letter-spacing:.12em}
 .match-directory .secondary{width:auto;min-width:72px;padding:9px 12px;margin:0;font-size:.72rem}
 .match-row{border-top:1px solid #354949;padding:12px 0}.match-row>span{min-width:0}.match-row strong,.match-row small{display:block;overflow-wrap:anywhere}.match-row small{font-size:.67rem;margin-top:5px;color:#b2c1c0}
 .publication-state{font-size:.78rem;line-height:1.5;color:#b9d5bc}
+#match-list{max-height:260px;overflow-y:auto;overscroll-behavior:contain}
+
+#room-visibility{width:100%;margin-top:8px;padding:10px;background:#13272d;color:var(--mint);border:1px solid var(--line);font:12px 'Barlow',sans-serif}

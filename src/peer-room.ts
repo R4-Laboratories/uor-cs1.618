@@ -19,6 +19,8 @@ export class PeerRoom {
  private links=new Map<string,Link>();
  private stopped=false;
  private joined=false;
+ // Crypto remains in flight even after its link is removed.
+ private signing=0;
  private startup!:ReturnType<typeof setTimeout>;
  private monitor!:ReturnType<typeof setInterval>;
  private resolve!:()=>void;
@@ -123,9 +125,10 @@ export class PeerRoom {
   if(this.options.host){
    if(message.type==='host-challenge'){
     if(realtime||link.proofState!=='none'||!this.options.hostIdentity||message.room!==this.options.invitation.room||message.token!==this.options.invitation.token||message.hostPeer!==this.peer.id||message.guestPeer!==link.connection.peer||message.signaling!==this.signaling()||typeof message.challenge!=='string'||!/^[a-f0-9]{64}$/.test(message.challenge)){this.remove(link,'Host challenge refused.');return;}
-    link.proofState='verifying';
+    if(this.signing>=4){this.remove(link,'Host proof capacity exceeded. Try again shortly.');return;}
+    this.signing++;link.proofState='verifying';
     const binding:HostBinding={room:message.room,token:message.token,hostPeer:message.hostPeer,guestPeer:message.guestPeer,signaling:message.signaling,challenge:message.challenge};
-    void signHostProof(this.options.hostIdentity,location.origin,binding).then(proof=>{if(this.stopped||!this.links.has(link.id))return;link.proofState='verified';this.transmit(link,{type:'host-proof',proof},false);}).catch(()=>this.remove(link,'Could not prove the host identity.'));return;
+    void signHostProof(this.options.hostIdentity,location.origin,binding).then(proof=>{if(this.stopped||!this.links.has(link.id))return;link.proofState='verified';this.transmit(link,{type:'host-proof',proof},false);}).catch(()=>this.remove(link,'Could not prove the host identity.')).finally(()=>{this.signing--;});return;
    }
    if(link.proofState==='verifying'){this.remove(link,'Wait for the host proof.');return;}
    if(realtime&&message.type!=='input')return;

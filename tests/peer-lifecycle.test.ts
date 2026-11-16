@@ -71,3 +71,24 @@ test('discovery guests refuse every gameplay packet until a live host proof has 
   assert.equal(sent.some(p=>p.type==='join'),false);
  }
 });
+test('closing challenged links does not release the room-wide pending-signature budget',async()=>{
+ let peer!:FakePeer,startedSignatures=0;const pending:{resolve:(proof:any)=>void;reject:(reason:Error)=>void}[]=[],sent:any[]=[];
+ const channel=()=>({readyState:'open',bufferedAmount:0,send:(s:string)=>sent.push(JSON.parse(s)),close:()=>{}});
+ class Connection extends EventEmitter {
+  peer='guest';label='cs1618-v2';metadata={protocol:'cs1618-v2'};serialization='raw';dataChannel=channel();
+  peerConnection={ondatachannel:null,addEventListener:()=>{},createDataChannel:channel};close(){}
+ }
+ class FakePeer extends EventEmitter {id='cs1618-v2-123456789abc';constructor(){super();peer=this;}destroy(){}}
+ class FakeWorker {onmessage:any;postMessage(m:any){if(m.type==='init')this.onmessage({data:{type:'ready'}});}terminate(){}}
+ const exports:Record<string,any>={};
+ runInNewContext(compiled,{exports,require:(name:string)=>name==='peerjs'?{default:FakePeer}:name.includes('match-discovery')?{signHostProof:()=>{startedSignatures++;return new Promise((resolve,reject)=>pending.push({resolve,reject}));}}:{PEER_PROTOCOL:'cs1618-v2',invitationUrl:()=>''},Worker:FakeWorker,crypto,location:{href:'https://game.test/',origin:'https://game.test'},performance,setTimeout,clearTimeout,setInterval,clearInterval,URL});
+ const started=exports.PeerRoom.start({host:true,hostIdentity:{},invitation:{room:'123456789abc',token:'0'.repeat(32)},network:{ice:{iceServers:[]}},receive:()=>{},status:()=>{},closed:()=>{}});peer.emit('open');const room=await started;
+ const churn=()=>{const c=new Connection();peer.emit('connection',c);c.emit('open');c.emit('data',JSON.stringify({type:'host-challenge',room:'123456789abc',token:'0'.repeat(32),hostPeer:peer.id,guestPeer:c.peer,signaling:'peerjs-cloud',challenge:'a'.repeat(64)}));c.emit('close');};
+ try{
+  for(let n=0;n<100;n++)churn();
+  assert.equal(startedSignatures,4,'Outstanding crypto stays capped even when every link closes');
+  pending.shift()!.resolve({});await new Promise(r=>setImmediate(r));churn();assert.equal(startedSignatures,5,'Settled work releases one slot');
+  pending.shift()!.reject(Error('signing failed'));await new Promise(r=>setImmediate(r));churn();assert.equal(startedSignatures,6,'Failed work also releases one slot');
+  assert.deepEqual(sent,[],'Late results from removed links are never sent');
+ }finally{room.close();for(const task of pending)task.resolve({});await new Promise(r=>setImmediate(r));}
+});

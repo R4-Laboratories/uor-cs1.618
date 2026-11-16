@@ -63,3 +63,32 @@ test('fresh live proof binds Prism, room, token, both transport peers and endpoi
  await assert.rejects(discovery.verifyHostProof(await discovery.signHostProof(other,app,binding,now),host.prism,app,binding,policy,now));
  await assert.rejects(discovery.verifyHostProof(proof,host.prism,app,binding,policy,now+15001));
 });
+test('short signed withdrawals or replacements cannot erase rollback protection',async()=>{
+ const host=await createIdentity(),proof=await discovery.signListing(host,app,fields,now);
+ for(const withdrawn of [true,false]){
+  const records=new discovery.MatchRecords(app,policy);
+  assert.equal(await records.accept(encode(proof),now),true);
+  const shortened=await signIdentity(host,app,'cs1618/matches/1',{...proof.envelope.body.payload.payload,at:now+1,expires:now+2,withdrawn},now+1);
+  assert.equal(await records.accept(encode(shortened),now+1),false,'Only exact 45-second leases may change ordering state');
+  assert.equal(await records.accept(encode(proof),now+3),false);
+ }
+});
+test('a delayed older verification cannot undo an already-admitted withdrawal',async()=>{
+ const host=await createIdentity(),proof=await discovery.signListing(host,app,fields,now),withdrawal=await discovery.signListing(host,app,fields,now+1,true);
+ let entered!:()=>void,release!:()=>void;const held=new Promise<void>(r=>release=r),started=new Promise<void>(r=>entered=r);let calls=0;
+ // Delay scheduling only: both admissions still execute the actual compiled Holo.
+ const scheduledPolicy={admits:async(facts:any)=>{const admitted=await policy.admits(facts);if(++calls===1){entered();await held;}return admitted;}};
+ const records=new discovery.MatchRecords(app,scheduledPolicy);
+ const older=records.accept(encode(proof),now+1);await started;
+ assert.equal(await records.accept(encode(withdrawal),now+1),true);release();
+ assert.equal(await older,false);assert.equal(records.list(now+1).length,0);
+ assert.equal(await records.accept(encode(proof),now+3),false);
+});
+test('same-origin blob and non-HTTP signaling endpoints never enter the directory',async()=>{
+ const host=await createIdentity(),proof=await discovery.signListing(host,app,fields,now),records=new discovery.MatchRecords(app,policy);
+ for(const signaling of ['blob:https://game.example/example','ftp://game.example/','data:text/plain,hello','javascript:alert(1)']){
+  assert.equal(discovery.supportedSignaling(signaling,app),false);
+  const signed=await signIdentity(host,app,'cs1618/matches/1',{...proof.envelope.body.payload.payload,signaling},now);
+  assert.equal(await records.accept(encode(signed),now),false);
+ }
+});
