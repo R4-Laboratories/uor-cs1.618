@@ -283,123 +283,207 @@
   "lastEvaluation": {
     "generation": 8,
     "author": null,
-    "at": "2026-11-16T10:23:03.237Z",
-    "base": "10224e16feeec27dc19f2db7bdc5e0f853e8daf4",
+    "at": "2026-11-16T10:53:55.363Z",
+    "base": "0741c89f767e4c44566eb9b9e5974be25d80e1b9",
     "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-    "previous": "d8a96cd9d42abb09a6e03af8e85e514bfb6ecfc83576be470f22ed6cf33ddf3d",
+    "previous": "695bc4050b5761e342e5ee822bad1734fa5b4ea57a1d0261331a8f57ae2be2ba",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "experience-1-3",
-        "family": "experience",
-        "author": "typed-recipe-compiler",
-        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "8aa13d2e6ebf30c977ad8f0b2b37bcf7b33eff49edd0993c231e59ae86e16de6",
-        "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.5365833333333367,
-        "fidelity": false,
-        "bounds": true,
-        "samples": 780,
-        "comparisons": {
-          "r4Verdict": "RefusedNonZeroDefect",
-          "heldOut": {
-            "before": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            },
-            "after": {
-              "loss": 2.525119047619052,
-              "lateBursts": 1,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 24,
-              "frames": 420,
-              "fidelity": true
-            }
+        "candidate": "render-64-2",
+        "family": "render",
+        "author": "optimizer",
+        "metric": "work count",
+        "configHash": "c1b7731fceaec73b41e957ecc7853a10a5822b2d4580ff8baf895384c1737ef5",
+        "baselineWork": 60636,
+        "candidateWork": 42604,
+        "fidelity": true,
+        "bounds": false,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 2.0424836601307188e-7,
+            "changed": 0
           },
-          "interactions": [
-            {
-              "a": "recoveryMs",
-              "b": "voices",
-              "mixedLoss": 0
-            }
-          ]
-        },
-        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-        "before": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        },
-        "after": {
-          "loss": 2.5365833333333367,
-          "lateBursts": 1,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 24,
-          "frames": 360,
-          "fidelity": true
-        }
+          {
+            "mean": 0.0000013327205882352942,
+            "changed": 0.0000078125
+          },
+          {
+            "mean": 1.940359477124183e-7,
+            "changed": 0
+          },
+          {
+            "mean": 4.6466503267973856e-7,
+            "changed": 0
+          }
+        ],
+        "reference": [
+          {
+            "calls": 279,
+            "triangles": 3418,
+            "frameMs": 4.699999999953434
+          },
+          {
+            "calls": 197,
+            "triangles": 2554,
+            "frameMs": 2.599999999976717
+          },
+          {
+            "calls": 244,
+            "triangles": 2926,
+            "frameMs": 2.199999999953434
+          },
+          {
+            "calls": 290,
+            "triangles": 3650,
+            "frameMs": 3.300000000046566
+          }
+        ],
+        "before": [
+          {
+            "calls": 137,
+            "triangles": 3862,
+            "frameMs": 6.300000000046566
+          },
+          {
+            "calls": 100,
+            "triangles": 2950,
+            "frameMs": 2.299999999930151
+          },
+          {
+            "calls": 103,
+            "triangles": 3058,
+            "frameMs": 2.200000000069849
+          },
+          {
+            "calls": 129,
+            "triangles": 3866,
+            "frameMs": 1.400000000023283
+          }
+        ],
+        "after": [
+          {
+            "calls": 78,
+            "triangles": 4126,
+            "frameMs": 1.8000000000465661
+          },
+          {
+            "calls": 57,
+            "triangles": 3982,
+            "frameMs": 0.6999999999534339
+          },
+          {
+            "calls": 59,
+            "triangles": 3742,
+            "frameMs": 0.8000000000465661
+          },
+          {
+            "calls": 72,
+            "triangles": 4154,
+            "frameMs": 1.8999999999068677
+          }
+        ]
       },
       {
-        "candidate": "experience-1-4",
-        "family": "experience",
-        "author": "typed-recipe-compiler",
-        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "65dea50a5d08dc186dda9595bac0be0055dfee411b8e3d6c9d4d3c241e8217e3",
-        "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.2865833333333367,
-        "fidelity": false,
-        "bounds": true,
-        "samples": 780,
-        "comparisons": {
-          "r4Verdict": "RefusedNonZeroDefect",
-          "heldOut": {
-            "before": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            },
-            "after": {
-              "loss": 2.275119047619052,
-              "lateBursts": 1,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            }
+        "candidate": "render-64-4",
+        "family": "render",
+        "author": "optimizer",
+        "metric": "work count",
+        "configHash": "41c51b8ef9e03229960a43f13e500369d101c5c85c6998f7864cc3fe9ecf44a2",
+        "baselineWork": 60636,
+        "candidateWork": 43444,
+        "fidelity": true,
+        "bounds": false,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 2.0424836601307188e-7,
+            "changed": 0
           },
-          "interactions": []
-        },
-        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-        "before": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        },
-        "after": {
-          "loss": 2.2865833333333367,
-          "lateBursts": 1,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        }
+          {
+            "mean": 0.0000013327205882352942,
+            "changed": 0.0000078125
+          },
+          {
+            "mean": 1.787173202614379e-7,
+            "changed": 0
+          },
+          {
+            "mean": 4.6466503267973856e-7,
+            "changed": 0
+          }
+        ],
+        "reference": [
+          {
+            "calls": 279,
+            "triangles": 3418,
+            "frameMs": 8.400000000023283
+          },
+          {
+            "calls": 197,
+            "triangles": 2554,
+            "frameMs": 2.099999999976717
+          },
+          {
+            "calls": 244,
+            "triangles": 2926,
+            "frameMs": 5.299999999930151
+          },
+          {
+            "calls": 290,
+            "triangles": 3650,
+            "frameMs": 2.800000000046566
+          }
+        ],
+        "before": [
+          {
+            "calls": 137,
+            "triangles": 3862,
+            "frameMs": 9.300000000046566
+          },
+          {
+            "calls": 100,
+            "triangles": 2950,
+            "frameMs": 1.5
+          },
+          {
+            "calls": 103,
+            "triangles": 3058,
+            "frameMs": 2.400000000023283
+          },
+          {
+            "calls": 129,
+            "triangles": 3866,
+            "frameMs": 2.1000000000931323
+          }
+        ],
+        "after": [
+          {
+            "calls": 82,
+            "triangles": 4126,
+            "frameMs": 1.599999999976717
+          },
+          {
+            "calls": 59,
+            "triangles": 3970,
+            "frameMs": 0.9000000000232831
+          },
+          {
+            "calls": 61,
+            "triangles": 3730,
+            "frameMs": 0.8999999999068677
+          },
+          {
+            "calls": 73,
+            "triangles": 4118,
+            "frameMs": 1.400000000023283
+          }
+        ]
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "695bc4050b5761e342e5ee822bad1734fa5b4ea57a1d0261331a8f57ae2be2ba"
+    "hash": "70192189bf9c11180c1ee2108c49c4e77321c9c26c503c0abeb90d710fc7f574"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -2869,6 +2953,211 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "695bc4050b5761e342e5ee822bad1734fa5b4ea57a1d0261331a8f57ae2be2ba"
+    },
+    {
+      "generation": 8,
+      "author": null,
+      "at": "2026-11-16T10:53:55.363Z",
+      "base": "0741c89f767e4c44566eb9b9e5974be25d80e1b9",
+      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
+      "previous": "695bc4050b5761e342e5ee822bad1734fa5b4ea57a1d0261331a8f57ae2be2ba",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "render-64-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "c1b7731fceaec73b41e957ecc7853a10a5822b2d4580ff8baf895384c1737ef5",
+          "baselineWork": 60636,
+          "candidateWork": 42604,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 2.0424836601307188e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000013327205882352942,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.940359477124183e-7,
+              "changed": 0
+            },
+            {
+              "mean": 4.6466503267973856e-7,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 279,
+              "triangles": 3418,
+              "frameMs": 4.699999999953434
+            },
+            {
+              "calls": 197,
+              "triangles": 2554,
+              "frameMs": 2.599999999976717
+            },
+            {
+              "calls": 244,
+              "triangles": 2926,
+              "frameMs": 2.199999999953434
+            },
+            {
+              "calls": 290,
+              "triangles": 3650,
+              "frameMs": 3.300000000046566
+            }
+          ],
+          "before": [
+            {
+              "calls": 137,
+              "triangles": 3862,
+              "frameMs": 6.300000000046566
+            },
+            {
+              "calls": 100,
+              "triangles": 2950,
+              "frameMs": 2.299999999930151
+            },
+            {
+              "calls": 103,
+              "triangles": 3058,
+              "frameMs": 2.200000000069849
+            },
+            {
+              "calls": 129,
+              "triangles": 3866,
+              "frameMs": 1.400000000023283
+            }
+          ],
+          "after": [
+            {
+              "calls": 78,
+              "triangles": 4126,
+              "frameMs": 1.8000000000465661
+            },
+            {
+              "calls": 57,
+              "triangles": 3982,
+              "frameMs": 0.6999999999534339
+            },
+            {
+              "calls": 59,
+              "triangles": 3742,
+              "frameMs": 0.8000000000465661
+            },
+            {
+              "calls": 72,
+              "triangles": 4154,
+              "frameMs": 1.8999999999068677
+            }
+          ]
+        },
+        {
+          "candidate": "render-64-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "41c51b8ef9e03229960a43f13e500369d101c5c85c6998f7864cc3fe9ecf44a2",
+          "baselineWork": 60636,
+          "candidateWork": 43444,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 2.0424836601307188e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000013327205882352942,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.787173202614379e-7,
+              "changed": 0
+            },
+            {
+              "mean": 4.6466503267973856e-7,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 279,
+              "triangles": 3418,
+              "frameMs": 8.400000000023283
+            },
+            {
+              "calls": 197,
+              "triangles": 2554,
+              "frameMs": 2.099999999976717
+            },
+            {
+              "calls": 244,
+              "triangles": 2926,
+              "frameMs": 5.299999999930151
+            },
+            {
+              "calls": 290,
+              "triangles": 3650,
+              "frameMs": 2.800000000046566
+            }
+          ],
+          "before": [
+            {
+              "calls": 137,
+              "triangles": 3862,
+              "frameMs": 9.300000000046566
+            },
+            {
+              "calls": 100,
+              "triangles": 2950,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 103,
+              "triangles": 3058,
+              "frameMs": 2.400000000023283
+            },
+            {
+              "calls": 129,
+              "triangles": 3866,
+              "frameMs": 2.1000000000931323
+            }
+          ],
+          "after": [
+            {
+              "calls": 82,
+              "triangles": 4126,
+              "frameMs": 1.599999999976717
+            },
+            {
+              "calls": 59,
+              "triangles": 3970,
+              "frameMs": 0.9000000000232831
+            },
+            {
+              "calls": 61,
+              "triangles": 3730,
+              "frameMs": 0.8999999999068677
+            },
+            {
+              "calls": 73,
+              "triangles": 4118,
+              "frameMs": 1.400000000023283
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "70192189bf9c11180c1ee2108c49c4e77321c9c26c503c0abeb90d710fc7f574"
     }
   ]
 }
