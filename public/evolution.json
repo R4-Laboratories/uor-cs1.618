@@ -1,6 +1,6 @@
 {
   "schema": "cs1618/evolution-public/1",
-  "generation": 8,
+  "generation": 9,
   "config": {
     "render": {
       "cell": 16,
@@ -11,155 +11,155 @@
     },
     "art": {
       "version": 1,
-      "seed": 2927574,
-      "background": "#172e34",
-      "ink": "#f3edda",
-      "siteA": "#efac69",
-      "siteB": "#79d6da",
+      "seed": 3792620887,
+      "background": "#1d2a38",
+      "ink": "#f8f0dc",
+      "siteA": "#f4b072",
+      "siteB": "#82d6df",
       "shapes": [
         {
           "kind": "ring",
-          "x": 0.8597909078188242,
-          "y": 0.3147389869019389,
-          "a": 0.8641764862462878,
-          "b": 0.7546234805136919,
-          "weight": 0.009377564312890172
+          "x": 0.7964004037156702,
+          "y": 0.5388807276124135,
+          "a": 0.8976425431668759,
+          "b": 0.24301922228187323,
+          "weight": 0.004598231133073568
         },
         {
           "kind": "line",
-          "x": 0.7363228648155928,
-          "y": 0.2328210728196427,
-          "a": 0.28478423319756985,
-          "b": 0.6646175632253289,
-          "weight": 0.0063828201889991765
+          "x": 0.7582661532051862,
+          "y": 0.14421844542026518,
+          "a": 0.2541118560358882,
+          "b": 0.12602251507341863,
+          "weight": 0.005157569603994489
         },
         {
           "kind": "box",
-          "x": 0.6131818818114698,
-          "y": 0.15006143790669738,
-          "a": 0.24013183284550907,
-          "b": 0.42792154923081405,
-          "weight": 0.0060558779891580344
+          "x": 0.801681635454297,
+          "y": 0.43206124297808857,
+          "a": 0.678549624606967,
+          "b": 0.20275328997522593,
+          "weight": 0.008088503912091255
         },
         {
           "kind": "ring",
-          "x": 0.8399223529919982,
-          "y": 0.8582262106286361,
-          "a": 0.3788507357239723,
-          "b": 0.7097353233024478,
-          "weight": 0.010778743851929902
+          "x": 0.673140873964876,
+          "y": 0.22667761237360537,
+          "a": 0.41073132473975427,
+          "b": 0.3471668176352978,
+          "weight": 0.007359787723049522
         },
         {
           "kind": "line",
-          "x": 0.8549338702298701,
-          "y": 0.5728273927234113,
-          "a": 0.2627710660919547,
-          "b": 0.7976410891860723,
-          "weight": 0.008228318253532051
+          "x": 0.7574126393720508,
+          "y": 0.33825921107549217,
+          "a": 0.38973592817783353,
+          "b": 0.18470458667725326,
+          "weight": 0.00690993333235383
         },
         {
           "kind": "box",
-          "x": 0.8964752110838891,
-          "y": 0.20353970905300228,
-          "a": 0.8663802687078714,
-          "b": 0.2056253479793668,
-          "weight": 0.006211997337639332
+          "x": 0.6634290021099151,
+          "y": 0.12770376155152915,
+          "a": 0.7036614691838622,
+          "b": 0.29584764651954176,
+          "weight": 0.010926773184910418
         },
         {
           "kind": "ring",
-          "x": 0.8678488945774734,
-          "y": 0.16749645239673555,
-          "a": 0.7130983525887132,
-          "b": 0.22419710606336596,
-          "weight": 0.009768245024606586
+          "x": 0.7812078396975994,
+          "y": 0.5340296962251887,
+          "a": 0.33221571035683156,
+          "b": 0.34413608331233264,
+          "weight": 0.00802929838746786
         },
         {
           "kind": "line",
-          "x": 0.8269063529744745,
-          "y": 0.38198224844876677,
-          "a": 0.20463727936148646,
-          "b": 0.456283556483686,
-          "weight": 0.010757103856652975
+          "x": 0.8193471862189472,
+          "y": 0.3412013220321387,
+          "a": 0.27864415738731624,
+          "b": 0.3549295008182526,
+          "weight": 0.011162038801237941
         },
         {
           "kind": "box",
-          "x": 0.6392769538052381,
-          "y": 0.7045257279276848,
-          "a": 0.8372639236971736,
-          "b": 0.12144641615450383,
-          "weight": 0.010847039537504315
+          "x": 0.6562087183073163,
+          "y": 0.23334519839379936,
+          "a": 0.24167215004563333,
+          "b": 0.3244090860709548,
+          "weight": 0.007228466343134642
         },
         {
           "kind": "ring",
-          "x": 0.8487354076653719,
-          "y": 0.7654120757384225,
-          "a": 0.19736086241900921,
-          "b": 0.67837237957865,
-          "weight": 0.006739725306630135
+          "x": 0.5714174986071885,
+          "y": 0.4091481911018491,
+          "a": 0.15133416783064604,
+          "b": 0.8945626843720674,
+          "weight": 0.004410587938502431
         },
         {
           "kind": "line",
-          "x": 0.8877281153760851,
-          "y": 0.6484960991237313,
-          "a": 0.2773883553221822,
-          "b": 0.44099703356623654,
-          "weight": 0.010761512180790305
+          "x": 0.7188439770787954,
+          "y": 0.1484424015460536,
+          "a": 0.4060797240585089,
+          "b": 0.8415428677573801,
+          "weight": 0.004308082312345505
         },
         {
           "kind": "box",
-          "x": 0.7275636882707477,
-          "y": 0.476395202470012,
-          "a": 0.6395477801561356,
-          "b": 0.6576187698170542,
-          "weight": 0.005716841105371713
+          "x": 0.7599750342033804,
+          "y": 0.283233955996111,
+          "a": 0.7868051098659635,
+          "b": 0.56435402110219,
+          "weight": 0.006658295011147857
         },
         {
           "kind": "ring",
-          "x": 0.8714731317199766,
-          "y": 0.5991562590934336,
-          "a": 0.30200842972844844,
-          "b": 0.3703481238335371,
-          "weight": 0.009996783966198564
+          "x": 0.5495987334474921,
+          "y": 0.6310049205319956,
+          "a": 0.3378798052668571,
+          "b": 0.37171619366854436,
+          "weight": 0.005861205119639635
         },
         {
           "kind": "line",
-          "x": 0.8659940223395826,
-          "y": 0.387254667817615,
-          "a": 0.6520426113158464,
-          "b": 0.21645488757640124,
-          "weight": 0.01060597487539053
+          "x": 0.5470155973173678,
+          "y": 0.45587097940966487,
+          "a": 0.37750505115836863,
+          "b": 0.7841337617486716,
+          "weight": 0.007386290857568383
         },
         {
           "kind": "box",
-          "x": 0.7409001602046192,
-          "y": 0.6446447982918471,
-          "a": 0.3135859856382013,
-          "b": 0.30159880518913273,
-          "weight": 0.004400618193671107
+          "x": 0.9139118897914886,
+          "y": 0.5506473785405979,
+          "a": 0.4269790146499872,
+          "b": 0.23321464825421573,
+          "weight": 0.005012397266924381
         },
         {
           "kind": "ring",
-          "x": 0.574368209131062,
-          "y": 0.28230247980449347,
-          "a": 0.6079858101904392,
-          "b": 0.1695616191253066,
-          "weight": 0.004429289292544126
+          "x": 0.6524635544233024,
+          "y": 0.3833542276825756,
+          "a": 0.26272825840860603,
+          "b": 0.7431819632649422,
+          "weight": 0.010462579561397433
         },
         {
           "kind": "line",
-          "x": 0.7624107897467911,
-          "y": 0.23882636327296494,
-          "a": 0.3238024128600955,
-          "b": 0.20012032873928548,
-          "weight": 0.005790491374209523
+          "x": 0.8866489422693848,
+          "y": 0.8138575534010306,
+          "a": 0.3797461085021496,
+          "b": 0.6801089188084006,
+          "weight": 0.007869339313358068
         },
         {
           "kind": "box",
-          "x": 0.907159994468093,
-          "y": 0.7383055042801425,
-          "a": 0.6883267071098089,
-          "b": 0.8010063329711556,
-          "weight": 0.007552431911230088
+          "x": 0.8254555560834707,
+          "y": 0.2197465018182993,
+          "a": 0.7709507076069713,
+          "b": 0.11543387211859227,
+          "weight": 0.010548425780609251
         }
       ]
     },
@@ -281,121 +281,231 @@
     }
   },
   "lastEvaluation": {
-    "generation": 8,
+    "generation": 9,
     "author": null,
-    "at": "2026-11-16T14:26:05.416Z",
-    "base": "c9b282aeef3b6ae9cb8a88b65da562afdb705435",
-    "context": "741c3bca6015b060a121e82d36de0beaf1f3d84b28adf4eca091f97bc1e22f79",
-    "previous": "4e827c364af6677b19aac6084a12dac49af3c2618f1cf6fd24ddd46a74ea0722",
-    "result": "no-improvement",
+    "at": "2026-11-16T15:07:32.207Z",
+    "base": "3853ba869094417a14ebeadc18e292b99ee6fcb8",
+    "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
+    "previous": "777b22600503421d5a017a6ac607b519bb9333a3728fd7582bcf33ba2be35873",
+    "result": "admitted",
     "proposals": [
       {
-        "candidate": "tactics-synth-1",
-        "family": "tactics",
+        "candidate": "art-synth-0",
+        "family": "art",
         "author": "seeded-synthesis",
-        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-        "configHash": "687cf6fef031c681f8bc76d1e5dcf612eb945b20e53efe1a34b43e1129abcd25",
-        "baselineWork": 1,
-        "candidateWork": 1,
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "configHash": "b9ff34b0c6321eabd18e9ced36c4dd02a29ade72fc2faf703eb3673192ed1119",
+        "baselineWork": 0.256539516293412,
+        "candidateWork": 0.2621633910742257,
         "fidelity": true,
         "bounds": true,
-        "samples": 198,
-        "comparisons": null,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 0.010417264093137256,
+            "changed": 0.03141796875
+          },
+          {
+            "mean": 0.010936631944444445,
+            "changed": 0.0305625
+          },
+          {
+            "mean": 0.0178570006127451,
+            "changed": 0.04443359375
+          },
+          {
+            "mean": 0.01874497549019608,
+            "changed": 0.0435
+          }
+        ],
         "reference": {
-          "metricVersion": 2,
-          "training": 96,
-          "heldOut": 96,
-          "realMatches": 6,
-          "scope": "Fixed scenario corpus; not general match win rate"
+          "protectedEqual": true,
+          "separation": 0.6347007638190333,
+          "evidence": "artifacts/evolution/art/art-synth-0-*.png"
         },
         "before": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19548226790151343
+            },
+            {
+              "site": "B",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19292974926586853
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 3.7999999999956344
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 1.5999999999985448
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.6999999999970896
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.4000000000014552
+            }
           ]
         },
         "after": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 11.900942897165983,
+              "coverage": 0.19927716286424216
+            },
+            {
+              "site": "B",
+              "contrast": 11.900942897165983,
+              "coverage": 0.19699570815450643
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 2
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 0.8000000000029104
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.5
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.3000000000029104
+            }
           ]
         }
       },
       {
-        "candidate": "tactics-synth-3",
-        "family": "tactics",
+        "candidate": "art-synth-1",
+        "family": "art",
         "author": "seeded-synthesis",
-        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-        "configHash": "687cf6fef031c681f8bc76d1e5dcf612eb945b20e53efe1a34b43e1129abcd25",
-        "baselineWork": 1,
-        "candidateWork": 1,
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "configHash": "cb72824a51727b4dde0b5cf90ad3cd7ecdecfffcb453ae5c41a3a63ffa7c6a8b",
+        "baselineWork": 0.256539516293412,
+        "candidateWork": 0.24722941226541348,
         "fidelity": true,
         "bounds": true,
-        "samples": 198,
-        "comparisons": null,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 0.009660135825163398,
+            "changed": 0.02730078125
+          },
+          {
+            "mean": 0.010245011233660131,
+            "changed": 0.02703125
+          },
+          {
+            "mean": 0.01622985600490196,
+            "changed": 0.0376171875
+          },
+          {
+            "mean": 0.017193356821895423,
+            "changed": 0.03759375
+          }
+        ],
         "reference": {
-          "metricVersion": 2,
-          "training": 96,
-          "heldOut": 96,
-          "realMatches": 6,
-          "scope": "Fixed scenario corpus; not general match win rate"
+          "protectedEqual": true,
+          "separation": 0.6362254127708514,
+          "evidence": "artifacts/evolution/art/art-synth-1-*.png"
         },
         "before": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19548226790151343
+            },
+            {
+              "site": "B",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19292974926586853
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 3.400000000001455
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 3.2000000000043656
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.7000000000043656
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.5999999999985448
+            }
           ]
         },
         "after": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.834688787207531,
+              "coverage": 0.19098712446351931
+            },
+            {
+              "site": "B",
+              "contrast": 12.834688787207531,
+              "coverage": 0.18764400271063925
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 1.8999999999941792
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 0.9000000000014552
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 1.9000000000014552
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.5
+            }
           ]
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "777b22600503421d5a017a6ac607b519bb9333a3728fd7582bcf33ba2be35873"
+    "hash": "126eabe11eebe87334bce592dc0d52a52c47e93fc1a9821d1d4c671cfe20a09e"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -4112,6 +4222,233 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "777b22600503421d5a017a6ac607b519bb9333a3728fd7582bcf33ba2be35873"
+    },
+    {
+      "generation": 9,
+      "author": null,
+      "at": "2026-11-16T15:07:32.207Z",
+      "base": "3853ba869094417a14ebeadc18e292b99ee6fcb8",
+      "context": "810772150a7e3b55ecfed9d9f9404a798e6a303d81a1fdf3c04b51d95584e12e",
+      "previous": "777b22600503421d5a017a6ac607b519bb9333a3728fd7582bcf33ba2be35873",
+      "result": "admitted",
+      "proposals": [
+        {
+          "candidate": "art-synth-0",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "b9ff34b0c6321eabd18e9ced36c4dd02a29ade72fc2faf703eb3673192ed1119",
+          "baselineWork": 0.256539516293412,
+          "candidateWork": 0.2621633910742257,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.010417264093137256,
+              "changed": 0.03141796875
+            },
+            {
+              "mean": 0.010936631944444445,
+              "changed": 0.0305625
+            },
+            {
+              "mean": 0.0178570006127451,
+              "changed": 0.04443359375
+            },
+            {
+              "mean": 0.01874497549019608,
+              "changed": 0.0435
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6347007638190333,
+            "evidence": "artifacts/evolution/art/art-synth-0-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19548226790151343
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19292974926586853
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 3.7999999999956344
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 1.5999999999985448
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.6999999999970896
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.4000000000014552
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.19927716286424216
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.19699570815450643
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 2
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 0.8000000000029104
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.5
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.3000000000029104
+              }
+            ]
+          }
+        },
+        {
+          "candidate": "art-synth-1",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "cb72824a51727b4dde0b5cf90ad3cd7ecdecfffcb453ae5c41a3a63ffa7c6a8b",
+          "baselineWork": 0.256539516293412,
+          "candidateWork": 0.24722941226541348,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.009660135825163398,
+              "changed": 0.02730078125
+            },
+            {
+              "mean": 0.010245011233660131,
+              "changed": 0.02703125
+            },
+            {
+              "mean": 0.01622985600490196,
+              "changed": 0.0376171875
+            },
+            {
+              "mean": 0.017193356821895423,
+              "changed": 0.03759375
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6362254127708514,
+            "evidence": "artifacts/evolution/art/art-synth-1-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19548226790151343
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19292974926586853
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 3.400000000001455
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 3.2000000000043656
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.7000000000043656
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.5999999999985448
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.834688787207531,
+                "coverage": 0.19098712446351931
+              },
+              {
+                "site": "B",
+                "contrast": 12.834688787207531,
+                "coverage": 0.18764400271063925
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 1.8999999999941792
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 0.9000000000014552
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 1.9000000000014552
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.5
+              }
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "126eabe11eebe87334bce592dc0d52a52c47e93fc1a9821d1d4c671cfe20a09e"
     }
   ]
 }
