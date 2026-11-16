@@ -1,0 +1,60 @@
+{
+  "schema": "cs1618/development-frontier/1",
+  "providerRequired": false,
+  "features": [
+    {
+      "id": "weapon-feel",
+      "status": "implemented",
+      "goal": "Repeatable spray, burst recovery and stopping/crouching accuracy",
+      "acceptance": "Authoritative damage, ammo and cadence; reproducible spray, reset and occlusion fixtures"
+    },
+    {
+      "id": "audio-signatures",
+      "status": "implemented",
+      "goal": "Weapon-specific procedural sound, occlusion, voice budget and compressor",
+      "acceptance": "Offline waveform energy/peak, stereo direction, occlusion and real node cleanup"
+    },
+    {
+      "id": "render-budget",
+      "status": "implemented",
+      "goal": "Adaptive resolution and persisted quality/volume/sensitivity",
+      "acceptance": "Hysteresis trace, unchanged geometry, browser resize and persisted settings"
+    },
+    {
+      "id": "utility-grenades",
+      "status": "needs-recipe",
+      "goal": "Smoke, flash and fragmentation with purchases and team strategy",
+      "acceptance": "Bounded authoritative projectile state; fuse/damage/visibility contracts; replay and adversarial input tests"
+    },
+    {
+      "id": "lag-compensation",
+      "status": "needs-design",
+      "goal": "Timestamped bounded historical hitboxes for fair remote firing",
+      "acceptance": "Clock skew and rewind bounds; no future or client-invented hits; latency/loss traces"
+    },
+    {
+      "id": "weapon-animation",
+      "status": "needs-recipe",
+      "goal": "Reload stages, equip transitions and richer first-person animation",
+      "acceptance": "Ammo ownership stays in host; frame and geometry budget; accessibility settings"
+    },
+    {
+      "id": "map-expansion",
+      "status": "needs-recipe",
+      "goal": "Additional original competitive layouts and navigation",
+      "acceptance": "Reachability, cover, spawn-to-site timing, line-of-sight budgets and real playtests"
+    },
+    {
+      "id": "competitive-networking",
+      "status": "needs-design",
+      "goal": "Reconnect, authority migration, relay coverage and cheat resistance",
+      "acceptance": "Disconnect/rejoin races, host trust model, loss/reorder tests and room state custody"
+    },
+    {
+      "id": "training-and-web",
+      "status": "needs-recipe",
+      "goal": "Practice range, onboarding, responsive HUD and input accessibility",
+      "acceptance": "Keyboard reachability, persistent preferences, input latency and browser compatibility"
+    }
+  ]
+}

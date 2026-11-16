@@ -1,0 +1,35 @@
+name: LexLean and Prism proof audit
+on:
+  schedule:
+    - cron: '31 8 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['prism/**', 'scripts/verify-prism.sh', 'scripts/proof-report.mjs', '.github/workflows/proofs.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [round, evolution]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run full verifier and retain its real result
+        env:
+          PRISM_PROJECT: ${{ matrix.project }}
+        run: node scripts/proof-report.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: proof-${{ matrix.project }}-${{ github.run_id }}
+          path: artifacts/proofs/
+          retention-days: 90

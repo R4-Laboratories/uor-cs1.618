@@ -1,3 +1,4 @@
+import {measureExperience} from './measure-experience';
 import {measureArt,measureTactics} from './measure-creative';
 import {existsSync} from 'node:fs';
 import {validateArt,validateTactics} from '../../shared/creative-program';
@@ -17,7 +18,7 @@ const original=preserveOwned();
 const state:EvolutionState=JSON.parse(readFileSync('model/evolution/state.json','utf8')),policy=JSON.parse(readFileSync('model/evolution/policy.json','utf8'));
 validateState(state,policy);const context=contextDigest();
 const requested=process.env.CS_EVOLUTION_FAMILY||process.argv.find(a=>a.startsWith('--family='))?.slice(9);
-if(requested&&!['auto','art','tactics','render','navigation'].includes(requested))throw Error('Unknown family');
+if(requested&&!['auto','art','tactics','render','navigation','experience'].includes(requested))throw Error('Unknown family');
 let author:any=null,proposal:undefined|{art:typeof state.config.art;tactics:typeof state.config.tactics};
 if(existsSync('artifacts/evolution/author.json')){author=JSON.parse(readFileSync('artifacts/evolution/author.json','utf8'));if(author.base===base&&author.seed===state.seed&&Date.now()-Date.parse(author.created)<3600000&&author.status==='authored'){validateArt(author.proposal.art);validateTactics(author.proposal.tactics);proposal=author.proposal;}}
 const candidates=chooseCandidates(state,policy,context,requested==='auto'?undefined:requested as Family|undefined,proposal),kernel=new AdmissionKernel();
@@ -37,7 +38,7 @@ try{
    for(const [path,source]of Object.entries(generatedFiles({...state,config:candidate.config})))writeFileSync(path,source);
    // Build the exact candidate before the independent browser measurements.
    if(candidate.family==='render'||candidate.family==='art')run('npm',['run','build']);
-   const evidence=candidate.family==='navigation'?await measureNavigation(candidate,state.config):candidate.family==='render'?await measureRendering(candidate,state.config,policy):candidate.family==='art'?await measureArt(candidate,state.config,policy):await measureTactics(candidate,state.config);
+   const evidence=candidate.family==='experience'?await measureExperience(candidate,state.config):candidate.family==='navigation'?await measureNavigation(candidate,state.config):candidate.family==='render'?await measureRendering(candidate,state.config,policy):candidate.family==='art'?await measureArt(candidate,state.config,policy):await measureTactics(candidate,state.config);
    const obligations=evaluateEvidence(evidence,hash(candidate.config),policy);
    const eligible=obligations.fidelity&&obligations.benefit&&obligations.bounds;
    report.proposals.push({candidate, evidence,eligible});state.tried.push(candidate.id);
@@ -47,7 +48,7 @@ try{
   }
   // Stage the selected projection and state for the complete game gates.
   writeState(state);
-  run('npm',['run','verify']);run('npm',['run','test:browser']);run('npm',['run','test:peer-browser']);run('npm',['run','test:creative-browser']);
+  run('npm',['run','verify']);run('npm',['run','test:browser']);run('npm',['run','test:peer-browser']);run('npm',['run','test:creative-browser']);run('npm',['run','test:experience-browser']);
   report.checks=true;
   if(selected){
    selected.checks=true;const obligations=evaluateEvidence(selected,hash(state.config),policy);

@@ -272,6 +272,12 @@
         }
       ],
       "fallback": "advance"
+    },
+    "experience": {
+      "recoveryMs": 420,
+      "voices": 32,
+      "downMs": 2400,
+      "upMs": 10000
     }
   },
   "lastEvaluation": {
@@ -504,7 +510,7 @@
     "checks": "complete-game-gates-passed",
     "hash": "58c442ba0276c666aec079defbc3c3678aee77970b139e92a814987c7239df4b"
   },
-  "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Typed authorship with measured gates; no unrestricted repository self-modification.",
+  "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
     {
       "generation": 1,

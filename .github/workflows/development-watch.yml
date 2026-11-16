@@ -1,0 +1,29 @@
+name: Free development source discovery
+on:
+  schedule:
+    - cron: '43 9 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx tsx scripts/evolution/discover.ts
+        env:
+          NODE_USE_ENV_PROXY: '1'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-discovery-${{ github.run_id }}
+          path: artifacts/development/
+          retention-days: 90

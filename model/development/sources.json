@@ -1,0 +1,53 @@
+{
+  "schema": "cs1618/source-catalog/1",
+  "sources": [
+    {
+      "repository": "Casey-allard/rule30",
+      "commit": "034e7855e24cf4113eb985af1233bdb19ab8260b",
+      "paths": [
+        "tools/r30/engine.py",
+        "tools/r30/deduce.py"
+      ],
+      "purpose": "Finite template discovery, certified decisions, attempt custody and honest settlement",
+      "integration": "reference; no unreviewed upstream code execution"
+    },
+    {
+      "repository": "R4-Laboratories/lexlean-r4",
+      "commit": "42e33f23fe851de24f48bb7d02a80df0768586e8",
+      "paths": [
+        "src/R4/AutonomousEngine.lex.tex",
+        "xtask/src/engine.rs"
+      ],
+      "purpose": "Bounded learned strategy weights and frontier scheduling",
+      "integration": "reference; no unreviewed upstream code execution"
+    },
+    {
+      "repository": "R4-Laboratories/uor-r4",
+      "commit": "f3a3b7869dc7644482b0704465eef24be962d3bc",
+      "paths": [
+        "README.md",
+        "PLAN.md"
+      ],
+      "purpose": "Research capability tracking; coding model not yet qualified",
+      "integration": "reference; no unreviewed upstream code execution"
+    },
+    {
+      "repository": "R4-Laboratories/CorvusWing",
+      "commit": "d9a1a02ff6210f94dd1245cb550caee3b73ad7b9",
+      "paths": [
+        "README.md"
+      ],
+      "purpose": "Scope budgets, falsifiers, evidence and recoverable changes",
+      "integration": "reference; no unreviewed upstream code execution"
+    },
+    {
+      "repository": "afflom/verdant-resonance",
+      "commit": "533131e2cdf718d0c9c908866cd0829cf48bd14e",
+      "paths": [
+        "README.md"
+      ],
+      "purpose": "Reference engine evolution architecture",
+      "integration": "reference; no unreviewed upstream code execution"
+    }
+  ]
+}

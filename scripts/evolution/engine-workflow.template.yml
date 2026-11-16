@@ -8,7 +8,7 @@ on:
       family:
         description: Candidate family
         type: choice
-        options: [auto, art, tactics, render, navigation]
+        options: [auto, experience, art, tactics, render, navigation]
         default: auto
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - name: Author a typed creative proposal
-        if: vars.CS_AI_AUTHOR != 'off'
+        if: vars.CS_AI_AUTHOR == 'on'
         env:
           GH_MODELS_TOKEN: ${{ github.token }}
           NODE_USE_ENV_PROXY: '1'

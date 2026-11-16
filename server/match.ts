@@ -1,3 +1,5 @@
+import {sprayOffset,shotSpread} from '../shared/experience';
+import {recoveredBurst} from '../shared/generated-experience';
 import {decideTactic} from '../shared/generated-tactics';
 import type {TacticDecider,BotFacts} from '../shared/creative-program';
 import {RULES as R,WEAPONS,type Team,type Phase} from '../shared/config';
@@ -10,7 +12,7 @@ import {BotNavigator} from './navigation';
 export interface Player extends Motion {
  id:string;name:string;team:Team;bot:boolean;alive:boolean;health:number;armor:number;money:number;kit:boolean;kills:number;deaths:number;
  inventory:Gun[];slot:0|1;yaw:number;pitch:number;input:Input;queue:Input[];acceptedSeq:number;processedSeq:number;inputAge:number;
- cooldown:number;reloadLeft:number;recoil:number;previousFire:boolean;previousJump:boolean;progress:number;action:string;stepTimer:number;
+ cooldown:number;reloadLeft:number;recoil:number;burst:number;shotIdle:number;previousFire:boolean;previousJump:boolean;progress:number;action:string;stepTimer:number;
  botPath:number[];botPlan:number;botGoal:number;botShoot:number;
 }
 export type BuyError='unknown'|'dead'|'phase'|'zone'|'team'|'funds'|'owned'|null;
@@ -27,7 +29,7 @@ export class Match {
   const counts={attack:0,defend:0};for(const p of this.players.values())counts[p.team]++;
   let team:Team=wanted==='auto'?(counts.attack<=counts.defend?'attack':'defend'):wanted;
   if(counts[team]>=5)team=team==='attack'?'defend':'attack';
-  const p:Player={id,name:name.replace(/[\x00-\x1f<>]/g,'').trim().slice(0,18)||'Operator',team,bot,alive:false,health:100,armor:0,money:R.startMoney,kit:false,kills:0,deaths:0,inventory:[gun('sidearm'),gun('sidearm')],slot:1,x:0,y:0,z:0,vx:0,vy:0,vz:0,grounded:true,crouch:false,yaw:0,pitch:0,input:neutralInput(),queue:[],acceptedSeq:0,processedSeq:0,inputAge:0,cooldown:0,reloadLeft:0,recoil:0,previousFire:false,previousJump:false,progress:0,action:'',stepTimer:0,botPath:[],botPlan:0,botGoal:-1,botShoot:0};
+  const p:Player={id,name:name.replace(/[\x00-\x1f<>]/g,'').trim().slice(0,18)||'Operator',team,bot,alive:false,health:100,armor:0,money:R.startMoney,kit:false,kills:0,deaths:0,inventory:[gun('sidearm'),gun('sidearm')],slot:1,x:0,y:0,z:0,vx:0,vy:0,vz:0,grounded:true,crouch:false,yaw:0,pitch:0,input:neutralInput(),queue:[],acceptedSeq:0,processedSeq:0,inputAge:0,cooldown:0,reloadLeft:0,recoil:0,burst:0,shotIdle:10,previousFire:false,previousJump:false,progress:0,action:'',stepTimer:0,botPath:[],botPlan:0,botGoal:-1,botShoot:0};
   this.players.set(id,p);
   if(this.phase==='waiting'||this.phase==='freeze')this.spawn(p,counts[team]);
   if(this.phase==='waiting'&&this.hasBothTeams())this.beginRound();
@@ -47,7 +49,7 @@ export class Match {
   const pos=MAP.spawns[p.team][index%5];p.x=pos[0];p.y=0;p.z=pos[1];p.vx=p.vy=p.vz=0;p.grounded=true;p.crouch=false;
   if(!p.alive){p.inventory=[gun('sidearm'),gun('sidearm')];p.armor=0;p.kit=false;}
   for(const g of p.inventory){g.ammo=WEAPONS[g.id].mag;}
-  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;
+  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;
  }
  beginRound(){
   this.round++;this.phase='freeze';this.phaseLeft=R.freezeSeconds;this.winner=null;this.reason='Buy equipment. Prepare to deploy.';
@@ -95,8 +97,8 @@ export class Match {
    if(p.bot)this.botInput(p,dt);else{p.inputAge+=dt;const next=p.queue.shift();if(next){p.input=next;p.processedSeq=next.seq;}else if(p.inputAge>0.25)p.input={...neutralInput(),seq:p.processedSeq,yaw:p.yaw,pitch:p.pitch,slot:p.slot};}
    const i=p.input;p.yaw=i.yaw;p.pitch=i.pitch;
    const requestedSlot=i.slot===0&&p.inventory[0].id==='sidearm'?1:i.slot;
-   if(p.slot!==requestedSlot){p.slot=requestedSlot;p.reloadLeft=0;p.cooldown=Math.max(p.cooldown,0.2);}
-   p.cooldown=Math.max(0,p.cooldown-dt);p.recoil=Math.max(0,p.recoil-dt*0.08);
+   if(p.slot!==requestedSlot){p.slot=requestedSlot;p.burst=0;p.shotIdle=10;p.recoil=0;p.reloadLeft=0;p.cooldown=Math.max(p.cooldown,0.2);}
+   p.cooldown=Math.max(0,p.cooldown-dt);p.shotIdle+=dt;if(recoveredBurst(p.shotIdle)){p.burst=0;p.recoil=0;}else p.recoil=Math.max(0,p.recoil-dt*.18);
    if(p.reloadLeft>0){p.reloadLeft=Math.max(0,p.reloadLeft-dt);if(p.reloadLeft===0){const g=p.inventory[p.slot];const amount=Math.min(WEAPONS[g.id].mag-g.ammo,g.reserve);g.ammo+=amount;g.reserve-=amount;}}
    const previous={x:p.x,z:p.z};const jump=i.jump&&!p.previousJump;p.previousJump=i.jump;
    movePlayer(p,{...i,jump},dt,this.engine,this.phase==='live');
@@ -123,8 +125,9 @@ export class Match {
  fire(p:Player){
   const g=p.inventory[p.slot],w=WEAPONS[g.id];if(p.cooldown>0||p.reloadLeft>0||g.ammo<=0)return;
   g.ammo--;p.cooldown=w.interval;
-  const spread=w.spread*(p.input.scope&&g.id==='scout'?0.1:1)+(p.grounded?0:0.05)+Math.hypot(p.vx,p.vz)*0.003+p.recoil*0.22;
-  const yaw=p.yaw+(this.random()-.5)*spread*2,pitch=p.pitch+p.recoil+(this.random()-.5)*spread*2;
+  const spread=shotSpread(w,Math.hypot(p.vx,p.vz),p.grounded,p.crouch,p.input.scope),spray=sprayOffset(w,p.burst);
+  const yaw=p.yaw+spray.yaw+(this.random()-.5)*spread*2,pitch=p.pitch+spray.pitch+(this.random()-.5)*spread*2;
+  p.burst=Math.min(29,p.burst+1);p.shotIdle=0;
   const dx=-Math.sin(yaw)*Math.cos(pitch),dy=Math.sin(pitch),dz=-Math.cos(yaw)*Math.cos(pitch);
   const eye=p.y+(p.crouch?R.crouchEye:R.eyeHeight);
   let distance=this.engine.ray(p.x,eye,p.z,dx,dy,dz,w.range);let target:Player|undefined;let head=false;

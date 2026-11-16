@@ -1,3 +1,4 @@
+import {DEFAULT_EXPERIENCE} from '../shared/experience';
 import {baselineArt,baselineTactics} from '../shared/creative-program';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,7 +7,7 @@ import {applyStaticBatching,sceneryInventory} from '../src/evolution/render-batc
 import {generateNavigation,generateRender,validateState} from '../scripts/evolution/generate';
 import {evaluateEvidence,chooseCandidates} from '../scripts/evolution/policy';
 import policy from '../model/evolution/policy.json';
-const state={schema:'cs1618/evolution-state/1',generation:0,seed:1618,config:{render:{cell:0,minimum:2},navigation:{cell:0},art:baselineArt,tactics:baselineTactics},weights:{render:8,navigation:8,art:8,tactics:8},context:'',tried:[] as string[],history:[] as any[]};
+const state={schema:'cs1618/evolution-state/1',generation:0,seed:1618,config:{render:{cell:0,minimum:2},navigation:{cell:0},art:baselineArt,tactics:baselineTactics,experience:DEFAULT_EXPERIENCE},weights:{render:8,navigation:8,art:8,tactics:8,experience:8},context:'',tried:[] as string[],history:[] as any[]};
 test('evolution batching preserves original transforms, excludes actors and rolls back',()=>{
  const scene=new T.Scene(),geometry=new T.BoxGeometry(),material=new T.MeshStandardMaterial();
  const meshes=[];for(let n=0;n<4;n++){const mesh=new T.Mesh(geometry,material);mesh.position.set(n,1,0);mesh.scale.set(2,3,1);mesh.userData.staticScenery=true;scene.add(mesh);meshes.push(mesh);}
@@ -31,6 +32,7 @@ test('evolution admission rejects missing, nonfinite, wrong-identity and regress
 test('candidate frontier settles and source projections are deterministic and bounded',()=>{
  validateState(state,policy);const candidates=chooseCandidates(state,policy,'context');assert.equal(candidates.length,2);
  const settled={...state,context:'context',tried:[...['art','tactics'].flatMap(k=>Array.from({length:policy.creativeAttempts},(_,i)=>`${k}-synth-${i}`)),'navigation-3','navigation-6',...policy.renderCells.flatMap(cell=>policy.renderMinimums.map(n=>`render-${cell}-${n}`))]};
+ for(let i=0;i<100;i++){const batch=chooseCandidates(settled,policy,'context');if(!batch.length)break;settled.tried.push(...batch.map(c=>c.id));}
  assert.equal(chooseCandidates(settled,policy,'context').length,0);
  assert.equal(generateNavigation(state.config.navigation),generateNavigation(state.config.navigation));assert.match(generateRender(state.config.render),/applyStaticBatching/);
  assert.throws(()=>validateState({...state,config:{...state.config,render:{cell:999,minimum:2}}},policy));

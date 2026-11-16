@@ -1,3 +1,4 @@
+import {DEFAULT_EXPERIENCE} from '../shared/experience';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import ts from 'typescript';
@@ -35,7 +36,7 @@ test('tactics receive local visible facts, never hidden enemy coordinates',async
 import {measureTactics} from '../scripts/evolution/measure-creative';
 import {baselineArt,baselineTactics} from '../shared/creative-program';
 test('tactical promotion improves held-out decisions and real emergency outcomes, rejecting no-op policy',async()=>{
- const before={render:{cell:16,minimum:2},navigation:{cell:3},art:baselineArt,tactics:baselineTactics};
+ const before={render:{cell:16,minimum:2},navigation:{cell:3},art:baselineArt,tactics:baselineTactics,experience:DEFAULT_EXPERIENCE};
  const good={...before,tactics:synthesizeTactics(42)};const evidence=await measureTactics({id:'tactics-test',family:'tactics',config:good},before);
  assert.equal(evidence.fidelity,true);assert.equal(evidence.bounds,true);assert.ok(evidence.candidateWork<evidence.baselineWork);assert.ok((evidence.after as any).holdoutErrors<(evidence.before as any).holdoutErrors);assert.ok((evidence.after as any).completed>(evidence.before as any).completed);assert.equal((evidence.before as any).trainingFailed.includes(1),false,'Legacy bot already reloads an empty weapon near an enemy');
  const bad=await measureTactics({id:'bad',family:'tactics',config:{...before,tactics:{version:1,rules:[{when:{fact:'enemy'},action:'guard'}],fallback:'guard'}}},good);assert.equal(bad.fidelity,false);

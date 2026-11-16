@@ -113,7 +113,14 @@ $('join-form').addEventListener('submit',e=>{e.preventDefault();if($<HTMLSelectE
 for(const button of document.querySelectorAll<HTMLButtonElement>('[data-team]'))button.onclick=()=>{team=button.dataset.team as Team|'auto';for(const b of document.querySelectorAll('[data-team]'))b.classList.toggle('selected',b===button);};
 $('close-buy').onclick=()=>{ui.setBuy(false,snapshot);void capture();};
 $('buy-menu').onclick=e=>{const button=(e.target as Element).closest<HTMLButtonElement>('[data-buy]');if(button&&!button.disabled)send({type:'buy',item:button.dataset.buy});};
-$<HTMLInputElement>('sensitivity').oninput=e=>{sensitivity=Number((e.target as HTMLInputElement).value);};$<HTMLInputElement>('volume').oninput=e=>audio.setVolume(Number((e.target as HTMLInputElement).value));
+function saveSetting(name:string,value:string){try{localStorage.setItem('cs1618-'+name,value);}catch{}}
+function setting(name:string,fallback:string){try{return localStorage.getItem('cs1618-'+name)??fallback;}catch{return fallback;}}
+const savedSensitivity=Number(setting('sensitivity','1'));sensitivity=Number.isFinite(savedSensitivity)?Math.max(.5,Math.min(3,savedSensitivity)):1;
+$<HTMLInputElement>('sensitivity').value=String(sensitivity);audio.setVolume(Number(setting('volume','.45')));$<HTMLInputElement>('volume').value=String(audio.volume);
+const quality=setting('quality','auto');view.setQuality(quality==='low'||quality==='native'?quality:'auto');$<HTMLSelectElement>('render-quality').value=view.qualityMode;
+$<HTMLSelectElement>('render-quality').onchange=e=>{const value=(e.target as HTMLSelectElement).value;view.setQuality(value==='low'||value==='native'?value:'auto');saveSetting('quality',view.qualityMode);};
+$<HTMLInputElement>('sensitivity').oninput=e=>{sensitivity=Number((e.target as HTMLInputElement).value);saveSetting('sensitivity',String(sensitivity));};
+$<HTMLInputElement>('volume').oninput=e=>{audio.setVolume(Number((e.target as HTMLInputElement).value));saveSetting('volume',String(audio.volume));};
 document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;if(!locked&&snapshot&&!ui.buyOpen&&!ui.scoreOpen&&$('deploy-overlay').classList.contains('hidden'))setPaused(true);if(locked)setPaused(false);});
 document.addEventListener('mousemove',e=>{if(!locked||ui.buyOpen||ui.pauseOpen||!snapshot?.self.alive)return;const factor=.002*sensitivity*(scope?.5:1);yaw-=e.movementX*factor;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));pitch=Math.max(-1.5,Math.min(1.5,pitch-e.movementY*factor));});
 document.addEventListener('mousedown',e=>{if(!locked||ui.buyOpen||ui.pauseOpen)return;if(e.button===0)fire=true;if(e.button===2)scope=true;});document.addEventListener('mouseup',e=>{if(e.button===0)fire=false;if(e.button===2)scope=false;});
@@ -144,7 +151,7 @@ function tick(){
 function frame(now:number){
  const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;accumulator+=dt;
  while(accumulator>=1/60){tick();accumulator-=1/60;}
- const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target);lastRender=now;}
+ const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target,!!snapshot&&!ui.pauseOpen);lastRender=now;}
  if(snapshot&&position){
   uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target);uiTime=0;}
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
@@ -157,4 +164,4 @@ function frame(now:number){
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',evolution:view.evolutionStatus,artwork:view.artwork.status,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

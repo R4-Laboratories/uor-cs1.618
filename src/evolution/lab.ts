@@ -37,3 +37,4 @@ function measureArt(program:ArtProgram){
  return {scene:measure(renderPolicy,views),textures:artMetrics(program)};
 }
 Object.assign((window as any).evolutionLab,{artProgram,measureArt,world});
+import '../experience-lab';

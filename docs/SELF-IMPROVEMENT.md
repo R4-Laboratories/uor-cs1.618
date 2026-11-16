@@ -72,3 +72,7 @@ prismpm build
 ```
 
 See [kernel build evidence](evidence/evolution-kernel-build.txt). Check/build succeeded; **full `prismpm verify` is not claimed** for this new model. The existing round model's documented PP5004 application-regeneration closure failure remains open. This loop's full *game gates* mean the named application tests and integrity checks, not a newly satisfied formal proof gate.
+
+## Free feature-development lane (v0.5)
+
+The `experience` family now generates burst recovery, audio-voice admission and adaptive-render control code from typed recipes. It runs without model access; optional model authorship now requires `CS_AI_AUTHOR=on`. The [development engine](DEVELOPMENT-ENGINE.md) explains the source catalogue, expansion backlog, pair interaction measurements, browser acceptance checks, and limits of finite synthesis. Full proof audits and weekly source discovery have separate official workflows.

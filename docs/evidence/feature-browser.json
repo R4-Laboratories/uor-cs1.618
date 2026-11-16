@@ -1,0 +1,116 @@
+{
+  "url": "http://127.0.0.1:36371/",
+  "sound": {
+    "rows": [
+      {
+        "weapon": "sidearm",
+        "occluded": false,
+        "peak": 0.025459162890911102,
+        "left": 4.9933371206238914e-8,
+        "right": 0.0000019905170912976327,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "sidearm",
+        "occluded": true,
+        "peak": 0.01971926912665367,
+        "left": 3.3159009411014114e-8,
+        "right": 0.0000013218329546700415,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "kestrel",
+        "occluded": false,
+        "peak": 0.037420112639665604,
+        "left": 1.603148960177026e-7,
+        "right": 0.000006390706973397324,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "kestrel",
+        "occluded": true,
+        "peak": 0.01787423901259899,
+        "left": 7.566388091604048e-8,
+        "right": 0.0000030162242905819847,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "m4",
+        "occluded": false,
+        "peak": 0.03713112697005272,
+        "left": 1.250514751647259e-7,
+        "right": 0.0000049849848596896465,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "m4",
+        "occluded": true,
+        "peak": 0.018432503566145897,
+        "left": 4.76021074331089e-8,
+        "right": 0.0000018975848451894548,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "smg",
+        "occluded": false,
+        "peak": 0.040368933230638504,
+        "left": 6.332793918163258e-8,
+        "right": 0.0000025244710032085697,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "smg",
+        "occluded": true,
+        "peak": 0.0202109906822443,
+        "left": 2.3510289924018474e-8,
+        "right": 9.372015805584654e-7,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "scout",
+        "occluded": false,
+        "peak": 0.04547908529639244,
+        "left": 3.59365148718423e-7,
+        "right": 0.000014325539227743487,
+        "tail": 0,
+        "ended": 1
+      },
+      {
+        "weapon": "scout",
+        "occluded": true,
+        "peak": 0.025255147367715836,
+        "left": 2.0799322189647917e-7,
+        "right": 0.000008291330155243541,
+        "tail": 0,
+        "ended": 1
+      }
+    ],
+    "stress": {
+      "voices": 32,
+      "peak": 0.7581315040588379,
+      "ended": 32
+    }
+  },
+  "voices": {
+    "high": 32,
+    "after": 0,
+    "limit": 32
+  },
+  "render": {
+    "low": 0.7,
+    "native": 1,
+    "count": 249,
+    "after": 249
+  },
+  "settingsPersist": true,
+  "mobileFits": true,
+  "errors": []
+}

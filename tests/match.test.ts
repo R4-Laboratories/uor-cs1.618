@@ -22,3 +22,9 @@ test('CS-04 carrier disconnect drops device at authoritative position',()=>{cons
 test('CS-02 duplicate or flooded packets never advance more than one movement tick',()=>{const m=setup();m.phase='live';m.phaseLeft=100;const a=m.players.get('a')!;a.x=0;const before=a.z;for(let seq=1;seq<=100;seq++)m.input('a',{...neutralInput(),seq,forward:1});m.step(1/60);assert.ok(before-a.z<.1);assert.equal(m.input('a',{...neutralInput(),seq:100,forward:1}),false);});
 test('CS-05 snapshots expose ammo and money only for the receiving player',()=>{const m=setup();const s=m.snapshot('a');assert.equal('money'in s.players[1],false);assert.equal('inventory'in s.players[1],false);assert.equal(s.self.money,800);});
 test('CS-03 empty primary slot cannot grant a second free pistol magazine',()=>{const m=setup();m.phase='live';m.phaseLeft=90;const a=m.players.get('a')!;a.inventory[1].ammo=0;m.input('a',{...neutralInput(),seq:1,slot:0,fire:true});m.step(1/60);assert.equal(a.slot,1);assert.equal(a.inventory[1].ammo,0);assert.equal(m.events.some(e=>e.type==='shot'),false);});
+test('CS-02 burst recovery resets the authoritative pattern and swapping clears old weapon recoil',()=>{
+ const m=setup();m.phase='live';m.phaseLeft=100;const a=m.players.get('a')!;a.inventory[0]={id:'kestrel',ammo:30,reserve:90};a.slot=0;
+ m.fire(a);assert.equal(a.burst,1);a.cooldown=0;m.fire(a);assert.equal(a.burst,2);assert(a.recoil>0);
+ for(let i=1;i<=35;i++){m.input('a',{...neutralInput(),seq:i,slot:0});m.step(1/60);}assert.equal(a.burst,0);assert.equal(a.recoil,0);
+ a.cooldown=0;m.fire(a);assert.equal(a.burst,1);m.input('a',{...neutralInput(),seq:36,slot:1});m.step(1/60);assert.equal(a.burst,0);assert.equal(a.recoil,0);
+});

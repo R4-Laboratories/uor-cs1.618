@@ -273,13 +273,20 @@
         }
       ],
       "fallback": "advance"
+    },
+    "experience": {
+      "recoveryMs": 420,
+      "voices": 32,
+      "downMs": 2400,
+      "upMs": 10000
     }
   },
   "weights": {
     "render": 10,
     "navigation": 9,
     "art": 12,
-    "tactics": 14
+    "tactics": 14,
+    "experience": 12
   },
   "context": "3ee5a6ac4ca448ec4efbc963e23f6e3780213470c9748dbaf067f4141c19eb3d",
   "tried": [

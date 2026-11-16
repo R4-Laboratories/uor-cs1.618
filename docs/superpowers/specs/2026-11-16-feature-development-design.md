@@ -1,0 +1,7 @@
+# Feature development without a paid model
+
+The repository must improve using executable, auditable mechanisms even when no LLM is available. New authored modules supply reusable feature primitives; a bounded compiler constructs candidate source from typed configurations. Independent measurements and existing game/peer/browser gates decide whether those candidates are published. Human experience remains a playtest question: a numerical proxy is never described as proof that a game is more fun.
+
+This increment adds reproducible weapon spray, a stop-to-shoot accuracy reward, audio signatures/occlusion/voice limits, adaptive rendering and persisted settings. A new experience candidate family emits source controlling these primitives and measures temporal recovery, sound resource limits and render resolution response against immutable scenarios. The compiled Prism admission kernel makes the final finite admission decision. Its scope is that decision, not all of Three.js, networking or audio.
+
+No subscriptions, API purchases or unverified external code execution. Source discovery is a pinned catalogue and dependency backlog. New general features still require an implementation/recipe with independent acceptance cases; an exhausted frontier settles instead of claiming endless invention. Existing creative model calls stay optional. Rule30/R4 ideas are attributed, not mislabeled as running a pretrained code model. The user has authorized autonomous implementation, publishing and deployment.

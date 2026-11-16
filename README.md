@@ -111,3 +111,7 @@ For browser tests, install Chromium once with `npx playwright install chromium`.
 | `tests`, `scripts` | Regression, network, browser and reproducibility checks |
 
 MIT for original game code. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for dependencies. This is an independent project, not affiliated with Valve or Counter-Strike.
+
+### Free feature development
+
+Weapon spray/recovery, distinct bounded audio, adaptive render quality and saved player settings now run in the browser. The scheduled engine generates and tests variants without paid model access. See the [development mechanism and feature frontier](docs/DEVELOPMENT-ENGINE.md), [live studio](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html), and [formal proof audit](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/proofs.yml). Full Prism verification remains an explicit open gate.

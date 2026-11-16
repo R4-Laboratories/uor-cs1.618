@@ -1,23 +1,48 @@
 import type {VerdantEngine} from '../shared/engine';
 import type {GameEvent} from '../shared/protocol';
+import {audioProfile} from '../shared/experience';
+import {admitVoice} from '../shared/generated-experience';
+export function noiseBuffer(ctx:BaseAudioContext){
+ const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.5),ctx.sampleRate),data=buffer.getChannelData(0);let seed=1618;
+ for(let i=0;i<data.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;data[i]=seed/2147483648-1;}
+ return buffer;
+}
+export function audioBus(ctx:BaseAudioContext,volume:number){
+ const master=ctx.createGain(),limiter=ctx.createDynamicsCompressor();
+ master.gain.value=volume;limiter.threshold.value=-12;limiter.knee.value=6;limiter.ratio.value=16;limiter.attack.value=.002;limiter.release.value=.15;master.connect(limiter);limiter.connect(ctx.destination);return master;
+}
+// Bounded event voice: every node disconnects after its longest source ends.
+export function playCue(ctx:BaseAudioContext,master:GainNode,noise:AudioBuffer,event:GameEvent,cue:{pan:number;gain:number;occluded:boolean},ended:()=>void){
+ const t=ctx.currentTime,p=audioProfile(event.type,event.weapon,cue.occluded),pan=ctx.createStereoPanner(),envelope=ctx.createGain();
+ pan.pan.value=Math.max(-1,Math.min(1,cue.pan));pan.connect(master);envelope.connect(pan);
+ const gain=Math.max(0,Math.min(1,cue.gain));envelope.gain.setValueAtTime(Math.max(.00001,p.level*gain),t);envelope.gain.exponentialRampToValueAtTime(.00001,t+p.duration);
+ const sources:AudioScheduledSourceNode[]=[],nodes:AudioNode[]=[envelope,pan];
+ if(['shot','step','explode'].includes(event.type)){
+  const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter();source.buffer=noise;filter.type='lowpass';filter.frequency.value=p.cutoff;source.connect(filter);filter.connect(envelope);sources.push(source);nodes.push(filter);
+ }
+ const tone=ctx.createOscillator(),body=ctx.createGain();tone.type=event.type==='hit'?'triangle':'sine';tone.frequency.setValueAtTime(event.type==='hit'?800:p.tone,t);tone.frequency.exponentialRampToValueAtTime(Math.max(35,p.tone*.45),t+p.duration);body.gain.value=event.type==='shot'?.32:.18;tone.connect(body);body.connect(envelope);sources.push(tone);nodes.push(body);
+ let remaining=sources.length,cleaned=false;
+ const clean=()=>{if(cleaned)return;cleaned=true;for(const node of [...sources,...nodes])node.disconnect();ended();};
+ for(const source of sources){source.onended=()=>{if(--remaining===0)clean();};source.start(t);source.stop(t+p.duration);}
+ return ()=>{for(const source of sources){source.onended=null;try{source.stop();}catch{}}clean();};
+}
 export class GameAudio{
  ctx:AudioContext|null=null;master:GainNode|null=null;volume=.45;noise:AudioBuffer|null=null;
+ private voices=new Map<()=>void,boolean>();
+ get activeVoices(){return this.voices.size;}
  constructor(private engine:VerdantEngine){}
- async start(){if(!this.ctx){this.ctx=new AudioContext();this.master=this.ctx.createGain();this.master.gain.value=this.volume;this.master.connect(this.ctx.destination);this.noise=this.ctx.createBuffer(1,this.ctx.sampleRate*.5,this.ctx.sampleRate);const data=this.noise.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;}await this.ctx.resume();}
- setVolume(v:number){this.volume=v;if(this.master)this.master.gain.value=v;}
+ async start(){if(!this.ctx){this.ctx=new AudioContext();this.master=audioBus(this.ctx,this.volume);this.noise=noiseBuffer(this.ctx);}await this.ctx.resume();}
+ setVolume(v:number){this.volume=Number.isFinite(v)?Math.max(0,Math.min(1,v)):.45;if(this.master&&this.ctx)this.master.gain.setTargetAtTime(this.volume,this.ctx.currentTime,.02);}
  event(e:GameEvent,listener:{x:number;y:number;z:number;yaw:number},self:string){
-  if(!this.ctx||!this.master)return;const c=this.ctx,t=c.currentTime;const spatial=e.x!==undefined&&e.actor!==self;
-  const cue=spatial?this.engine.audio(e.x!,e.y??0,e.z!,listener.x,listener.y+1.6,listener.z,listener.yaw):{pan:0,gain:1,occluded:false};
-  const pan=c.createStereoPanner();pan.pan.value=cue.pan;pan.connect(this.master);
-  const envelope=c.createGain();envelope.connect(pan);const gain=spatial?Math.min(1,cue.gain*6):1;
-  const type=e.type;
-  if(type==='shot'||type==='step'||type==='explode'){
-   const noise=c.createBufferSource();noise.buffer=this.noise;const filter=c.createBiquadFilter();filter.type='lowpass';filter.frequency.value=cue.occluded?450:type==='step'?300:2300;
-   noise.connect(filter);filter.connect(envelope);const duration=type==='explode'?.48:type==='step'?.065:.13;const level=(type==='step'?.13:type==='explode'?.8:.32)*gain;
-   envelope.gain.setValueAtTime(level,t);envelope.gain.exponentialRampToValueAtTime(.001,t+duration);noise.start(t);noise.stop(t+duration);noise.onended=()=>{noise.disconnect();filter.disconnect();envelope.disconnect();pan.disconnect();};
-  }else{
-   const osc=c.createOscillator();osc.type=type==='hit'?'triangle':'sine';osc.frequency.setValueAtTime(type==='hit'?800:type==='plant'?660:type==='defuse'?880:440,t);osc.frequency.exponentialRampToValueAtTime(type==='hit'?300:660,t+.12);osc.connect(envelope);envelope.gain.setValueAtTime(.12,t);envelope.gain.exponentialRampToValueAtTime(.001,t+.2);osc.start();osc.stop(t+.2);osc.onended=()=>{osc.disconnect();envelope.disconnect();pan.disconnect();};
+  if(!this.ctx||!this.master||!this.noise||this.ctx.state!=='running'||this.volume===0)return;
+  if(!admitVoice(this.voices.size)){
+   if(e.type==='step')return;
+   // Prefer retiring an old footstep; preserve space for objectives and gunfire.
+   const old=[...this.voices].find(([,step])=>step)?.[0]??this.voices.keys().next().value;old?.();
   }
+  const spatial=e.x!==undefined&&e.actor!==self;
+  const cue=spatial?this.engine.audio(e.x!,e.y??0,e.z!,listener.x,listener.y+1.6,listener.z,listener.yaw):{pan:0,gain:1,occluded:false};
+  const stop=playCue(this.ctx,this.master,this.noise,e,{...cue,gain:spatial?Math.min(1,cue.gain*6):1},()=>this.voices.delete(stop));this.voices.set(stop,e.type==='step');
  }
  beep(fast=false){if(!this.ctx)return;this.event({id:0,type:fast?'hit':'plant'},{x:0,y:0,z:0,yaw:0},'');}
 }

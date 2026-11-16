@@ -1,3 +1,4 @@
+import {adaptQuality} from '../shared/generated-experience';
 import {ArtworkLayer} from './creative/artwork';
 import {optimizeScenery} from './generated/render-policy';
 import * as T from 'three';
@@ -22,6 +23,10 @@ export class WorldView{
  private buildingScenery=true;
  private undoEvolution:(()=>void)|null=null;
  evolutionStatus='baseline';
+ qualityMode:'auto'|'native'|'low'='auto';
+ quality={scale:1,slow:0,fast:0};
+ setQuality(mode:'auto'|'native'|'low'){this.qualityMode=mode;this.quality={scale:mode==='low'?.7:1,slow:0,fast:0};this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*this.quality.scale);this.resize();}
+
  artwork:ArtworkLayer;
  constructor(public canvas:HTMLCanvasElement,options:{evolution?:boolean;preserveDrawingBuffer?:boolean}={}){
   this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:options.preserveDrawingBuffer??false});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
@@ -112,7 +117,8 @@ export class WorldView{
   if(e.type==='explode'){const mesh=new T.Mesh(new T.SphereGeometry(1,12,8),new T.MeshBasicMaterial({color:0xffbc67,transparent:true,opacity:.6}));mesh.position.set(e.x!,e.y!+1,e.z!);this.scene.add(mesh);this.impacts.push({mesh,life:1});}
  }
  resize(){const w=innerWidth,h=innerHeight;this.renderer.setSize(w,h,false);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.weaponCamera.aspect=w/h;this.weaponCamera.updateProjectionMatrix();}
- render(dt:number,snapshot:Snapshot|null,position:Motion|null,yaw:number,pitch:number,scoped:boolean,spectating:PublicPlayer|null){
+ render(dt:number,snapshot:Snapshot|null,position:Motion|null,yaw:number,pitch:number,scoped:boolean,spectating:PublicPlayer|null,active=false){
+  if(this.qualityMode==='auto'){const next=adaptQuality(this.quality,active?dt:1);if(next.scale!==this.quality.scale){this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*next.scale);this.resize();}this.quality=next;}
   this.elapsed+=dt;this.recoil=Math.max(0,this.recoil-dt*8);this.flash.visible=this.recoil>.7;
   if(!snapshot){const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
   else{
