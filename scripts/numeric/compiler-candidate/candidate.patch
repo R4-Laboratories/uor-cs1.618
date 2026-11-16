@@ -158,7 +158,7 @@ index 0000000000000000000000000000000000000000..aa737405f8f3342e5a4066634ab52be7
 +end NumericFixture
 diff --git a/lean/Conformance/NumericConversion.lean b/lean/Conformance/NumericConversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..455f25da32644f58fb689c30b4760ce810abe44e
+index 0000000000000000000000000000000000000000..f2fcd95fbf14a9c9ed1880525ece136f3c65fcc7
 --- /dev/null
 +++ b/lean/Conformance/NumericConversion.lean
 @@ -0,0 +1,130 @@
@@ -233,7 +233,7 @@ index 0000000000000000000000000000000000000000..455f25da32644f58fb689c30b4760ce8
 +    throwError "live generic dictionary was silently erased or omitted from coverage"
 +  IO.FS.writeFile "../output/numeric/live-dictionary.ir" live.ir
 +  let extracted ← Prod.extractNames #[``NumericFixture.widen]
-+  let first : Prod.ExtractedDef := extracted[0]!
++  let some first := extracted[0]? | throwError "missing extracted widen definition"
 +  let some decl := first.decl? | throwError "missing widen declaration"
 +  let .code code := decl.value | throwError "missing widen code"
 +  for wrongResult in [false, true] do
@@ -294,7 +294,7 @@ index 0000000000000000000000000000000000000000..455f25da32644f58fb689c30b4760ce8
 +  logInfo "numeric conversions: canonical, renamed, four semantic, two type and four consumed-dependency refusals, live residue, and failing unused operation"
 diff --git a/lean/Prod/Conversion.lean b/lean/Prod/Conversion.lean
 new file mode 100644
-index 0000000000000000000000000000000000000000..0bc44eb43ab09958c5f8121e1eb0e2be0f9fcf28
+index 0000000000000000000000000000000000000000..cc6a266a909d658507d7985b4afa28d2ea9845af
 --- /dev/null
 +++ b/lean/Prod/Conversion.lean
 @@ -0,0 +1,269 @@
@@ -378,7 +378,7 @@ index 0000000000000000000000000000000000000000..0bc44eb43ab09958c5f8121e1eb0e2be
 +      return some term
 +    match term with
 +    | .lam .. => return some term
-+    | .lit (.nat n) =>
++    | .lit (.natVal n) =>
 +      return if n ≤ 18446744073709551615 then some term else none
 +    | .mdata _ body => inertValue? fuel body
 +    | .letE _ _ value body _ =>
@@ -424,7 +424,7 @@ index 0000000000000000000000000000000000000000..0bc44eb43ab09958c5f8121e1eb0e2be
 +        -- arbitrary expression definitionally equal to a literal.
 +        if name == ``Int.neg && args.size == 1 then
 +          let value := args[0]!
-+          let #[.lit (.nat n)] := value.getAppArgs | return none
++          let #[.lit (.natVal n)] := value.getAppArgs | return none
 +          if value.getAppFn == mkConst ``Int.ofNat then
 +            return some (toExpr (-(Int.ofNat n)))
 +          if value.getAppFn == mkConst ``Int.negSucc && n < 18446744073709551615 then
