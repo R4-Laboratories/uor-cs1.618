@@ -23,7 +23,8 @@
     "evolution:author": "tsx scripts/evolution/creative-author.ts",
     "test:creative-browser": "tsx scripts/creative-browser-test.ts",
     "test:experience-browser": "tsx scripts/experience-browser-test.ts",
-    "test:identity-browser": "tsx scripts/identity-browser-test.ts"
+    "test:identity-browser": "tsx scripts/identity-browser-test.ts",
+    "test:discovery-browser": "tsx scripts/discovery-browser-test.ts"
   },
   "dependencies": {
     "@fontsource/barlow": "5.3.0",

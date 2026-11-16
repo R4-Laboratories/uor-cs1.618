@@ -1,12 +1,15 @@
 import Peer,{type DataConnection} from 'peerjs';
+import {signHostProof,verifyHostProof,type HostBinding} from '../shared/match-discovery';
+import type {HologramPolicy} from '../shared/hologram-policy';
 import type {Team} from '../shared/config';
 import {PEER_PROTOCOL,invitationUrl,type Invitation,type NetworkConfig} from './peer-config';
 interface Options {
  host:boolean;invitation:Invitation;network:NetworkConfig;name:string;team:Team|'auto';bots:boolean;
  bytes:ArrayBuffer;roundBytes:ArrayBuffer;
+ hostIdentity?:any;expectedHost?:{prism:string;audience:string;policy:HologramPolicy};
  receive:(message:any)=>void;status:(message:string)=>void;closed:(reason:string)=>void;
 }
-interface Link {id:string;opened:boolean;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;window:number;count:number;}
+interface Link {proofState:'none'|'waiting'|'verifying'|'verified';challenge?:HostBinding;id:string;opened:boolean;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;window:number;count:number;}
 /** Rendezvous uses PeerServer; gameplay stays on encrypted browser-to-browser channels. */
 export class PeerRoom {
  readonly invitation:string;
@@ -22,7 +25,7 @@ export class PeerRoom {
  private reject!:(error:Error)=>void;
  private ready:Promise<void>;
  private reconnect:ReturnType<typeof setTimeout>|null=null;
- private diagnostics={mode:'connecting',route:'negotiating',peers:0,fast:false};
+ private diagnostics={mode:'connecting',route:'negotiating',peers:0,fast:false,hostVerified:false};
  static async start(options:Options){const room=new PeerRoom(options);await room.ready;return room;}
  private constructor(private options:Options){
   this.isHost=options.host;this.invitation=invitationUrl(options.invitation,location.href);
@@ -80,7 +83,7 @@ export class PeerRoom {
  }
  private attach(connection:DataConnection){
   const id=`remote-${crypto.randomUUID()}`;
-  const link:Link={id,opened:false,connection,fast:null,lastSeen:performance.now(),route:'negotiating',window:performance.now(),count:0,timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
+  const link:Link={id,proofState:'none',opened:false,connection,fast:null,lastSeen:performance.now(),route:'negotiating',window:performance.now(),count:0,timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
   this.links.set(id,link);this.diagnostics.peers=this.links.size;
   // PeerJS normally owns ondatachannel. Route only its primary channel to its handler.
   const pc=connection.peerConnection,original=pc.ondatachannel;
@@ -91,7 +94,11 @@ export class PeerRoom {
    if(this.options.host)this.worker?.postMessage({type:'open',peer:id});
    else{
     this.attachFast(link,pc.createDataChannel('cs-realtime',{ordered:false,maxRetransmits:0}));
-    this.transmit(link,{type:'join',token:this.options.invitation.token,name:this.options.name,team:this.options.team},false);
+    if(this.options.expectedHost){
+     link.proofState='waiting';
+     link.challenge={...this.options.invitation,hostPeer:connection.peer,guestPeer:this.peer.id,signaling:this.signaling(),challenge:Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('')};
+     this.transmit(link,{type:'host-challenge',...link.challenge},false);
+    }else this.join(link);
    }
   });
   connection.on('data',data=>this.incoming(link,data,false));
@@ -114,15 +121,32 @@ export class PeerRoom {
   if(!message||typeof message!=='object')return;
   link.lastSeen=performance.now();
   if(this.options.host){
+   if(message.type==='host-challenge'){
+    if(realtime||link.proofState!=='none'||!this.options.hostIdentity||message.room!==this.options.invitation.room||message.token!==this.options.invitation.token||message.hostPeer!==this.peer.id||message.guestPeer!==link.connection.peer||message.signaling!==this.signaling()||typeof message.challenge!=='string'||!/^[a-f0-9]{64}$/.test(message.challenge)){this.remove(link,'Host challenge refused.');return;}
+    link.proofState='verifying';
+    const binding:HostBinding={room:message.room,token:message.token,hostPeer:message.hostPeer,guestPeer:message.guestPeer,signaling:message.signaling,challenge:message.challenge};
+    void signHostProof(this.options.hostIdentity,location.origin,binding).then(proof=>{if(this.stopped||!this.links.has(link.id))return;link.proofState='verified';this.transmit(link,{type:'host-proof',proof},false);}).catch(()=>this.remove(link,'Could not prove the host identity.'));return;
+   }
+   if(link.proofState==='verifying'){this.remove(link,'Wait for the host proof.');return;}
    if(realtime&&message.type!=='input')return;
    this.worker?.postMessage({type:'message',peer:link.id,message});
   }else{
+   if(this.options.expectedHost&&link.proofState!=='verified'){
+    if(realtime||message.type!=='host-proof'||link.proofState!=='waiting'||!link.challenge){this.remove(link,'Host sent gameplay before proving its identity.');return;}
+    link.proofState='verifying';const expected=this.options.expectedHost;
+    void verifyHostProof(message.proof,expected.prism,expected.audience,link.challenge,expected.policy).then(()=>{
+     if(this.stopped||!this.links.has(link.id))return;
+     link.proofState='verified';this.diagnostics.hostVerified=true;this.join(link);
+    }).catch(()=>this.remove(link,'Host identity proof refused. This host does not match the public listing.'));return;
+   }
    if(realtime&&message.type!=='snapshot')return;
    if(message.type==='error'&&message.code==='peer'){this.fail(message.message);return;}
    if(message.type==='welcome'&&!this.joined){this.joined=true;this.diagnostics.mode='guest';clearTimeout(this.startup);clearTimeout(link.timer);this.resolve();}
    if(this.joined&&['welcome','snapshot','pong','buy-result','error'].includes(message.type))this.options.receive(message);
   }
  }
+ private signaling(){const s=this.options.network.signaling;return s?new URL(`${s.secure?'https':'http'}://${s.host}:${s.port}${s.path}`).href:'peerjs-cloud';}
+ private join(link:Link){this.transmit(link,{type:'join',token:this.options.invitation.token,name:this.options.name,team:this.options.team},false);}
  private transmit(link:Link,message:unknown,realtime:boolean){
   if(this.stopped)return;
   const fast=link.fast?.readyState==='open'?link.fast:null;

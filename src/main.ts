@@ -1,5 +1,5 @@
 import {engineAssetUrl} from './engine-url';
-import {frame as prismFrame} from './prism-frame';
+import {frame as prismFrame,policyReady} from './prism-frame';
 import '@fontsource/barlow/400.css';
 import '@fontsource/barlow/500.css';
 import '@fontsource/barlow/600.css';
@@ -10,6 +10,10 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import './style.css';
 import {PeerRoom} from './peer-room';
+import {MatchDirectory} from './match-directory';
+import {identityStore} from './identity-store';
+import {createIdentity} from '../shared/hologram-identity';
+import {supportedSignaling,type MatchListing,type MatchFields} from '../shared/match-discovery';
 import {DEFAULT_STUN,newInvitation,parseInvitation,networkConfig} from './peer-config';
 import {WorldView} from './world';
 import {UI,$} from './ui';
@@ -27,6 +31,7 @@ const roundResponse=await fetch(`${import.meta.env.BASE_URL}wasm/cs_round.wasm`)
 const engine=await createEngine(bytes);view.setEngine(engine);const audio=new GameAudio(engine);
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;
 let peerRoom:PeerRoom|null=null;
+let directory:MatchDirectory|null=null;
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
 let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0,beepTime=0;
 let pending:{input:Input;canMove:boolean}[]=[];const keys=new Set<string>();
@@ -47,6 +52,14 @@ function busy(value:boolean){for(const id of ['join','practice','host-room'])$<H
 function peerSharing(){for(const el of document.querySelectorAll<HTMLElement>('.peer-share'))el.classList.toggle('hidden',!peerRoom);if(peerRoom){for(const el of document.querySelectorAll<HTMLInputElement>('.invitation-link'))el.value=peerRoom.invitation;}}
 for(const button of document.querySelectorAll<HTMLButtonElement>('.copy-invitation'))button.onclick=async()=>{if(!peerRoom)return;try{await navigator.clipboard.writeText(peerRoom.invitation);ui.toast('Invitation copied. Send it to your friends.');}catch{const field=button.parentElement!.querySelector<HTMLInputElement>('.invitation-link')!;field.focus();field.select();ui.toast('Copy the selected invitation link.');}};
 ui.show('loading',false);ui.show('lobby',true);
+const publication=(message:string)=>{for(const el of document.querySelectorAll('.publication-state'))el.textContent=message;};
+const directoryReady=policyReady.then(async policy=>{
+ directory=new MatchDirectory({audience:location.origin,policy,changed:()=>ui.matches(directory?.listings??[],listing=>void joinPeer(false,listing)),status:message=>{$('directory-status').textContent=message;},publication});
+ await directory.start();return directory;
+}).catch(()=>{$('directory-status').textContent='Verified directory unavailable: identity policy could not load. Private invitations still work.';return null;});
+$('refresh-matches').onclick=()=>{void directory?.refresh();};
+$<HTMLSelectElement>('room-visibility').onchange=()=>ui.show('public-disclosure',$<HTMLSelectElement>('room-visibility').value==='public');
+window.addEventListener('pagehide',()=>{void directory?.stop();peerRoom?.close();});
 try{$<HTMLInputElement>('procedural-art').checked=localStorage.getItem('cs1618-art')!=='off';}catch{}
 view.artwork.setEnabled($<HTMLInputElement>('procedural-art').checked);
 $<HTMLInputElement>('procedural-art').onchange=e=>{const enabled=(e.target as HTMLInputElement).checked;view.artwork.setEnabled(enabled);try{localStorage.setItem('cs1618-art',enabled?'on':'off');}catch{}};
@@ -78,19 +91,34 @@ function receive(m:any){
  }
  if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;busy(false);}return;}
 }
-function disconnect(){peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
-async function joinPeer(host:boolean){
+function disconnect(){void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
+async function joinPeer(host:boolean,listing?:MatchListing){
  if(connecting)return;
  let invite,network;try{
-  invite=host?newInvitation():parseInvitation($<HTMLInputElement>('peer-invite').value);
+  if(listing){if(listing.expires<=Date.now())throw Error('This listing expired. Refresh the directory.');$<HTMLInputElement>('signaling-server').value=listing.signaling==='peerjs-cloud'?'':listing.signaling;}
+  invite=host?newInvitation():listing?{room:listing.room,token:listing.token}:parseInvitation($<HTMLInputElement>('peer-invite').value);
   network=networkConfig({stun:$<HTMLInputElement>('stun-servers').value,turn:$<HTMLInputElement>('turn-servers').value,username:$<HTMLInputElement>('turn-user').value,credential:$<HTMLInputElement>('turn-credential').value,relay:$<HTMLInputElement>('relay-only').checked,signaling:$<HTMLInputElement>('signaling-server').value});
   if(location.protocol==='https:'&&network.signaling&&!network.signaling.secure)throw Error('An HTTPS game needs an HTTPS signaling service.');
  }catch(error){ui.status((error as Error).message);return;}
  connecting=true;busy(true);ui.status(host?'Opening your browser room…':'Finding the host and negotiating a peer connection…');
  const name=$<HTMLInputElement>('name').value.trim()||'Operator';save('cs-name',name);save('cs-stun',$<HTMLInputElement>('stun-servers').value);save('cs-signaling',$<HTMLInputElement>('signaling-server').value);
  try{
+  const isPublic=host&&$<HTMLSelectElement>('room-visibility').value==='public';
+  const signaling=network.signaling?new URL(`${network.signaling.secure?'https':'http'}://${network.signaling.host}:${network.signaling.port}${network.signaling.path}`).href:'peerjs-cloud';
+  let hostIdentity:any;
+  if(isPublic){
+   if(!supportedSignaling(signaling,location.origin))throw Error('Public rooms support PeerJS Cloud or a same-origin PeerServer. Choose Private for other signaling services.');
+   if(!await directoryReady)throw Error('Verified public hosting is unavailable. Choose Private to create an invitation room.');
+   hostIdentity=await identityStore();if(!hostIdentity){hostIdentity=await createIdentity();await identityStore(true,hostIdentity);}
+  }
+  publication(isPublic?'Publishing a public listing…':host?'Private room · invitation only.':'Joined by invitation.');
   await audio.start();
-  peerRoom=await PeerRoom.start({host,invitation:invite,network,name,team,bots:$<HTMLInputElement>('fill-bots').checked,bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),receive,status:message=>{ui.status(message);ui.toast(message);},closed:reason=>{disconnect();ui.status(reason);ui.toast(reason);}});
+  peerRoom=await PeerRoom.start({host,hostIdentity,expectedHost:listing?{prism:listing.prism,audience:location.origin,policy:await policyReady}:undefined,invitation:invite,network,name,team,bots:$<HTMLInputElement>('fill-bots').checked,bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),receive,status:message=>{ui.status(message);ui.toast(message);},closed:reason=>{disconnect();ui.status(reason);ui.toast(reason);}});
+  if(listing)publication('Host Prism verified against the public listing with a fresh transport challenge.');
+  if(isPublic){
+   const fields=():MatchFields=>({...invite,name:name.slice(0,32),players:Math.max(1,snapshot?.players.filter(p=>!p.bot).length??1),capacity:10,map:'meridian',signaling});
+   void directory!.publishHost(hostIdentity,fields);
+  }
   peerSharing();$('deploy-description').textContent=host?'Your browser is hosting. Copy the invitation below, then deploy.':'Connected to the host browser. Click to deploy.';
  }catch(error){disconnect();ui.status((error as Error).message);}
 }

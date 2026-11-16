@@ -24,7 +24,7 @@ for(const page of [a,b]){
 }
 async function setup(page:Page,name:string,team:string){
  await page.goto(url,{waitUntil:'domcontentloaded'});await page.waitForSelector('#lobby:not(.hidden)');
- await page.fill('#name',name);await page.click(`[data-team="${team}"]`);
+ await page.selectOption('#room-visibility','private');await page.fill('#name',name);await page.click(`[data-team="${team}"]`);
  await page.locator('#connection-settings').evaluate((e:HTMLDetailsElement)=>e.open=true);
  await page.fill('#signaling-server',`${url}/signal`);await page.fill('#stun-servers','');await page.uncheck('#fill-bots');
 }

@@ -22,7 +22,7 @@
       "identityBundle": "Unchanged upstream generated Stitch bundle; its header pins afflom/stitch@68a9222a075ba11473ae804c47b223daa7d162ce. Stitch MIT declaration and attribution retained under vendor/stitch."
     }
   },
-  "fidelity": "Unmodified pinned source modules and transitive dependencies. Runtime behavior is imported, not locally proved. No relay, registry or account writes are invoked by the adapter. Offline revocation depends on verifier-known records. Current published frame sessions use Stitch prism/session/1 actions; the older pinned Me WebAuthn protocol remains separately supported. Current template verifier runs with hear:false and fresh:0; its delegated session key must sign a fresh local binding.",
+  "fidelity": "Unmodified pinned source modules and transitive dependencies. Runtime behavior is imported, not locally proved. Identity binding invokes no relay, registry or account writes. Public browser hosting explicitly publishes signed invitation leases through the pinned Stitch createRelayBus to https://ntfy.sh; private hosting publishes nothing. Discovery uses bounded polling and compiled identity admission; browser gameplay remains WebRTC. Offline revocation depends on verifier-known records. Current published frame sessions use Stitch prism/session/1 actions; the older pinned Me WebAuthn protocol remains separately supported. Current template verifier runs with hear:false and fresh:0; its delegated session key must sign a fresh local binding.",
   "files": [
     {
       "repository": "https://github.com/afflom/stitch",

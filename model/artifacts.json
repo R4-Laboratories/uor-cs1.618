@@ -38,8 +38,8 @@
       "bytes": 202
     },
     "model/hologram-vendor.json": {
-      "sha256": "027801b09d8a4cfae288d5a3b649d20ca54c2f7126c0d8c225cf763611957e55",
-      "bytes": 7289
+      "sha256": "39e18a896dfcfd49d3e6904325cfd73696bc27384cb88dc87d4b00f5dbbb85ab",
+      "bytes": 7549
     },
     "model/identity.prompt.json": {
       "sha256": "fe9581ea1e5962a20929f206c29468550c368d32bf305c65d0e462cbdb3f7fe9",

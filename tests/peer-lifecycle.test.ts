@@ -48,3 +48,26 @@ test('duplicate PeerJS open notifications perform a single host or guest handsha
   finally{room.close();}
  }
 });
+test('discovery guests refuse every gameplay packet until a live host proof has passed',async()=>{
+ for(const packet of [{type:'welcome',id:'forged'},{type:'snapshot'},{type:'pong'},{type:'error',code:'other',message:'bypass'}]){
+  let peer!:FakePeer;const sent:any[]=[],received:any[]=[];
+  const channel={readyState:'open',bufferedAmount:0,send:(s:string)=>sent.push(JSON.parse(s)),close:()=>{}};
+  class Connection extends EventEmitter {
+   peer='cs1618-v2-123456789abc';dataChannel=channel;
+   peerConnection={ondatachannel:null,addEventListener:()=>{},createDataChannel:()=>channel};close(){}
+  }
+  const connection=new Connection();
+  class FakePeer extends EventEmitter {id='cs1618-v2-guest-test';constructor(){super();peer=this;}connect(){return connection;}destroy(){}}
+  const exports:Record<string,any>={};
+  runInNewContext(compiled,{exports,require:(name:string)=>name==='peerjs'?{default:FakePeer}:{PEER_PROTOCOL:'cs1618-v2',invitationUrl:()=>''},crypto,location:{href:'https://game.test/',origin:'https://game.test'},performance,setTimeout,clearTimeout,setInterval,clearInterval,URL});
+  const started=exports.PeerRoom.start({host:false,expectedHost:{prism:'pinned-prism',audience:'https://game.test',policy:{}},invitation:{room:'123456789abc',token:'0'.repeat(32)},network:{ice:{iceServers:[]}},receive:(m:any)=>received.push(m),status:()=>{},closed:()=>{}});
+  const outcome=started.then((room:any)=>{room.close();return 'accepted';},()=> 'refused');
+  peer.emit('open');connection.emit('open');connection.emit('data',JSON.stringify(packet));
+  // A missing gate can leave non-welcome traffic waiting; terminate that path.
+  peer.emit('error',{type:'network'});
+  assert.equal(await outcome,'refused','Unproved welcome must not resolve the room');
+  assert.deepEqual(received,[]);
+  assert.equal(sent[0]?.type,'host-challenge','Discovery sends a challenge before join');
+  assert.equal(sent.some(p=>p.type==='join'),false);
+ }
+});
