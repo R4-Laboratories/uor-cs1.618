@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 1809536341,
+  "seed": 2823378261,
   "config": {
     "render": {
       "cell": 16,
@@ -317,7 +317,9 @@
     "experience-3-6",
     "experience-4-6",
     "experience-5-5",
-    "experience-5-6"
+    "experience-5-6",
+    "experience-6-6",
+    "render-64-2"
   ],
   "history": [
     {
@@ -6772,6 +6774,166 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "8bbf6077df3c1ee15d7e9aad4cf077167634ff4aec3d1fa0179f94556f9ce07a"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-16T22:05:20.934Z",
+      "base": "eeb40fabe07719efc78d3b2e5f62fbee695d9572",
+      "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
+      "previous": "8bbf6077df3c1ee15d7e9aad4cf077167634ff4aec3d1fa0179f94556f9ce07a",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "experience-6-6",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "c3c3005d6f98ae2d529db032866151c164843a99d9b84c4d7d13829d5056e5b9",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.0865833333333366,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "CandidateAdmitted",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": []
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          }
+        },
+        {
+          "candidate": "render-64-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "2203993d904e1eb00a48df37fd855532700c906cd6ac4d930c3e8eec0fe55f11",
+          "baselineWork": 67276,
+          "candidateWork": 49124,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010212418300653596,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.2765522875816995e-7,
+              "changed": 0
+            },
+            {
+              "mean": 2.9105392156862744e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 4.80000000000291
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 2.7999999999883585
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 3
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 3.8000000000029104
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 6.7999999999883585
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 2
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 3.900000000008731
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 3.8999999999941792
+            }
+          ],
+          "after": [
+            {
+              "calls": 80,
+              "triangles": 5398,
+              "frameMs": 2.5
+            },
+            {
+              "calls": 59,
+              "triangles": 5254,
+              "frameMs": 1.1999999999970896
+            },
+            {
+              "calls": 64,
+              "triangles": 4938,
+              "frameMs": 1.1999999999970896
+            },
+            {
+              "calls": 78,
+              "triangles": 5434,
+              "frameMs": 1.1999999999970896
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "49e2065444592cc9838d5482d9662382002613b10bc8076fbf5f5741342ca0af"
     }
   ]
 }
