@@ -1,6 +1,6 @@
 {
   "schema": "cs1618/evolution-public/1",
-  "generation": 7,
+  "generation": 8,
   "config": {
     "render": {
       "cell": 16,
@@ -11,155 +11,155 @@
     },
     "art": {
       "version": 1,
-      "seed": 11492,
-      "background": "#1d2a38",
-      "ink": "#f8f0dc",
-      "siteA": "#f4b072",
-      "siteB": "#82d6df",
+      "seed": 2927574,
+      "background": "#172e34",
+      "ink": "#f3edda",
+      "siteA": "#efac69",
+      "siteB": "#79d6da",
       "shapes": [
         {
           "kind": "ring",
-          "x": 0.8059281861595811,
-          "y": 0.5982147613819688,
-          "a": 0.4895995909348131,
-          "b": 0.14795514792203904,
-          "weight": 0.007314493102952838
+          "x": 0.8597909078188242,
+          "y": 0.3147389869019389,
+          "a": 0.8641764862462878,
+          "b": 0.7546234805136919,
+          "weight": 0.009377564312890172
         },
         {
           "kind": "line",
-          "x": 0.6560368177667261,
-          "y": 0.7277626452082768,
-          "a": 0.15589795336127282,
-          "b": 0.6296730509027839,
-          "weight": 0.010239083345979453
+          "x": 0.7363228648155928,
+          "y": 0.2328210728196427,
+          "a": 0.28478423319756985,
+          "b": 0.6646175632253289,
+          "weight": 0.0063828201889991765
         },
         {
           "kind": "box",
-          "x": 0.5347505115158856,
-          "y": 0.563275111913681,
-          "a": 0.6625388322398067,
-          "b": 0.23858834244310856,
-          "weight": 0.011495594935491682
+          "x": 0.6131818818114698,
+          "y": 0.15006143790669738,
+          "a": 0.24013183284550907,
+          "b": 0.42792154923081405,
+          "weight": 0.0060558779891580344
         },
         {
           "kind": "ring",
-          "x": 0.8824271536618471,
-          "y": 0.6793959241313859,
-          "a": 0.8949244271963835,
-          "b": 0.6710334384813905,
-          "weight": 0.008230426147580147
+          "x": 0.8399223529919982,
+          "y": 0.8582262106286361,
+          "a": 0.3788507357239723,
+          "b": 0.7097353233024478,
+          "weight": 0.010778743851929902
         },
         {
           "kind": "line",
-          "x": 0.7285922313295305,
-          "y": 0.5423198053333909,
-          "a": 0.671527418680489,
-          "b": 0.365433519333601,
-          "weight": 0.005176231404766441
+          "x": 0.8549338702298701,
+          "y": 0.5728273927234113,
+          "a": 0.2627710660919547,
+          "b": 0.7976410891860723,
+          "weight": 0.008228318253532051
         },
         {
           "kind": "box",
-          "x": 0.7533781320974231,
-          "y": 0.4525498067261651,
-          "a": 0.7721418052911758,
-          "b": 0.32730667274445296,
-          "weight": 0.006283043388277293
+          "x": 0.8964752110838891,
+          "y": 0.20353970905300228,
+          "a": 0.8663802687078714,
+          "b": 0.2056253479793668,
+          "weight": 0.006211997337639332
         },
         {
           "kind": "ring",
-          "x": 0.5642208021320403,
-          "y": 0.6289276433922351,
-          "a": 0.7057381188496947,
-          "b": 0.1311326663941145,
-          "weight": 0.008903840417042376
+          "x": 0.8678488945774734,
+          "y": 0.16749645239673555,
+          "a": 0.7130983525887132,
+          "b": 0.22419710606336596,
+          "weight": 0.009768245024606586
         },
         {
           "kind": "line",
-          "x": 0.8729360620677471,
-          "y": 0.38480993592645973,
-          "a": 0.5900413949042559,
-          "b": 0.8417073847725988,
-          "weight": 0.006734929881989956
+          "x": 0.8269063529744745,
+          "y": 0.38198224844876677,
+          "a": 0.20463727936148646,
+          "b": 0.456283556483686,
+          "weight": 0.010757103856652975
         },
         {
           "kind": "box",
-          "x": 0.5825181557051837,
-          "y": 0.633471866203472,
-          "a": 0.3732785234227777,
-          "b": 0.8230546772480011,
-          "weight": 0.007755006073042751
+          "x": 0.6392769538052381,
+          "y": 0.7045257279276848,
+          "a": 0.8372639236971736,
+          "b": 0.12144641615450383,
+          "weight": 0.010847039537504315
         },
         {
           "kind": "ring",
-          "x": 0.8986137633398176,
-          "y": 0.3398732379684225,
-          "a": 0.8093185819685459,
-          "b": 0.40150557216256855,
-          "weight": 0.009513582777231931
+          "x": 0.8487354076653719,
+          "y": 0.7654120757384225,
+          "a": 0.19736086241900921,
+          "b": 0.67837237957865,
+          "weight": 0.006739725306630135
         },
         {
           "kind": "line",
-          "x": 0.643040788192302,
-          "y": 0.3279270141199231,
-          "a": 0.5409386647865176,
-          "b": 0.11985815651714803,
-          "weight": 0.005868310840800405
+          "x": 0.8877281153760851,
+          "y": 0.6484960991237313,
+          "a": 0.2773883553221822,
+          "b": 0.44099703356623654,
+          "weight": 0.010761512180790305
         },
         {
           "kind": "box",
-          "x": 0.7295413538068534,
-          "y": 0.2427892019925639,
-          "a": 0.19852645657956602,
-          "b": 0.8389924803748727,
-          "weight": 0.008472503632307053
+          "x": 0.7275636882707477,
+          "y": 0.476395202470012,
+          "a": 0.6395477801561356,
+          "b": 0.6576187698170542,
+          "weight": 0.005716841105371713
         },
         {
           "kind": "ring",
-          "x": 0.7298554839752615,
-          "y": 0.3861985557246953,
-          "a": 0.19260318744927646,
-          "b": 0.6094433851540089,
-          "weight": 0.010395278548821808
+          "x": 0.8714731317199766,
+          "y": 0.5991562590934336,
+          "a": 0.30200842972844844,
+          "b": 0.3703481238335371,
+          "weight": 0.009996783966198564
         },
         {
           "kind": "line",
-          "x": 0.8757510700449348,
-          "y": 0.47944340818095954,
-          "a": 0.24453266113996508,
-          "b": 0.11663837861269713,
-          "weight": 0.011860146779567003
+          "x": 0.8659940223395826,
+          "y": 0.387254667817615,
+          "a": 0.6520426113158464,
+          "b": 0.21645488757640124,
+          "weight": 0.01060597487539053
         },
         {
           "kind": "box",
-          "x": 0.7653401274420322,
-          "y": 0.15710662959143518,
-          "a": 0.3673632254824043,
-          "b": 0.2617504771798849,
-          "weight": 0.007018822262063623
+          "x": 0.7409001602046192,
+          "y": 0.6446447982918471,
+          "a": 0.3135859856382013,
+          "b": 0.30159880518913273,
+          "weight": 0.004400618193671107
         },
         {
           "kind": "ring",
-          "x": 0.6807152616977692,
-          "y": 0.518498636460863,
-          "a": 0.40004899241030223,
-          "b": 0.13794613648205997,
-          "weight": 0.004816821791231632
+          "x": 0.574368209131062,
+          "y": 0.28230247980449347,
+          "a": 0.6079858101904392,
+          "b": 0.1695616191253066,
+          "weight": 0.004429289292544126
         },
         {
           "kind": "line",
-          "x": 0.8390296807698906,
-          "y": 0.34904977872036397,
-          "a": 0.2703943932428956,
-          "b": 0.41626700907945635,
-          "weight": 0.005321423603221774
+          "x": 0.7624107897467911,
+          "y": 0.23882636327296494,
+          "a": 0.3238024128600955,
+          "b": 0.20012032873928548,
+          "weight": 0.005790491374209523
         },
         {
           "kind": "box",
-          "x": 0.5555848253145814,
-          "y": 0.630200294055976,
-          "a": 0.4234095387160778,
-          "b": 0.35128575768321757,
-          "weight": 0.008146620359271765
+          "x": 0.907159994468093,
+          "y": 0.7383055042801425,
+          "a": 0.6883267071098089,
+          "b": 0.8010063329711556,
+          "weight": 0.007552431911230088
         }
       ]
     },
@@ -281,121 +281,124 @@
     }
   },
   "lastEvaluation": {
-    "generation": 7,
+    "generation": 8,
     "author": null,
-    "at": "2026-11-16T09:00:25.734Z",
-    "base": "cbe7a00461b746e61292af9eeae99e71c52b3a10",
+    "at": "2026-11-16T09:09:55.098Z",
+    "base": "cb42276bbc4c0a3fd64850f9bc2959a85342ce57",
     "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-    "previous": "85129a8c17ead2fe4f0eba187f3493eb59f3d731a8e3516b49f869a9b470b6a6",
-    "result": "no-improvement",
+    "previous": "6ddc4d61d05a2e8e861dad63274808f4e52cee736f9da32d393a610056e44626",
+    "result": "admitted",
     "proposals": [
       {
-        "candidate": "tactics-synth-1",
-        "family": "tactics",
+        "candidate": "art-synth-0",
+        "family": "art",
         "author": "seeded-synthesis",
-        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-        "configHash": "52fdf4538a4840a5bb515a0bde29452e8ee87a44f2de9452d49db9c5f7eebe85",
-        "baselineWork": 1,
-        "candidateWork": 1,
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "configHash": "0b1f2e005ed35d343589b780fc90e2c72be448d863762ca8fa5b84a031306b82",
+        "baselineWork": 0.2777466925906902,
+        "candidateWork": 0.256539516293412,
         "fidelity": true,
         "bounds": true,
-        "samples": 198,
-        "comparisons": null,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 0.010441171364379085,
+            "changed": 0.0284765625
+          },
+          {
+            "mean": 0.011075265522875816,
+            "changed": 0.02795703125
+          },
+          {
+            "mean": 0.01762845179738562,
+            "changed": 0.039453125
+          },
+          {
+            "mean": 0.018691110089869283,
+            "changed": 0.0394609375
+          }
+        ],
         "reference": {
-          "metricVersion": 2,
-          "training": 96,
-          "heldOut": 96,
-          "realMatches": 6,
-          "scope": "Fixed scenario corpus; not general match win rate"
+          "protectedEqual": true,
+          "separation": 0.6615373610938612,
+          "evidence": "artifacts/evolution/art/art-synth-0-*.png"
         },
         "before": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.834688787207531,
+              "coverage": 0.22096227693697765
+            },
+            {
+              "site": "B",
+              "contrast": 12.834688787207531,
+              "coverage": 0.21870341088773435
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 3.2000000000116415
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 2
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.5
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.5
+            }
           ]
         },
         "after": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
-          ]
-        }
-      },
-      {
-        "candidate": "tactics-synth-3",
-        "family": "tactics",
-        "author": "seeded-synthesis",
-        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-        "configHash": "52fdf4538a4840a5bb515a0bde29452e8ee87a44f2de9452d49db9c5f7eebe85",
-        "baselineWork": 1,
-        "candidateWork": 1,
-        "fidelity": true,
-        "bounds": true,
-        "samples": 198,
-        "comparisons": null,
-        "reference": {
-          "metricVersion": 2,
-          "training": 96,
-          "heldOut": 96,
-          "realMatches": 6,
-          "scope": "Fixed scenario corpus; not general match win rate"
-        },
-        "before": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
-          ]
-        },
-        "after": {
-          "trainingErrors": 0,
-          "holdoutErrors": 0,
-          "trainingFailed": [],
-          "holdoutFailed": [],
-          "completed": 6,
-          "invalidInputs": 0,
-          "outcomes": [
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused",
-            "Device defused"
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19548226790151343
+            },
+            {
+              "site": "B",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19292974926586853
+            }
+          ],
+          "frames": [
+            {
+              "calls": 121,
+              "triangles": 3536,
+              "frameMs": 1.2000000000116415
+            },
+            {
+              "calls": 122,
+              "triangles": 3596,
+              "frameMs": 1.2999999999883585
+            },
+            {
+              "calls": 43,
+              "triangles": 1404,
+              "frameMs": 0.8000000000174623
+            },
+            {
+              "calls": 34,
+              "triangles": 1212,
+              "frameMs": 0.39999999999417923
+            }
           ]
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "6ddc4d61d05a2e8e861dad63274808f4e52cee736f9da32d393a610056e44626"
+    "hash": "e1e616e7ecf5bc3dd5a77e027dcd648b27692bccb0b319348548aef8ad18ce89"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -1645,6 +1648,126 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "6ddc4d61d05a2e8e861dad63274808f4e52cee736f9da32d393a610056e44626"
+    },
+    {
+      "generation": 8,
+      "author": null,
+      "at": "2026-11-16T09:09:55.098Z",
+      "base": "cb42276bbc4c0a3fd64850f9bc2959a85342ce57",
+      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
+      "previous": "6ddc4d61d05a2e8e861dad63274808f4e52cee736f9da32d393a610056e44626",
+      "result": "admitted",
+      "proposals": [
+        {
+          "candidate": "art-synth-0",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "0b1f2e005ed35d343589b780fc90e2c72be448d863762ca8fa5b84a031306b82",
+          "baselineWork": 0.2777466925906902,
+          "candidateWork": 0.256539516293412,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.010441171364379085,
+              "changed": 0.0284765625
+            },
+            {
+              "mean": 0.011075265522875816,
+              "changed": 0.02795703125
+            },
+            {
+              "mean": 0.01762845179738562,
+              "changed": 0.039453125
+            },
+            {
+              "mean": 0.018691110089869283,
+              "changed": 0.0394609375
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6615373610938612,
+            "evidence": "artifacts/evolution/art/art-synth-0-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.834688787207531,
+                "coverage": 0.22096227693697765
+              },
+              {
+                "site": "B",
+                "contrast": 12.834688787207531,
+                "coverage": 0.21870341088773435
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 3.2000000000116415
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 2
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.5
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.5
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19548226790151343
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19292974926586853
+              }
+            ],
+            "frames": [
+              {
+                "calls": 121,
+                "triangles": 3536,
+                "frameMs": 1.2000000000116415
+              },
+              {
+                "calls": 122,
+                "triangles": 3596,
+                "frameMs": 1.2999999999883585
+              },
+              {
+                "calls": 43,
+                "triangles": 1404,
+                "frameMs": 0.8000000000174623
+              },
+              {
+                "calls": 34,
+                "triangles": 1212,
+                "frameMs": 0.39999999999417923
+              }
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "e1e616e7ecf5bc3dd5a77e027dcd648b27692bccb0b319348548aef8ad18ce89"
     }
   ]
 }
