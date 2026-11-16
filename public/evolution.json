@@ -1,16 +1,110 @@
 {
   "schema": "cs1618/evolution-public/1",
-  "generation": 0,
+  "generation": 1,
   "config": {
     "render": {
       "cell": 0,
       "minimum": 2
     },
     "navigation": {
-      "cell": 0
+      "cell": 3
     }
   },
-  "lastEvaluation": null,
+  "lastEvaluation": {
+    "generation": 1,
+    "at": "2026-11-16T03:57:38.959Z",
+    "base": "7328f869ece7577dcd59d0705117c111b1f79447",
+    "context": "4dd7965793dbb04bf115e1ebc4477ee248c3261f7d2a6e2037cff303f21f9a39",
+    "previous": "genesis",
+    "result": "admitted",
+    "proposals": [
+      {
+        "candidate": "navigation-3",
+        "family": "navigation",
+        "configHash": "01357a8e90d1c404b667566988c8bb142291b41b046b33e8db656f49158eb77a",
+        "baselineWork": 101926,
+        "candidateWork": 2651,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 480,
+        "comparisons": null,
+        "reference": {
+          "pairs": 101926,
+          "elapsed": 29.834648000000016,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        },
+        "before": {
+          "pairs": 101926,
+          "elapsed": 22.481758999999784,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        },
+        "after": {
+          "pairs": 2651,
+          "elapsed": 16.166187000000036,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        }
+      }
+    ],
+    "checks": "complete-game-gates-passed",
+    "hash": "73d81a18c591fe5946fed881eb9ada860cb6006b89968b749680c0732c025cbe"
+  },
   "scope": "Bounded rendering and navigation optimization; no unrestricted AI code generation.",
-  "history": []
+  "history": [
+    {
+      "generation": 1,
+      "at": "2026-11-16T03:57:38.959Z",
+      "base": "7328f869ece7577dcd59d0705117c111b1f79447",
+      "context": "4dd7965793dbb04bf115e1ebc4477ee248c3261f7d2a6e2037cff303f21f9a39",
+      "previous": "genesis",
+      "result": "admitted",
+      "proposals": [
+        {
+          "candidate": "navigation-3",
+          "family": "navigation",
+          "configHash": "01357a8e90d1c404b667566988c8bb142291b41b046b33e8db656f49158eb77a",
+          "baselineWork": 101926,
+          "candidateWork": 2651,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 480,
+          "comparisons": null,
+          "reference": {
+            "pairs": 101926,
+            "elapsed": 29.834648000000016,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "before": {
+            "pairs": 101926,
+            "elapsed": 22.481758999999784,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "after": {
+            "pairs": 2651,
+            "elapsed": 16.166187000000036,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "73d81a18c591fe5946fed881eb9ada860cb6006b89968b749680c0732c025cbe"
+    }
+  ]
 }
