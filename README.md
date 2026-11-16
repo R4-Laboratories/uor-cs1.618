@@ -10,6 +10,8 @@ Two teams, five players per team, two objective sites, one original map: **Merid
 
 **[Launch cs1.618](https://r4-laboratories.github.io/uor-cs1.618/)** → **Create browser room** → copy the invitation → friends open it and choose **Join invitation**. WebRTC carries gameplay directly between browsers; no dedicated game server is needed. Keep the host tab open and active. Closing it ends the room.
 
+You can also open [Me](https://afflom.github.io/me/), click its address bar, search **cs1.618**, and choose the **R4-Laboratories** result. Use the shared person icon and the game’s [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity.html) to link identities.
+
 PeerJS Cloud supplies default rendezvous signaling and public STUN helps find direct routes. Restrictive networks may require your own TURN credentials. See [browser multiplayer and STUN/TURN setup](docs/BROWSER-MULTIPLAYER.md). **Practice with bots** still works locally in one browser.
 
 ## GitHub-hosted improvement loop

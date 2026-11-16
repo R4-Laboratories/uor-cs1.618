@@ -19,6 +19,10 @@ import {readFileSync} from 'node:fs';
 import {verifierBackport,sha256} from './scripts/prism-verifier-backport.mjs';
 if(sha256(readFileSync(`${process.argv[2]}/${verifierBackport.sourcePath}`))!==verifierBackport.patchedSha256)throw Error('Prism verifier backport digest differs');
 JS
+# Dependency source paths are embedded in the compiler binary. Bootstrap from
+# the SDK's fixed offline cache so runner UIDs cannot change the pinned digest.
+# This child shell leaves the full verifier's per-UID SDK cache unchanged.
+export CARGO_HOME=/home/vscode/.cargo
 export CARGO_TARGET_DIR="$build_root/target"
 export CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_DEV_INCREMENTAL=false
 export CARGO_PROFILE_TEST_DEBUG=0 CARGO_PROFILE_TEST_INCREMENTAL=false

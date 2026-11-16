@@ -8,6 +8,8 @@ The pinned PrismPM 0.4.0 SDK has an upstream application replay defect: its buil
 
 The backported verifier is invoked by absolute path. The SDK PATH and inventory are unchanged, and the full verifier's proof, artifact, runtime, browser, and toolchain checks remain enabled. This is a recorded verifier backport, not a claim that the original SDK binary succeeds. `artifacts/proofs/verifier.json` records the upstream origin, source hashes, compiler binary hash, and mutation-test result. Each project report includes the full verification build/attestation IDs and shipped artifact hashes. The GitHub workflow retains the report and untruncated command log even on failure; successful runs also retain the verifier’s actual Lean attestation, application acceptance record, and verification manifest.
 
+Compiler bootstrap uses the SDK's fixed `/home/vscode/.cargo` offline cache because dependency source paths are embedded in the binary. This reproduces the pinned compiler digest across runner UIDs. The bootstrap runs in a child shell; full application verification retains the SDK entrypoint's normal per-UID cache. The private source copy is made writable before patching, without changing the immutable SDK sources.
+
 Run `PRISM_PROJECT=round node scripts/proof-report.mjs` (or `evolution` / `identity`) with Docker available. `SDK_RUNNER` may instead name an executable wrapper that exposes the same pinned SDK and mounts this checkout at `/workspace`.
 
 These are application proofs. The identity component proves its modeled admission policy conditional on the host-supplied origin, freshness, signature, and consent observations. It does not itself prove browser cryptography, user consent, multiplayer networking, or the whole game.
