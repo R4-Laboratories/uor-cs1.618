@@ -1,0 +1,6 @@
+
+thread 'main' (244260) panicked at /workspace/scripts/numeric/native.rs:23:9:
+assertion `left == right` failed: generated failure: 2 3f800000 3f800000 3f800000
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

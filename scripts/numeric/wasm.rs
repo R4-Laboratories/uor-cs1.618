@@ -1,6 +1,8 @@
 //! ABI only: every arithmetic operation is in the unmodified emitted packages.
 extern crate numeric_mul32;
 extern crate numeric_mul64;
+extern crate numeric_div32;
+extern crate numeric_div64;
 static mut LAST: u64 = 0;
 
 pub fn classify<T, E>(value: Result<Option<T>, E>) -> Result<T, u32> {
@@ -14,6 +16,11 @@ pub fn invoke(op: u32, a: u64, b: u64) -> Result<u64, u32> {
             classify(numeric_mul32::run(a as u32, b as u32)).map(u64::from)
         }
         1 => classify(numeric_mul64::run(a, b)),
+        2 => {
+            if a > u32::MAX as u64 || b > u32::MAX as u64 { return Err(3); }
+            classify(numeric_div32::run(a as u32, b as u32)).map(u64::from)
+        }
+        3 => classify(numeric_div64::run(a, b)),
         _ => Err(1),
     }
 }

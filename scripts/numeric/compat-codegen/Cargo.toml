@@ -1,0 +1,9 @@
+[package]
+name = "numeric-compat-codegen"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+prod-codegen = { path = "/opt/prismpm/share/conformance-root/vendor/lean4-prod/rust/prod-codegen" }
+prod-ir = { path = "/opt/prismpm/share/conformance-root/vendor/lean4-prod/rust/prod-ir" }
+sha2 = "0.10"
+[workspace]

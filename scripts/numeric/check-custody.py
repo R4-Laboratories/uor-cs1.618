@@ -13,12 +13,12 @@ def validate(m):
         assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,f'byte custody: {name}'
 
 if __name__=='__main__':
-    m=json.loads(Path('artifacts/numeric/manifest.json').read_text()); validate(m)
+    m=json.loads(Path('artifacts/numeric-task2/manifest.json').read_text()); validate(m)
     mutations={
       'source':lambda x:x['source'].__setitem__('source_id','0'*64),
       'target':lambda x:x['targets'][0].__setitem__('digest','0'*64),
       'bundle':lambda x:x.__setitem__('result_id','0'*64),
-      'output':lambda x:x['files'].__setitem__('artifacts/numeric/numeric.wasm','0'*64),
+      'output':lambda x:x['files'].__setitem__('artifacts/numeric-task2/numeric.wasm','0'*64),
     }
     for name,mutate in mutations.items():
         changed=copy.deepcopy(m); mutate(changed)

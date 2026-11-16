@@ -1,0 +1,2 @@
+cd /workspace/prism/numeric
+lexlean production verify-artifact /workspace/artifacts/numeric-task2/rejected-bundle/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea

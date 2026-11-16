@@ -1,0 +1,7 @@
+{"status": "passed", "native_vectors": 44648, "native_output_sha256": "7adfdec1cbf4fc47112ac70cdb11c7f4f635e36efd4cc8596f19ea4028d3cb95", "wrong_result_mutation": "refused at exact bits comparator"}
+{"status":"passed","vectors":[11161,11161,11163,11163],"imports":0,"sha256":"745a3d6f50a801a98f0c0a90af72640af5d1e3160af1773d0a82a0e19e22c22a"}
+REFUSED source: source identity
+REFUSED target: target identity
+REFUSED bundle: bundle identity
+REFUSED output: byte custody: artifacts/numeric-task2/numeric.wasm
+PASS genuine custody and four negative controls

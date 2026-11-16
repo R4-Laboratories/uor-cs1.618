@@ -1,0 +1,10 @@
+test_failed_command_result_is_refused (test_build.BuildInputsTest.test_failed_command_result_is_refused) ... ok
+test_missing_corpus_is_generated_before_actual_collector (test_build.BuildInputsTest.test_missing_corpus_is_generated_before_actual_collector) ... ok
+test_newer_stale_result_cannot_replace_successful_invocation (test_build.BuildInputsTest.test_newer_stale_result_cannot_replace_successful_invocation) ... ok
+test_oracle_write_failure_stops_build_before_sdk_and_collection (test_build.BuildInputsTest.test_oracle_write_failure_stops_build_before_sdk_and_collection) ... ok
+test_source_drift_is_refused_before_artifact_replay_and_compile (test_build.BuildInputsTest.test_source_drift_is_refused_before_artifact_replay_and_compile) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.267s
+
+OK

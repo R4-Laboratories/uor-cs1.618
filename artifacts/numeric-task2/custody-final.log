@@ -1,0 +1,5 @@
+REFUSED source: source identity
+REFUSED target: target identity
+REFUSED bundle: bundle identity
+REFUSED output: byte custody: artifacts/numeric-task2/numeric.wasm
+PASS genuine custody and four negative controls

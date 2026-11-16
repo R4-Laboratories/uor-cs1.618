@@ -1,0 +1,59 @@
+\begin{lexlean}{Compatibility}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{addition}
+\begin{semanticmodule}
+definition{
+  name: fixedSigned,
+  parameters: [a : UInt16, b : Int16],
+  result: (Option Int16),
+  body: (match (prim checked_convert a : (Option Int16))
+    | Option.some x => (prim checked_subtract x b : (Option Int16))
+    | Option.none => (ctor Option.none [Int16])),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: comparison,
+  parameters: [a : Int16, b : Int16],
+  result: Bool,
+  body: (prim less_than a b : Bool),
+  axioms: [propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: step,
+  parameters: [s : (Option UInt32)],
+  result: (Option UInt32),
+  body: (match s
+    | Option.some x => (prim checked_add x (1 : UInt32) : (Option UInt32))
+    | Option.none => (ctor Option.none [UInt32])),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: iteration,
+  parameters: [n : UInt8, a : UInt32],
+  result: (Option UInt32),
+  body: (prim iterate (fun (s : (Option UInt32)) => (step s)) (prim to_nat n : Nat) (ctor Option.some [UInt32] a) : (Option UInt32)),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: constantIteration,
+  parameters: [a : UInt32],
+  result: (Option UInt32),
+  body: (prim iterate (fun (s : (Option UInt32)) => (step s)) 4 (ctor Option.some [UInt32] a) : (Option UInt32)),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -13,12 +13,21 @@
       "root": "BoundedNumeric.Float.mul64",
       "input": "UInt64,UInt64",
       "output": "Option UInt64"
+    },
+    {
+      "id": 2,
+      "root": "BoundedNumeric.Float.div32",
+      "input": "UInt32,UInt32",
+      "output": "Option UInt32"
+    },
+    {
+      "id": 3,
+      "root": "BoundedNumeric.Float.div64",
+      "input": "UInt64,UInt64",
+      "output": "Option UInt64"
     }
   ],
-  "reserved": {
-    "2": "div32",
-    "3": "div64"
-  },
+  "reserved": {},
   "rounding": "nearest-ties-even",
   "underflow": "gradual",
   "nan": "first NaN operand wins; preserve sign/payload and set quiet bit; invalid positive canonical quiet NaN",
@@ -40,10 +49,11 @@
   "claim_scope": {
     "production": "kernel-checked preservation, including failures",
     "bounds": "small linear bound only; nonlinear multiplication bound reviewed, not kernel-proved",
-    "ieee": "exact boundary and seeded differential conformance, not universal proof"
+    "ieee": "exact boundary and seeded differential conformance, not universal proof",
+    "canonical_lcnf": "not admitted; fixed conversions and helper specialization blocked in pinned exporter; separate Task2c"
   },
   "evidence": {
-    "manifest": "artifacts/numeric/manifest.json",
+    "manifest": "artifacts/numeric-task2/manifest.json",
     "exact_oracle": "scripts/numeric/oracle.py",
     "replay": "scripts/numeric/test.sh",
     "seed": 1618,
@@ -51,7 +61,11 @@
     "preservation": "complete production bundles retained by collect.py",
     "bound_theorems": [
       "BoundedNumeric.Bounds.limbAddBound",
-      "BoundedNumeric.Bounds.cellAddBound"
-    ]
+      "BoundedNumeric.Bounds.cellAddBound",
+      "BoundedNumeric.Bounds.divDoubleRemainderBound",
+      "BoundedNumeric.Bounds.divReducedRemainderBound",
+      "BoundedNumeric.Bounds.divQuotientStepBound"
+    ],
+    "division_seed": 1619
   }
 }

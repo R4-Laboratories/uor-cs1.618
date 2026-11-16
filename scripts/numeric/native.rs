@@ -8,8 +8,9 @@ fn main() {
     assert_eq!(abi::classify::<u64, ()>(Ok(Some(0))), Ok(0));
     assert_eq!(abi::numeric_run(1, 0x3ff0000000000000, 0x4000000000000000), 0);
     let prior = abi::numeric_result();
-    assert_eq!(abi::numeric_run(2, 0, 0), 1);
+    assert_eq!(abi::numeric_run(4, 0, 0), 1);
     assert_eq!(abi::numeric_run(0, 1 << 32, 0), 3);
+    assert_eq!(abi::numeric_run(2, 1 << 32, 0), 3);
     assert_eq!(abi::numeric_result(), prior);
     for line in io::stdin().lock().lines() {
         let line = line.expect("corpus read");
@@ -23,12 +24,14 @@ fn main() {
         assert_eq!(status, 0, "generated failure: {line}");
         assert_eq!(abi::numeric_result(), expected, "oracle mismatch: {line}");
         // A second, independent native IEEE comparison excludes host-specific NaN payload choices.
-        if op == 0 {
-            let host = f32::from_bits(a as u32) * f32::from_bits(b as u32);
+        if op % 2 == 0 {
+            let aa=f32::from_bits(a as u32); let bb=f32::from_bits(b as u32);
+            let host = if op == 0 { aa * bb } else { aa / bb };
             if !host.is_nan() { assert_eq!(u64::from(host.to_bits()), expected, "host: {line}"); }
             else { assert!(f32::from_bits(expected as u32).is_nan()); }
         } else {
-            let host = f64::from_bits(a) * f64::from_bits(b);
+            let aa=f64::from_bits(a); let bb=f64::from_bits(b);
+            let host = if op == 1 { aa * bb } else { aa / bb };
             if !host.is_nan() { assert_eq!(host.to_bits(), expected, "host: {line}"); }
             else { assert!(f64::from_bits(expected).is_nan()); }
         }

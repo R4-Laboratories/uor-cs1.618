@@ -178,5 +178,76 @@ definition{
   axioms: [Quot.sound, propext],
   executable: true
 }
+
+definition{
+  name: from64,
+  parameters: [v : UInt64],
+  result: (Option Limbs),
+  body: (match (prim checked_convert (prim bit_and v (4294967295 : UInt64) : UInt64) : (Option UInt32))
+    | Option.some lo => (match (prim shift_right v (32 : UInt32) : (Option UInt64))
+      | Option.some upper => (match (prim checked_convert upper : (Option UInt32))
+        | Option.some hi => (ctor Option.some [Limbs] (record Limbs {l0 := lo, l1 := hi, l2 := (0 : UInt32), l3 := (0 : UInt32)}))
+        | Option.none => (ctor Option.none [Limbs]))
+      | Option.none => (ctor Option.none [Limbs]))
+    | Option.none => (ctor Option.none [Limbs])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+structure{
+  name: Division,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: quotient, type: UInt64},
+    {name: remainder, type: UInt64},
+    {name: divisor, type: UInt64}
+  ]
+}
+
+definition{
+  name: divideStep,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (match state
+    | Option.some st => (match (prim checked_multiply (project st remainder) (2 : UInt64) : (Option UInt64))
+      | Option.some twice => (match (prim checked_multiply (project st quotient) (2 : UInt64) : (Option UInt64))
+        | Option.some q2 => (match (prim checked_subtract twice (project st divisor) : (Option UInt64))
+          | Option.some reduced => (match (prim checked_add q2 (1 : UInt64) : (Option UInt64))
+            | Option.some nextq => (ctor Option.some [Division] (record Division {quotient := nextq, remainder := reduced, divisor := (project st divisor)}))
+            | Option.none => (ctor Option.none [Division]))
+          | Option.none => (ctor Option.some [Division] (record Division {quotient := q2, remainder := twice, divisor := (project st divisor)})))
+        | Option.none => (ctor Option.none [Division]))
+      | Option.none => (ctor Option.none [Division]))
+    | Option.none => (ctor Option.none [Division])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: quotient32,
+  parameters: [a : UInt64, b : UInt64],
+  result: (Option UInt64),
+  body: (match (prim checked_subtract a b : (Option UInt64))
+    | Option.some initial => (match (prim iterate (fun (state : (Option Division)) => (divideStep state)) 25 (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})) : (Option Division))
+      | Option.some st => (ctor Option.some [UInt64] (prim bit_or (project st quotient) (if (prim equal (project st remainder) (0 : UInt64) : Bool) then (0 : UInt64) else (1 : UInt64)) : UInt64))
+      | Option.none => (ctor Option.none [UInt64]))
+    | Option.none => (ctor Option.none [UInt64])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: quotient64,
+  parameters: [a : UInt64, b : UInt64],
+  result: (Option UInt64),
+  body: (match (prim checked_subtract a b : (Option UInt64))
+    | Option.some initial => (match (prim iterate (fun (state : (Option Division)) => (divideStep state)) 54 (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})) : (Option Division))
+      | Option.some st => (ctor Option.some [UInt64] (prim bit_or (project st quotient) (if (prim equal (project st remainder) (0 : UInt64) : Bool) then (0 : UInt64) else (1 : UInt64)) : UInt64))
+      | Option.none => (ctor Option.none [UInt64]))
+    | Option.none => (ctor Option.none [UInt64])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
 \end{semanticmodule}
 \end{lexlean}

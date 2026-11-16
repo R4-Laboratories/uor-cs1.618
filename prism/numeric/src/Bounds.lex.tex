@@ -17,5 +17,29 @@ theorem{
   proof: linear_arithmetic{},
   axioms: [Quot.sound, propext]
 }
+
+theorem{
+  name: divDoubleRemainderBound,
+  parameters: [r : Nat, d : Nat],
+  statement: ((r < d) -> ((d <= 9007199254740991) -> ((r + r) <= 18014398509481982))),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: divReducedRemainderBound,
+  parameters: [r : Nat, d : Nat, reduced : Nat],
+  statement: ((r < d) -> (((r + r) = (reduced + d)) -> (reduced < d))),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: divQuotientStepBound,
+  parameters: [q : Nat],
+  statement: ((q <= 18014398509481983) -> (((q + q) + 1) <= 36028797018963967)),
+  proof: linear_arithmetic{},
+  axioms: [Quot.sound, propext]
+}
 \end{semanticmodule}
 \end{lexlean}

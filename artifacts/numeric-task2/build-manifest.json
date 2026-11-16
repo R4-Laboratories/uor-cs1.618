@@ -1,0 +1,183 @@
+{
+  "build_id": "dcd8523080607563f84db18ddcd94961b4546df9971f52d058a2538ed0f58c03",
+  "compiler": {
+    "semantics_id": "1427f8b629013648a480454d67202788f2303f5396f1d7c70a7c350ddab6f694",
+    "version": "0.4.0"
+  },
+  "inputs": [
+    {
+      "byte_length": 2684,
+      "kind": "lexicon",
+      "path": "embedded",
+      "sha256": "3bc0fb09d706ffa7d5a1363302ea87c049acc7c7dcafde63c62682620c11be9b"
+    },
+    {
+      "byte_length": 14885,
+      "kind": "lexicon",
+      "path": "embedded",
+      "sha256": "e0db021e01b91d651c43921d66f6b0023c8efbf17cac2ec53192ce5305e4e1ac"
+    },
+    {
+      "byte_length": 36197,
+      "kind": "lexicon",
+      "path": "embedded",
+      "sha256": "827317cae68c162f3a96c8a8de4e53ab348e7d3724fd2b834fa85ecde1a1b392"
+    },
+    {
+      "byte_length": 1597,
+      "kind": "lock",
+      "path": "lexlean.lock",
+      "sha256": "7b2806004d5f35e529a5e191144baad6dd08fcd13998e1425930c2ccb9dabfaa"
+    },
+    {
+      "byte_length": 694,
+      "kind": "project-config",
+      "path": "lexlean.toml",
+      "sha256": "d3b824d45e15fe46a43b0bdbd37e6619e8eb3d5758f0f979a317892b32912f55"
+    },
+    {
+      "byte_length": 1364,
+      "kind": "source",
+      "path": "src/Bounds.lex.tex",
+      "sha256": "c32cce5627955f91a8ceb4c44d0a32bcdf84f6fe92e27dc08d916159c5dcb2a9"
+    },
+    {
+      "byte_length": 23824,
+      "kind": "source",
+      "path": "src/Float.lex.tex",
+      "sha256": "e3199264f41cb83ff5e41606b71712ab0c1abc6ac6dcba12b1d43601af29daef"
+    },
+    {
+      "byte_length": 14004,
+      "kind": "source",
+      "path": "src/Wide.lex.tex",
+      "sha256": "7dccec6988f3aa67ed3ae237a9752c48075855138f0fc550c8e435517b735fd0"
+    }
+  ],
+  "language": "1.2",
+  "lean_toolchain": "leanprover/lean4:v4.32.1",
+  "modules": [
+    {
+      "lean_module": "BoundedNumeric.Bounds",
+      "module": "Bounds",
+      "source_path": "src/Bounds.lex.tex"
+    },
+    {
+      "lean_module": "BoundedNumeric.Float",
+      "module": "Float",
+      "source_path": "src/Float.lex.tex"
+    },
+    {
+      "lean_module": "BoundedNumeric.Wide",
+      "module": "Wide",
+      "source_path": "src/Wide.lex.tex"
+    }
+  ],
+  "outputs": [
+    {
+      "byte_length": 7790,
+      "kind": "coverage",
+      "path": "coverage/BoundedNumeric/Bounds.coverage.json",
+      "sha256": "c6d37f24c08b02c9f1d2d9bdecd1be1ae2ba21502b175c869394e340be4a8e88"
+    },
+    {
+      "byte_length": 9220,
+      "kind": "coverage",
+      "path": "coverage/BoundedNumeric/Float.coverage.json",
+      "sha256": "8e995937b3ca80c3485e84ec91f87437007e4b590280368b606b18377516621c"
+    },
+    {
+      "byte_length": 10437,
+      "kind": "coverage",
+      "path": "coverage/BoundedNumeric/Wide.coverage.json",
+      "sha256": "ea49ea15685b3aa398b34065d5608f1b7b8832a231a75f87be23612ddaf59d9d"
+    },
+    {
+      "byte_length": 15637,
+      "kind": "lean",
+      "path": "modules/BoundedNumeric/Bounds.lean",
+      "sha256": "3ca7f1c6687ad9a361e3cc3bd35e4a299835bc89cc05a924e45d70bc7189dd59"
+    },
+    {
+      "byte_length": 43115,
+      "kind": "lean",
+      "path": "modules/BoundedNumeric/Float.lean",
+      "sha256": "7f68a5c44d370a27a91030ee4c985bde48509e2abbab27d42ea57989f3f836f5"
+    },
+    {
+      "byte_length": 12392,
+      "kind": "lean",
+      "path": "modules/BoundedNumeric/Wide.lean",
+      "sha256": "b2c8273572a7ad3ab9a6eec7e8e0fd59887a804c389f93b97978d59e70193206"
+    },
+    {
+      "byte_length": 10604,
+      "kind": "lexicon-closure",
+      "path": "lexicons/Bounds.closure.json",
+      "sha256": "56c0e9729de45100192478659244cfabf9fd06d565e2358b57cf12ff1957abd0"
+    },
+    {
+      "byte_length": 10603,
+      "kind": "lexicon-closure",
+      "path": "lexicons/Float.closure.json",
+      "sha256": "3f2a1bef0743dcb3ef3ed0c48b1ed6ae45fb13ae8156c2b75a9b3f00aff6f4e6"
+    },
+    {
+      "byte_length": 10602,
+      "kind": "lexicon-closure",
+      "path": "lexicons/Wide.closure.json",
+      "sha256": "7a4bf328b9cf50a0644ccd7d5e99b6341559e669c9034b1565912208f0a385f3"
+    },
+    {
+      "byte_length": 2636,
+      "kind": "map",
+      "path": "maps/BoundedNumeric/Bounds.map.json",
+      "sha256": "cf2874d03c49d3878e7fc5036afdf56b9811d667416b45bedf85721a904d4831"
+    },
+    {
+      "byte_length": 3661,
+      "kind": "map",
+      "path": "maps/BoundedNumeric/Float.map.json",
+      "sha256": "0be6223699cac9fe6d3ce088b0c7b01428ed28f5177d9550ac82c2745291584f"
+    },
+    {
+      "byte_length": 5900,
+      "kind": "map",
+      "path": "maps/BoundedNumeric/Wide.map.json",
+      "sha256": "3caaab372faa11d46ac4bdcec3de8e103b9611606b24a6091ceeca364182763f"
+    },
+    {
+      "byte_length": 55463,
+      "kind": "production-eligibility",
+      "path": "production/BoundedNumeric/Float.eligibility.json",
+      "sha256": "26c7d07639f6a3980a55c2056dd5968e16fcae50edc33d69e6aa119e2b07a655"
+    },
+    {
+      "byte_length": 1816,
+      "kind": "tex",
+      "path": "modules/BoundedNumeric/Bounds.tex",
+      "sha256": "413cf0c16bf6f65247790ed77b92c966ae71e627c7176f63f9411a6f164fe251"
+    },
+    {
+      "byte_length": 25574,
+      "kind": "tex",
+      "path": "modules/BoundedNumeric/Float.tex",
+      "sha256": "0c3002dcb9d7e5f9a02acf46444d9606030fb74417210a104ac029db1bb24830"
+    },
+    {
+      "byte_length": 15228,
+      "kind": "tex",
+      "path": "modules/BoundedNumeric/Wide.tex",
+      "sha256": "141e4779763e52303b35269f6f6b53f14a7db306e2bfa6c54d4bab5f4f4d1ff5"
+    }
+  ],
+  "project": "bounded-numeric",
+  "selection": [
+    "Bounds",
+    "Float",
+    "Wide"
+  ],
+  "semantic_id": "ee4404ff3c60b4374101364eb6cf0e24adf9416db35a3ae93f0f9f64825c78d2",
+  "source_id": "5d70af1007635717ed4b11c1376c9e52ee857763bd1ad4a7a189d79bc218cc85",
+  "spec": "lexlean/build-manifest/1"
+}

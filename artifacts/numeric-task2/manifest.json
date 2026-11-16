@@ -1,0 +1,111 @@
+{
+  "source": {
+    "lock_sha256": "7b2806004d5f35e529a5e191144baad6dd08fcd13998e1425930c2ccb9dabfaa",
+    "semantic_id": "ee4404ff3c60b4374101364eb6cf0e24adf9416db35a3ae93f0f9f64825c78d2",
+    "source_id": "5d70af1007635717ed4b11c1376c9e52ee857763bd1ad4a7a189d79bc218cc85"
+  },
+  "compiler": {
+    "lean_toolchain": "leanprover/lean4:v4.32.1",
+    "semantics": "1427f8b629013648a480454d67202788f2303f5396f1d7c70a7c350ddab6f694",
+    "version": "0.4.0"
+  },
+  "bundle": "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea",
+  "result_id": "c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea",
+  "signatures": {
+    "numeric_div32": "pub fn run(p0: u32, p1: u32) -> R<Option<u32>> {",
+    "numeric_div64": "pub fn run(p0: u64, p1: u64) -> R<Option<u64>> {",
+    "numeric_mul32": "pub fn run(p0: u32, p1: u32) -> R<Option<u32>> {",
+    "numeric_mul64": "pub fn run(p0: u64, p1: u64) -> R<Option<u64>> {"
+  },
+  "generated_source_sha256": {
+    "numeric_div32": "ce64efea5b5c1c3ace3d2cb41bc98927db86ccbd9cd101d42eb5ac31e262f0da",
+    "numeric_div64": "4e53474f797032512282b176f3b9346fef6bd718a52cbe1226567aa95a5c40e6",
+    "numeric_mul32": "4c412f14ece0d8b153bef2dfa2a2a1e89ec1f9dcb5df77f1d73da513f84627dd",
+    "numeric_mul64": "dd0e04de3502e50a094c578afa61314debbe2a57feb484166f6a48acd3036a20"
+  },
+  "targets": [
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    }
+  ],
+  "files": {
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/attestation.json": "4a65f955803007cba361df7f427a2e7fb770cdd019d9031e36d6acc83bd79988",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R0/Compose/RustStd.lex.tex": "db139534379e640791d526a3ae019bea93a6668f1818dbcfa42de6ccec4edc47",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R0/RustStd.lex.tex": "160c5260b1e5c5c59bb59964933cb23329ca329db52fba35d359079a332cbc1a",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R0.lex.tex": "5739dc82758ed951a516a00afbb20208919bd1b69d2ff95db15ef677fb2a76b9",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R1/Compose/RustStd.lex.tex": "2c9da0eb95a564e8d190b8d5360b04b3c227654919ae55142fe156ef8ccf980e",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R1/RustStd.lex.tex": "6c9548f4f98ef401de6f9f5dbe943780f0c6baeadeee548fce3b56f76022a7e7",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R1.lex.tex": "a8b60815811d3fddfabdb5f48d693862da0f17db65f3ac9258f3ece17dd22c2a",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R2/Compose/RustStd.lex.tex": "fe91639e77dcd3d2725e77c86eb40f3b6b5f88096ba8892d555e629ae6870d5a",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R2/RustStd.lex.tex": "bbdc128427a8fbcc159fa3f5e336908e107e8532e28049f30472090a661f8fb3",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R2.lex.tex": "1f898d3f8bab55bfe1d27d1d127afa5a8571fe2d83bd4d22852b5d3521662f91",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R3/Compose/RustStd.lex.tex": "640bcf03b2f3599969120394b712817a555d9ee1eb57d3889d6f296f94c27000",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R3/RustStd.lex.tex": "d240f1d1f2d18c16fcddcfe86ed1abbd0fca93fdd3f976fb3085c32a804cac62",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/certificates/LexLeanPreserve/Cee4404ff3c60b4374101364eb6cf0e24/R3.lex.tex": "d7477cb7cd850b8480ac120e1f6945e0c5a4fa4ea01a09a2d5cf584b6f1ea84c",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/compiler-input.json": "62d2cde7b6d9b5e58f4b01848b9f6da0fe71613934ce36201c47f826d1cc1306",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/crate/R0.rust-std.rs": "679ad31cdb45ed5eff6c6b6f86e13d7245849887694ecae3685c610f794453ae",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/crate/R1.rust-std.rs": "803eea1e14883b5fb91b257df19874958934c238f60372f059f361447ec50fdd",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/crate/R2.rust-std.rs": "640e7162ce962c36f3b6c266314dc76aded68266c031366d79a6060258b9ea8b",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/crate/R3.rust-std.rs": "1bdb67efacb8e9c51d9140a807570b9209a2976f311ad2e6166e71038bb61a79",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/preservation.json": "0d448865806a0117e1aada3d6567236e2a3b75f6768000dddbf44f32ba4b4076",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/program/R0.json": "7149b5344992afad8ed17cf1675df852f621233cfe17b11938a65fcd7fa63506",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/program/R1.json": "0ebe7c10685d7b9ea07d87259c77e185ddf35e19915d56924e4f22ddff5cc460",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/program/R2.json": "d28b0f6630389f2c6d96c942d46e01e3058c48f1ef7c039ea3f9f1106bc18ea3",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/evidence/program/R3.json": "38899272ddbc0bd1acda1176f412cf7f02ad721a5d50c0e07db57aaba0401541",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div32/Cargo.toml": "0d9541bbbe4ac0afa841f5d607eaa9681bc5e9c9ef9281f6a5422037d8297939",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div32/package.json": "d17d5980ddc1cbdf16b99313a2caf6ef22583c027b8c098832d4cb7fdc52f140",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div32/provenance.json": "5b2f258ae30f95f62a844e39d2df5f189edbbc02d55603bb66815db86fd6b1f9",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div32/src/lib.rs": "ce64efea5b5c1c3ace3d2cb41bc98927db86ccbd9cd101d42eb5ac31e262f0da",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div64/Cargo.toml": "dd4e582fe98c400733ed8f94b1b22ef58fb012e99b971c19e33ac5db880d98f6",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div64/package.json": "11a4afc5fc4672ae909bcbea48ab9f28c0eab411e5a3741015d50379dcf8b207",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div64/provenance.json": "f3bd88baa2ea8ee50bbce6bceee3779f5c1f93e6eefc24bb8caa31fc59958aad",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_div64/src/lib.rs": "4e53474f797032512282b176f3b9346fef6bd718a52cbe1226567aa95a5c40e6",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul32/Cargo.toml": "2c1f8d78af22ecb8b54c344f469c467a465a22c3c293c319ca57671e9f77e7a6",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul32/package.json": "fbe7131f21c0438ca646fe76a4496d1db07c2b529947458115aadf37faabb994",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul32/provenance.json": "0519ae3f663bda22689ecec0466f95a4e02d2748d1f203bab23ccdeaba27e0b6",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul32/src/lib.rs": "4c412f14ece0d8b153bef2dfa2a2a1e89ec1f9dcb5df77f1d73da513f84627dd",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul64/Cargo.toml": "055b42a3958fc32d5bc9ba36282d7eaca210182a8cea0fa4d664811d03356caa",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul64/package.json": "b178bcdfebcab98145ff3fbf5582da3bdb26801f70298f5d6fd2cc53b25d1509",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul64/provenance.json": "0662ecf44e22c4412313a3c0d91b39a2f65bf3ed176dfec655782d5bbb04d33a",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/packages/rust-std/numeric_mul64/src/lib.rs": "dd0e04de3502e50a094c578afa61314debbe2a57feb484166f6a48acd3036a20",
+    "artifacts/numeric-task2/bundles/c455a7ea5a3bbce16d195f792916cac350c64019c43906d6c593f1d78f26dcea/result.json": "07e4d701bb62825d8d57f50cb9376a509e79caf6c42b451e8ad56eef875e7ccc",
+    "prism/numeric/src/Float.lex.tex": "e3199264f41cb83ff5e41606b71712ab0c1abc6ac6dcba12b1d43601af29daef",
+    "prism/numeric/src/Wide.lex.tex": "7dccec6988f3aa67ed3ae237a9752c48075855138f0fc550c8e435517b735fd0",
+    "prism/numeric/src/Bounds.lex.tex": "c32cce5627955f91a8ceb4c44d0a32bcdf84f6fe92e27dc08d916159c5dcb2a9",
+    "scripts/numeric/generate-source.py": "696bad88abd07d6696ace84f4ddde1db0a5c5d734a3501c7677650ee3c4a49c3",
+    "scripts/numeric/compat-stage.py": "623220c1c47ac7908cf08f76c6889b82e53cc8c53f18b5fba7234c6e406c8af9",
+    "scripts/numeric/collect.py": "98989ec289a14158956a93b3b60fbf39e5f5ec310fe17a8aa755a191d3d98ab8",
+    "scripts/numeric/oracle.py": "2389fe87ac0a7c148e55867a19c9660280f82d80abea08d503d2f688102da455",
+    "scripts/numeric/compat-extract.py": "2f893cb07e1eda56ad798d430ce034ae2cda2da9e657fd1fd7de943503080a7c",
+    "scripts/numeric/check-custody.py": "a998c6b58d48657ba7084aadca84de82c4f7b37c3d63e3113941f50f50607de7",
+    "scripts/numeric/native.rs": "b68e6101a4172ed5b84a43a9ec50cbbc7855c31bea99e636815fcaa75ad316e7",
+    "scripts/numeric/wasm.rs": "205c27d6e0db00adc77d5b7bead4ceba05285153fe043dad273ce44f1e8b5048",
+    "scripts/numeric/compat-raw-replay.rs": "0aa296852ebd0d8fa38c15a175669ca7803f15276507a68aa44387765c173d38",
+    "scripts/numeric/compat-replay.rs": "697817f0380318bc2c915c3c857e9ceffc2e68147368c57c5637196bb5f3958c",
+    "scripts/numeric/test.sh": "1dd9fa727f14856f3068415309b9b3ff899c4df1f79abc1ea66832585a6cd1ba",
+    "scripts/numeric/build.sh": "1707677c39d9e667168c9f18d6c4fb5f866527aafa06401ab120cbb14147759a",
+    "scripts/numeric/run-cached-sdk.sh": "9eb42f0c1c578c4167aee58c9549cb24d6f11fee53a76a89fe2271acc01d49d7",
+    "scripts/numeric/replay.mjs": "9af014ee7a6799198e5d4e167f77007e1f8f547c4e56321b7a344fdddbf3d15d",
+    "model/numeric-kernels.json": "1683f10aa182f80b4f28615070a4628b550cc4291e7d16aead176857c106daf1",
+    "prism/numeric/lexlean.lock": "7b2806004d5f35e529a5e191144baad6dd08fcd13998e1425930c2ccb9dabfaa",
+    "artifacts/numeric-task2/build-result.json": "26a5d60411330ec15c704ddd1099b1d9aa9699a8a62f9bc0763b6a4f2f7290cf",
+    "artifacts/numeric-task2/build-manifest.json": "35f7ea79a42adf378b3ef0b3c703ca710dab73e0f5ae7d62d396921661f41f09",
+    "artifacts/numeric-task2/build-request.json": "ee011beb561e3fb2be12b09eadda25b58ffec64b697d83149093cb89dc3e5b14",
+    "artifacts/numeric-task2/native": "dc036114f86fe4daa86cd8c8f784a53c0a61a37a9a8ef2f1a7a362475d549936",
+    "artifacts/numeric-task2/numeric.wasm": "745a3d6f50a801a98f0c0a90af72640af5d1e3160af1773d0a82a0e19e22c22a",
+    "artifacts/numeric-task2/vectors.json": "9edf45b030d1a317adc378abb579386503ca39ea71c37e2d3f475ba6a91b7f92"
+  }
+}

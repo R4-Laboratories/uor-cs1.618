@@ -1,0 +1,70 @@
+{
+  "spec": "lexlean/production-request/1",
+  "roots": [
+    {
+      "package": {
+        "name": "numeric_compat_comparison",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Compatibility.comparison",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "numeric_compat_constantiteration",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Compatibility.constantIteration",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "numeric_compat_fixedsigned",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Compatibility.fixedSigned",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "numeric_compat_iteration",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Compatibility.iteration",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    },
+    {
+      "package": {
+        "name": "numeric_compat_step",
+        "version": "0.1.0"
+      },
+      "root": "BoundedNumeric.Compatibility.step",
+      "targets": [
+        {
+          "id": "rust-std",
+          "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c"
+        }
+      ]
+    }
+  ]
+}

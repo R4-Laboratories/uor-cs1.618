@@ -54,6 +54,21 @@ rounded=binds([('st',loop),('bits',call('low64',field('value','st')))],cond(f'({
 pos=cond(lt('(128 : Int)','amount'),some(Z,U),bind(conv('amount','UInt8'),'count',rounded,U))
 neg=binds([('count',conv(prim('negate','amount',t='Int'),'UInt32')),('bits',call('low64','w'))],chk('shift_left','bits','count'),U)
 s+=defi('round','w : Limbs, amount : Int','(Option UInt64)',cond(lt('amount','(0 : Int)'),neg,pos))
+# Exact 64-bit embedding keeps the canonical four-UInt32-limb representation.
+s+=defi('from64','v : UInt64','(Option Limbs)',binds([('lo',conv(prim('bit_and','v',B),'UInt32')),('upper',chk('shift_right','v',lit(32,'UInt32'))),('hi',conv('upper','UInt32'))],some('(record Limbs {l0 := lo, l1 := hi, l2 := (0 : UInt32), l3 := (0 : UInt32)})',W),W))
+# Bounded quotient recurrence: r < d <= 2^53-1; 2*r < 2^54.
+# q starts at 1, so 54 steps produce at most 55 bits. No wide Nat division.
+s+='structure{ name: Division, type_parameters: [], parameters: [], fields: [{name: quotient, type: UInt64}, {name: remainder, type: UInt64}, {name: divisor, type: UInt64}] }\n'
+R='Division'
+def division_state(q,r): return some('(record Division {quotient := '+q+', remainder := '+r+', divisor := '+field('divisor','st')+'})',R)
+# Underflow of unsigned subtraction is intentionally the comparison result.
+branch='(match '+chk('checked_subtract','twice',field('divisor','st'))+' | Option.some reduced => '+bind(chk('checked_add','q2',O),'nextq',division_state('nextq','reduced'),R)+' | Option.none => '+division_state('q2','twice')+')'
+s+=defi('divideStep','state : (Option Division)','(Option Division)',binds([('st','state'),('twice',chk('checked_multiply',field('remainder','st'),lit(2))),('q2',chk('checked_multiply',field('quotient','st'),lit(2)))],branch,R))
+for width,steps in [(32,25),(64,54)]:
+    initial=some('(record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})',R)
+    loop=f'(prim iterate (fun (state : (Option Division)) => (divideStep state)) {steps} {initial} : (Option Division))'
+    jam=prim('bit_or',field('quotient','st'),cond(eq(field('remainder','st'),Z),Z,O))
+    s+=defi(f'quotient{width}','a : UInt64, b : UInt64','(Option UInt64)',binds([('initial',chk('checked_subtract','a','b')),('st',loop)],some(jam,U),U))
 D.joinpath('Wide.lex.tex').write_text(module('Wide',s))
 # Separate concrete formats: no arbitrary format parameters on public roots.
 s=''
@@ -76,4 +91,20 @@ for width,f,eb in [(32,23,8),(64,52,11)]:
     if width==64: root=call('bits64','a','b')
     else: root=binds([('wa',conv('a')),('wb',conv('b')),('r',call('bits32','wa','wb'))],conv('r','UInt32'),'UInt32')
     s+=defi(f'mul{width}',f'a : UInt{width}, b : UInt{width}',f'(Option UInt{width})',root,True)
+    # Division normalizes each nonzero significand separately, then emits f+3
+    # quotient bits with remainder sticky information and rounds exactly once.
+    divide_bindings=[('smallA',conv('ea','UInt8' if width==32 else 'UInt16')),('smallB',conv('eb','UInt8' if width==32 else 'UInt16'))]
+    sigs=sigvals[:4]  # ma, mb, xa, xb; multiplication scale is not reused.
+    normalized=[('wa',call('Wide::from64','ma')),('wb',call('Wide::from64','mb')),('ha',call('Wide::length','wa')),('hb',call('Wide::length','wb')),('shiftA',conv(f'(prim subtract ({f+1} : Int) ha : Int)','UInt32')),('shiftB',conv(f'(prim subtract ({f+1} : Int) hb : Int)','UInt32')),('na',chk('shift_left','ma','shiftA')),('nb',chk('shift_left','mb','shiftB'))]
+    divvals=[('below','Bool',lt('na','nb')),('delta','Int','(prim subtract (prim subtract xa xb : Int) (prim subtract hb ha : Int) : Int)'),('exponent','Int',cond('below','(prim subtract delta (1 : Int) : Int)','delta')),('subShift','Int',f'(prim subtract ({3-bias} : Int) exponent : Int)'),('amount','Int',cond(lt('(2 : Int)','subShift'),'subShift','(2 : Int)'))]
+    quotient=[('numerator',cond('below',chk('shift_left','na',lit(1,'UInt32')),some('na',U))),('quotient',call(f'Wide::quotient{width}','numerator','nb')),('value',call('Wide::from64','quotient')),('rounded',call('Wide::round','value','amount'))]
+    divfinite=binds(divide_bindings,lets(sigs,binds(normalized,lets(divvals,binds(quotient,pack,U)),U)),U)
+    za=eq(prim('bit_and','a',lit(sign-1)),Z); zb=eq(prim('bit_and','b',lit(sign-1)),Z)
+    ia=eq('ea',lit(em)); ib=eq('eb',lit(em))
+    invalid=f'(({za} && {zb}) || ({ia} && {ib}))'
+    divspecial=cond(f'({ia} && (not {eq("fa",Z)}))',some(prim('bit_or','a',lit(quiet)),U),cond(f'({ib} && (not {eq("fb",Z)}))',some(prim('bit_or','b',lit(quiet)),U),cond(invalid,some(lit(inf|quiet),U),cond(f'({ia} || {zb})',some(prim('bit_or','sg',lit(inf)),U),cond(f'({ib} || {za})',some('sg',U),divfinite)))))
+    s+=defi(f'divBits{width}','a : UInt64, b : UInt64','(Option UInt64)',lets(vals,binds(expxs,lets(expvals,divspecial),U)))
+    divroot=call('divBits64','a','b') if width==64 else binds([('wa',conv('a')),('wb',conv('b')),('r',call('divBits32','wa','wb'))],conv('r','UInt32'),'UInt32')
+    s+=defi(f'div{width}',f'a : UInt{width}, b : UInt{width}',f'(Option UInt{width})',divroot,True)
+
 D.joinpath('Float.lex.tex').write_text(module('Float',s,'\\importmodule{Wide}\n'))
