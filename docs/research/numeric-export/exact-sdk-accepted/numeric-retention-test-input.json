@@ -1,0 +1,15 @@
+{
+  "before": {
+    "name": "numeric-export-${{ matrix.mode }}-${{ github.run_id }}",
+    "path": "evidence/",
+    "if-no-files-found": "error",
+    "retention-days": "30"
+  },
+  "after": {
+    "name": "numeric-export-${{ matrix.mode }}-${{ github.run_id }}",
+    "path": "evidence/\n!evidence/primitive/prismpm-cargo-*/**\n",
+    "include-hidden-files": "true",
+    "if-no-files-found": "error",
+    "retention-days": "30"
+  }
+}

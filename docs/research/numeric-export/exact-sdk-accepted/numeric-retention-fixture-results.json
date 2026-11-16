@@ -1,0 +1,14 @@
+{
+  "scope": "YAML plus minimatch path-selection fixture; no SDK or remote upload executed",
+  "before": {
+    "hiddenProductionProofIncluded": false,
+    "disposableCargoCacheIncluded": true
+  },
+  "after": {
+    "syntheticProofAndOutputPathsRetained": 8,
+    "syntheticCachePathsExcluded": 3,
+    "actualArchiveCacheFilesExcluded": 29954,
+    "actualArchiveNonCacheFilesRetained": 19
+  },
+  "passes": true
+}

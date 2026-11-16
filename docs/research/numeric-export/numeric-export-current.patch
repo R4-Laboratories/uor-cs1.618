@@ -1,8 +1,8 @@
 From 46bdbc56ad99ac2bb73d6499863260a7fead9712 Mon Sep 17 00:00:00 2001
 From: Casey Allard <lionelcallardiv@gmail.com>
 Date: Mon, 16 Nov 2026 12:21:33 -0500
-Subject: [PATCH] Refuse float-model exports and cached artifacts without width
- evidence
+Subject: [PATCH 1/2] Refuse float-model exports and cached artifacts without
+ width evidence
 
 ---
  CONFORMANCE.md                                |   1 +
@@ -695,6 +695,69 @@ index 0000000..c69ee12
 +rustc --edition=2021 --crate-type cdylib --target wasm32-unknown-unknown "$fixture_dir/wasm.rs" --extern "numeric_significand_probe=$probe_dir/libnumeric_significand_probe_wasm.rlib" -o "$probe_dir/probe.wasm"
 +node "$fixture_dir/probe.mjs" "$probe_dir/probe.wasm"
 +printf 'Retained numeric export probe: %s\n' "$probe_dir"
+-- 
+2.52.0
+
+
+From 0e3472ed1ff2f3fda1d010929c4f323a05576c09 Mon Sep 17 00:00:00 2001
+From: Casey Allard <lionelcallardiv@gmail.com>
+Date: Mon, 16 Nov 2026 12:58:04 -0500
+Subject: [PATCH 2/2] Regenerate the lift register after numeric export
+ admission changes
+
+---
+ frontier.toml | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/frontier.toml b/frontier.toml
+index 9107967..655bfc7 100644
+--- a/frontier.toml
++++ b/frontier.toml
+@@ -20,7 +20,7 @@
+ #     1 bridge::<impl at crates/uorust/src/bridge.rs:150:1: 150:17>::parse::{closure#2}: type outside the lift: std::num::ParseIntError
+ #     1 bridge::bound_type::{closure#0}: mir::Operand::Constant: the constant item std::string::String::as_str
+ #     1 bridge::row_field::{closure#0}: mir::Operand::Constant: the constant item <str as std::string::ToString>::to_string
+-#     1 certify::<impl at crates/uorust/src/certify.rs:3441:1: 3441:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>
++#     1 certify::<impl at crates/uorust/src/certify.rs:3453:1: 3453:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>
+ #     1 certify::<impl at crates/uorust/src/certify.rs:529:1: 529:13>::descriptor::{closure#0}: type outside the lift: std::path::PathBuf
+ #     1 certify::<impl at crates/uorust/src/certify.rs:529:1: 529:13>::descriptor_text::{closure#0}: type outside the lift: std::path::PathBuf
+ #     1 certify::plan_keyed::{closure#0}: mir::TerminatorKind::Call: <std::collections::BTreeMap as std::ops::Index>::index
+@@ -1518,7 +1518,7 @@ cause = "mir::AggregateKind::Closure"
+ functions = 1
+ 
+ [[construct]]
+-construct = "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3441:1: 3441:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
++construct = "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3453:1: 3453:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
+ cause = "mir::AggregateKind::Closure"
+ functions = 1
+ 
+@@ -3209,7 +3209,7 @@ detail = "mir::Ty: mir::ir::IrBody"
+ kappa = "a6f0acd7875848fae482fd78593f32df889beb11c75c8554e97a0d49d4c4f89f"
+ function = "uorust::certify::Profile::cargo_manifest"
+ reason = "mir"
+-detail = "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3441:1: 3441:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
++detail = "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3453:1: 3453:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
+ 
+ [[residue]]
+ kappa = "4524f44ab3599fff8c711259814066946be6a7ec0eff85d1aad10ce449999e4c"
+@@ -3230,7 +3230,7 @@ reason = "mir"
+ detail = "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:529:1: 529:13>::descriptor_text::{closure#0}: type outside the lift: std::path::PathBuf"
+ 
+ [[residue]]
+-kappa = "75013984355044cf91b4bf11322c916ffbef1a2cd022e381468fe435003b9d3d"
++kappa = "e26c4799581bf43e2e5da36ed007da631217f22a3fdf2a35d5de134142c0fddd"
+ function = "uorust::certify::Profile::mark"
+ reason = "mir"
+ detail = "mir::TerminatorKind::Goto: a loop nested in a loop, whose helpers would call each other"
+@@ -8659,7 +8659,7 @@ function = "uorust::certify::carried"
+ effect = "Fs effect: std::fs::read"
+ 
+ [[effect]]
+-kappa = "774d882ca3e2c46966601468f09dca3a05d9bbfd84c6e17919167a86dc002dac"
++kappa = "b3d12c4d8c188ecf4d2001e7c3b14fa2529594b6dd08ce5c926afafedcb3eba0"
+ function = "uorust::certify::carry"
+ effect = "calls uorust::certify::modules, which performs a Fs effect: std::fs::read_to_string"
+ 
 -- 
 2.52.0
 

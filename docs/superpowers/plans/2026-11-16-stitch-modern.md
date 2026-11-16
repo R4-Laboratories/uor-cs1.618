@@ -49,7 +49,7 @@
 **Files:** package.json/lock, .github/workflows/pages.yml or current Pages workflow, docs and evidence records; generated artifact bindings only when required.
 - [x] Add new browser gates to CI and evolution admission; npm run verify and all eight browser suites passed locally. Custody verified; Rust unchanged, so UORust projection regeneration is not applicable.
 - [x] Whole-branch review: approved with no blocking findings; limitations and progress ledger recorded.
-- [ ] Reconcile autonomous commits, push authorized changes, observe successful Pages deployment and verify public build/room UI.
-- [ ] Publish release with source/client/evidence and provide live URL with truthful scope.
+- [x] Reconcile and publish: Pages run 43923626809 passed all gates and deployed 382c45d; served 0.9.0 stamp and live identity/discovery probes verified.
+- [x] Published v0.9.0 with source, static client, evidence and checksums; live URL verified.
 
-Integration 0.9.0: local gate results, initial rendered-gameplay harness failure/retry and proof/performance/service limits are retained in docs/RELEASE-0.9.0.md and docs/evidence/stitch-modern/. Whole-branch review passed. Upstream reconciliation, publication and deployed-origin probe remain parent-owned; the open boxes above are intentional.
+Integration 0.9.0: local gate results, initial rendered-gameplay harness failure/retry and proof/performance/service limits are retained in docs/RELEASE-0.9.0.md and docs/evidence/stitch-modern/. Whole-branch and follow-up reviews passed. Publication, served bytes, live account binding and public WebRTC discovery are verified in the release receipts; numeric compiler acceptance is tracked separately.

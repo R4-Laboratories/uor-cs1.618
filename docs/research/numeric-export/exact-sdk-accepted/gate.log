@@ -1,0 +1,757 @@
+Applying: Refuse float-model exports and cached artifacts without width evidence
+Applying: Regenerate the lift register after numeric export admission changes
+{
+  "schema": "cs1618/numeric-export-validation/1",
+  "mode": "patched",
+  "target": {
+    "schema": "cs1618/numeric-export-validation/1",
+    "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
+    "candidate_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+    "patch_sha256": "05a866911f5c6386ccf6665cb178471e039cae6a2da1b84a27033491affa33e3",
+    "bootstrap_sha256": "4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
+    "lock_sha256": "afd870ad28f323212ff11d1aa12b567ba584de7428be7aae567b6b0e7121d19f",
+    "sdk_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+    "allowed_paths": [
+      "CONFORMANCE.md",
+      "crates/uorust/src/certify.rs",
+      "crates/uorust/src/mir/float.rs",
+      "crates/uorust/tests/fixtures/numeric-export/Main.lex.tex",
+      "crates/uorust/tests/fixtures/numeric-export/native.rs",
+      "crates/uorust/tests/fixtures/numeric-export/probe.mjs",
+      "crates/uorust/tests/fixtures/numeric-export/wasm.rs",
+      "docs/numeric-export.md",
+      "features/suites/engine.feature",
+      "frontier.toml",
+      "model/ids.toml",
+      "scripts/probe-numeric-export.sh"
+    ]
+  },
+  "applied_head": "470746c3831db4ff1c0688230c630767e150d4eb",
+  "tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+  "bootstrap_run_sha256": "9c5fd7a3e422d2ac6f41e7398e61b24601cd3f1c79f7499a4c967192cfc35f73",
+  "full_gate_completed": false,
+  "note": "Preflight only until the original SDK gate exits successfully."
+}
+Unable to find image 'ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635' locally
+ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635: Pulling from afflom/prismpm-sdk-patched
+ca2678b20700: Pulling fs layer
+43f9c849a2a2: Pulling fs layer
+dad65d3622fa: Pulling fs layer
+00d16ab601f6: Pulling fs layer
+4d796d6a8178: Pulling fs layer
+64112f4c67a2: Pulling fs layer
+782c0a3f363f: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+218c883f5da1: Pulling fs layer
+f20937229e51: Pulling fs layer
+b7a751140c3a: Pulling fs layer
+6a74ca9518f8: Pulling fs layer
+408650e22379: Pulling fs layer
+1b2c8aa8f578: Pulling fs layer
+c9b2b670b7bc: Pulling fs layer
+7dd25e059a0b: Pulling fs layer
+9cb99ecae200: Pulling fs layer
+2efe10d76863: Pulling fs layer
+ebf2a8ac7821: Pulling fs layer
+f47a1f41908b: Pulling fs layer
+28d287abea16: Pulling fs layer
+d8043a80e4f9: Pulling fs layer
+f45d9e48c2cf: Pulling fs layer
+49de7543f9eb: Pulling fs layer
+c9b2b670b7bc: Waiting
+7dd25e059a0b: Waiting
+9cb99ecae200: Waiting
+2efe10d76863: Waiting
+ebf2a8ac7821: Waiting
+28d287abea16: Waiting
+f47a1f41908b: Waiting
+d8043a80e4f9: Waiting
+f45d9e48c2cf: Waiting
+49de7543f9eb: Waiting
+00d16ab601f6: Waiting
+218c883f5da1: Waiting
+4d796d6a8178: Waiting
+64112f4c67a2: Waiting
+f20937229e51: Waiting
+782c0a3f363f: Waiting
+b7a751140c3a: Waiting
+6a74ca9518f8: Waiting
+4f4fb700ef54: Waiting
+1b2c8aa8f578: Waiting
+dad65d3622fa: Verifying Checksum
+dad65d3622fa: Download complete
+ca2678b20700: Download complete
+43f9c849a2a2: Verifying Checksum
+43f9c849a2a2: Download complete
+64112f4c67a2: Verifying Checksum
+64112f4c67a2: Download complete
+ca2678b20700: Pull complete
+00d16ab601f6: Verifying Checksum
+00d16ab601f6: Download complete
+782c0a3f363f: Verifying Checksum
+782c0a3f363f: Download complete
+4f4fb700ef54: Verifying Checksum
+4f4fb700ef54: Download complete
+f20937229e51: Verifying Checksum
+f20937229e51: Download complete
+b7a751140c3a: Verifying Checksum
+b7a751140c3a: Download complete
+6a74ca9518f8: Verifying Checksum
+6a74ca9518f8: Download complete
+4d796d6a8178: Verifying Checksum
+4d796d6a8178: Download complete
+408650e22379: Download complete
+1b2c8aa8f578: Verifying Checksum
+1b2c8aa8f578: Download complete
+c9b2b670b7bc: Verifying Checksum
+c9b2b670b7bc: Download complete
+7dd25e059a0b: Verifying Checksum
+7dd25e059a0b: Download complete
+218c883f5da1: Download complete
+ebf2a8ac7821: Verifying Checksum
+ebf2a8ac7821: Download complete
+f47a1f41908b: Verifying Checksum
+f47a1f41908b: Download complete
+2efe10d76863: Verifying Checksum
+2efe10d76863: Download complete
+d8043a80e4f9: Download complete
+28d287abea16: Verifying Checksum
+28d287abea16: Download complete
+f45d9e48c2cf: Verifying Checksum
+f45d9e48c2cf: Download complete
+49de7543f9eb: Verifying Checksum
+49de7543f9eb: Download complete
+9cb99ecae200: Verifying Checksum
+9cb99ecae200: Download complete
+43f9c849a2a2: Pull complete
+dad65d3622fa: Pull complete
+00d16ab601f6: Pull complete
+4d796d6a8178: Pull complete
+64112f4c67a2: Pull complete
+782c0a3f363f: Pull complete
+4f4fb700ef54: Pull complete
+218c883f5da1: Pull complete
+f20937229e51: Pull complete
+b7a751140c3a: Pull complete
+6a74ca9518f8: Pull complete
+408650e22379: Pull complete
+1b2c8aa8f578: Pull complete
+c9b2b670b7bc: Pull complete
+7dd25e059a0b: Pull complete
+9cb99ecae200: Pull complete
+2efe10d76863: Pull complete
+ebf2a8ac7821: Pull complete
+f47a1f41908b: Pull complete
+28d287abea16: Pull complete
+d8043a80e4f9: Pull complete
+f45d9e48c2cf: Pull complete
+49de7543f9eb: Pull complete
+Digest: sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635
+Status: Downloaded newer image for ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635
+github.com/docker/buildx v0.28.0 b1281b81bba797b21d9eaf256e6a13eb14419836
+Name:   default
+Driver: docker
+
+Nodes:
+Name:             default
+Endpoint:         default
+Status:           running
+BuildKit version: v0.20.2
+Platforms:        linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/386
+Labels:
+ org.mobyproject.buildkit.worker.moby.host-gateway-ip: 172.17.0.1
+0.89.0
+cargo fmt --all -- --check
+cargo run -q --locked -p xtask -- validate
+check-model: CONFORMANCE.md equals the model, 27 ids (CM-01)
+audit-limits: no shipped crate returns an unsanctioned error (R5)
+audit-deferral: nothing is deferred (R4)
+audit-dependency-updates: SDK ownership and ordinary maintenance are preserved
+audit-bootstrap: SDK and workflow trust roots are immutable and separated
+validate: every gate passed
+prismpm template check
+template contract passed
+prismpm lock check
+SDK lock is canonical and valid
+scripts/self-model/check.sh
+29 routes, 47 vectors
+authority: 4 files match UOR-Foundation/website@e82ffdedc5d8
+engine: 4 workloads, 10 stages
+self-model: every generated file matches its generator
+cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+   Compiling quote v1.0.47
+   Compiling proc-macro2 v1.0.107
+    Checking serde_core v1.0.229
+    Checking equivalent v1.0.2
+    Checking hashbrown v0.17.1
+    Checking typenum v1.20.1
+    Checking indexmap v2.14.1
+    Checking toml_write v0.1.2
+   Compiling syn v3.0.4
+    Checking winnow v0.7.15
+    Checking generic-array v0.14.7
+    Checking crypto-common v0.1.7
+    Checking block-buffer v0.10.4
+    Checking digest v0.10.7
+    Checking zmij v1.0.23
+    Checking memchr v2.8.3
+    Checking cpufeatures v0.2.17
+    Checking itoa v1.0.18
+    Checking utf8parse v0.2.2
+    Checking cfg-if v1.0.4
+    Checking sha2 v0.10.9
+    Checking serde_json v1.0.151
+    Checking anstyle-parse v1.0.0
+    Checking is_terminal_polyfill v1.70.2
+    Checking anstyle v1.0.14
+    Checking unicode-ident v1.0.24
+    Checking colorchoice v1.0.5
+    Checking anstyle-query v1.1.5
+    Checking anstream v1.0.0
+    Checking clap_lex v1.1.1
+    Checking strsim v0.11.1
+   Compiling heck v0.5.0
+    Checking clap_builder v4.6.7
+    Checking uorust-certified v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/certified)
+    Checking semver v1.0.28
+   Compiling serde_derive v1.0.229
+   Compiling clap_derive v4.6.7
+    Checking clap v4.6.7
+    Checking serde v1.0.229
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking toml_edit v0.22.27
+    Checking toml v0.8.23
+    Checking repo-model v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/model)
+    Checking repo-conformance v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/conformance)
+    Checking xtask v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/xtask)
+    Checking uorust v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/uorust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 33.69s
+cargo test --workspace --locked
+   Compiling unicode-ident v1.0.24
+   Compiling utf8parse v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling colorchoice v1.0.5
+   Compiling proc-macro2 v1.0.107
+   Compiling anstyle-parse v1.0.0
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling anstyle-query v1.1.5
+   Compiling anstream v1.0.0
+   Compiling strsim v0.11.1
+   Compiling quote v1.0.47
+   Compiling clap_lex v1.1.1
+   Compiling syn v3.0.4
+   Compiling clap_builder v4.6.7
+   Compiling uorust-certified v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/certified)
+   Compiling serde_derive v1.0.229
+   Compiling clap_derive v4.6.7
+   Compiling clap v4.6.7
+   Compiling semver v1.0.28
+   Compiling serde v1.0.229
+   Compiling serde_spanned v0.6.9
+   Compiling toml_datetime v0.6.11
+   Compiling toml_edit v0.22.27
+   Compiling toml v0.8.23
+   Compiling repo-model v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/model)
+   Compiling repo-conformance v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/conformance)
+   Compiling xtask v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/xtask)
+   Compiling uorust v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/uorust)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 01s
+     Running unittests src/lib.rs (target/debug/deps/repo_conformance-66cba22b9965ed83)
+
+running 1 test
+test meta::tests::the_assertive_vocabulary_is_recognised ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/bdd.rs (target/debug/deps/bdd-3ba82f0bceec368d)
+
+running 4 tests
+test every_some_true_claim_cites_an_authority_cm_03 ... ok
+test no_scenario_is_pending_cm_02 ... ok
+test every_id_has_a_scenario_and_a_test_cm_02 ... ok
+test the_meta_gate_is_falsifiable_cm_02 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/factory.rs (target/debug/deps/factory-9a5b3401fa81969a)
+
+running 2 tests
+test an_undeclared_read_of_a_test_or_an_embedded_file_is_refused_ue_20 ... ok
+test factory_ue_20 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/ratchet.rs (target/debug/deps/ratchet-437c354a2d0df73d)
+
+running 3 tests
+test a_grown_translator_is_refused_ue_18 ... ok
+test the_hand_written_translator_only_shrinks_ue_18 ... ok
+test a_closure_without_its_base_fails_ue_18_and_one_with_it_decides ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.68s
+
+     Running tests/self_model.rs (target/debug/deps/self_model-5a182b6afcfa95c5)
+
+running 6 tests
+test self_model_sm_02 ... ok
+test self_model_sm_01 ... ok
+test self_model_sm_06 ... ok
+test self_model_sm_03 ... ok
+test self_model_sm_05 ... ok
+test self_model_sm_04 ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/repo_model-1dde8fe7b1e57d24)
+
+running 4 tests
+test tests::every_some_true_claim_cites_an_authority_cm_03 ... ok
+test codegen::tests::the_committed_table_is_the_rendering_of_the_register_cm_01 ... ok
+test tests::the_id_register_is_well_formed_cm_02 ... ok
+test tests::model_is_consistent_cm_01 ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/debug/deps/uorust-0a882245df48bb88)
+
+running 233 tests
+test bridge::tests::each_boolean_input_is_a_case_ue_19 ... ok
+test bridge::tests::a_signature_reads_as_the_shallow_types_ue_19 ... ok
+test bridge::tests::the_register_records_each_translated_row_bridged_or_pending_ue_19 ... ok
+test certified::tests::use_hand_selects_the_hand_written_translator ... ok
+test certify::cases::tests::a_case_agrees_only_when_the_package_answers_true_and_its_test_passes ... ok
+test bridge::tests::a_carried_stamp_needs_the_row_it_was_measured_on_ue_19 ... ok
+test certify::cases::tests::every_package_whose_name_fits_a_case_is_run ... ok
+test certify::cases::tests::libtest_lines_are_read_by_the_cases_they_state ... ok
+test certify::cases::tests::the_harness_runs_every_case_of_the_manifest ... ok
+test certify::cases::tests::a_case_is_a_proved_closed_assertion_over_a_function_in_scope ... ok
+test certify::tests::a_diagnostic_names_its_root ... ok
+test certify::tests::a_plan_sizes_its_shards_and_names_the_compiler_refusals ... ok
+test certify::tests::a_refusals_class_is_its_cause_without_the_projects_names ... ok
+test certify::tests::a_trait_call_is_the_method_of_its_type ... ok
+test certify::tests::a_root_is_a_lifted_translator_function ... ok
+test certify::tests::a_workspace_declares_its_profile_in_its_cargo_manifest ... ok
+test certify::tests::an_adapter_converts_strings_lists_and_naturals ... ok
+test certify::tests::another_workspace_has_its_own_roots_packages_effects_and_target ... ok
+test certify::tests::a_sync_takes_the_packages_into_the_named_directory_keyed_by_kappa ... ok
+test certify::tests::keyed2_a_manifest_of_either_past_shape_is_read_and_only_this_key_carries ... ok
+test certify::tests::a_closure_kappa_changes_exactly_with_what_its_root_reaches ... ok
+test certify::tests::keyed_a_change_in_a_roots_closure_builds_it_again_though_its_kappa_is_unchanged ... ok
+test certify::tests::keyed_a_compiler_descriptor_or_configuration_change_builds_every_root_again ... ok
+test certify::tests::float_model_closures_are_refused_before_export_ue_21 ... ok
+test certify::tests::keyed_a_modules_declarations_are_read_by_name_whatever_their_kind_and_place ... ok
+test certify::tests::keyed_a_module_reached_through_another_modules_import_is_in_every_roots_identity ... ok
+test certify::tests::keyed_a_linked_packages_body_is_in_every_roots_identity ... ok
+test certify::tests::keyed_an_all_carried_sync_writes_the_edition_its_packages_were_built_for ... ok
+test certify::tests::float_model_prior_artifacts_are_refused_before_reuse_ue_21 ... ok
+test certify::tests::keyed_the_relative_order_of_a_roots_closure_is_in_its_identity ... ok
+test certify::tests::marking_makes_the_roots_production_and_their_callees_executable ... ok
+test certify::tests::keyed_an_unchanged_root_is_carried_byte_for_byte_and_never_built ... ok
+test certify::tests::keyed_the_plan_counts_the_markings_refusals_as_the_export_does ... ok
+test certify::tests::the_kept_bundles_are_read_in_build_order ... ok
+test certify::tests::the_differential_refuses_one_byte_apart ... ok
+test certify::tests::the_ratchet_holds_any_scope_and_a_scope_only_widens ... ok
+test certify::tests::the_manifest_round_trips ... ok
+test certify::tests::the_ratchet_refuses_a_grown_surface_naming_each_new_row ... ok
+test convert::tests::the_lift_reads_no_certified_dispatch ... ok
+test certify::tests::the_roots_of_a_cases_export_are_the_projections_cases ... ok
+test embed::tests::a_function_pointer_is_one_however_it_prints ... ok
+test embed::tests::a_harness_output_without_its_checks_is_refused_ue_19 ... ok
+test embed::tests::a_linked_librarys_keys_are_renamed_as_whole_literals ... ok
+test embed::platform_tests::platform_intrinsics_read_their_stabilized_docs ... ok
+test embed::tests::a_part_is_named_by_its_owners_dump_ue_19 ... ok
+test embed::tests::a_pattern_constant_is_its_base_integer ... ok
+test embed::tests::a_samples_fuel_counts_each_call_of_each_callee ... ok
+test embed::tests::a_static_is_read_as_its_initializer_ue_19 ... ok
+test embed::tests::a_string_keeps_every_character_ue_19 ... ok
+test embed::tests::a_transmutes_work_is_read_from_its_layouts ... ok
+test embed::tests::an_allocations_pointers_and_a_constants_item_are_read_ue_19 ... ok
+test embed::tests::an_array_of_a_parameter_count_is_sized ... ok
+test embed::tests::an_impls_header_is_read_from_its_span ... ok
+test embed::tests::an_integer_constant_is_its_twos_complement_ue_19 ... ok
+test embed::tests::byte_strings_allocations_and_repeats_are_read_ue_19 ... ok
+test embed::tests::inline_assembly_is_a_call_its_dictionary_answers ... ok
+test embed::tests::names_an_item_by_a_trimmed_path ... ok
+test embed::tests::reads_a_subslice ... ok
+test embed::tests::stamps_each_row_by_its_kappa ... ok
+test embed::tests::the_datatype_kinds_are_rustcs_kinds_ue_19 ... ok
+test embed::tests::the_undefined_constructs_are_read_from_the_evaluator_ue_19 ... ok
+test expand::tests::an_unmatched_invocation_is_kept ... ok
+test expand::tests::repetitions_expand_to_items ... ok
+test expand::tests::separated_lists_and_crate_paths_transcribe ... ok
+test ingest::tests::a_cfg_marks_test_code_where_it_holds_in_a_test_build_alone ... ok
+test ingest::tests::a_function_of_a_test_file_is_test_code ... ok
+test ingest::tests::a_module_declared_out_of_line_under_a_test_cfg_marks_its_files ... ok
+test ingest::tests::a_trait_method_stands_apart_where_its_type_has_another_of_its_name ... ok
+test certify::tests::keyed_a_root_is_carried_only_into_a_project_that_verifies ... ok
+test ingest::tests::a_type_the_lift_does_not_read_says_its_shape ... ok
+test ingest::tests::every_struct_is_registered_with_the_fields_its_shape_has ... ok
+test layouts::tests::a_field_of_another_crate_is_read_in_its_printed_module ... ok
+test ingest::tests::each_module_scope_keeps_the_names_it_binds ... ok
+test layouts::tests::an_alias_may_be_written_in_the_modules_its_text_names ... ok
+test embed::tests::a_long_list_nests_no_deeper_than_its_bit_length_ue_19 ... ok
+test layouts::tests::reads_a_layout_and_a_refusal ... ok
+test layouts::tests::writes_a_printed_type_as_source ... ok
+test lex::tests::a_match_held_as_text_is_read_into_its_arms ... ok
+test lex::tests::names_are_camel_cased_from_rust_and_cargo_names ... ok
+test lex::tests::residue_names_keep_their_case_rules_at_the_edges ... ok
+test lex::tests::strings_are_escaped_and_collapsed ... ok
+test lex::tests::a_short_definition_is_flat_and_a_long_one_breaks ... ok
+test lift::tests::a_chain_never_leads_back_into_the_type_it_explains ... ok
+test lift::tests::a_default_method_takes_no_value_of_an_implementing_type ... ok
+test layouts::tests::a_librarys_root_is_the_one_its_manifest_names ... ok
+test lift::tests::a_lifetime_is_erased_and_a_taken_name_is_named ... ok
+test lift::tests::a_guarded_row_and_the_rows_after_it_bind_distinct_names ... ok
+test lift::tests::a_method_takes_the_value_of_its_type_first ... ok
+test certify::tests::the_default_profile_is_the_translators_own ... ok
+test lift::tests::a_percent_sign_is_residue ... ok
+test lift::tests::a_receiver_the_lift_does_not_thread_is_named_with_its_type ... ok
+test lift::tests::a_type_outside_the_lift_names_the_chain_to_its_leaf ... ok
+test lift::tests::a_match_on_a_state_enum_lifts_exhaustively ... ok
+test lift::tests::an_enum_names_the_variant_and_the_field_of_its_leaf ... ok
+test lift::tests::a_question_mark_in_an_operand_hoists ... ok
+test lift::tests::an_index_is_the_element_or_the_default ... ok
+test lift::tests::a_long_literal_is_balanced_halves ... ok
+test lift::tests::an_empty_vector_takes_the_type_the_block_returns ... ok
+test lift::tests::comparisons_and_logic_lift ... ok
+test lift::tests::character_matches_lift_to_tests ... ok
+test lift::tests::arithmetic_without_a_named_overflow_is_residue ... ok
+test lift::tests::library_types_read_by_name_or_by_their_full_path ... ok
+test lift::tests::early_returns_and_tuple_lets_lift ... ok
+test lift::tests::literal_matches_and_string_formats_lift ... ok
+test lift::tests::every_struct_shape_is_a_type_or_names_its_leaf ... ok
+test lift::tests::loops_continue_break_and_enumerate ... ok
+test lift::tests::residue_a_field_named_by_position_is_an_item ... ok
+test lift::tests::residue_a_library_path_is_plain_full_and_of_a_type_the_lift_reads ... ok
+test lift::tests::residue_a_struct_value_is_a_record_or_its_family_constructor ... ok
+test lift::tests::residue_a_unit_value_is_named_by_its_type_or_its_variant ... ok
+test lift::tests::residue_fields_and_variants_read_only_where_every_one_lifts ... ok
+test lift::tests::iterator_chains_lift_to_structural_helpers ... ok
+test lift::tests::shared_ownership_reads_as_its_content ... ok
+test lift::tests::named_overflow_lifts ... ok
+test lift::tests::maps_lift_only_where_their_order_is_defined ... ok
+test lift::tests::signed_strings_options_and_lets_lift ... ok
+test lift::tests::slice_recursion_is_structural ... ok
+test lift::tests::structs_and_tuples_lift ... ok
+test lift::tests::usize_widths_come_from_the_declared_targets ... ok
+test mir::core::tests::a_bodys_type_parameters_are_its_bare_names ... ok
+test mir::core::tests::a_const_trait_impls_const_parameters_have_their_types ... ok
+test mir::core::tests::a_parameters_associated_types_are_the_parameter ... ok
+test mir::core::tests::allocations_are_numbered_by_first_mention ... ok
+test mir::core::tests::causes_rank_by_kind_and_head ... ok
+test mir::core::tests::every_module_key_round_trips_through_tomllib ... ok
+test lift::tests::string_methods_lift_to_the_prelude ... ok
+test mir::coverage::tests::every_kind_of_the_pinned_mir_has_a_row ... ok
+test mir::core::tests::the_embeddings_summary_counts_each_kappa_once ... ok
+test mir::float::tests::every_operation_the_tables_name_is_defined ... ok
+test lift::tests::the_wide_signed_integers_lift_as_the_mathematical_int ... ok
+test lift::tests::statement_ifs_lift_the_statements_after_them_once ... ok
+test mir::float::tests::conversions_are_the_hosts ... ok
+test mir::float::tests::f32_unary_operations_are_the_hosts ... ok
+test mir::float::tests::f16_arithmetic_is_the_hosts_rounded_twice ... ok
+test mir::float::tests::float_model_intermediates_exceed_the_production_nat_width_ue_21 ... ok
+test mir::float::tests::formats_are_read_from_cores_constants ... ok
+test mir::float::tests::literals_and_named_constants_round_to_nearest ... ok
+test mir::generate::tests::std_is_vendored_from_the_pinned_toolchain ... ok
+test mir::generate::tests::the_spec_is_generated_from_the_pinned_mir_definition ... ok
+test mir::generate::tests::variants_are_read_at_the_enum_indentation ... ok
+test mir::int::tests::bounds_are_rusts ... ok
+test mir::int::tests::casts_are_rusts ... ok
+test mir::int::tests::helpers_are_well_founded_and_closed ... ok
+test mir::int::tests::literal_folds ... ok
+test mir::int::tests::order_is_rusts ... ok
+test mir::int::tests::rules_take_a_fixed_width ... ok
+test mir::int::tests::varying_targets_state_their_range ... ok
+test mir::layout::tests::a_layout_is_used_only_where_the_targets_agree ... ok
+test mir::layout::tests::a_malformed_data_layout_is_refused ... ok
+test mir::layout::tests::primitives_take_the_data_layouts_alignment ... ok
+test mir::lower::tests::a_held_borrow_and_its_place_share_a_match_key ... ok
+test mir::lower::tests::a_pointer_value_is_the_pointer_struct ... ok
+test mir::lower::tests::a_tuple_of_one_item_is_told_from_a_wider_one ... ok
+test mir::lower::tests::comparisons_read_back ... ok
+test mir::lower::tests::generic_arguments_are_erased_from_callees ... ok
+test mir::lower::tests::lifetime_arguments_are_left_out ... ok
+test mir::lower::tests::mir_types_name_the_lifts_types ... ok
+test mir::lower::tests::mut_parameters_are_threaded ... ok
+test mir::lower::tests::patterns_give_rustcs_valid_ranges_and_niches ... ok
+test mir::memory::tests::the_laws_name_their_cell_size ... ok
+test mir::parse::tests::a_dump_reads_into_blocks_locals_and_kinds ... ok
+test mir::parse::tests::paths_split_outside_generic_arguments ... ok
+test mir::parse::tests::places_nest_fields_downcasts_and_derefs ... ok
+test mir::parse::tests::reads_a_spanned_dump_as_the_plain_one_with_its_spans ... ok
+test mir::parse::tests::rvalues_read_as_their_kinds ... ok
+test mir::prove::tests::diagnostics_name_their_declarations ... ok
+test mir::site::tests::reads_whether_a_body_tracks_its_caller_and_where_its_calls_are ... ok
+test mir::std_vectors::std_agrees_with_every_vector_of_its_models ... ok
+test mir::stdlib::tests::generic_parameters_bind_to_the_call_sites_types ... ok
+test mir::stdlib::tests::models_apply_at_their_types ... ok
+test mir::stdlib::tests::std_paths_key_without_their_crate ... ok
+test mir::stdlib::tests::the_table_parses_and_names_only_vendored_bodies ... ok
+test mir::tests::impls_are_named_by_the_type_their_source_implements ... ok
+test mir::trips::tests::a_counter_below_a_constant_bounds_its_loop ... ok
+test mir::trips::tests::a_counter_compared_through_a_copy_bounds_its_loop ... ok
+test mir::trips::tests::a_halved_counter_bounds_its_loop_by_its_width ... ok
+test mir::trips::tests::a_loop_no_exit_bounds_is_unbounded ... ok
+test mir::verdict::tests::verdicts_round_trip ... ok
+test names::tests::a_body_is_read_with_what_it_writes_of_types ... ok
+test names::tests::a_call_the_written_code_leaves_open_stays_open ... ok
+test names::tests::a_name_the_body_binds_is_not_a_path_to_a_function ... ok
+test names::tests::a_path_resolves_through_use_and_the_nearest_module ... ok
+test names::tests::a_predicate_and_its_negation_hold_in_no_build_together ... ok
+test names::tests::default_features_follow_cargos_rules ... ok
+test names::tests::self_and_a_written_receiver_resolve_to_their_types_method ... ok
+test names::tests::the_projected_configuration_is_the_dumps ... ok
+test project::tests::a_call_means_a_traits_method_only_where_the_trait_is_in_scope ... ok
+test project::tests::a_call_resolves_in_its_nearest_module_before_it_is_ambiguous ... ok
+test project::tests::a_default_method_lifts_where_its_body_is_one_for_every_implementing_type ... ok
+test project::tests::a_free_function_keeps_the_name_a_method_reached_first_also_lifts_to ... ok
+test project::tests::a_method_of_a_type_outside_the_lift_names_the_leaf ... ok
+test project::tests::a_method_outside_the_lift_names_its_type_and_why ... ok
+test project::tests::a_module_beyond_the_stated_limit_is_a_typed_error ... ok
+test project::tests::a_module_declared_out_of_line_under_a_test_cfg_is_no_product_code ... ok
+test project::tests::a_module_of_separate_records_beyond_the_limit_is_written_in_parts ... ok
+test project::tests::a_module_that_cannot_be_parted_is_left_to_the_typed_error ... ok
+test project::tests::a_name_a_module_gave_is_not_taken_by_a_function_alone_of_its_name ... ok
+test project::tests::a_name_that_reads_as_no_one_type_states_why ... ok
+test project::tests::a_projection_is_checked_against_the_limit_it_states ... ok
+test project::tests::a_registry_type_a_use_binds_is_a_foreign_row ... ok
+test project::tests::a_trait_implementations_method_lifts_as_a_function_of_its_type_ue_15 ... ok
+test project::tests::a_traits_method_gives_way_to_the_function_that_holds_its_name ... ok
+test project::tests::a_type_named_as_lexlean_names_its_own_lifts_under_its_crate ... ok
+test project::tests::complementary_cfg_variants_are_one_fact_not_a_collision ... ok
+test project::tests::quality_states_the_lift_and_the_open_refusals_as_measures ... ok
+test project::tests::sha_meets_every_nist_short_vector ... ok
+test project::tests::sha_meets_the_nist_vectors_at_the_padding_bounds ... ok
+test project::tests::the_frontier_carries_the_queue_of_its_own_rows ... ok
+test project::tests::the_frontier_ranks_its_refusals_by_reason ... ok
+test project::tests::two_functions_of_one_path_share_one_row ... ok
+test project::tests::two_traits_methods_of_one_name_keep_a_row_each ... ok
+test queue::tests::a_merge_admits_only_a_retracted_regression ... ok
+test queue::tests::a_translated_kappa_may_not_turn_residue ... ok
+test register::tests::a_lifted_kappa_that_turns_unlifted_is_refused ... ok
+test register::tests::a_path_with_a_newline_is_refused - should panic ... ok
+test register::tests::a_queue_is_ranked_and_written_as_the_core_registers ... ok
+test register::tests::a_register_whose_queue_is_not_its_rows_is_refused ... ok
+test register::tests::an_older_register_is_still_read_admitted_and_checked ... ok
+test register::tests::kappa_depends_on_path_and_tokens ... ok
+test register::tests::the_preimage_is_the_models_fixture ... ok
+test register::tests::the_register_carries_its_totals_and_its_ranked_queue ... ok
+test register::tests::the_register_round_trips_and_rows_are_typed ... ok
+test registry::tests::a_dump_is_filed_under_its_module ... ok
+test registry::tests::a_sample_left_out_prints_its_cases_unbuilt ... ok
+test registry::tests::a_spec_is_a_name_at_a_version ... ok
+test tests::utc_renders_the_epoch_and_a_leap_day ... ok
+test wf::tests::a_call_on_a_let_bound_value_is_refused ... ok
+test wf::tests::a_call_under_a_constructor_branch_states_its_decrease ... ok
+test wf::tests::a_group_that_does_not_measure_is_refused ... ok
+test wf::tests::a_member_passing_its_argument_on_ranks_above_its_callee ... ok
+test mir::float::tests::f32_arithmetic_is_the_hosts ... ok
+test mir::float::tests::f32_binary_and_fused_operations_are_the_hosts ... ok
+test mir::float::tests::f64_arithmetic_is_the_hosts ... ok
+
+test result: ok. 233 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 42.35s
+
+     Running unittests src/main.rs (target/debug/deps/uorust-4a38250d31419083)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/certify.rs (target/debug/deps/certify-8495373edb58234f)
+
+running 2 tests
+test a_plan_reads_the_workspaces_profile_and_agree_refuses_a_functions_crate ... ok
+test the_ratchet_holds_a_workspaces_own_scope ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/cli.rs (target/debug/deps/cli-87e6792cac3830ac)
+
+running 12 tests
+test layouts_of_no_aggregate_ask_for_nothing_ue_19 ... ok
+test the_cli_compares_the_two_translators_by_kappa_ue_18 ... ok
+test the_cli_lists_the_routes_ue_05 ... ok
+test the_bridge_refuses_an_unwritten_project_and_carries_only_its_own_rows_ue_19 ... ok
+test the_cli_plans_an_export_and_refuses_to_diagnose_without_a_target ... ok
+test the_cli_projects_a_fresh_package_without_an_empty_module_ue_01 ... ok
+test the_cli_refuses_an_embedding_without_a_target_ue_19 ... ok
+test the_cli_writes_and_merges_library_registers ... ok
+test the_hooks_retest_a_patch_unless_main_moved_disjointly ... ok
+test the_cli_refuses_a_bundle_it_cannot_export_or_take_in ... ok
+test the_cli_dumps_mir_and_proves_on_the_verdicts_ue_17 ... ok
+test the_cli_projects_and_checks_the_fixture_ue_01 ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+
+     Running tests/engine.rs (target/debug/deps/engine-9f84cfe59bb0839a)
+
+running 28 tests
+test a_census_without_its_library_sources_refuses ... ok
+test a_constant_path_rustc_prints_for_two_items_is_refused ... ok
+test a_switch_on_ordering_reads_its_declared_discriminants ... ok
+test a_call_admission_resolves_lifts_as_the_function_it_resolves_to ... ok
+test core_bodies_are_translated_into_a_monotone_register ... ok
+test ambiguity_is_refused_with_a_typed_open_claim_ue_03 ... ok
+test a_lifted_kappa_that_turns_unlifted_is_refused_ue_16 ... ok
+test every_core_body_is_embedded_ue_19 ... ok
+test advisories_are_risks_on_the_supply_chain_ue_12 ... ok
+test engine_modules_have_their_own_titles_ue_10 ... ok
+test each_module_is_an_opm_view_ue_09 ... ok
+test every_mir_kind_of_the_pinned_toolchain_has_a_coverage_row_ue_17 ... ok
+test every_retraction_is_witnessed ... ok
+test every_failure_is_a_typed_variant_ue_06 ... ok
+test library_shards_read_their_sources_and_merge_only_whole ... ok
+test iterator_chains_methods_and_maps_lift_ue_15 ... ok
+test every_feature_of_this_workspace_is_accepted_ue_13 has been running for over 60 seconds
+test every_function_of_product_code_has_exactly_one_row_ue_16 has been running for over 60 seconds
+test no_lifted_kappa_turns_unlifted_ue_16 has been running for over 60 seconds
+test projections_are_byte_identical_ue_02 has been running for over 60 seconds
+test every_feature_of_this_workspace_is_accepted_ue_13 ... ok
+test pub_trait_methods_are_interface_calls_ue_08 ... ok
+test no_lifted_kappa_turns_unlifted_ue_16 ... ok
+test the_fixture_projects_to_the_committed_project_ue_01 ... ok
+test the_floor_lifts_and_the_rest_is_typed_residue_ue_04 ... ok
+test the_prover_keeps_a_decided_register_ue_17 ... ok
+test the_mir_path_translates_and_admits_on_verdicts_ue_17 ... ok
+test the_widened_lift_covers_the_fixture_ue_11 ... ok
+test vv_runs_the_sdk_checks_on_both_projections_ue_07 ... ok
+test every_function_of_product_code_has_exactly_one_row_ue_16 ... ok
+test the_self_projection_reproduces_the_hand_model_ue_14 has been running for over 60 seconds
+test projections_are_byte_identical_ue_02 ... ok
+test the_self_projection_reproduces_the_hand_model_ue_14 ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 455.40s
+
+     Running tests/routes.rs (target/debug/deps/routes-b41617450b68135d)
+
+running 2 tests
+test a_planted_disagreement_is_caught_ue_05 ... ok
+test routes_agree_ue_05 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/uorust_certified-15337ed4ef0eb2be)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/xtask-d6cddd2171117a56)
+
+running 22 tests
+test audit::tests::a_publish_false_crate_is_not_audited ... ok
+test audit::tests::the_engine_error_is_sanctioned ... ok
+test audit::tests::the_lift_residue_is_sanctioned ... ok
+test audit::tests::any_other_error_type_is_still_refused ... ok
+test bootstrap::tests::floating_action_plant_is_rejected ... ok
+test bootstrap::tests::host_docker_plugin_plant_is_rejected ... ok
+test bootstrap::tests::incomplete_release_lifecycle_plant_is_rejected ... ok
+test bootstrap::tests::dropped_native_coverage_plant_is_rejected ... ok
+test bootstrap::tests::accepted_promotion_bypass_plant_is_rejected ... ok
+test bootstrap::tests::missing_or_credential_nested_buildx_state_is_rejected ... ok
+test bootstrap::tests::dependency_updates_preserve_sdk_ownership_and_ordinary_maintenance ... ok
+test bootstrap::tests::mutable_sdk_plant_is_rejected ... ok
+test bootstrap::tests::narrowed_policy_boundary_plant_is_rejected ... ok
+test bootstrap::tests::native_platform_inventory_rejects_swaps_missing_platforms_and_legacy_drift ... ok
+test bootstrap::tests::sha256_identity_retains_canonical_lowercase_bytes ... ok
+test bootstrap::tests::universal_policy_drift_plant_is_rejected ... ok
+test bootstrap::tests::shallow_checkout_plant_is_rejected ... ok
+test bootstrap::tests::project_overwrite_plant_is_rejected ... ok
+test scaffold::tests::the_empty_register_becomes_a_table ... ok
+test scaffold::tests::malformed_or_duplicate_capabilities_write_nothing ... ok
+test scaffold::tests::scaffolded_capabilities_satisfy_the_meta_gate ... ok
+TAP version 13
+# Subtest: absent standards lock receives exact SDK bytes and matching bytes remain unchanged
+ok 1 - absent standards lock receives exact SDK bytes and matching bytes remain unchanged
+  ---
+  duration_ms: 5.988565
+  type: 'test'
+  ...
+# Subtest: different project standards bytes are rejected without replacement
+ok 2 - different project standards bytes are rejected without replacement
+  ---
+  duration_ms: 4.12615
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 303.828137
+test bootstrap::tests::initial_standards_binding_refuses_project_drift ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.39s
+
+     Running tests/cli.rs (target/debug/deps/cli-41c8427d59ff2107)
+
+running 2 tests
+test an_unknown_task_prints_the_task_list_and_fails ... ok
+test check_model_passes_on_this_repository_cm_01 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests repo_conformance
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests repo_model
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests uorust
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests uorust_certified
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cargo deny --all-features check
+advisories ok, bans ok, licenses ok, sources ok
+cd app && lexlean fmt --check && lexlean lock --check
+25 modules are canonical
+lexlean.lock is current
+prismpm --project app verify
+prismpm: no proof statement (proof.input): the project has no prismpm.lock, so no SDK image is pinned to name as the verifier's host
+verified attestation: f35d5212ec17f020afc7a386049e61bf0cdf3ab5be10be1ea46ddc68a47e5bdf
+cargo run -q --locked -p uorust -- check crates/uorust/tests/fixtures/thermostat --out crates/uorust/tests/fixtures/thermostat-prism --name thermostat --last-modified 2026-11-11T00:00:00Z
+crates/uorust/tests/fixtures/thermostat-prism is the current projection
+cd crates/uorust/tests/fixtures/thermostat-prism && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+14 modules are canonical
+lexlean.lock is current
+verified 14 modules; attestation ef39938c5bd17070053bf123802a24b02fb6726416d7867c17a29dff5dc55e7b
+check passed (semantic ID: 07d725533ee7906dbfd3c3f152758b6a0d62dd137fa9b5899460aaedaed7c694)
+rm -rf target/uorust-self
+cargo run -q --locked -p uorust -- mir . --out target/mir
+dumped the MIR of . into target/mir
+cargo run -q --locked -p uorust -- project . --out target/uorust-self --name uorust --last-modified 2026-11-11T00:00:00Z --mir target/mir --verdicts lift-verdicts.toml
+wrote 84 files to target/uorust-self
+cargo run -q --locked -p uorust -- check . --out target/uorust-self --name uorust --last-modified 2026-11-11T00:00:00Z --register frontier.toml --mir target/mir --verdicts lift-verdicts.toml
+target/uorust-self is the current projection
+cd target/uorust-self && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+13 modules are canonical
+lexlean.lock is current
+verified 13 modules; attestation 194e359ef875bf3a5197dfc54047232e28c56ed191511580d169753c7f15d386
+check passed (semantic ID: 20f1fb4f3ceaaf069cdf78ea164954ed413111584b91191079b47db1485760fa)
+rm -rf target/uorust-advised
+cargo run -q --locked -p uorust -- project crates/uorust/tests/fixtures/advised --out target/uorust-advised --name advised --last-modified 2026-11-11T00:00:00Z --advisories crates/uorust/tests/fixtures/advised/advisory-db
+wrote 81 files to target/uorust-advised
+cd target/uorust-advised && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+13 modules are canonical
+lexlean.lock is current
+verified 13 modules; attestation 38ecd2ac2190778ef0e5c05e811739b43811e5ef0b607a7238ac54aaf8d6734b
+check passed (semantic ID: 8d2bec127e5043e5b662eaf94081a782767105ac60bd33f42adee724f901c591)
+vv: the acceptance gate passed

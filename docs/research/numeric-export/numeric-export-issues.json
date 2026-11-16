@@ -1,13 +1,13 @@
 {
   "schema": "numeric-export-issues/1",
   "updated": "2026-11-16",
-  "repair_commit": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "repair_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09",
   "repair_repository": "UORust",
   "release_verified": false,
   "issues": [
     {
       "id": "NEXP-001",
-      "status": "fixed_local_pending_exact_sdk",
+      "status": "fixed_validated_exact_sdk_amd64",
       "repo": "UORust",
       "function": "Profile::mark / carry / production_build / production",
       "summary": "Fresh and reused float-model closures refused without machine-width evidence.",
@@ -24,7 +24,8 @@
         "numeric-current-evidence/current-red.log",
         "numeric-current-evidence/current-reuse-red.log",
         "numeric-current-evidence/current-reuse-green.log",
-        "numeric-current-evidence/current-final-after-reuse.log"
+        "numeric-current-evidence/current-final-after-reuse.log",
+        "exact-sdk-accepted/receipt.json"
       ],
       "dependencies": [],
       "release_dependency": "NEXP-005"
@@ -92,20 +93,23 @@
         "numeric-export-evidence/build.log",
         "numeric-export-evidence/replay.log",
         "numeric-export-evidence/native-replay.log",
-        "numeric-export-evidence/wasm-replay.log"
+        "numeric-export-evidence/wasm-replay.log",
+        "exact-sdk-accepted/primitive-receipt.json",
+        "exact-sdk-accepted/primitive.log",
+        "exact-sdk-accepted/primitive-output-hashes.json"
       ],
       "dependencies": [],
-      "scope": "Exact inner multiplication primitive only; full IEEE export not tested."
+      "scope": "Exact inner multiplication primitive rebuilt and replayed in the current exact SDK; full IEEE export not tested."
     },
     {
       "id": "NEXP-005",
-      "status": "pending_remote_acceptance",
+      "status": "passed_exact_sdk_amd64",
       "repo": "UORust",
       "function": "Pinned-SDK acceptance / just vv",
-      "summary": "Current reviewed candidate preserves every policy/lock; complete acceptance in exact c1bfe8d5 SDK is pending. Manual baseline/patched GitHub validation is prepared; cached game SDK cannot substitute.",
+      "summary": "Unchanged baseline and corrected candidate both passed full just vv in the exact SDK; candidate also passed separate primitive export, binding replay, native and import-free Wasm execution.",
       "reproduction": "cargo run --offline --locked -p xtask -- validate in cached diagnostic SDK: prismpm.lock native artifact inventory disagrees with the running SDK.",
       "acceptance_criteria": [
-        "Run full unchanged just vv inside ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635 for reviewed candidate 46bdbc56ad99ac2bb73d6499863260a7fead9712.",
+        "Run full unchanged just vv inside ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635 for reviewed candidate 0e3472ed1ff2f3fda1d010929c4f323a05576c09, tree aa5082efb83d6fd38275d00aec404929fbe34d9c, as bound by validation-manifest.json.",
         "Run repository acceptance and independent review before upstream release.",
         "Keep existing lock unchanged unless a separately reviewed migration is intended."
       ],
@@ -113,14 +117,21 @@
         "numeric-current-evidence/current-final-after-reuse.log",
         "numeric-current-evidence/sdk-inventory-diff.json",
         "numeric-current-evidence/sdk-registry-availability.json",
-        "numeric-current-evidence/upstream-prior-success.json"
+        "numeric-current-evidence/upstream-prior-success.json",
+        "exact-sdk-accepted/baseline-receipt.json",
+        "exact-sdk-accepted/receipt.json",
+        "exact-sdk-accepted/primitive-receipt.json"
       ],
       "dependencies": [],
-      "baseline_environment_issue": true,
+      "baseline_environment_issue": false,
       "expected_inventory_digest": "sha256:d802737ecd17651465dc93640c052720bb361c1d158049ecfb5b9b25ca6c6f70",
       "observed_inventory_digest": "sha256:0d4fe1864891ab1220a752d929a5a3a334f5987e0518a97f83f06fb5bdad105f",
       "changed_inventory_entries": 17,
-      "resolution_path": "Manual game CI with exact base + reviewed patch/tree custody, unchanged upstream bootstrap run block and full just vv; optional separate primitive replay after gate."
+      "resolution_path": "Manual game CI with exact base + reviewed patch/tree custody, unchanged upstream bootstrap run block and full just vv; optional separate primitive replay after gate.",
+      "repair_dependency": "NEXP-008",
+      "cached_diagnostic_sdk_mismatch": true,
+      "environment_note": "The cached diagnostic SDK differs from the current upstream lock; the actual exact-SDK baseline passed in run43919280445.",
+      "validation_scope": "amd64 full acceptance; no native arm64 run or upstream merge/release claimed."
     },
     {
       "id": "NEXP-006",
@@ -140,7 +151,7 @@
     },
     {
       "id": "NEXP-007",
-      "status": "fixed_local_pending_exact_sdk",
+      "status": "fixed_validated_exact_sdk_amd64",
       "repo": "UORust",
       "function": "carry / production_build / sync",
       "summary": "Previously certified float artifacts could bypass fresh admission through unchanged artifact identities.",
@@ -151,14 +162,62 @@
       ],
       "evidence": [
         "numeric-current-review.md",
-        "numeric-current-evidence/current-reuse-red.log"
+        "numeric-current-evidence/current-reuse-red.log",
+        "exact-sdk-accepted/receipt.json"
       ],
       "release_dependency": "NEXP-005"
+    },
+    {
+      "id": "NEXP-008",
+      "status": "fixed_validated_exact_sdk_amd64",
+      "repo": "UORust",
+      "function": "frontier.toml / Justfile register / engine::no_lifted_kappa_turns_unlifted_ue_16",
+      "summary": "Candidate omitted generated lift-register refresh for changed admission function identities and source spans.",
+      "reproduction": "Exact-SDK run43919280445 job133481869450 fails UE16 with frontier.toml is not this workspace lift register; unchanged just register updates5lines.",
+      "acceptance_criteria": [
+        "Generate frontier.toml with standard register recipe; do not edit kappa values by hand.",
+        "Preserve all lifted rows and classifications.",
+        "Focused UE16 passes against fresh MIR.",
+        "Full unchanged exact-SDK just vv passes new candidate."
+      ],
+      "evidence": [
+        "register-repair/register-repair.md",
+        "register-repair/current-register-check.log",
+        "register-repair/register-diff.json",
+        "register-repair/numeric-current-review-addendum.md",
+        "exact-sdk-accepted/receipt.json"
+      ],
+      "dependencies": [],
+      "release_dependency": "NEXP-005",
+      "repair_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09"
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
-  "review": "pass after fresh-export and cached-artifact reuse fixes",
+  "review": "Guard, cached reuse and generated-register correction approved; unchanged full exact-SDK amd64 gate and separate primitive probe passed.",
   "historical_register": "historical-issues.json",
   "workflow": "https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/numeric-export-validation.yml",
-  "upstream_publication": "not merged or released; upstream push unavailable and fork creation HTTP403"
+  "upstream_publication": "not merged or released; upstream push unavailable and fork creation HTTP403",
+  "previous_repair_commit": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "first_exact_sdk_run": {
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445",
+    "baseline": "passed full just vv",
+    "candidate46bdbc56": "failed UE-16 stale frontier.toml after233library and12CLI tests passed",
+    "primitive_probe": "not run because candidate full gate failed"
+  },
+  "corrected_exact_sdk_run": {
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43924585630",
+    "game_commit": "b7232d553e038ad89dd3ea4999d16ddbfa7df7f1",
+    "candidate_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09",
+    "candidate_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+    "status": "completed",
+    "conclusion": "success",
+    "baseline_job": 133500546943,
+    "patched_job": 133500547595,
+    "baseline_full_gate": "passed",
+    "candidate_full_gate": "passed",
+    "primitive_probe": "passed",
+    "baseline_artifact": 14258117814,
+    "patched_artifact": 14258401067,
+    "evidence": "exact-sdk-accepted/README.md"
+  }
 }

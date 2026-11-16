@@ -1,0 +1,8 @@
+{
+  "schema": "numeric-patch-tree-check/1",
+  "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
+  "patch_sha256": "05a866911f5c6386ccf6665cb178471e039cae6a2da1b84a27033491affa33e3",
+  "applied_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+  "expected_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+  "matches": true
+}

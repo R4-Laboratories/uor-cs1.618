@@ -6,14 +6,16 @@ Start with the [stable research tracker](../NUMERIC-EXPORT-TRACKER.md) and [mach
 
 ## Current reviewed candidate
 
-- Base `b04af3550bb49c4e5bfdc0747a1e50cd58f13b81`; repair `46bdbc56ad99ac2bb73d6499863260a7fead9712`; tree `80dcc02ddd30b4e44788189ed81bac2c3d4db80f`.
+- Base `b04af3550bb49c4e5bfdc0747a1e50cd58f13b81`; guard `46bdbc56ad99ac2bb73d6499863260a7fead9712` plus generated-register correction `0e3472ed1ff2f3fda1d010929c4f323a05576c09`; current tree `aa5082efb83d6fd38275d00aec404929fbe34d9c`.
 - [Validation orchestration review](numeric-validation-review.md) and [preflight receipt](numeric-validation-review-preflight.json).
 - [Current report](numeric-current-repair.md), [independent review](numeric-current-review.md), [current patch](numeric-export-current.patch), [custody manifest](validation-manifest.json).
 - Fixes both fresh certification and reuse of already certified float artifacts. The latter was independently reproduced before repair; safe reuse remains tested.
 - 233 library, 12 CLI and 16 repository-conformance tests passed in the cached diagnostic SDK. All six universal policy-file hashes match; no locks or acceptance gates changed.
 - [Manual GitHub validation](../NUMERIC-VALIDATION-WORKFLOW.md) compares baseline and candidate using upstream's full unchanged `just vv` in exact SDK `c1bfe8d5…`, then runs a separate primitive export/native/Wasm probe. [Workflow results](https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/numeric-export-validation.yml) supply the remote acceptance verdict; it was pending when this candidate was recorded.
 
-The current report retains the scratch filenames for provenance. Its `numeric-current-repair.patch` is published here as `numeric-export-current.patch`, with identical SHA-256 `135bc1e6c6bc2f8aebf169c3c3fcff729a268862e548d368c8e0b1867eb4fa40`.
+The initial report/review retain their original candidate identities. Their patch is archived as [numeric-export-before-register.patch](numeric-export-before-register.patch), SHA-256 `135bc1e6c6bc2f8aebf169c3c3fcff729a268862e548d368c8e0b1867eb4fa40`. The current two-commit patch has SHA-256 `05a866911f5c6386ccf6665cb178471e039cae6a2da1b84a27033491affa33e3`.
+
+[First exact-SDK run](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445): unchanged baseline passed full `just vv`; candidate passed its 233 library/12 CLI tests but failed stale generated `frontier.toml`. The [generated-register repair](register-repair/register-repair.md) changes five generated lines, preserving all 1,488 classifications and 341 lifted rows. The exact failed UE-16 test passes locally; a cached-SDK self-model diagnostic still rejects that different toolchain. [Independent addendum](register-repair/numeric-current-review-addendum.md) approves the revised patch/tree for another full exact-SDK run. No gate or lock was changed; candidate release acceptance is still pending.
 
 ## Historical reproduction
 

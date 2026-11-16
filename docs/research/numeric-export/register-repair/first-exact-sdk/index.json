@@ -1,0 +1,21 @@
+{
+  "run": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445",
+  "artifacts": [
+    {
+      "mode": "baseline",
+      "artifact_id": 14254952619,
+      "archive_sha256": "47ceca49cd29eac9d04c5a3531620f7d2bee76818b3d9005a7b2b095cebec1c7",
+      "receipt_sha256": "21df02d960ef79627ad6c83354953b8edfb0a7bf82231d1db3f1aff88bedf460",
+      "full_gate_passed": true,
+      "exit_code": 0
+    },
+    {
+      "mode": "patched",
+      "artifact_id": 14253197432,
+      "archive_sha256": "c412196a2431ea75e56ef8d89e49d553d5e977990f17dad59dfb1c31aa6de01b",
+      "receipt_sha256": "4517e9a0c0cb97cb41ead0d452ed366c8e14294685d1048c7df5ca40d0c863b5",
+      "full_gate_passed": false,
+      "exit_code": 101
+    }
+  ]
+}
