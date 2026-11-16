@@ -1,0 +1,696 @@
+diff --git a/justfile b/justfile
+index 21e5ebe9466bbaea054777d2d5f7b475f4efa72c..2d0aa2b7d0b19d74bfc468a9e74a0837aaed41ba 100644
+--- a/justfile
++++ b/justfile
+@@ -3,7 +3,11 @@ default:
+     @just --list
+ 
+ # Complete clean-checkout CI contract.
+-ci: fixture-provenance prod fmt-check lint wasm-check portable-package specialized-index scalar-length typed-decimal shared-decidable owned-accumulator core-wasm view text-view workspace-view wasm-sdk-fixture uor-fixture
++ci: fixture-provenance prod numeric-conversion fmt-check lint wasm-check portable-package specialized-index scalar-length typed-decimal shared-decidable owned-accumulator core-wasm view text-view workspace-view wasm-sdk-fixture uor-fixture
++
++# Canonical numeric helpers, checked dictionaries, and bounded first-order loops.
++numeric-conversion:
++    bash scripts/check-numeric-conversion.sh
+ 
+ # Move single-use owned record accumulators without changing public slice ABI.
+ owned-accumulator:
+diff --git a/lean/Conformance/NumericClosure.lean b/lean/Conformance/NumericClosure.lean
+new file mode 100644
+index 0000000000000000000000000000000000000000..c870ffff26f84eac2fde1a38e5cc8ce9677a5ae7
+--- /dev/null
++++ b/lean/Conformance/NumericClosure.lean
+@@ -0,0 +1,9 @@
++import Prod.Export
++import Conformance.NumericClosureFixture
++open Lean
++run_meta do
++  for root in [``NumericFixture.repeat4, ``NumericFixture.signedTwice] do
++    let result ← Prod.exportNames #[root] "NumericClosure"
++    unless (result.ir.splitOn "(extern ").length == 1 do
++      throwError "helper retained an unresolved external: {root}"
++  logInfo "ordinary helper and renamed signed helper exported"
+diff --git a/lean/Conformance/NumericClosureFixture.lean b/lean/Conformance/NumericClosureFixture.lean
+new file mode 100644
+index 0000000000000000000000000000000000000000..78837ec1e92a436975b6de68887ae9e116513578
+--- /dev/null
++++ b/lean/Conformance/NumericClosureFixture.lean
+@@ -0,0 +1,77 @@
++import Conformance.LexLeanPortable
++
++/-! Compiler-owned probes; not replacements for generated application modules. -/
++namespace NumericRenamed
++open SemanticFixture.Portable.LexLeanRuntime
++-- Outside the roots' namespace and deliberately unrelated to instance spelling.
++def sourceDictionary : ToMathInt UInt32 := inferInstance
++def targetDictionary : Fixed UInt64 := inferInstance
++end NumericRenamed
++
++namespace NumericFixture
++open SemanticFixture.Portable
++
++def step (x : UInt32) : Option UInt32 := LexLeanRuntime.checkedAdd x 1
++
++def repeat4 (x : UInt32) : Option UInt32 := do
++  let a ← step x
++  let b ← step a
++  let c ← step b
++  step c
++
++def signedStep (x : Int16) : Option Int16 := LexLeanRuntime.checkedAdd x 1
++
++def signedTwice (x : Int16) : Option Int16 := do
++  let a ← signedStep x
++  signedStep a
++
++def widen (x : UInt32) : Option UInt64 := LexLeanRuntime.checkedConvert x
++def unsignedSigned (x : UInt16) : Option Int64 := LexLeanRuntime.checkedConvert x
++def narrow (x : Int64) : Option Int16 := LexLeanRuntime.checkedConvert x
++def signedUnsigned (x : Int16) : Option UInt32 := LexLeanRuntime.checkedConvert x
++def wideSigned (x : UInt64) : Option Int64 := LexLeanRuntime.checkedConvert x
++def renamed (x : UInt32) : Option UInt64 :=
++  @LexLeanRuntime.checkedConvert UInt32 UInt64 NumericRenamed.sourceDictionary
++    NumericRenamed.targetDictionary x
++
++structure Counter where
++  value : UInt32
++  count : UInt32
++
++def countStep (delta : UInt32) (state : Option Counter) : Option Counter := do
++  let state ← state
++  let value ← LexLeanRuntime.checkedAdd state.value delta
++  let count ← LexLeanRuntime.checkedAdd state.count 1
++  pure ⟨value, count⟩
++
++def countedLoop : Nat → UInt32 → Option Counter → Option Counter
++  | 0, _, state => state
++  | n + 1, delta, state => countedLoop n delta (countStep delta state)
++
++def counted (fuel : Nat) (delta x : UInt32) : Option Counter :=
++  if fuel ≤ 128 then countedLoop fuel delta (some ⟨x, 0⟩) else none
++
++-- Four independent semantic mutations: nominal dictionary type alone is insufficient.
++def badSource : LexLeanRuntime.ToMathInt UInt32 where
++  toInt := fun x => Int.ofNat x.toNat + 1
++
++def badMinimum : LexLeanRuntime.Fixed UInt64 :=
++  { (inferInstance : LexLeanRuntime.Fixed UInt64) with minimum := 1 }
++def badMaximum : LexLeanRuntime.Fixed UInt64 :=
++  { (inferInstance : LexLeanRuntime.Fixed UInt64) with maximum := 100 }
++def badFromInt : LexLeanRuntime.Fixed UInt64 :=
++  { (inferInstance : LexLeanRuntime.Fixed UInt64) with fromInt := fun _ => 0 }
++
++def alteredSource (x : UInt32) : Option UInt64 :=
++  @LexLeanRuntime.checkedConvert UInt32 UInt64 badSource inferInstance x
++def alteredMinimum (x : UInt32) : Option UInt64 :=
++  @LexLeanRuntime.checkedConvert UInt32 UInt64 inferInstance badMinimum x
++def alteredMaximum (x : UInt32) : Option UInt64 :=
++  @LexLeanRuntime.checkedConvert UInt32 UInt64 inferInstance badMaximum x
++def alteredFromInt (x : UInt32) : Option UInt64 :=
++  @LexLeanRuntime.checkedConvert UInt32 UInt64 inferInstance badFromInt x
++
++-- A dictionary escaping conversion remains outside the first-order target subset.
++def liveDictionary (x : UInt32) : Option UInt64 × LexLeanRuntime.Fixed UInt64 :=
++  (LexLeanRuntime.checkedConvert x, inferInstance)
++end NumericFixture
+diff --git a/lean/Conformance/NumericConversion.lean b/lean/Conformance/NumericConversion.lean
+new file mode 100644
+index 0000000000000000000000000000000000000000..edcd2b23719c375a090b4a9edc59bc1c4f629e55
+--- /dev/null
++++ b/lean/Conformance/NumericConversion.lean
+@@ -0,0 +1,76 @@
++import Prod.Export
++import Conformance.NumericClosureFixture
++
++open Lean Compiler LCNF
++
++private partial def changeConversion (code : Code .pure) (wrongResult : Bool)
++    : Code .pure :=
++  match code with
++  | .let decl rest =>
++    let decl := match decl.value with
++      | .const name _ _ =>
++        if Prod.isLexLeanRuntimeName name && Prod.lastComponent name == "checkedConvert" && wrongResult
++        then { decl with type := mkApp (mkConst ``Option [levelZero]) (mkConst ``UInt8) }
++        else decl
++      | _ => decl
++    .let decl (changeConversion rest wrongResult)
++  | _ => code
++
++run_meta do
++  let roots := #[``NumericFixture.counted, ``NumericFixture.narrow, ``NumericFixture.renamed,
++    ``NumericFixture.repeat4, ``NumericFixture.signedTwice, ``NumericFixture.signedUnsigned,
++    ``NumericFixture.unsignedSigned, ``NumericFixture.wideSigned, ``NumericFixture.widen]
++  let exported ← Prod.exportNames roots "Numeric"
++  for marker in ["(unsupported ", "(extern ", "(opaque ", "(type \"SemanticFixture.Portable.LexLeanRuntime.Fixed\""] do
++    unless (exported.ir.splitOn marker).length == 1 do
++      throwError "canonical numeric export retained {marker}"
++  IO.FS.createDirAll "../output/numeric"
++  IO.FS.writeFile "../output/numeric/kernel.ir" exported.ir
++  IO.FS.writeFile "../output/numeric/coverage.json" exported.coverage
++  IO.FS.writeFile "../output/numeric/roots.json" exported.roots
++  for root in [``NumericFixture.alteredSource, ``NumericFixture.alteredMinimum,
++      ``NumericFixture.alteredMaximum, ``NumericFixture.alteredFromInt] do
++    let rejected ← try
++      let _ ← Prod.exportNames #[root] "Rejected"
++      pure false
++    catch error =>
++      let message ← error.toMessageData.toString
++      unless (message.splitOn "noncanonical checkedConvert").length > 1 do
++        throwError "wrong rejection for {root}: {message}"
++      pure true
++    unless rejected do throwError "altered conversion admitted: {root}"
++  let live ← Prod.exportNames #[``NumericFixture.liveDictionary] "LiveDictionary"
++  unless (live.ir.splitOn "(unsupported ").length > 1 &&
++      (live.coverage.splitOn "Fixed").length > 1 do
++    throwError "live generic dictionary was silently erased or omitted from coverage"
++  IO.FS.writeFile "../output/numeric/live-dictionary.ir" live.ir
++  let extracted ← Prod.extractNames #[``NumericFixture.widen]
++  let some decl := extracted[0]!.decl? | throwError "missing widen declaration"
++  let .code code := decl.value | throwError "missing widen code"
++  for wrongResult in [false, true] do
++    let mutant := if wrongResult then
++      { decl with value := .code (changeConversion code true) }
++    else
++      { decl with params := decl.params.map fun p => { p with type := mkConst ``UInt8 } }
++    let rejected ← try
++      let _ ← Prod.normalizeConversions mutant
++      pure false
++    catch error =>
++      let message ← error.toMessageData.toString
++      unless (message.splitOn "operand/result type mismatch").length > 1 do
++        throwError "wrong typed rejection: {message}"
++      pure true
++    unless rejected do throwError "mistyped conversion admitted"
++  -- Test the normalization pass, not Lean simplifier DCE: insert a real unused
++  -- bounded-target failure into already-extracted LCNF and lower through production.
++  let large : LetDecl .pure := ⟨⟨`large⟩, `large, mkConst ``Nat, .lit (.nat 18446744073709551615)⟩
++  let one : LetDecl .pure := ⟨⟨`one⟩, `one, mkConst ``Nat, .lit (.nat 1)⟩
++  let failure : LetDecl .pure := ⟨⟨`unusedFailure⟩, `unusedFailure, mkConst ``Nat,
++    .const ``Nat.add [] #[.fvar large.fvarId, .fvar one.fvarId]⟩
++  let failing := { decl with name := `NumericFixture.unusedFailure,
++    value := .code (.let large (.let one (.let failure code))) }
++  let (ir, _, _) ← Prod.emitKernelIr { tagged := #[failing.name] } "UnusedFailure"
++    #[{ name := failing.name, decl? := some failing, skipReason := "" }]
++  unless (ir.splitOn "(add ").length > 1 do throwError "unused failing computation erased"
++  IO.FS.writeFile "../output/numeric/unused-failure.ir" ir
++  logInfo "numeric conversions: canonical, renamed, four semantic and two type refusals, live residue, and failing unused operation"
+diff --git a/lean/Prod/Conversion.lean b/lean/Prod/Conversion.lean
+new file mode 100644
+index 0000000000000000000000000000000000000000..4127d1ccb4eea150781fcd9a21fdfe5cebd39b00
+--- /dev/null
++++ b/lean/Prod/Conversion.lean
+@@ -0,0 +1,179 @@
++import Prod.Lower
++import Lean.Compiler.LCNF.FVarUtil
++
++/-! Normalize only canonical, closed checked-conversion dictionaries. This pass
++runs before type discovery and lowering, which must see exactly the same graph.
++It is not general dead-code elimination or runtime dictionary support. -/
++open Lean Compiler LCNF
++namespace Prod
++
++private abbrev Values := Std.HashMap Name Expr
++private abbrev Types := Std.HashMap Name Expr
++private abbrev Consumed := Std.HashSet Name
++private abbrev ConvertM := StateT Consumed CoreM
++
++private def fixedBounds (name : Name) : Option (Int × Int) :=
++  if name == ``UInt8 then some (0, 255)
++  else if name == ``UInt16 then some (0, 65535)
++  else if name == ``UInt32 then some (0, 4294967295)
++  else if name == ``UInt64 then some (0, 18446744073709551615)
++  else if name == ``Int8 then some (-128, 127)
++  else if name == ``Int16 then some (-32768, 32767)
++  else if name == ``Int32 then some (-2147483648, 2147483647)
++  else if name == ``Int64 then some (-9223372036854775808, 9223372036854775807)
++  else none
++
++private def canonicalToInt (name : Name) : Option Expr :=
++  if name == ``Int then
++    some (.lam `value (mkConst ``Int) (.bvar 0) .default)
++  else if [``Int8, ``Int16, ``Int32, ``Int64].contains name then
++    some (mkConst (name ++ `toInt))
++  else if [``UInt8, ``UInt16, ``UInt32, ``UInt64].contains name then
++    some (.lam `value (mkConst name)
++      (mkApp (mkConst ``Int.ofNat) (mkApp (mkConst (name ++ `toNat)) (.bvar 0))) .default)
++  else none
++
++/-- Only reconstruct closed total kernel terms. Unknown arguments stay unknown,
++    and thus cannot authorize removal of a live dictionary graph. -/
++private def closedValue? (values : Values) (value : LetValue .pure) : CoreM (Option Expr) := do
++  match value with
++  | .const name levels args =>
++    let some info := (← getEnv).find? name | return none
++    if info.isPartial then return none
++    match info with
++    | .defnInfo defn =>
++      match defn.safety with
++      | .safe => pure ()
++      | _ => return none
++    | .ctorInfo _ => pure ()
++    | _ => return none
++    let mut term := mkConst name levels
++    for arg in args do
++      match arg with
++      | .type type =>
++        if type.hasFVar || type.hasLooseBVars || type.hasMVar then return none
++        term := mkApp term type
++      | .fvar id =>
++        let some arg := values[id.name]? | return none
++        term := mkApp term arg
++      | .erased => return none
++    return some term
++  | .proj name index id =>
++    return (values[id.name]?).map (Expr.proj name index)
++  | _ => return none
++
++private def typeArgument (dictionary : Expr) (classPart : String) : MetaM (Name × Expr) := do
++  let type ← Meta.whnf (← Meta.inferType dictionary)
++  let .app (.const className _) argument := type
++    | throwError "noncanonical checkedConvert dictionary type"
++  unless isLexLeanRuntimeName className && lastComponent className == classPart do
++    throwError "noncanonical checkedConvert dictionary class"
++  return (className, argument)
++
++private def validateConversion (source target operand result : Expr) : CoreM Unit :=
++  Meta.MetaM.run' do
++    let (sourceClass, sourceType) ← typeArgument source "ToMathInt"
++    let (targetClass, targetType) ← typeArgument target "Fixed"
++    let .const sourceName _ := sourceType
++      | throwError "noncanonical checkedConvert source type"
++    let .const targetName _ := targetType
++      | throwError "noncanonical checkedConvert target type"
++    let some interpretation := canonicalToInt sourceName
++      | throwError "noncanonical checkedConvert source interpretation"
++    let some (minimum, maximum) := fixedBounds targetName
++      | throwError "noncanonical checkedConvert target bounds"
++    unless (← Meta.isDefEq operand sourceType) &&
++        (← Meta.isDefEq result (mkApp (mkConst ``Option [levelZero]) targetType)) do
++      throwError "checkedConvert operand/result type mismatch"
++    -- Infer/check every reconstructed term before trusting projection reduction.
++    let _ ← Meta.check source
++    let _ ← Meta.check target
++    let checks := #[(Expr.proj sourceClass 0 source, interpretation),
++      (Expr.proj targetClass 1 target, mkConst (targetName ++ `ofInt)),
++      (Expr.proj targetClass 2 target, toExpr minimum),
++      (Expr.proj targetClass 3 target, toExpr maximum)]
++    for (actual, expected) in checks do
++      unless (← Meta.isDefEq actual expected) do
++        throwError "noncanonical checkedConvert dictionary semantics"
++
++private def addParams (types : Types) (params : Array (Param .pure)) : Types :=
++  params.foldl (fun types param => types.insert param.fvarId.name param.type) types
++
++private partial def normalizeCode (values : Values) (types : Types)
++    (code : Code .pure) : ConvertM (Code .pure) := do
++  match code with
++  | .let decl rest =>
++    let mut value := decl.value
++    if let .const name levels args := value then
++      if isLexLeanRuntimeName name && lastComponent name == "checkedConvert" then
++        let #[sourceType, targetType, .fvar source, .fvar target, .fvar input] := args
++          | throwError "noncanonical checkedConvert argument shape"
++        unless (match sourceType with | .erased | .type _ => true | _ => false) &&
++            (match targetType with | .erased | .type _ => true | _ => false) do
++          throwError "noncanonical checkedConvert type arguments"
++        let some sourceExpr := values[source.name]?
++          | throwError "noncanonical checkedConvert open source dictionary"
++        let some targetExpr := values[target.name]?
++          | throwError "noncanonical checkedConvert open target dictionary"
++        let some operand := types[input.name]?
++          | throwError "checkedConvert operand/result type mismatch"
++        validateConversion sourceExpr targetExpr operand decl.type
++        modify fun consumed => (consumed.insert source.name).insert target.name
++        value := .const name levels #[.fvar input]
++    let resolved ← closedValue? values decl.value
++    let values := match resolved with
++      | some term => values.insert decl.fvarId.name term
++      | none => values
++    return .let { decl with value } (← normalizeCode values
++      (types.insert decl.fvarId.name decl.type) rest)
++  | .fun decl rest =>
++    let types := types.insert decl.fvarId.name decl.type
++    let body ← normalizeCode values (addParams types decl.params) decl.value
++    return .fun (.mk decl.fvarId decl.binderName decl.params decl.type body)
++      (← normalizeCode values types rest)
++  | .jp decl rest =>
++    let body ← normalizeCode values (addParams types decl.params) decl.value
++    return .jp (.mk decl.fvarId decl.binderName decl.params decl.type body)
++      (← normalizeCode values types rest)
++  | .cases cases =>
++    let alts ← cases.alts.mapM fun alt => do
++      match alt with
++      | .alt name params body =>
++        return .alt name params (← normalizeCode values (addParams types params) body)
++      | .default body => return .default (← normalizeCode values types body)
++    return .cases (cases.updateAlts alts)
++  | _ => return code
++
++/-- Backward liveness deletes only previously validated closed dictionary lets.
++    Any other use retains the graph, including unsupported generic residue. -/
++private partial def pruneConsumed (code : Code .pure) : StateM Consumed (Code .pure) := do
++  match code with
++  | .let decl rest =>
++    let rest ← pruneConsumed rest
++    if (← get).contains decl.fvarId.name && !(anyFVar (· == decl.fvarId) rest) then
++      TraverseFVar.forFVarM (fun id => modify (·.insert id.name)) decl.value
++      return rest
++    return .let decl rest
++  | .fun decl rest =>
++    let rest ← pruneConsumed rest
++    let body ← pruneConsumed decl.value
++    return .fun (.mk decl.fvarId decl.binderName decl.params decl.type body) rest
++  | .jp decl rest =>
++    let rest ← pruneConsumed rest
++    let body ← pruneConsumed decl.value
++    return .jp (.mk decl.fvarId decl.binderName decl.params decl.type body) rest
++  | .cases cases =>
++    let alts ← cases.alts.mapM fun alt => do
++      match alt with
++      | .alt name params body => return .alt name params (← pruneConsumed body)
++      | .default body => return .default (← pruneConsumed body)
++    return .cases (cases.updateAlts alts)
++  | _ => return code
++
++def normalizeConversions (decl : Decl .pure) : CoreM (Decl .pure) := do
++  let .code code := decl.value | return decl
++  let (code, consumed) ← (normalizeCode {} (addParams {} decl.params) code).run {}
++  let (code, _) := (pruneConsumed code).run consumed
++  return { decl with value := .code code }
++
++end Prod
+diff --git a/lean/Prod/Emit.lean b/lean/Prod/Emit.lean
+index 7a01a3cbf27cd0d49826182ede5a526665d06f25..59bfd56a04408dd54cd322c49d30782d24537c36 100644
+--- a/lean/Prod/Emit.lean
++++ b/lean/Prod/Emit.lean
+@@ -84,7 +84,7 @@ def runExport : CoreM (String × String × String × String) := do
+   let env ← getEnv
+   let confCtx : LowerCtx := { tagged := (taggedNames env conformanceModule).toArray }
+   let confExtracted ← extractTagged conformanceModule
+-  let (confIr, _) ← emitKernelIr confCtx conformanceIrModule confExtracted
++  let (confIr, _, _) ← emitKernelIr confCtx conformanceIrModule confExtracted
+   return (exported.ir, exported.roots, exported.coverage, confIr)
+ 
+ /-- `runExport` with exceptions rendered to strings (while CoreM context for
+diff --git a/lean/Prod/Export.lean b/lean/Prod/Export.lean
+index 30647ad03a6092a683e1a97ed26b1a0a0c0cbcd7..810b17a534e5642e3527ccab2f96433001a9f1ca 100644
+--- a/lean/Prod/Export.lean
++++ b/lean/Prod/Export.lean
+@@ -1,3 +1,4 @@
++import Prod.Conversion
+ import Prod.Extract
+ import Prod.Lower
+ import Prod.Roots
+@@ -56,7 +57,12 @@ def collectTypeDecls (ctx : LowerCtx) (extracted : Array ExtractedDef)
+ 
+ /-- Assemble one complete IR module and its per-definition coverage reports. -/
+ def emitKernelIr (ctx : LowerCtx) (irModule : String) (extracted : Array ExtractedDef)
+-    : CoreM (String × Array DefReport) := do
++    : CoreM (String × Array DefReport × Array String) := do
++  -- Discovery and lowering consume one normalized graph, never divergent views.
++  let extracted ← extracted.mapM fun ed => do
++    match ed.decl? with
++    | some decl => return { ed with decl? := some (← normalizeConversions decl) }
++    | none => return ed
+   let mut ir := s!";; Generated by prod-export: LCNF → sexp IR.\n(module {irModule}\n"
+   let typeDecls ← collectTypeDecls ctx extracted
+   for decl in typeDecls do
+@@ -72,7 +78,8 @@ def emitKernelIr (ctx : LowerCtx) (irModule : String) (extracted : Array Extract
+         { name := ed.name, lowered := true, opaques := st.opaques, externs := st.externs }
+     | none =>
+       reports := reports.push { name := ed.name, lowered := false, skipReason := ed.skipReason }
+-  return (ir ++ ")\n", reports)
++  let unsupported := typeDecls.filter fun decl => (decl.splitOn "(unsupported ").length > 1
++  return (ir ++ ")\n", reports, unsupported)
+ 
+ /-- Export all `@[prod]` declarations owned by `moduleRoot` from an already
+     imported environment.  External packages normally call this after
+@@ -81,7 +88,7 @@ def exportModule (moduleRoot : Name) (irModule : String) : CoreM ModuleExport :=
+   let env ← getEnv
+   let ctx : LowerCtx := { tagged := (taggedNames env moduleRoot).toArray }
+   let extracted ← extractTagged moduleRoot
+-  let (ir, reports) ← emitKernelIr ctx irModule extracted
++  let (ir, reports, _) ← emitKernelIr ctx irModule extracted
+   let own := ownConstants env moduleRoot
+   return {
+     ir
+@@ -237,7 +244,7 @@ def namedRootsJson (requested included erased : Array Name) : String :=
+ 
+ /-- Canonical machine-readable coverage for a successful named export. -/
+ def namedCoverageJson (requested included erased : Array Name)
+-    (reports : Array DefReport) : String :=
++    (reports : Array DefReport) (unsupported : Array String) : String :=
+   let opaqueNodes := reports.toList.flatMap fun report => report.opaques.toList
+   let external := reports.toList.flatMap fun report => report.externs.toList
+   "{\n  \"erased_proof_dependencies\": [" ++ nameArrayJson erased ++
+@@ -247,7 +254,9 @@ def namedCoverageJson (requested included erased : Array Name)
+   "],\n  \"opaque_nodes\": [" ++
+     String.intercalate "," (opaqueNodes.map fun row => s!"\"{jsonEscape row}\"") ++
+   "],\n  \"requested_roots\": [" ++ nameArrayJson requested ++
+-  "],\n  \"unsupported_types\": []\n}\n"
++  "],\n  \"unsupported_types\": [" ++
++    String.intercalate "," (unsupported.toList.map fun row => s!"\"{jsonEscape row}\"") ++
++  "]\n}\n"
+ 
+ /-- Export exact named roots and their deterministic transitive compilation
+     closure from an already imported environment. No `@[prod]` attribute is
+@@ -257,7 +266,7 @@ def exportNames (roots : Array Name) (irModule : String) : CoreM ModuleExport :=
+   let (included, erased) ← namedClosure roots
+   let extracted ← extractNames included
+   let ctx : LowerCtx := { tagged := included }
+-  let (ir, reports) ← emitKernelIr ctx irModule extracted
++  let (ir, reports, unsupported) ← emitKernelIr ctx irModule extracted
+   for report in reports do
+     if !report.opaques.isEmpty then
+       throwError "exportNames: opaque lowering in {report.name}: {report.opaques}"
+@@ -268,7 +277,7 @@ def exportNames (roots : Array Name) (irModule : String) : CoreM ModuleExport :=
+   return {
+     ir
+     roots := namedRootsJson roots included erased
+-    coverage := namedCoverageJson roots included erased reports
++    coverage := namedCoverageJson roots included erased reports unsupported
+   }
+ 
+ end Prod
+diff --git a/lean/Prod/Extract.lean b/lean/Prod/Extract.lean
+index 2fd3a730769e97744d7dddf50b19fc75e59e589c..27ee5b9f6d747a2ea666dd60ce08bd6be6a86193 100644
+--- a/lean/Prod/Extract.lean
++++ b/lean/Prod/Extract.lean
+@@ -61,7 +61,8 @@ def extractNames (names : Array Name) : CoreM (Array ExtractedDef) := do
+       throwError "extractNames: declaration {name} has no value"
+     if !(← shouldGenerateCode name) then
+       throwError "extractNames: declaration {name} does not generate code"
+-    let decl ← CompilerM.run do
++    -- Keep ordinary helpers first-order without disabling explicit Option.bind inlining.
++    let decl ← withOptions (·.set `compiler.small (0 : Nat)) <| CompilerM.run do
+       let d ← toDecl name
+       d.simp {}
+     out := out.push { name, decl? := some decl, skipReason := "" }
+diff --git a/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs b/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..a0fb2f0324dd80f9f6a60cb5da05a045c24abc03
+--- /dev/null
++++ b/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs
+@@ -0,0 +1,47 @@
++// Compiler-owned replay oracle. Implementations are generated from Lean LCNF.
++#[path = "compute-error.rs"]
++mod compute_error;
++pub use compute_error::ComputeError;
++include!("numeric-generated.rs");
++mod unused {
++    include!("failure-generated.rs");
++}
++
++#[unsafe(no_mangle)]
++pub extern "C" fn numeric_check() -> u32 {
++    for x in [0, 1, u32::MAX - 4, u32::MAX - 3, u32::MAX] {
++        assert_eq!(repeat4(x), x.checked_add(4));
++        assert_eq!(widen(x), Some(u64::from(x)));
++        assert_eq!(renamed(x), Some(u64::from(x)));
++    }
++    for x in [i16::MIN, -1, 0, 1, i16::MAX - 2, i16::MAX - 1, i16::MAX] {
++        assert_eq!(signedTwice(x), x.checked_add(2));
++        assert_eq!(signedUnsigned(x), u32::try_from(x).ok());
++    }
++    for x in [i64::MIN, -32769, -32768, -1, 0, 32767, 32768, i64::MAX] {
++        assert_eq!(narrow(x), i16::try_from(x).ok());
++    }
++    for x in [0, 1, u16::MAX] {
++        assert_eq!(unsignedSigned(x), Some(i64::from(x)));
++    }
++    for x in [0, 1, i64::MAX as u64, (i64::MAX as u64) + 1, u64::MAX] {
++        assert_eq!(wideSigned(x), i64::try_from(x).ok());
++    }
++    for fuel in [0, 1, 4, 127, 128] {
++        for delta in [0, 1, 3] {
++            let result = counted(fuel, delta, 7).unwrap();
++            assert_eq!(result.value, 7 + (fuel as u32) * delta);
++            assert_eq!(result.count, fuel as u32);
++        }
++    }
++    assert!(counted(129, 1, 0).is_none());
++    assert!(counted(1, 1, u32::MAX).is_none());
++    assert_eq!(counted(0, 1, u32::MAX).unwrap().value, u32::MAX);
++    assert_eq!(unused::unusedFailure(0), Err(ComputeError::AddOverflow));
++    0
++}
++
++#[cfg(not(target_arch = "wasm32"))]
++fn main() {
++    assert_eq!(numeric_check(), 0);
++}
+diff --git a/scripts/check-numeric-conversion.sh b/scripts/check-numeric-conversion.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..a23383e4db295d6208775b6fef44c4ed6395bd06
+--- /dev/null
++++ b/scripts/check-numeric-conversion.sh
+@@ -0,0 +1,38 @@
++#!/usr/bin/env bash
++set -euo pipefail
++repo_root=$(cd "$(dirname "$0")/.." && pwd -P)
++# Keep generated IR/source/executables so CI can retain real evidence on failure.
++output="$repo_root/output/numeric"
++mkdir -p "$output"
++cd "$repo_root/lean"
++lake build Conformance.NumericClosureFixture ProdLib
++lake env lean Conformance/NumericClosure.lean
++lake env lean Conformance/NumericConversion.lean
++cd "$repo_root/rust"
++RUSTC_WRAPPER= cargo run --locked --offline -p prod-cli -- gen \
++  "$output/kernel.ir" --output "$output/numeric-generated.rs"
++RUSTC_WRAPPER= cargo run --locked --offline -p prod-cli -- gen \
++  "$output/unused-failure.ir" --output "$output/failure-generated.rs"
++if RUSTC_WRAPPER= cargo run --locked --offline -p prod-cli -- gen \
++    "$output/live-dictionary.ir" --output "$output/forbidden.rs" >"$output/live-dictionary-rejection.log" 2>&1; then
++  echo 'live generic dictionary unexpectedly admitted by codegen' >&2
++  exit 1
++fi
++grep -E 'PolymorphicType|polymorphic|unsupported' "$output/live-dictionary-rejection.log"
++cp "$repo_root/rust/prod-core/src/error.rs" "$output/compute-error.rs"
++cp "$repo_root/rust/prod-codegen/tests/fixtures/numeric_generated_test.rs" "$output/replay.rs"
++for optimization in 0 2; do
++  rustc --edition=2024 -C "opt-level=$optimization" "$output/replay.rs" -o "$output/replay-$optimization"
++  "$output/replay-$optimization"
++  rustc --edition=2024 -C "opt-level=$optimization" --target wasm32-unknown-unknown \
++    --crate-type cdylib "$output/replay.rs" -o "$output/replay-$optimization.wasm"
++  node --input-type=module - "$output/replay-$optimization.wasm" <<'JS'
++import fs from 'node:fs';
++import assert from 'node:assert/strict';
++const module = await WebAssembly.compile(fs.readFileSync(process.argv[2]));
++assert.deepEqual(WebAssembly.Module.imports(module), []);
++const instance = await WebAssembly.instantiate(module, {});
++assert.equal(instance.exports.numeric_check(), 0);
++JS
++done
++echo 'numeric helper/conversion refusals and generated native/import-free Wasm replay passed'
+diff --git a/scripts/check-numeric-source-stage.sh b/scripts/check-numeric-source-stage.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..6b1ed84fcf220c498768f8425528e30722fbd978
+--- /dev/null
++++ b/scripts/check-numeric-source-stage.sh
+@@ -0,0 +1,48 @@
++#!/usr/bin/env bash
++# Run inside the pinned SDK. No downloads, pin overrides, skip-to-success, or golden edits.
++set -uo pipefail
++export CARGO_NET_OFFLINE=true
++repo_root=$(cd "$(dirname "$0")/.." && pwd -P)
++logs=${1:-"$repo_root/output/numeric-source-stage"}
++mkdir -p "$logs"
++logs=$(cd "$logs" && pwd -P)
++cd "$repo_root"
++status=0
++: > "$logs/status.tsv"
++run_gate() {
++  local label=$1
++  shift
++  printf '%q ' "$@" > "$logs/$label.command"
++  printf '\n' >> "$logs/$label.command"
++  "$@" > "$logs/$label.log" 2>&1
++  local result=$?
++  printf '%s\t%s\n' "$label" "$result" | tee -a "$logs/status.tsv"
++  if [ "$result" -ne 0 ]; then status=1; fi
++}
++run_gate identity bash -c 'set -euo pipefail; git rev-parse HEAD; git diff --binary; lean --version; lake --version; rustc -vV; cargo -V; node --version'
++run_gate focused bash scripts/check-numeric-conversion.sh
++run_gate named-fixture-candidate bash scripts/regenerate-numeric-named-fixture.sh
++run_gate lean-fixtures bash -c 'cd lean && lake build ProofFixtures PrismPMGeneratedFixture'
++run_gate default-export bash -c 'cd lean && lake exe prod-export'
++run_gate default-golden git diff --exit-code -- lean/Conformance/golden.ir
++run_gate subset bash -c 'cd rust && cargo run --locked --offline -p prod-cli -- subset ../subset.json --output ../specs/lean-for-production.md'
++run_gate subset-golden git diff --exit-code -- specs/lean-for-production.md
++run_gate roots bash -c 'cd rust && cargo run --locked --offline -p prod-cli -- roots check ../roots.json'
++for gate in generated-fixtures named-export portable-package specialized-index scalar-length typed-decimal shared-decidable owned-accumulator; do
++  run_gate "$gate" bash "scripts/check-$gate.sh"
++done
++run_gate accumulator-provenance node scripts/check-owned-accumulator-provenance.mjs
++run_gate workspace bash -c 'cd rust && cargo test --locked --offline --workspace --no-fail-fast'
++run_gate assertions bash -c 'cd rust && cargo test --locked --offline --workspace --profile release-assertions --no-fail-fast'
++run_gate no-alloc bash -c 'cd rust && cargo test --locked --offline -p prod-core --test no_alloc -- --test-threads=1'
++run_gate fmt bash -c 'cd rust && cargo fmt --all -- --check'
++run_gate clippy bash -c 'cd rust && cargo clippy --locked --offline --all-targets -- -D warnings'
++run_gate wasm bash -c 'cd rust && cargo build --locked --offline -p prod-ir -p prod-codegen -p prod-wasm --target wasm32-unknown-unknown'
++for gate in core-wasm view text-view workspace-view; do
++  run_gate "$gate" bash "scripts/check-$gate.sh"
++done
++# Exact existing integration recipes; failure stays a failure if SDK tools are absent.
++run_gate wasm-sdk-fixture just wasm-sdk-fixture
++run_gate uor-fixture just uor-fixture
++run_gate whitespace git diff --check
++exit "$status"
+diff --git a/scripts/regenerate-numeric-named-fixture.sh b/scripts/regenerate-numeric-named-fixture.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..a5bc2c4f33910c0fe90aebd21c0904862ee0b3cd
+--- /dev/null
++++ b/scripts/regenerate-numeric-named-fixture.sh
+@@ -0,0 +1,12 @@
++#!/usr/bin/env bash
++# Generate review candidates in output/, never silently bless committed expectations.
++set -euo pipefail
++repo_root=$(cd "$(dirname "$0")/.." && pwd -P)
++output="$repo_root/output/numeric-named-fixture"
++cd "$repo_root/lean"
++lake build Conformance.LexLean11
++lake exe prod-export --module Conformance.LexLean11 \
++  --root SemanticFixture.Main.allConsecutive --ir-module SemanticFixture --out "$output"
++cd "$repo_root/rust"
++RUSTC_WRAPPER= cargo run --locked --offline -p prod-cli -- gen \
++  "$output/kernel.ir" --output "$output/generated.rs"
+diff --git a/specs/designs/numeric-conversion-normalization.md b/specs/designs/numeric-conversion-normalization.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..fccc170311401a572967468432699528380b5a1f
+--- /dev/null
++++ b/specs/designs/numeric-conversion-normalization.md
+@@ -0,0 +1,32 @@
++# Canonical checked conversion normalization
++
++Named extraction disables only the pinned compiler's opportunistic small-body
++inlining. Explicit inlining remains enabled, including Option.bind. This keeps
++ordinary named helper closures in the established first-order subset; it does
++not recognize specialized names or admit runtime closures.
++
++Before type discovery and lowering, a single pass reconstructs closed, safe,
++total dictionary constants/projections used by checkedConvert. It checks their
++kernel types and definitionally compares source integer interpretation and the
++target minimum, maximum, and fromInt to the built-in scalar operations/ranges.
++It independently checks the actual operand and Option result types. Dictionary
++spelling is irrelevant. Open, altered, ill-typed, unsafe, or partial inputs are
++refused. A validated conversion retains only its scalar operand in LCNF; the
++existing typed checked-convert IR operation enforces target bounds.
++
++Backward liveness removes only the validated dictionary graph consumed by those
++calls and unused elsewhere. It retains other uses and unsupported generic type
++declarations. It must not perform generic dead-code elimination: a separately
++inserted unused bounded-Nat addition overflow is replayed as AddOverflow in
++native and Wasm generated code. Type discovery and body lowering receive the
++same normalized declaration, and coverage reports retained unsupported types.
++
++This is a local semantic argument about recognized closed dictionary fields,
++not a mechanized universal compiler-equivalence theorem or proof that entire
++numeric roots cannot fail. Existing generic Int/closure/array refusals and UOR
++guards remain in place. Compiler-owned fixtures are test inputs, not substituted
++application Lean or handwritten target implementations.
++
++The reconstructed candidate requires fresh pinned-SDK compilation, regression
++results, and independent review. See scripts/check-numeric-source-stage.sh for
++the full source-stage command contract; every failed gate remains recorded.
