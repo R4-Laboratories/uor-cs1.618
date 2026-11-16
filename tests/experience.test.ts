@@ -39,7 +39,9 @@ test('sound profiles distinguish weapons, lower occluded frequencies and bound r
 import {measureExperience,mixedDifference} from '../scripts/evolution/measure-experience';
 import {chooseCandidates,evaluateEvidence} from '../scripts/evolution/policy';
 import {hash} from '../scripts/evolution/measure';
-import state from '../model/evolution/state.json';
+import currentState from '../model/evolution/state.json';
+// The gate must remain valid after any admitted experience configuration.
+const state={...currentState,config:{...currentState.config,experience:DEFAULT_EXPERIENCE}};
 import policy from '../model/evolution/policy.json';
 test('free experience synthesis emits measured candidates, detects interactions and settles',async()=>{
  const candidates=chooseCandidates(state as any,policy,'new','experience');assert(candidates.length>0);

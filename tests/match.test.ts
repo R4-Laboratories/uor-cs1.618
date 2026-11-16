@@ -1,3 +1,4 @@
+import {RULES as R} from '../shared/config';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {Match} from '../server/match';
@@ -27,4 +28,8 @@ test('CS-02 burst recovery resets the authoritative pattern and swapping clears 
  m.fire(a);assert.equal(a.burst,1);a.cooldown=0;m.fire(a);assert.equal(a.burst,2);assert(a.recoil>0);
  for(let i=1;i<=35;i++){m.input('a',{...neutralInput(),seq:i,slot:0});m.step(1/60);}assert.equal(a.burst,0);assert.equal(a.recoil,0);
  a.cooldown=0;m.fire(a);assert.equal(a.burst,1);m.input('a',{...neutralInput(),seq:36,slot:1});m.step(1/60);assert.equal(a.burst,0);assert.equal(a.recoil,0);
+});
+test('CS-02 buying a replacement weapon resets its first shot during the live buy window',()=>{
+ const m=setup();m.phase='live';m.phaseLeft=R.roundSeconds;const p=m.players.get('a')!;p.money=10000;
+ m.fire(p);assert.equal(p.burst,1);assert.equal(m.buy('a','kestrel'),null);assert.equal(p.burst,0);assert.equal(p.recoil,0);assert(p.shotIdle>=1);
 });

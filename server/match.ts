@@ -77,7 +77,7 @@ export class Match {
   if((item==='kit'&&p.kit)||(item==='armor'&&p.armor===100)||(w&&p.inventory[0].id===item))return 'owned';
   if(p.money<price)return 'funds';
   p.money-=price;
-  if(w){p.inventory[0]=gun(item);p.slot=0;p.input.slot=0;p.reloadLeft=0;}
+  if(w){p.inventory[0]=gun(item);p.slot=0;p.input.slot=0;p.reloadLeft=0;p.burst=0;p.shotIdle=10;p.recoil=0;}
   else if(item==='armor')p.armor=100;else if(item==='kit')p.kit=true;else for(const g of p.inventory)g.reserve=WEAPONS[g.id].reserve;
   return null;
  }
