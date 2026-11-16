@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
-  "generation": 2,
-  "seed": 6209,
+  "generation": 3,
+  "seed": 11491,
   "config": {
     "render": {
       "cell": 16,
@@ -21,7 +21,112 @@
     },
     "tactics": {
       "version": 1,
-      "rules": [],
+      "rules": [
+        {
+          "when": {
+            "all": [
+              {
+                "fact": "canDefuse"
+              },
+              {
+                "fact": "urgent"
+              }
+            ]
+          },
+          "action": "interact"
+        },
+        {
+          "when": {
+            "all": [
+              {
+                "any": [
+                  {
+                    "fact": "canDefuse"
+                  },
+                  {
+                    "fact": "canPlant"
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "fact": "enemy"
+                }
+              }
+            ]
+          },
+          "action": "interact"
+        },
+        {
+          "when": {
+            "fact": "empty"
+          },
+          "action": "reload"
+        },
+        {
+          "when": {
+            "fact": "enemy"
+          },
+          "action": "engage"
+        },
+        {
+          "when": {
+            "all": [
+              {
+                "fact": "lowAmmo"
+              },
+              {
+                "not": {
+                  "fact": "enemy"
+                }
+              }
+            ]
+          },
+          "action": "reload"
+        },
+        {
+          "when": {
+            "fact": "planted"
+          },
+          "action": "advance"
+        },
+        {
+          "when": {
+            "all": [
+              {
+                "fact": "attacker"
+              },
+              {
+                "fact": "dropped"
+              }
+            ]
+          },
+          "action": "advance"
+        },
+        {
+          "when": {
+            "all": [
+              {
+                "fact": "attacker"
+              },
+              {
+                "not": {
+                  "fact": "carrier"
+                }
+              }
+            ]
+          },
+          "action": "escort"
+        },
+        {
+          "when": {
+            "not": {
+              "fact": "attacker"
+            }
+          },
+          "action": "guard"
+        }
+      ],
       "fallback": "advance"
     }
   },
@@ -29,13 +134,11 @@
     "render": 10,
     "navigation": 9,
     "art": 12,
-    "tactics": 12
+    "tactics": 14
   },
-  "context": "4dd7965793dbb04bf115e1ebc4477ee248c3261f7d2a6e2037cff303f21f9a39",
+  "context": "6afe9f7adc8132b3824d435a1f0354bce59207cdb6c5ed0a2e5301ded1ed61ae",
   "tried": [
-    "navigation-3",
-    "navigation-6",
-    "render-16-2"
+    "tactics-synth-0"
   ],
   "history": [
     {
@@ -225,6 +328,123 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "318e727e9b29e9dd9937fcf1ffc41bafad0eda3f805084e9a3b49ac3a105ba1b"
+    },
+    {
+      "generation": 3,
+      "author": {
+        "status": "unavailable",
+        "reason": "invalid-response-or-network"
+      },
+      "at": "2026-11-16T04:46:34.671Z",
+      "base": "9bc5bd5de5b40e1c79ad5daa818e032b7d6075d0",
+      "context": "6afe9f7adc8132b3824d435a1f0354bce59207cdb6c5ed0a2e5301ded1ed61ae",
+      "previous": "318e727e9b29e9dd9937fcf1ffc41bafad0eda3f805084e9a3b49ac3a105ba1b",
+      "result": "admitted",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-0",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "b2e3c732b17ac8ef4f1b5a924e194597840e2483252c819e107365344787c6f6",
+          "baselineWork": 145,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 24,
+            "holdoutErrors": 24,
+            "trainingFailed": [
+              0,
+              1,
+              5,
+              12,
+              13,
+              17,
+              24,
+              25,
+              29,
+              36,
+              37,
+              41,
+              48,
+              49,
+              53,
+              60,
+              61,
+              65,
+              72,
+              73,
+              77,
+              84,
+              85,
+              89
+            ],
+            "holdoutFailed": [
+              0,
+              1,
+              5,
+              12,
+              13,
+              17,
+              24,
+              25,
+              29,
+              36,
+              37,
+              41,
+              48,
+              49,
+              53,
+              60,
+              61,
+              65,
+              72,
+              73,
+              77,
+              84,
+              85,
+              89
+            ],
+            "completed": 0,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device detonated",
+              "Device detonated",
+              "Device detonated",
+              "Device detonated",
+              "Device detonated",
+              "Device detonated"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "92d2d9dabf89dc5c7a5d9ed645c084a3e4118ae38ecb90f36109921159d20bc0"
     }
   ]
 }
