@@ -44,3 +44,9 @@ The directly checked 288-state round behavior is useful evidence despite that op
 The first release has one original map, five weapons, 5v5 rooms, bot filling, round economy and plant/defuse gameplay. It omits grenades, hostage modes, voice, accounts, ranked matchmaking and lag-compensated rewind. Enemy positions are transmitted to clients, so it is not protected against wallhack clients. Sessions and scores are in memory.
 
 No public multiplayer load benchmark, hardware-GPU performance certification or mobile gameplay support is claimed. Headless browser checks ran using software rendering. The 0.1.0 release needed a long-running WebSocket server for online play. Release 0.2.0 also supports browser-hosted WebRTC rooms from GitHub Pages; dedicated hosting remains optional, as explained in [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## v0.3.0 bounded evolution
+
+The local preview tick at commit `13bb6c6142684e335ac551932bf87ed910e9bb3a` passed 37 tests, type checking/build, 41 artifact/source hashes, rendered gameplay and actual WebRTC browser gates. It admitted the navigation candidate in preview and restored the tracked source afterward. [Recorded evidence](evidence/evolution-local-preview.json). A separate read-only review found no blocking defects; it did not independently run tests.
+
+The evolution admission Wasm passed all 16 obligation combinations. A deliberately missing scenery instance fails the inventory equivalence assertion; invalid metrics, stale output hashes, racing main updates and deployment build failures have rejection tests. See [scope and operational documentation](SELF-IMPROVEMENT.md). Formal proof limitations above remain unchanged.

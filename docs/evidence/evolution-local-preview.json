@@ -1,0 +1,73 @@
+{
+  "schema": "cs1618/evolution-tick/1",
+  "base": "13bb6c6142684e335ac551932bf87ed910e9bb3a",
+  "context": "4dd7965793dbb04bf115e1ebc4477ee248c3261f7d2a6e2037cff303f21f9a39",
+  "started": "2026-11-16T03:51:18.873Z",
+  "apply": false,
+  "proposals": [
+    {
+      "candidate": {
+        "id": "navigation-3",
+        "family": "navigation",
+        "config": {
+          "render": {
+            "cell": 0,
+            "minimum": 2
+          },
+          "navigation": {
+            "cell": 3
+          }
+        }
+      },
+      "evidence": {
+        "family": "navigation",
+        "candidate": "navigation-3",
+        "configHash": "01357a8e90d1c404b667566988c8bb142291b41b046b33e8db656f49158eb77a",
+        "baselineWork": 101926,
+        "candidateWork": 2651,
+        "fidelity": true,
+        "samples": 480,
+        "checks": true,
+        "bounds": true,
+        "reference": {
+          "pairs": 101926,
+          "elapsed": 29.23985000000016,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        },
+        "before": {
+          "pairs": 101926,
+          "elapsed": 20.201037999999926,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        },
+        "after": {
+          "pairs": 2651,
+          "elapsed": 14.905138999999963,
+          "nodes": 452,
+          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+          "samples": 480
+        }
+      },
+      "eligible": true
+    }
+  ],
+  "changed": false,
+  "accepted": true,
+  "checks": true,
+  "outcome": "admitted",
+  "generation": 1,
+  "outputs": {
+    "model/evolution/state.json": "69bae1a3646d65528c979bd7a9d514067fa4ea96f14c42bae649bec610356cb0",
+    "src/generated/render-policy.ts": "24ccf897a7e5f45a0a856254e4cb0842c78017a39f931984db98291ce369ef21",
+    "shared/generated-navigation.ts": "3e4a3ac914afd655e48853c7919cedaf08f2f7322b9f84fc0f6c0ccd4d02db76",
+    "public/evolution.json": "3e3223f9c6411dfc18c851216c5d45cbbc70aebfcf4a4589b39a02fc40535f0e"
+  },
+  "completed": "2026-11-16T03:53:43.708Z",
+  "previewOnly": true
+}
