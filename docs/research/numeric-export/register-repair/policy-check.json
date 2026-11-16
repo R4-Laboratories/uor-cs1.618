@@ -1,0 +1,41 @@
+{
+  "commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09",
+  "entries": [
+    {
+      "path": ".devcontainer/devcontainer.json",
+      "sha256": "sha256:7b04512b89e82132c8b46b55b5a53e87390a9afd0c5545677a7cde042a60af93",
+      "observed": "sha256:7b04512b89e82132c8b46b55b5a53e87390a9afd0c5545677a7cde042a60af93",
+      "matches": true
+    },
+    {
+      "path": ".github/workflows/bootstrap.yml",
+      "sha256": "sha256:4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
+      "observed": "sha256:4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
+      "matches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "sha256:9a1fe3f73ab2963812c35976909c331292e1ca39ce47c0711ec1aafe8b869d87",
+      "observed": "sha256:9a1fe3f73ab2963812c35976909c331292e1ca39ce47c0711ec1aafe8b869d87",
+      "matches": true
+    },
+    {
+      "path": "VERIFICATION.md",
+      "sha256": "sha256:0912821fea354276fff5faa2b6b6ded0cdf4ef86112ad035b41a0a7a0513bd21",
+      "observed": "sha256:0912821fea354276fff5faa2b6b6ded0cdf4ef86112ad035b41a0a7a0513bd21",
+      "matches": true
+    },
+    {
+      "path": "prismpm.lock",
+      "sha256": "sha256:afd870ad28f323212ff11d1aa12b567ba584de7428be7aae567b6b0e7121d19f",
+      "observed": "sha256:afd870ad28f323212ff11d1aa12b567ba584de7428be7aae567b6b0e7121d19f",
+      "matches": true
+    },
+    {
+      "path": "template-contract.json",
+      "sha256": "sha256:67a3292cfe6e6400bc18718b6a62e8741dec8d6d6b062cb0e4077fc8d9b616f5",
+      "observed": "sha256:67a3292cfe6e6400bc18718b6a62e8741dec8d6d6b062cb0e4077fc8d9b616f5",
+      "matches": true
+    }
+  ]
+}

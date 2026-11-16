@@ -1,7 +1,7 @@
 {
   "schema": "numeric-export-issues/1",
   "updated": "2026-11-16",
-  "repair_commit": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "repair_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09",
   "repair_repository": "UORust",
   "release_verified": false,
   "issues": [
@@ -99,10 +99,10 @@
     },
     {
       "id": "NEXP-005",
-      "status": "pending_remote_acceptance",
+      "status": "pending_remote_recheck",
       "repo": "UORust",
       "function": "Pinned-SDK acceptance / just vv",
-      "summary": "Current reviewed candidate preserves every policy/lock; complete acceptance in exact c1bfe8d5 SDK is pending. Manual baseline/patched GitHub validation is prepared; cached game SDK cannot substitute.",
+      "summary": "Exact-SDK baseline passed. First candidate failed stale generated frontier; reviewed generated-only correction now awaits full exact-SDK rerun.",
       "reproduction": "cargo run --offline --locked -p xtask -- validate in cached diagnostic SDK: prismpm.lock native artifact inventory disagrees with the running SDK.",
       "acceptance_criteria": [
         "Run full unchanged just vv inside ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635 for reviewed candidate 46bdbc56ad99ac2bb73d6499863260a7fead9712.",
@@ -120,7 +120,8 @@
       "expected_inventory_digest": "sha256:d802737ecd17651465dc93640c052720bb361c1d158049ecfb5b9b25ca6c6f70",
       "observed_inventory_digest": "sha256:0d4fe1864891ab1220a752d929a5a3a334f5987e0518a97f83f06fb5bdad105f",
       "changed_inventory_entries": 17,
-      "resolution_path": "Manual game CI with exact base + reviewed patch/tree custody, unchanged upstream bootstrap run block and full just vv; optional separate primitive replay after gate."
+      "resolution_path": "Manual game CI with exact base + reviewed patch/tree custody, unchanged upstream bootstrap run block and full just vv; optional separate primitive replay after gate.",
+      "repair_dependency": "NEXP-008"
     },
     {
       "id": "NEXP-006",
@@ -154,11 +155,41 @@
         "numeric-current-evidence/current-reuse-red.log"
       ],
       "release_dependency": "NEXP-005"
+    },
+    {
+      "id": "NEXP-008",
+      "status": "fixed_local_pending_exact_sdk",
+      "repo": "UORust",
+      "function": "frontier.toml / Justfile register / engine::no_lifted_kappa_turns_unlifted_ue_16",
+      "summary": "Candidate omitted generated lift-register refresh for changed admission function identities and source spans.",
+      "reproduction": "Exact-SDK run43919280445 job133481869450 fails UE16 with frontier.toml is not this workspace lift register; unchanged just register updates5lines.",
+      "acceptance_criteria": [
+        "Generate frontier.toml with standard register recipe; do not edit kappa values by hand.",
+        "Preserve all lifted rows and classifications.",
+        "Focused UE16 passes against fresh MIR.",
+        "Full unchanged exact-SDK just vv passes new candidate."
+      ],
+      "evidence": [
+        "register-repair/register-repair.md",
+        "register-repair/current-register-check.log",
+        "register-repair/register-diff.json",
+        "register-repair/numeric-current-review-addendum.md"
+      ],
+      "dependencies": [],
+      "release_dependency": "NEXP-005",
+      "repair_commit": "0e3472ed1ff2f3fda1d010929c4f323a05576c09"
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
-  "review": "pass after fresh-export and cached-artifact reuse fixes",
+  "review": "guard, cached reuse and generated-register correction approved; exact-SDK candidate rerun pending",
   "historical_register": "historical-issues.json",
   "workflow": "https://github.com/R4-Laboratories/uor-cs1.618/actions/workflows/numeric-export-validation.yml",
-  "upstream_publication": "not merged or released; upstream push unavailable and fork creation HTTP403"
+  "upstream_publication": "not merged or released; upstream push unavailable and fork creation HTTP403",
+  "previous_repair_commit": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "first_exact_sdk_run": {
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445",
+    "baseline": "passed full just vv",
+    "candidate46bdbc56": "failed UE-16 stale frontier.toml after233library and12CLI tests passed",
+    "primitive_probe": "not run because candidate full gate failed"
+  }
 }

@@ -1,0 +1,18 @@
+   Compiling uorust v0.4.0 (/workspace/crates/uorust)
+    Finished `test` profile [unoptimized] target(s) in 1.74s
+     Running tests/engine.rs (target/numeric-repair/debug/deps/engine-ccec527888fc315a)
+
+running 1 test
+test no_lifted_kappa_turns_unlifted_ue_16 has been running for over 60 seconds
+test no_lifted_kappa_turns_unlifted_ue_16 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 330.85s
+
+scripts/self-model/check.sh
+29 routes, 47 vectors
+authority: 4 files match UOR-Foundation/website@e82ffdedc5d8
+engine: 4 workloads, 10 stages
+error[LLC0102]: lexlean.lock is stale or noncanonical; run `lexlean lock`
+  --> lexlean.lock:1:1
+  note: the compiler semantics changed since locking
+error: recipe `self-model-check` failed on line 153 with exit code 2

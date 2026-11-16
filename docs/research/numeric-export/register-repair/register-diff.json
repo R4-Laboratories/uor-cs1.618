@@ -1,0 +1,62 @@
+{
+  "schema": "numeric-generated-register-diff/1",
+  "candidate_before": "46bdbc56ad99ac2bb73d6499863260a7fead9712",
+  "summary_unchanged": true,
+  "summary": {
+    "functions": 1488,
+    "lifted": 341,
+    "residue": 881,
+    "foreign": 92,
+    "effect": 174
+  },
+  "before_sha256": "4dfa5b7d8f24f195859381fc4c5059087f6e59231022fea223b7666aa78768a9",
+  "after_sha256": "031abadc70959dd61d32546f64a6a5c4a8c8836ef0e2832d3b2a3318532da3d2",
+  "changed_rows": [
+    {
+      "table": "residue",
+      "function": "uorust::certify::Profile::mark",
+      "before": {
+        "kappa": "75013984355044cf91b4bf11322c916ffbef1a2cd022e381468fe435003b9d3d",
+        "function": "uorust::certify::Profile::mark",
+        "reason": "mir",
+        "detail": "mir::TerminatorKind::Goto: a loop nested in a loop, whose helpers would call each other"
+      },
+      "after": {
+        "kappa": "e26c4799581bf43e2e5da36ed007da631217f22a3fdf2a35d5de134142c0fddd",
+        "function": "uorust::certify::Profile::mark",
+        "reason": "mir",
+        "detail": "mir::TerminatorKind::Goto: a loop nested in a loop, whose helpers would call each other"
+      }
+    },
+    {
+      "table": "residue",
+      "function": "uorust::certify::Profile::cargo_manifest",
+      "before": {
+        "kappa": "a6f0acd7875848fae482fd78593f32df889beb11c75c8554e97a0d49d4c4f89f",
+        "function": "uorust::certify::Profile::cargo_manifest",
+        "reason": "mir",
+        "detail": "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3441:1: 3441:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
+      },
+      "after": {
+        "kappa": "a6f0acd7875848fae482fd78593f32df889beb11c75c8554e97a0d49d4c4f89f",
+        "function": "uorust::certify::Profile::cargo_manifest",
+        "reason": "mir",
+        "detail": "mir::AggregateKind::Closure: certify::<impl at crates/uorust/src/certify.rs:3453:1: 3453:13>::cargo_manifest::{closure#0}: type outside the lift: core::fmt::rt::Argument<'_>"
+      }
+    },
+    {
+      "table": "effect",
+      "function": "uorust::certify::carry",
+      "before": {
+        "kappa": "774d882ca3e2c46966601468f09dca3a05d9bbfd84c6e17919167a86dc002dac",
+        "function": "uorust::certify::carry",
+        "effect": "calls uorust::certify::modules, which performs a Fs effect: std::fs::read_to_string"
+      },
+      "after": {
+        "kappa": "b3d12c4d8c188ecf4d2001e7c3b14fa2529594b6dd08ce5c926afafedcb3eba0",
+        "function": "uorust::certify::carry",
+        "effect": "calls uorust::certify::modules, which performs a Fs effect: std::fs::read_to_string"
+      }
+    }
+  ]
+}

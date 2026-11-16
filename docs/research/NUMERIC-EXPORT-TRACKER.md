@@ -22,7 +22,7 @@ The original `NUM-*` research questions remain valid. The more detailed repair r
 | Research question | Repair records |
 | --- | --- |
 | NUM-001: intermediate bounds and actual failure | NEXP-002 wide arithmetic; NEXP-003 full root export; NEXP-004 diagnosed primitive overflow |
-| NUM-002: exporter eligibility/toolchain | NEXP-001 fresh admission guard; NEXP-007 cached-artifact bypass; NEXP-005 exact SDK acceptance |
+| NUM-002: exporter eligibility/toolchain | NEXP-001 fresh admission guard; NEXP-007 cached-artifact bypass; NEXP-008 generated-register repair; NEXP-005 exact SDK acceptance |
 | NUM-003: transcendental support | Remains a separate feature/coverage question; no implementation claimed |
 | NUM-004: Text/1 ABI, exact integers and overhead | Remains a separate integration/benchmark question |
 | NUM-005: coordinate/quantization and renderer semantics | NEXP-006 CPU/GPU fidelity and performance |
@@ -37,3 +37,7 @@ The original `NUM-*` research questions remain valid. The more detailed repair r
 5. Separately measure the Text/1 ABI and conservative culling error, then benchmark a bounded LOD policy against the current persistent engine. Numeric correctness alone cannot establish Three.js/GPU parity or better frame time.
 
 GitHub currently allows access to upstream but denies pushing and fork creation (HTTP 403). The reviewed patch and evidence are preserved in this game repository; no upstream merge or release is claimed.
+
+## Exact-SDK follow-up
+
+[Run43919280445](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445) established that the unchanged upstream baseline passes full `just vv` in the exact SDK. The candidate passed233library and12CLI tests, then UE-16 correctly rejected its stale generated lift register. The [reviewed generated-only correction](numeric-export/register-repair/register-repair.md), commit `0e3472ed`, regenerates five lines without changing any classification or acceptance gate. The focused UE-16 regression passes; full exact-SDK revalidation remains required. This acceptance blocker is NEXP-008, distinct from the preserved NEXP-007 cached-artifact bypass.

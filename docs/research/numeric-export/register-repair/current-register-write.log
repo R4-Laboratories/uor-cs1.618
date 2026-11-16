@@ -1,0 +1,12 @@
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+binary: rustc
+commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+commit-date: 2026-07-14
+host: x86_64-unknown-linux-gnu
+release: 1.97.1
+LLVM version: 22.1.6
+rm -rf target/uorust-self
+cargo run -q --locked -p uorust -- mir . --out target/mir
+dumped the MIR of . into target/mir
+cargo run -q --locked -p uorust -- project . --out target/uorust-self --name uorust --last-modified 2026-11-11T00:00:00Z --register frontier.toml --mir target/mir --verdicts lift-verdicts.toml
+wrote 84 files to target/uorust-self

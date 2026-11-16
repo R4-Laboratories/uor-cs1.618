@@ -1,0 +1,1134 @@
+﻿2026-11-16T17:31:38.3289627Z Current runner version: '2.338.2'
+2026-11-16T17:31:38.3314582Z ##[group]Runner Image Provisioner
+2026-11-16T17:31:38.3315427Z Hosted Compute Agent
+2026-11-16T17:31:38.3316028Z Version: 20261103.629
+2026-11-16T17:31:38.3316734Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-16T17:31:38.3317489Z Build Date: 2026-11-03T17:26:59Z
+2026-11-16T17:31:38.3318580Z Worker ID: {dfc9dd75-7fe9-4789-856a-f0bc8d155aaf}
+2026-11-16T17:31:38.3319297Z Region: us-east-1
+2026-11-16T17:31:38.3319853Z Cloud: AWS
+2026-11-16T17:31:38.3320421Z ##[endgroup]
+2026-11-16T17:31:38.3321794Z ##[group]Operating System
+2026-11-16T17:31:38.3322413Z Ubuntu
+2026-11-16T17:31:38.3322874Z 24.04.5
+2026-11-16T17:31:38.3323369Z LTS
+2026-11-16T17:31:38.3323863Z ##[endgroup]
+2026-11-16T17:31:38.3324382Z ##[group]Runner Image
+2026-11-16T17:31:38.3325007Z Image: ubuntu-24.04
+2026-11-16T17:31:38.3325547Z Version: 20261111.127.1
+2026-11-16T17:31:38.3327134Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-16T17:31:38.3329108Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+2026-11-16T17:31:38.3330097Z ##[endgroup]
+2026-11-16T17:31:38.3331166Z ##[group]GITHUB_TOKEN Permissions
+2026-11-16T17:31:38.3333394Z Contents: read
+2026-11-16T17:31:38.3333917Z Metadata: read
+2026-11-16T17:31:38.3334447Z ##[endgroup]
+2026-11-16T17:31:38.3336477Z Secret source: Actions
+2026-11-16T17:31:38.3337406Z Cache mode: write
+2026-11-16T17:31:38.3338392Z Prepare workflow directory
+2026-11-16T17:31:38.3664097Z Prepare all required actions
+2026-11-16T17:31:38.3716258Z Getting action download info
+2026-11-16T17:31:38.5486689Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-16T17:31:40.6980943Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-16T17:31:41.1095337Z Complete job name: UORust full gate / baseline
+2026-11-16T17:31:41.1715159Z ##[group]Run mkdir -p evidence
+2026-11-16T17:31:41.1716621Z [36;1mmkdir -p evidence[0m
+2026-11-16T17:31:41.4861009Z shell: /usr/bin/bash -e {0}
+2026-11-16T17:31:41.4862219Z ##[endgroup]
+2026-11-16T17:31:41.5220275Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-11-16T17:31:41.5221487Z with:
+2026-11-16T17:31:41.5222341Z   ref: ef7e4a32fb966fbafaa93902f665d4f425301e89
+2026-11-16T17:31:41.5223372Z   path: game
+2026-11-16T17:31:41.5224165Z   persist-credentials: false
+2026-11-16T17:31:41.5225093Z   repository: R4-Laboratories/uor-cs1.618
+2026-11-16T17:31:41.5231522Z   token: ***
+2026-11-16T17:31:41.5232304Z   ssh-strict: true
+2026-11-16T17:31:41.5233128Z   ssh-user: git
+2026-11-16T17:31:41.5233891Z   clean: true
+2026-11-16T17:31:41.5234676Z   sparse-checkout-cone-mode: true
+2026-11-16T17:31:41.5235546Z   fetch-depth: 1
+2026-11-16T17:31:41.5236337Z   fetch-tags: false
+2026-11-16T17:31:41.5237089Z   show-progress: true
+2026-11-16T17:31:41.5238025Z   lfs: false
+2026-11-16T17:31:41.5238768Z   submodules: false
+2026-11-16T17:31:41.5239529Z   set-safe-directory: true
+2026-11-16T17:31:41.5240371Z   allow-unsafe-pr-checkout: false
+2026-11-16T17:31:41.5241217Z ##[endgroup]
+2026-11-16T17:31:45.6084656Z Syncing repository: R4-Laboratories/uor-cs1.618
+2026-11-16T17:31:45.6085981Z ##[group]Getting Git version info
+2026-11-16T17:31:45.6086443Z Working directory is '/home/runner/work/uor-cs1.618/uor-cs1.618/game'
+2026-11-16T17:31:45.6087063Z [command]/usr/bin/git version
+2026-11-16T17:31:45.9020911Z git version 2.56.1
+2026-11-16T17:31:45.9036578Z ##[endgroup]
+2026-11-16T17:31:45.9043071Z Temporarily overriding HOME='/home/runner/work/_temp/084f7beb-9fc2-4cfb-894e-1a88ae89ca23' before making global git config changes
+2026-11-16T17:31:45.9043765Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T17:31:45.9046734Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/game
+2026-11-16T17:31:45.9105358Z ##[group]Determining repository object format
+2026-11-16T17:31:45.9106817Z ##[endgroup]
+2026-11-16T17:31:45.9107414Z ##[group]Initializing the repository
+2026-11-16T17:31:45.9111100Z [command]/usr/bin/git init /home/runner/work/uor-cs1.618/uor-cs1.618/game
+2026-11-16T17:31:45.9893557Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-16T17:31:45.9894216Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-16T17:31:45.9894729Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-16T17:31:45.9895095Z hint: call:
+2026-11-16T17:31:45.9895306Z hint:
+2026-11-16T17:31:45.9895637Z hint: 	git config --global init.defaultBranch <name>
+2026-11-16T17:31:45.9895944Z hint:
+2026-11-16T17:31:45.9896243Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-16T17:31:45.9896721Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-16T17:31:45.9897154Z hint:
+2026-11-16T17:31:45.9897437Z hint: 	git branch -m <name>
+2026-11-16T17:31:45.9897696Z hint:
+2026-11-16T17:31:45.9898187Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-16T17:31:45.9905294Z Initialized empty Git repository in /home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/
+2026-11-16T17:31:45.9913105Z [command]/usr/bin/git remote add origin https://github.com/R4-Laboratories/uor-cs1.618
+2026-11-16T17:31:45.9977543Z ##[endgroup]
+2026-11-16T17:31:45.9978299Z ##[group]Disabling automatic garbage collection
+2026-11-16T17:31:45.9980892Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-16T17:31:46.0003539Z ##[endgroup]
+2026-11-16T17:31:46.0004060Z ##[group]Setting up auth
+2026-11-16T17:31:46.0004579Z Removing SSH command configuration
+2026-11-16T17:31:46.0007814Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:31:46.0036867Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:31:46.4209485Z Removing HTTP extra header
+2026-11-16T17:31:46.4214977Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:31:46.4241640Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:31:46.4385873Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:31:46.4391037Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:31:46.4422358Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:31:46.4571882Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-16T17:31:46.4607050Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git.path /home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:46.4630420Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:46.4652255Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/game/.git.path /github/runner_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:46.4681320Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/game/.git/worktrees/*.path /github/runner_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:46.4702846Z ##[endgroup]
+2026-11-16T17:31:46.4703745Z ##[group]Fetching the repository
+2026-11-16T17:31:46.4708580Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin ef7e4a32fb966fbafaa93902f665d4f425301e89
+2026-11-16T17:31:46.9735589Z From https://github.com/R4-Laboratories/uor-cs1.618
+2026-11-16T17:31:46.9736435Z  * branch            ef7e4a32fb966fbafaa93902f665d4f425301e89 -> FETCH_HEAD
+2026-11-16T17:31:46.9744054Z [command]/usr/bin/git rev-parse --verify --quiet ef7e4a32fb966fbafaa93902f665d4f425301e89^{object}
+2026-11-16T17:31:46.9764655Z ef7e4a32fb966fbafaa93902f665d4f425301e89
+2026-11-16T17:31:46.9767114Z ##[endgroup]
+2026-11-16T17:31:46.9767746Z ##[group]Determining the checkout info
+2026-11-16T17:31:46.9768771Z ##[endgroup]
+2026-11-16T17:31:46.9771679Z [command]/usr/bin/git sparse-checkout disable
+2026-11-16T17:31:46.9849057Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-16T17:31:46.9871907Z ##[group]Checking out the ref
+2026-11-16T17:31:46.9875324Z [command]/usr/bin/git checkout --progress --force ef7e4a32fb966fbafaa93902f665d4f425301e89
+2026-11-16T17:31:47.0193315Z Note: switching to 'ef7e4a32fb966fbafaa93902f665d4f425301e89'.
+2026-11-16T17:31:47.0193599Z 
+2026-11-16T17:31:47.0193925Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-16T17:31:47.0194367Z changes and commit them, and you can discard any commits you make in this
+2026-11-16T17:31:47.0194803Z state without impacting any branches by switching back to a branch.
+2026-11-16T17:31:47.0195050Z 
+2026-11-16T17:31:47.0195247Z If you want to create a new branch to retain commits you create, you may
+2026-11-16T17:31:47.0195979Z do so (now or later) by using -c with the switch command. Example:
+2026-11-16T17:31:47.0196204Z 
+2026-11-16T17:31:47.0196297Z   git switch -c <new-branch-name>
+2026-11-16T17:31:47.0196500Z 
+2026-11-16T17:31:47.0196639Z Or undo this operation with:
+2026-11-16T17:31:47.0196797Z 
+2026-11-16T17:31:47.0196917Z   git switch -
+2026-11-16T17:31:47.0197025Z 
+2026-11-16T17:31:47.0197239Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-16T17:31:47.0197524Z 
+2026-11-16T17:31:47.0198022Z HEAD is now at ef7e4a3 Track reviewed numeric export repairs and validate the exact upstream SDK
+2026-11-16T17:31:47.0207694Z ##[endgroup]
+2026-11-16T17:31:47.0245881Z [command]/usr/bin/git log -1 --format=%H
+2026-11-16T17:31:47.0266822Z ef7e4a32fb966fbafaa93902f665d4f425301e89
+2026-11-16T17:31:47.0272702Z ##[group]Removing auth
+2026-11-16T17:31:47.0273202Z Removing SSH command configuration
+2026-11-16T17:31:47.0274844Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:31:47.0297559Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:31:47.0450077Z Removing HTTP extra header
+2026-11-16T17:31:47.0452889Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:31:47.0480209Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:31:47.0620276Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:31:47.0622346Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:31:47.0646009Z includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git.path
+2026-11-16T17:31:47.0646805Z includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/worktrees/*.path
+2026-11-16T17:31:47.0647344Z includeif.gitdir:/github/workspace/game/.git.path
+2026-11-16T17:31:47.0647860Z includeif.gitdir:/github/workspace/game/.git/worktrees/*.path
+2026-11-16T17:31:47.0652878Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git.path
+2026-11-16T17:31:47.0670295Z /home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:47.0676613Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-ce96ae48\-d3d0\-4c89\-b1a9\-cef70ee9d595\.config
+2026-11-16T17:31:47.0700702Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/worktrees/*.path
+2026-11-16T17:31:47.0723480Z /home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:47.0729373Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-ce96ae48\-d3d0\-4c89\-b1a9\-cef70ee9d595\.config
+2026-11-16T17:31:47.0751879Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/game/.git.path
+2026-11-16T17:31:47.0768852Z /github/runner_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:47.0773867Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/game/.git.path \/github\/runner_temp\/git\-credentials\-ce96ae48\-d3d0\-4c89\-b1a9\-cef70ee9d595\.config
+2026-11-16T17:31:47.0797285Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/game/.git/worktrees/*.path
+2026-11-16T17:31:47.0814075Z /github/runner_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config
+2026-11-16T17:31:47.0817808Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/game/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-ce96ae48\-d3d0\-4c89\-b1a9\-cef70ee9d595\.config
+2026-11-16T17:31:47.0841347Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:31:47.0984731Z Removing credentials config '/home/runner/work/_temp/git-credentials-ce96ae48-d3d0-4c89-b1a9-cef70ee9d595.config'
+2026-11-16T17:31:47.0990948Z ##[endgroup]
+2026-11-16T17:31:47.1096663Z ##[group]Run set -euo pipefail
+2026-11-16T17:31:47.1096961Z [36;1mset -euo pipefail[0m
+2026-11-16T17:31:47.1097427Z [36;1mpython3 game/scripts/validate-numeric-export.py metadata > evidence/target.txt 2> evidence/metadata-error.log[0m
+2026-11-16T17:31:47.1098151Z [36;1mcat evidence/target.txt >> "$GITHUB_OUTPUT"[0m
+2026-11-16T17:31:47.1127129Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-16T17:31:47.1127546Z ##[endgroup]
+2026-11-16T17:31:47.1573628Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-11-16T17:31:47.1573988Z with:
+2026-11-16T17:31:47.1574229Z   repository: afflom/UORust
+2026-11-16T17:31:47.1574609Z   ref: b04af3550bb49c4e5bfdc0747a1e50cd58f13b81
+2026-11-16T17:31:47.1574910Z   path: uorust
+2026-11-16T17:31:47.1575166Z   fetch-depth: 0
+2026-11-16T17:31:47.1575423Z   persist-credentials: false
+2026-11-16T17:31:47.1577370Z   token: ***
+2026-11-16T17:31:47.1577638Z   ssh-strict: true
+2026-11-16T17:31:47.1578075Z   ssh-user: git
+2026-11-16T17:31:47.1578321Z   clean: true
+2026-11-16T17:31:47.1578546Z   sparse-checkout-cone-mode: true
+2026-11-16T17:31:47.1578795Z   fetch-tags: false
+2026-11-16T17:31:47.1579042Z   show-progress: true
+2026-11-16T17:31:47.1579262Z   lfs: false
+2026-11-16T17:31:47.1579481Z   submodules: false
+2026-11-16T17:31:47.1579711Z   set-safe-directory: true
+2026-11-16T17:31:47.1579963Z   allow-unsafe-pr-checkout: false
+2026-11-16T17:31:47.1580222Z ##[endgroup]
+2026-11-16T17:31:47.2224601Z Syncing repository: afflom/UORust
+2026-11-16T17:31:47.2225327Z ##[group]Getting Git version info
+2026-11-16T17:31:47.2225849Z Working directory is '/home/runner/work/uor-cs1.618/uor-cs1.618/uorust'
+2026-11-16T17:31:47.2242024Z [command]/usr/bin/git version
+2026-11-16T17:31:47.2269372Z git version 2.56.1
+2026-11-16T17:31:47.2282955Z ##[endgroup]
+2026-11-16T17:31:47.2288552Z Temporarily overriding HOME='/home/runner/work/_temp/cbea12ce-6d8c-4b17-8a08-a10fb22b41cb' before making global git config changes
+2026-11-16T17:31:47.2289531Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T17:31:47.2292648Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/uorust
+2026-11-16T17:31:47.2315393Z ##[group]Determining repository object format
+2026-11-16T17:31:47.2316578Z ##[endgroup]
+2026-11-16T17:31:47.2317213Z ##[group]Initializing the repository
+2026-11-16T17:31:47.2320569Z [command]/usr/bin/git init /home/runner/work/uor-cs1.618/uor-cs1.618/uorust
+2026-11-16T17:31:47.2349040Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-16T17:31:47.2349505Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-16T17:31:47.2349890Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-16T17:31:47.2350285Z hint: call:
+2026-11-16T17:31:47.2350481Z hint:
+2026-11-16T17:31:47.2350721Z hint: 	git config --global init.defaultBranch <name>
+2026-11-16T17:31:47.2350989Z hint:
+2026-11-16T17:31:47.2351251Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-16T17:31:47.2351689Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-16T17:31:47.2352000Z hint:
+2026-11-16T17:31:47.2352266Z hint: 	git branch -m <name>
+2026-11-16T17:31:47.2352569Z hint:
+2026-11-16T17:31:47.2352921Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-16T17:31:47.2353578Z Initialized empty Git repository in /home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git/
+2026-11-16T17:31:47.2354350Z [command]/usr/bin/git remote add origin https://github.com/afflom/UORust
+2026-11-16T17:31:47.2376034Z ##[endgroup]
+2026-11-16T17:31:47.2376426Z ##[group]Disabling automatic garbage collection
+2026-11-16T17:31:47.2380541Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-16T17:31:47.2402151Z ##[endgroup]
+2026-11-16T17:31:47.2402652Z ##[group]Setting up auth
+2026-11-16T17:31:47.2402995Z Removing SSH command configuration
+2026-11-16T17:31:47.2408163Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:31:47.2431876Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:31:47.2601433Z Removing HTTP extra header
+2026-11-16T17:31:47.2605171Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:31:47.2625600Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:31:47.2789582Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:31:47.2790278Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:31:47.2819903Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:31:47.2976010Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-16T17:31:47.3005174Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git.path /home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:47.3030706Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:47.3055935Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/uorust/.git.path /github/runner_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:47.3078443Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/uorust/.git/worktrees/*.path /github/runner_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:47.3099265Z ##[endgroup]
+2026-11-16T17:31:47.3099839Z ##[group]Fetching the repository
+2026-11-16T17:31:47.3104689Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-11-16T17:31:48.6418811Z From https://github.com/afflom/UORust
+2026-11-16T17:31:48.6419679Z  * [new branch]      automation/template-contract-update -> origin/automation/template-contract-update
+2026-11-16T17:31:48.6420366Z  * [new branch]      claude/project-thread-hboh76 -> origin/claude/project-thread-hboh76
+2026-11-16T17:31:48.6421005Z  * [new branch]      claude/project-thread-q9lqlj -> origin/claude/project-thread-q9lqlj
+2026-11-16T17:31:48.6421619Z  * [new branch]      claude/project-thread-zgkrpx -> origin/claude/project-thread-zgkrpx
+2026-11-16T17:31:48.6422298Z  * [new branch]      dependabot/cargo/build-policy-ba49fe9dfb -> origin/dependabot/cargo/build-policy-ba49fe9dfb
+2026-11-16T17:31:48.6423077Z  * [new branch]      dependabot/github_actions/pinned-actions-f1c2ea3b88 -> origin/dependabot/github_actions/pinned-actions-f1c2ea3b88
+2026-11-16T17:31:48.6423696Z  * [new branch]      lane-fmt-tmp -> origin/lane-fmt-tmp
+2026-11-16T17:31:48.6424849Z  * [new branch]      main         -> origin/main
+2026-11-16T17:31:48.6425431Z  * [new tag]         v0.1.0       -> v0.1.0
+2026-11-16T17:31:48.6425864Z  * [new tag]         v0.1.1       -> v0.1.1
+2026-11-16T17:31:48.6426206Z  * [new tag]         v0.2.0       -> v0.2.0
+2026-11-16T17:31:48.6426524Z  * [new tag]         v0.3.0       -> v0.3.0
+2026-11-16T17:31:48.6426850Z  * [new tag]         v0.4.0       -> v0.4.0
+2026-11-16T17:31:48.6427795Z [command]/usr/bin/git rev-parse --verify --quiet b04af3550bb49c4e5bfdc0747a1e50cd58f13b81^{object}
+2026-11-16T17:31:48.6451872Z b04af3550bb49c4e5bfdc0747a1e50cd58f13b81
+2026-11-16T17:31:48.6454057Z ##[endgroup]
+2026-11-16T17:31:48.6454580Z ##[group]Determining the checkout info
+2026-11-16T17:31:48.6455158Z ##[endgroup]
+2026-11-16T17:31:48.6458791Z [command]/usr/bin/git sparse-checkout disable
+2026-11-16T17:31:48.6490454Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-16T17:31:48.6512307Z ##[group]Checking out the ref
+2026-11-16T17:31:48.6515530Z [command]/usr/bin/git checkout --progress --force b04af3550bb49c4e5bfdc0747a1e50cd58f13b81
+2026-11-16T17:31:48.8016177Z Note: switching to 'b04af3550bb49c4e5bfdc0747a1e50cd58f13b81'.
+2026-11-16T17:31:48.8016432Z 
+2026-11-16T17:31:48.8016763Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-16T17:31:48.8017196Z changes and commit them, and you can discard any commits you make in this
+2026-11-16T17:31:48.8017652Z state without impacting any branches by switching back to a branch.
+2026-11-16T17:31:48.8018039Z 
+2026-11-16T17:31:48.8018241Z If you want to create a new branch to retain commits you create, you may
+2026-11-16T17:31:48.8018610Z do so (now or later) by using -c with the switch command. Example:
+2026-11-16T17:31:48.8018878Z 
+2026-11-16T17:31:48.8019015Z   git switch -c <new-branch-name>
+2026-11-16T17:31:48.8019167Z 
+2026-11-16T17:31:48.8019289Z Or undo this operation with:
+2026-11-16T17:31:48.8019423Z 
+2026-11-16T17:31:48.8019553Z   git switch -
+2026-11-16T17:31:48.8019666Z 
+2026-11-16T17:31:48.8019916Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-16T17:31:48.8020167Z 
+2026-11-16T17:31:48.8020312Z HEAD is now at b04af35 Rebuild the certified translator
+2026-11-16T17:31:48.8031026Z ##[endgroup]
+2026-11-16T17:31:48.8064591Z [command]/usr/bin/git log -1 --format=%H
+2026-11-16T17:31:48.8087278Z b04af3550bb49c4e5bfdc0747a1e50cd58f13b81
+2026-11-16T17:31:48.8093356Z ##[group]Removing auth
+2026-11-16T17:31:48.8094076Z Removing SSH command configuration
+2026-11-16T17:31:48.8096634Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:31:48.8121339Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:31:48.8273121Z Removing HTTP extra header
+2026-11-16T17:31:48.8276628Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:31:48.8300160Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:31:48.8445308Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:31:48.8447611Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:31:48.8466375Z includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git.path
+2026-11-16T17:31:48.8467056Z includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git/worktrees/*.path
+2026-11-16T17:31:48.8467679Z includeif.gitdir:/github/workspace/uorust/.git.path
+2026-11-16T17:31:48.8475589Z includeif.gitdir:/github/workspace/uorust/.git/worktrees/*.path
+2026-11-16T17:31:48.8476726Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git.path
+2026-11-16T17:31:48.8491234Z /home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:48.8498326Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-5eb581ca\-52db\-4685\-aaaf\-869977d7a25c\.config
+2026-11-16T17:31:48.8523001Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git/worktrees/*.path
+2026-11-16T17:31:48.8540453Z /home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:48.8553614Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-5eb581ca\-52db\-4685\-aaaf\-869977d7a25c\.config
+2026-11-16T17:31:48.8577283Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/uorust/.git.path
+2026-11-16T17:31:48.8594423Z /github/runner_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:48.8599649Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/uorust/.git.path \/github\/runner_temp\/git\-credentials\-5eb581ca\-52db\-4685\-aaaf\-869977d7a25c\.config
+2026-11-16T17:31:48.8624455Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/uorust/.git/worktrees/*.path
+2026-11-16T17:31:48.8642932Z /github/runner_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config
+2026-11-16T17:31:48.8647452Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/uorust/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-5eb581ca\-52db\-4685\-aaaf\-869977d7a25c\.config
+2026-11-16T17:31:48.8670704Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:31:48.8814193Z Removing credentials config '/home/runner/work/_temp/git-credentials-5eb581ca-52db-4685-aaaf-869977d7a25c.config'
+2026-11-16T17:31:48.8819739Z ##[endgroup]
+2026-11-16T17:31:48.8902201Z ##[group]Run set -euo pipefail
+2026-11-16T17:31:48.8902494Z [36;1mset -euo pipefail[0m
+2026-11-16T17:31:48.8902833Z [36;1mpython3 -u game/scripts/validate-numeric-export.py run \[0m
+2026-11-16T17:31:48.8903203Z [36;1m  --source "$GITHUB_WORKSPACE/uorust" \[0m
+2026-11-16T17:31:48.8903525Z [36;1m  --output "$GITHUB_WORKSPACE/evidence" \[0m
+2026-11-16T17:31:48.8903945Z [36;1m  --mode "$VALIDATION_MODE" 2>&1 | tee evidence/gate.log[0m
+2026-11-16T17:31:48.8930591Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-16T17:31:48.8930888Z env:
+2026-11-16T17:31:48.8931176Z   VALIDATION_MODE: baseline
+2026-11-16T17:31:48.8931417Z ##[endgroup]
+2026-11-16T17:31:49.0152513Z {
+2026-11-16T17:31:49.0152907Z   "schema": "cs1618/numeric-export-validation/1",
+2026-11-16T17:31:49.0153383Z   "mode": "baseline",
+2026-11-16T17:31:49.0153673Z   "target": {
+2026-11-16T17:31:49.0153992Z     "schema": "cs1618/numeric-export-validation/1",
+2026-11-16T17:31:49.0154537Z     "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
+2026-11-16T17:31:49.0154965Z     "candidate_tree": "80dcc02ddd30b4e44788189ed81bac2c3d4db80f",
+2026-11-16T17:31:49.0155554Z     "patch_sha256": "135bc1e6c6bc2f8aebf169c3c3fcff729a268862e548d368c8e0b1867eb4fa40",
+2026-11-16T17:31:49.0156228Z     "bootstrap_sha256": "4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
+2026-11-16T17:31:49.0156929Z     "lock_sha256": "afd870ad28f323212ff11d1aa12b567ba584de7428be7aae567b6b0e7121d19f",
+2026-11-16T17:31:49.0157783Z     "sdk_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
+2026-11-16T17:31:49.0158603Z     "allowed_paths": [
+2026-11-16T17:31:49.0158928Z       "CONFORMANCE.md",
+2026-11-16T17:31:49.0159255Z       "crates/uorust/src/certify.rs",
+2026-11-16T17:31:49.0159656Z       "crates/uorust/src/mir/float.rs",
+2026-11-16T17:31:49.0160087Z       "crates/uorust/tests/fixtures/numeric-export/Main.lex.tex",
+2026-11-16T17:31:49.0160608Z       "crates/uorust/tests/fixtures/numeric-export/native.rs",
+2026-11-16T17:31:49.0161052Z       "crates/uorust/tests/fixtures/numeric-export/probe.mjs",
+2026-11-16T17:31:49.0161504Z       "crates/uorust/tests/fixtures/numeric-export/wasm.rs",
+2026-11-16T17:31:49.0161940Z       "docs/numeric-export.md",
+2026-11-16T17:31:49.0162298Z       "features/suites/engine.feature",
+2026-11-16T17:31:49.0162615Z       "model/ids.toml",
+2026-11-16T17:31:49.0163006Z       "scripts/probe-numeric-export.sh"
+2026-11-16T17:31:49.0163337Z     ]
+2026-11-16T17:31:49.0163599Z   },
+2026-11-16T17:31:49.0163933Z   "applied_head": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
+2026-11-16T17:31:49.0164338Z   "tree": "e98969efb56c40585152a6799f7bf922644d1398",
+2026-11-16T17:31:49.0164760Z   "bootstrap_run_sha256": "9c5fd7a3e422d2ac6f41e7398e61b24601cd3f1c79f7499a4c967192cfc35f73",
+2026-11-16T17:31:49.0165147Z   "full_gate_completed": false,
+2026-11-16T17:31:49.0165458Z   "note": "Preflight only until the original SDK gate exits successfully."
+2026-11-16T17:31:49.0165805Z }
+2026-11-16T17:31:51.3231430Z Unable to find image 'ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635' locally
+2026-11-16T17:31:51.4565017Z ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635: Pulling from afflom/prismpm-sdk-patched
+2026-11-16T17:31:51.5091618Z ca2678b20700: Pulling fs layer
+2026-11-16T17:31:51.5092049Z 43f9c849a2a2: Pulling fs layer
+2026-11-16T17:31:51.5092595Z dad65d3622fa: Pulling fs layer
+2026-11-16T17:31:51.5092875Z 00d16ab601f6: Pulling fs layer
+2026-11-16T17:31:51.5093211Z 4d796d6a8178: Pulling fs layer
+2026-11-16T17:31:51.5093528Z 64112f4c67a2: Pulling fs layer
+2026-11-16T17:31:51.5093845Z 782c0a3f363f: Pulling fs layer
+2026-11-16T17:31:51.5094280Z 4f4fb700ef54: Pulling fs layer
+2026-11-16T17:31:51.5094529Z 218c883f5da1: Pulling fs layer
+2026-11-16T17:31:51.5094818Z f20937229e51: Pulling fs layer
+2026-11-16T17:31:51.5095300Z b7a751140c3a: Pulling fs layer
+2026-11-16T17:31:51.5095527Z 6a74ca9518f8: Pulling fs layer
+2026-11-16T17:31:51.5095879Z 408650e22379: Pulling fs layer
+2026-11-16T17:31:51.5096113Z 1b2c8aa8f578: Pulling fs layer
+2026-11-16T17:31:51.5096367Z c9b2b670b7bc: Pulling fs layer
+2026-11-16T17:31:51.5096655Z 7dd25e059a0b: Pulling fs layer
+2026-11-16T17:31:51.5096877Z 9cb99ecae200: Pulling fs layer
+2026-11-16T17:31:51.5097247Z 2efe10d76863: Pulling fs layer
+2026-11-16T17:31:51.5097481Z ebf2a8ac7821: Pulling fs layer
+2026-11-16T17:31:51.5097712Z 00d16ab601f6: Waiting
+2026-11-16T17:31:51.5098170Z f47a1f41908b: Pulling fs layer
+2026-11-16T17:31:51.5098396Z 782c0a3f363f: Waiting
+2026-11-16T17:31:51.5098642Z 28d287abea16: Pulling fs layer
+2026-11-16T17:31:51.5098908Z d8043a80e4f9: Pulling fs layer
+2026-11-16T17:31:51.5099200Z f45d9e48c2cf: Pulling fs layer
+2026-11-16T17:31:51.5099446Z 4f4fb700ef54: Waiting
+2026-11-16T17:31:51.5099698Z 49de7543f9eb: Pulling fs layer
+2026-11-16T17:31:51.5099933Z 218c883f5da1: Waiting
+2026-11-16T17:31:51.5100154Z 6a74ca9518f8: Waiting
+2026-11-16T17:31:51.5100386Z 408650e22379: Waiting
+2026-11-16T17:31:51.5100660Z f20937229e51: Waiting
+2026-11-16T17:31:51.5100872Z 1b2c8aa8f578: Waiting
+2026-11-16T17:31:51.5101121Z b7a751140c3a: Waiting
+2026-11-16T17:31:51.5101335Z 4d796d6a8178: Waiting
+2026-11-16T17:31:51.5101550Z c9b2b670b7bc: Waiting
+2026-11-16T17:31:51.5101808Z 64112f4c67a2: Waiting
+2026-11-16T17:31:51.5102038Z 7dd25e059a0b: Waiting
+2026-11-16T17:31:51.5102246Z 9cb99ecae200: Waiting
+2026-11-16T17:31:51.5102472Z 2efe10d76863: Waiting
+2026-11-16T17:31:51.5102737Z ebf2a8ac7821: Waiting
+2026-11-16T17:31:51.5102989Z f47a1f41908b: Waiting
+2026-11-16T17:31:51.5103202Z 28d287abea16: Waiting
+2026-11-16T17:31:51.5103441Z d8043a80e4f9: Waiting
+2026-11-16T17:31:51.5103665Z f45d9e48c2cf: Waiting
+2026-11-16T17:31:51.5103896Z 49de7543f9eb: Waiting
+2026-11-16T17:31:51.6214411Z dad65d3622fa: Verifying Checksum
+2026-11-16T17:31:51.6216265Z dad65d3622fa: Download complete
+2026-11-16T17:31:51.7015066Z ca2678b20700: Verifying Checksum
+2026-11-16T17:31:51.7015578Z ca2678b20700: Download complete
+2026-11-16T17:31:52.0085544Z 43f9c849a2a2: Verifying Checksum
+2026-11-16T17:31:52.0086151Z 43f9c849a2a2: Download complete
+2026-11-16T17:31:52.5937737Z 64112f4c67a2: Verifying Checksum
+2026-11-16T17:31:52.5938733Z 64112f4c67a2: Download complete
+2026-11-16T17:31:52.6162499Z ca2678b20700: Pull complete
+2026-11-16T17:31:52.6274140Z 00d16ab601f6: Verifying Checksum
+2026-11-16T17:31:52.6274803Z 00d16ab601f6: Download complete
+2026-11-16T17:31:52.7273070Z 4f4fb700ef54: Verifying Checksum
+2026-11-16T17:31:52.7274569Z 4f4fb700ef54: Download complete
+2026-11-16T17:31:52.8594125Z 4d796d6a8178: Verifying Checksum
+2026-11-16T17:31:52.8594982Z 4d796d6a8178: Download complete
+2026-11-16T17:31:52.9415572Z f20937229e51: Download complete
+2026-11-16T17:31:53.0111962Z 782c0a3f363f: Verifying Checksum
+2026-11-16T17:31:53.0112715Z 782c0a3f363f: Download complete
+2026-11-16T17:31:53.0420275Z b7a751140c3a: Verifying Checksum
+2026-11-16T17:31:53.0421048Z b7a751140c3a: Download complete
+2026-11-16T17:31:53.1253476Z 408650e22379: Verifying Checksum
+2026-11-16T17:31:53.1254126Z 408650e22379: Download complete
+2026-11-16T17:31:53.2035275Z 1b2c8aa8f578: Verifying Checksum
+2026-11-16T17:31:53.2037159Z 1b2c8aa8f578: Download complete
+2026-11-16T17:31:53.2892140Z c9b2b670b7bc: Verifying Checksum
+2026-11-16T17:31:53.2892943Z c9b2b670b7bc: Download complete
+2026-11-16T17:31:54.4173578Z 6a74ca9518f8: Verifying Checksum
+2026-11-16T17:31:54.4174181Z 6a74ca9518f8: Download complete
+2026-11-16T17:31:54.6309125Z 7dd25e059a0b: Verifying Checksum
+2026-11-16T17:31:54.6309944Z 7dd25e059a0b: Download complete
+2026-11-16T17:31:55.2482634Z 43f9c849a2a2: Pull complete
+2026-11-16T17:31:55.2647032Z dad65d3622fa: Pull complete
+2026-11-16T17:31:58.2770246Z 218c883f5da1: Download complete
+2026-11-16T17:31:58.3614530Z ebf2a8ac7821: Verifying Checksum
+2026-11-16T17:31:58.3618022Z ebf2a8ac7821: Download complete
+2026-11-16T17:32:01.2296550Z 00d16ab601f6: Pull complete
+2026-11-16T17:32:05.5445589Z f47a1f41908b: Verifying Checksum
+2026-11-16T17:32:05.5446068Z f47a1f41908b: Download complete
+2026-11-16T17:32:06.9182114Z 28d287abea16: Verifying Checksum
+2026-11-16T17:32:06.9182584Z 28d287abea16: Download complete
+2026-11-16T17:32:07.0060022Z d8043a80e4f9: Verifying Checksum
+2026-11-16T17:32:07.0060818Z d8043a80e4f9: Download complete
+2026-11-16T17:32:07.7872450Z f45d9e48c2cf: Verifying Checksum
+2026-11-16T17:32:07.7872869Z f45d9e48c2cf: Download complete
+2026-11-16T17:32:07.8901572Z 49de7543f9eb: Verifying Checksum
+2026-11-16T17:32:07.8901967Z 49de7543f9eb: Download complete
+2026-11-16T17:32:10.3714377Z 2efe10d76863: Verifying Checksum
+2026-11-16T17:32:10.3714879Z 2efe10d76863: Download complete
+2026-11-16T17:32:14.9936308Z 9cb99ecae200: Verifying Checksum
+2026-11-16T17:32:14.9936707Z 9cb99ecae200: Download complete
+2026-11-16T17:32:16.6128651Z 4d796d6a8178: Pull complete
+2026-11-16T17:32:18.6660573Z 64112f4c67a2: Pull complete
+2026-11-16T17:32:20.4827102Z 782c0a3f363f: Pull complete
+2026-11-16T17:32:21.1038726Z 4f4fb700ef54: Pull complete
+2026-11-16T17:32:26.9018441Z 218c883f5da1: Pull complete
+2026-11-16T17:32:27.5607189Z f20937229e51: Pull complete
+2026-11-16T17:32:28.2564364Z b7a751140c3a: Pull complete
+2026-11-16T17:32:30.0774110Z 6a74ca9518f8: Pull complete
+2026-11-16T17:32:30.7993058Z 408650e22379: Pull complete
+2026-11-16T17:32:31.5447494Z 1b2c8aa8f578: Pull complete
+2026-11-16T17:32:32.2054187Z c9b2b670b7bc: Pull complete
+2026-11-16T17:32:34.1829389Z 7dd25e059a0b: Pull complete
+2026-11-16T17:32:54.7279936Z 9cb99ecae200: Pull complete
+2026-11-16T17:33:12.2449249Z 2efe10d76863: Pull complete
+2026-11-16T17:33:12.4555388Z ebf2a8ac7821: Pull complete
+2026-11-16T17:33:25.9211982Z f47a1f41908b: Pull complete
+2026-11-16T17:33:26.7453367Z 28d287abea16: Pull complete
+2026-11-16T17:33:26.7671632Z d8043a80e4f9: Pull complete
+2026-11-16T17:33:27.2218500Z f45d9e48c2cf: Pull complete
+2026-11-16T17:33:27.2260317Z 49de7543f9eb: Pull complete
+2026-11-16T17:33:27.2301002Z Digest: sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635
+2026-11-16T17:33:27.2309760Z Status: Downloaded newer image for ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635
+2026-11-16T17:33:34.9356022Z github.com/docker/buildx v0.28.0 b1281b81bba797b21d9eaf256e6a13eb14419836
+2026-11-16T17:33:34.9832549Z Name:   default
+2026-11-16T17:33:34.9832933Z Driver: docker
+2026-11-16T17:33:34.9833108Z 
+2026-11-16T17:33:34.9833186Z Nodes:
+2026-11-16T17:33:34.9833482Z Name:             default
+2026-11-16T17:33:34.9833816Z Endpoint:         default
+2026-11-16T17:33:34.9834148Z Status:           running
+2026-11-16T17:33:34.9834433Z BuildKit version: v0.20.2
+2026-11-16T17:33:34.9834863Z Platforms:        linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/386
+2026-11-16T17:33:34.9835359Z Labels:
+2026-11-16T17:33:34.9835776Z  org.mobyproject.buildkit.worker.moby.host-gateway-ip: 172.17.0.1
+2026-11-16T17:33:35.2410302Z 0.89.0
+2026-11-16T17:33:35.2460772Z cargo fmt --all -- --check
+2026-11-16T17:33:36.4527578Z cargo run -q --locked -p xtask -- validate
+2026-11-16T17:33:42.7741573Z check-model: CONFORMANCE.md equals the model, 26 ids (CM-01)
+2026-11-16T17:33:42.8309702Z audit-limits: no shipped crate returns an unsanctioned error (R5)
+2026-11-16T17:33:43.4473031Z audit-deferral: nothing is deferred (R4)
+2026-11-16T17:33:43.4473970Z audit-dependency-updates: SDK ownership and ordinary maintenance are preserved
+2026-11-16T17:33:43.4702900Z audit-bootstrap: SDK and workflow trust roots are immutable and separated
+2026-11-16T17:33:43.4703494Z validate: every gate passed
+2026-11-16T17:33:43.4706317Z prismpm template check
+2026-11-16T17:33:53.3417057Z template contract passed
+2026-11-16T17:33:53.3421885Z prismpm lock check
+2026-11-16T17:33:54.4947031Z SDK lock is canonical and valid
+2026-11-16T17:33:54.4955755Z scripts/self-model/check.sh
+2026-11-16T17:33:54.5317029Z 29 routes, 47 vectors
+2026-11-16T17:33:54.7084635Z authority: 4 files match UOR-Foundation/website@e82ffdedc5d8
+2026-11-16T17:33:54.7349954Z engine: 4 workloads, 10 stages
+2026-11-16T17:33:55.3860425Z self-model: every generated file matches its generator
+2026-11-16T17:33:55.3873120Z cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+2026-11-16T17:33:55.4727554Z    Compiling quote v1.0.47
+2026-11-16T17:33:55.4728096Z    Compiling proc-macro2 v1.0.107
+2026-11-16T17:33:55.4730017Z     Checking serde_core v1.0.229
+2026-11-16T17:33:55.4739502Z     Checking equivalent v1.0.2
+2026-11-16T17:33:55.4923987Z     Checking hashbrown v0.17.1
+2026-11-16T17:33:55.5951965Z     Checking winnow v0.7.15
+2026-11-16T17:33:55.8452891Z     Checking indexmap v2.14.1
+2026-11-16T17:33:56.2458526Z    Compiling syn v3.0.4
+2026-11-16T17:33:56.2706654Z     Checking toml_write v0.1.2
+2026-11-16T17:33:56.3510253Z     Checking typenum v1.20.1
+2026-11-16T17:33:56.6230124Z     Checking zmij v1.0.23
+2026-11-16T17:33:56.7706980Z     Checking utf8parse v0.2.2
+2026-11-16T17:33:56.7725033Z     Checking memchr v2.8.3
+2026-11-16T17:33:56.7771606Z     Checking generic-array v0.14.7
+2026-11-16T17:33:56.8003643Z     Checking itoa v1.0.18
+2026-11-16T17:33:56.8631152Z     Checking cpufeatures v0.2.17
+2026-11-16T17:33:57.0178769Z     Checking cfg-if v1.0.4
+2026-11-16T17:33:57.0568679Z     Checking serde_json v1.0.151
+2026-11-16T17:33:57.1029229Z     Checking anstyle-parse v1.0.0
+2026-11-16T17:33:57.1157652Z     Checking crypto-common v0.1.7
+2026-11-16T17:33:57.1522816Z     Checking block-buffer v0.10.4
+2026-11-16T17:33:57.1685774Z     Checking anstyle-query v1.1.5
+2026-11-16T17:33:57.1914460Z     Checking is_terminal_polyfill v1.70.2
+2026-11-16T17:33:57.1981856Z     Checking digest v0.10.7
+2026-11-16T17:33:57.2136903Z     Checking unicode-ident v1.0.24
+2026-11-16T17:33:57.2495974Z     Checking anstyle v1.0.14
+2026-11-16T17:33:57.2916594Z     Checking sha2 v0.10.9
+2026-11-16T17:33:57.3397221Z     Checking colorchoice v1.0.5
+2026-11-16T17:33:57.3705138Z     Checking anstream v1.0.0
+2026-11-16T17:33:57.4751862Z     Checking clap_lex v1.1.1
+2026-11-16T17:33:57.5177047Z    Compiling heck v0.5.0
+2026-11-16T17:33:57.5377281Z     Checking strsim v0.11.1
+2026-11-16T17:33:57.6081762Z     Checking clap_builder v4.6.7
+2026-11-16T17:33:57.6308391Z     Checking uorust-certified v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/certified)
+2026-11-16T17:33:58.6774817Z     Checking semver v1.0.28
+2026-11-16T17:33:58.9149953Z    Compiling serde_derive v1.0.229
+2026-11-16T17:33:59.7302604Z    Compiling clap_derive v4.6.7
+2026-11-16T17:34:00.9139720Z     Checking clap v4.6.7
+2026-11-16T17:34:00.9189756Z     Checking serde v1.0.229
+2026-11-16T17:34:01.2079707Z     Checking toml_datetime v0.6.11
+2026-11-16T17:34:01.2080248Z     Checking serde_spanned v0.6.9
+2026-11-16T17:34:01.2904008Z     Checking toml_edit v0.22.27
+2026-11-16T17:34:02.2579004Z     Checking toml v0.8.23
+2026-11-16T17:34:02.4638715Z     Checking repo-model v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/model)
+2026-11-16T17:34:02.6995516Z     Checking repo-conformance v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/conformance)
+2026-11-16T17:34:02.7169064Z     Checking xtask v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/xtask)
+2026-11-16T17:34:13.5108541Z     Checking uorust v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/uorust)
+2026-11-16T17:34:23.4503329Z     Finished `dev` profile [unoptimized + debuginfo] target(s) in 28.02s
+2026-11-16T17:34:23.4616775Z cargo test --workspace --locked
+2026-11-16T17:34:23.5329945Z    Compiling unicode-ident v1.0.24
+2026-11-16T17:34:23.5370017Z    Compiling utf8parse v0.2.2
+2026-11-16T17:34:23.5370748Z    Compiling anstyle-query v1.1.5
+2026-11-16T17:34:23.5371240Z    Compiling colorchoice v1.0.5
+2026-11-16T17:34:23.5660302Z    Compiling proc-macro2 v1.0.107
+2026-11-16T17:34:23.5678216Z    Compiling anstyle-parse v1.0.0
+2026-11-16T17:34:23.5689283Z    Compiling anstyle v1.0.14
+2026-11-16T17:34:23.5769772Z    Compiling is_terminal_polyfill v1.70.2
+2026-11-16T17:34:23.6561434Z    Compiling strsim v0.11.1
+2026-11-16T17:34:23.6850049Z    Compiling anstream v1.0.0
+2026-11-16T17:34:23.8791034Z    Compiling quote v1.0.47
+2026-11-16T17:34:23.9180366Z    Compiling clap_lex v1.1.1
+2026-11-16T17:34:23.9877857Z    Compiling syn v3.0.4
+2026-11-16T17:34:24.0522712Z    Compiling clap_builder v4.6.7
+2026-11-16T17:34:24.2346866Z    Compiling uorust-certified v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/certified)
+2026-11-16T17:34:26.7005804Z    Compiling serde_derive v1.0.229
+2026-11-16T17:34:27.2931055Z    Compiling clap_derive v4.6.7
+2026-11-16T17:34:28.5127624Z    Compiling clap v4.6.7
+2026-11-16T17:34:28.5388630Z    Compiling semver v1.0.28
+2026-11-16T17:34:28.8402888Z    Compiling serde v1.0.229
+2026-11-16T17:34:29.1073370Z    Compiling toml_datetime v0.6.11
+2026-11-16T17:34:29.1568276Z    Compiling serde_spanned v0.6.9
+2026-11-16T17:34:29.2113399Z    Compiling toml_edit v0.22.27
+2026-11-16T17:34:30.1334785Z    Compiling toml v0.8.23
+2026-11-16T17:34:30.6779961Z    Compiling repo-model v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/model)
+2026-11-16T17:34:31.5784000Z    Compiling repo-conformance v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/conformance)
+2026-11-16T17:34:31.8385589Z    Compiling xtask v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/xtask)
+2026-11-16T17:34:41.7078214Z    Compiling uorust v0.4.0 (/home/runner/work/uor-cs1.618/uor-cs1.618/uorust/crates/uorust)
+2026-11-16T17:36:14.0344035Z     Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 50s
+2026-11-16T17:36:14.0436778Z      Running unittests src/lib.rs (target/debug/deps/repo_conformance-66cba22b9965ed83)
+2026-11-16T17:36:14.0444483Z 
+2026-11-16T17:36:14.0444762Z running 1 test
+2026-11-16T17:36:14.0453546Z test meta::tests::the_assertive_vocabulary_is_recognised ... ok
+2026-11-16T17:36:14.0453940Z 
+2026-11-16T17:36:14.0454305Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:36:14.0454638Z 
+2026-11-16T17:36:14.0454916Z      Running tests/bdd.rs (target/debug/deps/bdd-3ba82f0bceec368d)
+2026-11-16T17:36:14.0457829Z 
+2026-11-16T17:36:14.0458384Z running 4 tests
+2026-11-16T17:36:14.0509327Z test every_some_true_claim_cites_an_authority_cm_03 ... ok
+2026-11-16T17:36:14.0510006Z test no_scenario_is_pending_cm_02 ... ok
+2026-11-16T17:36:14.1536354Z test every_id_has_a_scenario_and_a_test_cm_02 ... ok
+2026-11-16T17:36:14.1598297Z test the_meta_gate_is_falsifiable_cm_02 ... ok
+2026-11-16T17:36:14.1598535Z 
+2026-11-16T17:36:14.1598741Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+2026-11-16T17:36:14.1599052Z 
+2026-11-16T17:36:14.1602406Z      Running tests/factory.rs (target/debug/deps/factory-9a5b3401fa81969a)
+2026-11-16T17:36:14.1610425Z 
+2026-11-16T17:36:14.1610832Z running 2 tests
+2026-11-16T17:36:14.3571541Z test an_undeclared_read_of_a_test_or_an_embedded_file_is_refused_ue_20 ... ok
+2026-11-16T17:36:14.3728113Z test factory_ue_20 ... ok
+2026-11-16T17:36:14.3728384Z 
+2026-11-16T17:36:14.3728880Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+2026-11-16T17:36:14.3729222Z 
+2026-11-16T17:36:14.3729559Z      Running tests/ratchet.rs (target/debug/deps/ratchet-437c354a2d0df73d)
+2026-11-16T17:36:14.3737684Z 
+2026-11-16T17:36:14.3738232Z running 3 tests
+2026-11-16T17:36:14.5510409Z test the_hand_written_translator_only_shrinks_ue_18 ... ok
+2026-11-16T17:36:14.5772683Z test a_grown_translator_is_refused_ue_18 ... ok
+2026-11-16T17:36:14.9646199Z test a_closure_without_its_base_fails_ue_18_and_one_with_it_decides ... ok
+2026-11-16T17:36:14.9646520Z 
+2026-11-16T17:36:14.9646846Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.59s
+2026-11-16T17:36:14.9647091Z 
+2026-11-16T17:36:14.9651126Z      Running tests/self_model.rs (target/debug/deps/self_model-5a182b6afcfa95c5)
+2026-11-16T17:36:14.9658681Z 
+2026-11-16T17:36:14.9658814Z running 6 tests
+2026-11-16T17:36:14.9679189Z test self_model_sm_02 ... ok
+2026-11-16T17:36:14.9680178Z test self_model_sm_05 ... ok
+2026-11-16T17:36:14.9683679Z test self_model_sm_01 ... ok
+2026-11-16T17:36:14.9684284Z test self_model_sm_06 ... ok
+2026-11-16T17:36:14.9705887Z test self_model_sm_04 ... ok
+2026-11-16T17:36:14.9749537Z test self_model_sm_03 ... ok
+2026-11-16T17:36:14.9749767Z 
+2026-11-16T17:36:14.9750067Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-11-16T17:36:14.9750676Z 
+2026-11-16T17:36:14.9751562Z      Running unittests src/lib.rs (target/debug/deps/repo_model-1dde8fe7b1e57d24)
+2026-11-16T17:36:14.9778067Z 
+2026-11-16T17:36:14.9778346Z running 4 tests
+2026-11-16T17:36:14.9781960Z test codegen::tests::the_committed_table_is_the_rendering_of_the_register_cm_01 ... ok
+2026-11-16T17:36:14.9782735Z test tests::every_some_true_claim_cites_an_authority_cm_03 ... ok
+2026-11-16T17:36:14.9793229Z test tests::model_is_consistent_cm_01 ... ok
+2026-11-16T17:36:14.9794330Z test tests::the_id_register_is_well_formed_cm_02 ... ok
+2026-11-16T17:36:14.9794612Z 
+2026-11-16T17:36:14.9794860Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:36:14.9795237Z 
+2026-11-16T17:36:14.9796814Z      Running unittests src/lib.rs (target/debug/deps/uorust-0a882245df48bb88)
+2026-11-16T17:36:14.9807107Z 
+2026-11-16T17:36:14.9807419Z running 230 tests
+2026-11-16T17:36:14.9811994Z test bridge::tests::each_boolean_input_is_a_case_ue_19 ... ok
+2026-11-16T17:36:14.9813802Z test bridge::tests::a_signature_reads_as_the_shallow_types_ue_19 ... ok
+2026-11-16T17:36:14.9814521Z test bridge::tests::the_register_records_each_translated_row_bridged_or_pending_ue_19 ... ok
+2026-11-16T17:36:14.9815057Z test certified::tests::use_hand_selects_the_hand_written_translator ... ok
+2026-11-16T17:36:14.9815632Z test bridge::tests::a_carried_stamp_needs_the_row_it_was_measured_on_ue_19 ... ok
+2026-11-16T17:36:14.9818246Z test certify::cases::tests::libtest_lines_are_read_by_the_cases_they_state ... ok
+2026-11-16T17:36:14.9819039Z test certify::cases::tests::a_case_agrees_only_when_the_package_answers_true_and_its_test_passes ... ok
+2026-11-16T17:36:14.9819621Z test certify::cases::tests::every_package_whose_name_fits_a_case_is_run ... ok
+2026-11-16T17:36:14.9823330Z test certify::cases::tests::the_harness_runs_every_case_of_the_manifest ... ok
+2026-11-16T17:36:14.9823930Z test certify::tests::a_diagnostic_names_its_root ... ok
+2026-11-16T17:36:14.9836139Z test certify::cases::tests::a_case_is_a_proved_closed_assertion_over_a_function_in_scope ... ok
+2026-11-16T17:36:14.9836921Z test certify::tests::a_plan_sizes_its_shards_and_names_the_compiler_refusals ... ok
+2026-11-16T17:36:14.9837528Z test certify::tests::a_refusals_class_is_its_cause_without_the_projects_names ... ok
+2026-11-16T17:36:14.9838754Z test certify::tests::a_root_is_a_lifted_translator_function ... ok
+2026-11-16T17:36:14.9842350Z test certify::tests::a_trait_call_is_the_method_of_its_type ... ok
+2026-11-16T17:36:14.9843108Z test certify::tests::a_workspace_declares_its_profile_in_its_cargo_manifest ... ok
+2026-11-16T17:36:14.9843763Z test certify::tests::an_adapter_converts_strings_lists_and_naturals ... ok
+2026-11-16T17:36:14.9844366Z test certify::tests::another_workspace_has_its_own_roots_packages_effects_and_target ... ok
+2026-11-16T17:36:14.9861986Z test certify::tests::a_sync_takes_the_packages_into_the_named_directory_keyed_by_kappa ... ok
+2026-11-16T17:36:14.9870539Z test certify::tests::keyed2_a_manifest_of_either_past_shape_is_read_and_only_this_key_carries ... ok
+2026-11-16T17:36:14.9910690Z test certify::tests::a_closure_kappa_changes_exactly_with_what_its_root_reaches ... ok
+2026-11-16T17:36:14.9931297Z test certify::tests::keyed_a_change_in_a_roots_closure_builds_it_again_though_its_kappa_is_unchanged ... ok
+2026-11-16T17:36:14.9932299Z test certify::tests::keyed_a_modules_declarations_are_read_by_name_whatever_their_kind_and_place ... ok
+2026-11-16T17:36:14.9950570Z test certify::tests::keyed_a_module_reached_through_another_modules_import_is_in_every_roots_identity ... ok
+2026-11-16T17:36:14.9951375Z test certify::tests::keyed_a_linked_packages_body_is_in_every_roots_identity ... ok
+2026-11-16T17:36:14.9999561Z test certify::tests::keyed_a_compiler_descriptor_or_configuration_change_builds_every_root_again ... ok
+2026-11-16T17:36:15.0043181Z test certify::tests::keyed_an_all_carried_sync_writes_the_edition_its_packages_were_built_for ... ok
+2026-11-16T17:36:15.0044992Z test certify::tests::keyed_the_plan_counts_the_markings_refusals_as_the_export_does ... ok
+2026-11-16T17:36:15.0070199Z test certify::tests::marking_makes_the_roots_production_and_their_callees_executable ... ok
+2026-11-16T17:36:15.0071522Z test certify::tests::keyed_the_relative_order_of_a_roots_closure_is_in_its_identity ... ok
+2026-11-16T17:36:15.0078951Z test certify::tests::the_differential_refuses_one_byte_apart ... ok
+2026-11-16T17:36:15.0079603Z test certify::tests::the_kept_bundles_are_read_in_build_order ... ok
+2026-11-16T17:36:15.0083552Z test certify::tests::the_manifest_round_trips ... ok
+2026-11-16T17:36:15.0085023Z test certify::tests::the_ratchet_holds_any_scope_and_a_scope_only_widens ... ok
+2026-11-16T17:36:15.0085807Z test certify::tests::the_ratchet_refuses_a_grown_surface_naming_each_new_row ... ok
+2026-11-16T17:36:15.0091274Z test certify::tests::the_roots_of_a_cases_export_are_the_projections_cases ... ok
+2026-11-16T17:36:15.0094814Z test convert::tests::the_lift_reads_no_certified_dispatch ... ok
+2026-11-16T17:36:15.0095707Z test embed::platform_tests::platform_intrinsics_read_their_stabilized_docs ... ok
+2026-11-16T17:36:15.0096519Z test embed::tests::a_function_pointer_is_one_however_it_prints ... ok
+2026-11-16T17:36:15.0097278Z test embed::tests::a_harness_output_without_its_checks_is_refused_ue_19 ... ok
+2026-11-16T17:36:15.0098597Z test embed::tests::a_linked_librarys_keys_are_renamed_as_whole_literals ... ok
+2026-11-16T17:36:15.0149725Z test certify::tests::keyed_a_root_is_carried_only_into_a_project_that_verifies ... ok
+2026-11-16T17:36:15.0151087Z test certify::tests::keyed_an_unchanged_root_is_carried_byte_for_byte_and_never_built ... ok
+2026-11-16T17:36:15.0151743Z test embed::tests::a_pattern_constant_is_its_base_integer ... ok
+2026-11-16T17:36:15.0152270Z test embed::tests::a_part_is_named_by_its_owners_dump_ue_19 ... ok
+2026-11-16T17:36:15.0152752Z test embed::tests::a_samples_fuel_counts_each_call_of_each_callee ... ok
+2026-11-16T17:36:15.0154203Z test embed::tests::a_static_is_read_as_its_initializer_ue_19 ... ok
+2026-11-16T17:36:15.0154679Z test embed::tests::a_transmutes_work_is_read_from_its_layouts ... ok
+2026-11-16T17:36:15.0161073Z test embed::tests::a_string_keeps_every_character_ue_19 ... ok
+2026-11-16T17:36:15.0161729Z test embed::tests::an_array_of_a_parameter_count_is_sized ... ok
+2026-11-16T17:36:15.0164732Z test embed::tests::an_impls_header_is_read_from_its_span ... ok
+2026-11-16T17:36:15.0165501Z test embed::tests::an_integer_constant_is_its_twos_complement_ue_19 ... ok
+2026-11-16T17:36:15.0171319Z test embed::tests::byte_strings_allocations_and_repeats_are_read_ue_19 ... ok
+2026-11-16T17:36:15.0173103Z test embed::tests::an_allocations_pointers_and_a_constants_item_are_read_ue_19 ... ok
+2026-11-16T17:36:15.0174125Z test embed::tests::inline_assembly_is_a_call_its_dictionary_answers ... ok
+2026-11-16T17:36:15.0176630Z test embed::tests::a_long_list_nests_no_deeper_than_its_bit_length_ue_19 ... ok
+2026-11-16T17:36:15.0177346Z test embed::tests::reads_a_subslice ... ok
+2026-11-16T17:36:15.0178153Z test embed::tests::names_an_item_by_a_trimmed_path ... ok
+2026-11-16T17:36:15.0199396Z test embed::tests::stamps_each_row_by_its_kappa ... ok
+2026-11-16T17:36:15.0199969Z test embed::tests::the_datatype_kinds_are_rustcs_kinds_ue_19 ... ok
+2026-11-16T17:36:15.0200657Z test embed::tests::the_undefined_constructs_are_read_from_the_evaluator_ue_19 ... ok
+2026-11-16T17:36:15.0201260Z test expand::tests::an_unmatched_invocation_is_kept ... ok
+2026-11-16T17:36:15.0201797Z test expand::tests::repetitions_expand_to_items ... ok
+2026-11-16T17:36:15.0202566Z test expand::tests::separated_lists_and_crate_paths_transcribe ... ok
+2026-11-16T17:36:15.0203212Z test ingest::tests::a_cfg_marks_test_code_where_it_holds_in_a_test_build_alone ... ok
+2026-11-16T17:36:15.0205450Z test ingest::tests::a_function_of_a_test_file_is_test_code ... ok
+2026-11-16T17:36:15.0207447Z test ingest::tests::a_module_declared_out_of_line_under_a_test_cfg_marks_its_files ... ok
+2026-11-16T17:36:15.0208710Z test ingest::tests::a_trait_method_stands_apart_where_its_type_has_another_of_its_name ... ok
+2026-11-16T17:36:15.0217094Z test ingest::tests::a_type_the_lift_does_not_read_says_its_shape ... ok
+2026-11-16T17:36:15.0218542Z test ingest::tests::each_module_scope_keeps_the_names_it_binds ... ok
+2026-11-16T17:36:15.0219495Z test ingest::tests::every_struct_is_registered_with_the_fields_its_shape_has ... ok
+2026-11-16T17:36:15.0221912Z test layouts::tests::a_field_of_another_crate_is_read_in_its_printed_module ... ok
+2026-11-16T17:36:15.0222741Z test layouts::tests::an_alias_may_be_written_in_the_modules_its_text_names ... ok
+2026-11-16T17:36:15.0223393Z test layouts::tests::writes_a_printed_type_as_source ... ok
+2026-11-16T17:36:15.0223936Z test layouts::tests::reads_a_layout_and_a_refusal ... ok
+2026-11-16T17:36:15.0224396Z test lex::tests::a_match_held_as_text_is_read_into_its_arms ... ok
+2026-11-16T17:36:15.0226656Z test lex::tests::a_short_definition_is_flat_and_a_long_one_breaks ... ok
+2026-11-16T17:36:15.0227282Z test lex::tests::residue_names_keep_their_case_rules_at_the_edges ... ok
+2026-11-16T17:36:15.0227873Z test lex::tests::strings_are_escaped_and_collapsed ... ok
+2026-11-16T17:36:15.0236698Z test lift::tests::a_chain_never_leads_back_into_the_type_it_explains ... ok
+2026-11-16T17:36:15.0242032Z test lex::tests::names_are_camel_cased_from_rust_and_cargo_names ... ok
+2026-11-16T17:36:15.0245862Z test lift::tests::a_default_method_takes_no_value_of_an_implementing_type ... ok
+2026-11-16T17:36:15.0399128Z test certify::tests::the_default_profile_is_the_translators_own ... ok
+2026-11-16T17:36:15.0428933Z test layouts::tests::a_librarys_root_is_the_one_its_manifest_names ... ok
+2026-11-16T17:36:15.0453087Z test lift::tests::a_lifetime_is_erased_and_a_taken_name_is_named ... ok
+2026-11-16T17:36:15.0454226Z test lift::tests::a_method_takes_the_value_of_its_type_first ... ok
+2026-11-16T17:36:15.0488806Z test lift::tests::a_guarded_row_and_the_rows_after_it_bind_distinct_names ... ok
+2026-11-16T17:36:15.0633366Z test lift::tests::a_match_on_a_state_enum_lifts_exhaustively ... ok
+2026-11-16T17:36:15.0646637Z test lift::tests::a_receiver_the_lift_does_not_thread_is_named_with_its_type ... ok
+2026-11-16T17:36:15.0657382Z test lift::tests::a_type_outside_the_lift_names_the_chain_to_its_leaf ... ok
+2026-11-16T17:36:15.0658266Z test lift::tests::a_percent_sign_is_residue ... ok
+2026-11-16T17:36:15.0679059Z test lift::tests::an_enum_names_the_variant_and_the_field_of_its_leaf ... ok
+2026-11-16T17:36:15.0718771Z test lift::tests::a_question_mark_in_an_operand_hoists ... ok
+2026-11-16T17:36:15.0880631Z test lift::tests::an_index_is_the_element_or_the_default ... ok
+2026-11-16T17:36:15.0988948Z test lift::tests::an_empty_vector_takes_the_type_the_block_returns ... ok
+2026-11-16T17:36:15.1038486Z test lift::tests::a_long_literal_is_balanced_halves ... ok
+2026-11-16T17:36:15.1128945Z test lift::tests::character_matches_lift_to_tests ... ok
+2026-11-16T17:36:15.1155014Z test lift::tests::arithmetic_without_a_named_overflow_is_residue ... ok
+2026-11-16T17:36:15.1165957Z test lift::tests::comparisons_and_logic_lift ... ok
+2026-11-16T17:36:15.1178761Z test lift::tests::library_types_read_by_name_or_by_their_full_path ... ok
+2026-11-16T17:36:15.1419371Z test lift::tests::early_returns_and_tuple_lets_lift ... ok
+2026-11-16T17:36:15.1598822Z test lift::tests::literal_matches_and_string_formats_lift ... ok
+2026-11-16T17:36:15.1639054Z test lift::tests::loops_continue_break_and_enumerate ... ok
+2026-11-16T17:36:15.1695095Z test lift::tests::iterator_chains_lift_to_structural_helpers ... ok
+2026-11-16T17:36:15.1696093Z test lift::tests::residue_a_field_named_by_position_is_an_item ... ok
+2026-11-16T17:36:15.1698171Z test lift::tests::residue_a_library_path_is_plain_full_and_of_a_type_the_lift_reads ... ok
+2026-11-16T17:36:15.1699090Z test lift::tests::residue_a_struct_value_is_a_record_or_its_family_constructor ... ok
+2026-11-16T17:36:15.1715158Z test lift::tests::residue_a_unit_value_is_named_by_its_type_or_its_variant ... ok
+2026-11-16T17:36:15.1716027Z test lift::tests::residue_fields_and_variants_read_only_where_every_one_lifts ... ok
+2026-11-16T17:36:15.1716893Z test lift::tests::every_struct_shape_is_a_type_or_names_its_leaf ... ok
+2026-11-16T17:36:15.2148949Z test lift::tests::shared_ownership_reads_as_its_content ... ok
+2026-11-16T17:36:15.2230666Z test lift::tests::maps_lift_only_where_their_order_is_defined ... ok
+2026-11-16T17:36:15.2231279Z test lift::tests::named_overflow_lifts ... ok
+2026-11-16T17:36:15.2328541Z test lift::tests::signed_strings_options_and_lets_lift ... ok
+2026-11-16T17:36:15.2538681Z test lift::tests::structs_and_tuples_lift ... ok
+2026-11-16T17:36:15.2578861Z test lift::tests::slice_recursion_is_structural ... ok
+2026-11-16T17:36:15.2579513Z test lift::tests::usize_widths_come_from_the_declared_targets ... ok
+2026-11-16T17:36:15.2580344Z test mir::core::tests::a_bodys_type_parameters_are_its_bare_names ... ok
+2026-11-16T17:36:15.2598872Z test mir::core::tests::a_const_trait_impls_const_parameters_have_their_types ... ok
+2026-11-16T17:36:15.2599783Z test mir::core::tests::a_parameters_associated_types_are_the_parameter ... ok
+2026-11-16T17:36:15.2600619Z test mir::core::tests::allocations_are_numbered_by_first_mention ... ok
+2026-11-16T17:36:15.2601571Z test mir::core::tests::causes_rank_by_kind_and_head ... ok
+2026-11-16T17:36:15.2857430Z test lift::tests::string_methods_lift_to_the_prelude ... ok
+2026-11-16T17:36:15.2868699Z test mir::core::tests::the_embeddings_summary_counts_each_kappa_once ... ok
+2026-11-16T17:36:15.2869508Z test mir::coverage::tests::every_kind_of_the_pinned_mir_has_a_row ... ok
+2026-11-16T17:36:15.2889082Z test mir::core::tests::every_module_key_round_trips_through_tomllib ... ok
+2026-11-16T17:36:15.2908756Z test mir::float::tests::every_operation_the_tables_name_is_defined ... ok
+2026-11-16T17:36:15.4199562Z test lift::tests::the_wide_signed_integers_lift_as_the_mathematical_int ... ok
+2026-11-16T17:36:15.6110784Z test lift::tests::statement_ifs_lift_the_statements_after_them_once ... ok
+2026-11-16T17:36:16.4290433Z test mir::float::tests::conversions_are_the_hosts ... ok
+2026-11-16T17:36:16.8439670Z test mir::float::tests::f32_unary_operations_are_the_hosts ... ok
+2026-11-16T17:36:19.5640966Z test mir::float::tests::f16_arithmetic_is_the_hosts_rounded_twice ... ok
+2026-11-16T17:36:19.5641653Z test mir::float::tests::formats_are_read_from_cores_constants ... ok
+2026-11-16T17:36:21.1650882Z test mir::float::tests::literals_and_named_constants_round_to_nearest ... ok
+2026-11-16T17:36:21.1735860Z test mir::generate::tests::std_is_vendored_from_the_pinned_toolchain ... ok
+2026-11-16T17:36:21.1765911Z test mir::generate::tests::the_spec_is_generated_from_the_pinned_mir_definition ... ok
+2026-11-16T17:36:21.1772659Z test mir::generate::tests::variants_are_read_at_the_enum_indentation ... ok
+2026-11-16T17:36:21.1779078Z test mir::int::tests::bounds_are_rusts ... ok
+2026-11-16T17:36:21.1788369Z test mir::int::tests::casts_are_rusts ... ok
+2026-11-16T17:36:21.1793817Z test mir::int::tests::helpers_are_well_founded_and_closed ... ok
+2026-11-16T17:36:21.1799391Z test mir::int::tests::literal_folds ... ok
+2026-11-16T17:36:21.1804917Z test mir::int::tests::order_is_rusts ... ok
+2026-11-16T17:36:21.1858390Z test mir::int::tests::rules_take_a_fixed_width ... ok
+2026-11-16T17:36:21.1868786Z test mir::int::tests::varying_targets_state_their_range ... ok
+2026-11-16T17:36:21.1869845Z test mir::layout::tests::a_layout_is_used_only_where_the_targets_agree ... ok
+2026-11-16T17:36:21.1878600Z test mir::layout::tests::a_malformed_data_layout_is_refused ... ok
+2026-11-16T17:36:21.1879586Z test mir::layout::tests::primitives_take_the_data_layouts_alignment ... ok
+2026-11-16T17:36:21.1880367Z test mir::lower::tests::a_held_borrow_and_its_place_share_a_match_key ... ok
+2026-11-16T17:36:21.1881862Z test mir::lower::tests::a_pointer_value_is_the_pointer_struct ... ok
+2026-11-16T17:36:21.1888537Z test mir::lower::tests::a_tuple_of_one_item_is_told_from_a_wider_one ... ok
+2026-11-16T17:36:21.1889471Z test mir::lower::tests::comparisons_read_back ... ok
+2026-11-16T17:36:21.1890158Z test mir::lower::tests::generic_arguments_are_erased_from_callees ... ok
+2026-11-16T17:36:21.1894553Z test mir::lower::tests::lifetime_arguments_are_left_out ... ok
+2026-11-16T17:36:21.1895981Z test mir::lower::tests::mir_types_name_the_lifts_types ... ok
+2026-11-16T17:36:21.1912385Z test mir::lower::tests::mut_parameters_are_threaded ... ok
+2026-11-16T17:36:21.1913082Z test mir::lower::tests::patterns_give_rustcs_valid_ranges_and_niches ... ok
+2026-11-16T17:36:21.1913833Z test mir::memory::tests::the_laws_name_their_cell_size ... ok
+2026-11-16T17:36:21.1915059Z test mir::parse::tests::a_dump_reads_into_blocks_locals_and_kinds ... ok
+2026-11-16T17:36:21.1918548Z test mir::parse::tests::paths_split_outside_generic_arguments ... ok
+2026-11-16T17:36:21.1928751Z test mir::parse::tests::places_nest_fields_downcasts_and_derefs ... ok
+2026-11-16T17:36:21.1929583Z test mir::parse::tests::reads_a_spanned_dump_as_the_plain_one_with_its_spans ... ok
+2026-11-16T17:36:21.1930358Z test mir::parse::tests::rvalues_read_as_their_kinds ... ok
+2026-11-16T17:36:21.1938469Z test mir::prove::tests::diagnostics_name_their_declarations ... ok
+2026-11-16T17:36:21.1940211Z test mir::site::tests::reads_whether_a_body_tracks_its_caller_and_where_its_calls_are ... ok
+2026-11-16T17:36:21.1948502Z test mir::std_vectors::std_agrees_with_every_vector_of_its_models ... ok
+2026-11-16T17:36:21.1949244Z test mir::stdlib::tests::generic_parameters_bind_to_the_call_sites_types ... ok
+2026-11-16T17:36:21.1958562Z test mir::stdlib::tests::models_apply_at_their_types ... ok
+2026-11-16T17:36:21.1959191Z test mir::stdlib::tests::std_paths_key_without_their_crate ... ok
+2026-11-16T17:36:21.2038866Z test mir::stdlib::tests::the_table_parses_and_names_only_vendored_bodies ... ok
+2026-11-16T17:36:21.2048842Z test mir::tests::impls_are_named_by_the_type_their_source_implements ... ok
+2026-11-16T17:36:21.2049579Z test mir::trips::tests::a_counter_below_a_constant_bounds_its_loop ... ok
+2026-11-16T17:36:21.2058564Z test mir::trips::tests::a_counter_compared_through_a_copy_bounds_its_loop ... ok
+2026-11-16T17:36:21.2059308Z test mir::trips::tests::a_halved_counter_bounds_its_loop_by_its_width ... ok
+2026-11-16T17:36:21.2060049Z test mir::trips::tests::a_loop_no_exit_bounds_is_unbounded ... ok
+2026-11-16T17:36:21.2068514Z test mir::verdict::tests::verdicts_round_trip ... ok
+2026-11-16T17:36:21.2082289Z test names::tests::a_body_is_read_with_what_it_writes_of_types ... ok
+2026-11-16T17:36:21.2226340Z test names::tests::a_call_the_written_code_leaves_open_stays_open ... ok
+2026-11-16T17:36:21.2228379Z test names::tests::a_name_the_body_binds_is_not_a_path_to_a_function ... ok
+2026-11-16T17:36:21.2358768Z test names::tests::a_path_resolves_through_use_and_the_nearest_module ... ok
+2026-11-16T17:36:21.2368700Z test names::tests::a_predicate_and_its_negation_hold_in_no_build_together ... ok
+2026-11-16T17:36:21.2378473Z test names::tests::default_features_follow_cargos_rules ... ok
+2026-11-16T17:36:21.2508789Z test names::tests::self_and_a_written_receiver_resolve_to_their_types_method ... ok
+2026-11-16T17:36:21.2518548Z test names::tests::the_projected_configuration_is_the_dumps ... ok
+2026-11-16T17:36:21.2948857Z test project::tests::a_call_means_a_traits_method_only_where_the_trait_is_in_scope ... ok
+2026-11-16T17:36:21.3339010Z test project::tests::a_call_resolves_in_its_nearest_module_before_it_is_ambiguous ... ok
+2026-11-16T17:36:21.3739248Z test project::tests::a_default_method_lifts_where_its_body_is_one_for_every_implementing_type ... ok
+2026-11-16T17:36:21.4129755Z test project::tests::a_free_function_keeps_the_name_a_method_reached_first_also_lifts_to ... ok
+2026-11-16T17:36:21.4608295Z test project::tests::a_method_of_a_type_outside_the_lift_names_the_leaf ... ok
+2026-11-16T17:36:21.5014967Z test project::tests::a_method_outside_the_lift_names_its_type_and_why ... ok
+2026-11-16T17:36:21.5018598Z test project::tests::a_module_beyond_the_stated_limit_is_a_typed_error ... ok
+2026-11-16T17:36:21.5409191Z test project::tests::a_module_declared_out_of_line_under_a_test_cfg_is_no_product_code ... ok
+2026-11-16T17:36:21.5469113Z test project::tests::a_module_of_separate_records_beyond_the_limit_is_written_in_parts ... ok
+2026-11-16T17:36:21.5520492Z test project::tests::a_module_that_cannot_be_parted_is_left_to_the_typed_error ... ok
+2026-11-16T17:36:21.5909030Z test project::tests::a_name_a_module_gave_is_not_taken_by_a_function_alone_of_its_name ... ok
+2026-11-16T17:36:21.6379254Z test project::tests::a_name_that_reads_as_no_one_type_states_why ... ok
+2026-11-16T17:36:21.6786305Z test project::tests::a_projection_is_checked_against_the_limit_it_states ... ok
+2026-11-16T17:36:21.7168759Z test project::tests::a_registry_type_a_use_binds_is_a_foreign_row ... ok
+2026-11-16T17:36:21.7647827Z test project::tests::a_trait_implementations_method_lifts_as_a_function_of_its_type_ue_15 ... ok
+2026-11-16T17:36:21.8055881Z test project::tests::a_traits_method_gives_way_to_the_function_that_holds_its_name ... ok
+2026-11-16T17:36:21.8536366Z test project::tests::a_type_named_as_lexlean_names_its_own_lifts_under_its_crate ... ok
+2026-11-16T17:36:21.8921016Z test project::tests::complementary_cfg_variants_are_one_fact_not_a_collision ... ok
+2026-11-16T17:36:21.9346168Z test project::tests::quality_states_the_lift_and_the_open_refusals_as_measures ... ok
+2026-11-16T17:36:21.9361100Z test project::tests::sha_meets_every_nist_short_vector ... ok
+2026-11-16T17:36:21.9370841Z test project::tests::sha_meets_the_nist_vectors_at_the_padding_bounds ... ok
+2026-11-16T17:36:21.9402362Z test project::tests::the_frontier_carries_the_queue_of_its_own_rows ... ok
+2026-11-16T17:36:21.9413390Z test project::tests::the_frontier_ranks_its_refusals_by_reason ... ok
+2026-11-16T17:36:21.9895069Z test project::tests::two_functions_of_one_path_share_one_row ... ok
+2026-11-16T17:36:22.0289863Z test project::tests::two_traits_methods_of_one_name_keep_a_row_each ... ok
+2026-11-16T17:36:22.0312486Z test queue::tests::a_merge_admits_only_a_retracted_regression ... ok
+2026-11-16T17:36:22.0318500Z test queue::tests::a_translated_kappa_may_not_turn_residue ... ok
+2026-11-16T17:36:22.0325023Z test register::tests::a_lifted_kappa_that_turns_unlifted_is_refused ... ok
+2026-11-16T17:36:22.0331922Z test register::tests::a_path_with_a_newline_is_refused - should panic ... ok
+2026-11-16T17:36:22.1238021Z test register::tests::a_queue_is_ranked_and_written_as_the_core_registers ... ok
+2026-11-16T17:36:22.1389494Z test register::tests::a_register_whose_queue_is_not_its_rows_is_refused ... ok
+2026-11-16T17:36:22.1446502Z test register::tests::an_older_register_is_still_read_admitted_and_checked ... ok
+2026-11-16T17:36:22.1453274Z test register::tests::kappa_depends_on_path_and_tokens ... ok
+2026-11-16T17:36:22.1459485Z test register::tests::the_preimage_is_the_models_fixture ... ok
+2026-11-16T17:36:22.1495093Z test register::tests::the_register_carries_its_totals_and_its_ranked_queue ... ok
+2026-11-16T17:36:22.1517000Z test register::tests::the_register_round_trips_and_rows_are_typed ... ok
+2026-11-16T17:36:22.1522909Z test registry::tests::a_dump_is_filed_under_its_module ... ok
+2026-11-16T17:36:22.1529340Z test registry::tests::a_sample_left_out_prints_its_cases_unbuilt ... ok
+2026-11-16T17:36:22.1534749Z test registry::tests::a_spec_is_a_name_at_a_version ... ok
+2026-11-16T17:36:22.1541293Z test tests::utc_renders_the_epoch_and_a_leap_day ... ok
+2026-11-16T17:36:22.1547033Z test wf::tests::a_call_on_a_let_bound_value_is_refused ... ok
+2026-11-16T17:36:22.1552982Z test wf::tests::a_call_under_a_constructor_branch_states_its_decrease ... ok
+2026-11-16T17:36:22.1560614Z test wf::tests::a_group_that_does_not_measure_is_refused ... ok
+2026-11-16T17:36:22.1567262Z test wf::tests::a_member_passing_its_argument_on_ranks_above_its_callee ... ok
+2026-11-16T17:36:32.5073434Z test mir::float::tests::f32_arithmetic_is_the_hosts ... ok
+2026-11-16T17:36:41.2274645Z test mir::float::tests::f32_binary_and_fused_operations_are_the_hosts ... ok
+2026-11-16T17:36:48.8750928Z test mir::float::tests::f64_arithmetic_is_the_hosts ... ok
+2026-11-16T17:36:48.8751231Z 
+2026-11-16T17:36:48.8751645Z test result: ok. 230 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 33.89s
+2026-11-16T17:36:48.8752007Z 
+2026-11-16T17:36:48.8758894Z      Running unittests src/main.rs (target/debug/deps/uorust-4a38250d31419083)
+2026-11-16T17:36:48.8767396Z 
+2026-11-16T17:36:48.8768347Z running 0 tests
+2026-11-16T17:36:48.8768703Z 
+2026-11-16T17:36:48.8769020Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:36:48.8769405Z 
+2026-11-16T17:36:48.8771008Z      Running tests/certify.rs (target/debug/deps/certify-8495373edb58234f)
+2026-11-16T17:36:48.8777624Z 
+2026-11-16T17:36:48.8778161Z running 2 tests
+2026-11-16T17:36:48.8871976Z test a_plan_reads_the_workspaces_profile_and_agree_refuses_a_functions_crate ... ok
+2026-11-16T17:36:48.8880976Z test the_ratchet_holds_a_workspaces_own_scope ... ok
+2026-11-16T17:36:48.8881313Z 
+2026-11-16T17:36:48.8881565Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-11-16T17:36:48.8881943Z 
+2026-11-16T17:36:48.8892718Z      Running tests/cli.rs (target/debug/deps/cli-87e6792cac3830ac)
+2026-11-16T17:36:48.8893091Z 
+2026-11-16T17:36:48.8919144Z running 12 tests
+2026-11-16T17:36:48.8934544Z test layouts_of_no_aggregate_ask_for_nothing_ue_19 ... ok
+2026-11-16T17:36:48.8958931Z test the_bridge_refuses_an_unwritten_project_and_carries_only_its_own_rows_ue_19 ... ok
+2026-11-16T17:36:48.8959504Z test the_cli_compares_the_two_translators_by_kappa_ue_18 ... ok
+2026-11-16T17:36:48.8961188Z test the_cli_lists_the_routes_ue_05 ... ok
+2026-11-16T17:36:48.9193800Z test the_cli_plans_an_export_and_refuses_to_diagnose_without_a_target ... ok
+2026-11-16T17:36:48.9959291Z test the_cli_projects_a_fresh_package_without_an_empty_module_ue_01 ... ok
+2026-11-16T17:36:48.9994872Z test the_cli_refuses_an_embedding_without_a_target_ue_19 ... ok
+2026-11-16T17:36:49.0310690Z test the_cli_writes_and_merges_library_registers ... ok
+2026-11-16T17:36:49.0550431Z test the_hooks_retest_a_patch_unless_main_moved_disjointly ... ok
+2026-11-16T17:36:49.1199335Z test the_cli_refuses_a_bundle_it_cannot_export_or_take_in ... ok
+2026-11-16T17:36:49.2516296Z test the_cli_dumps_mir_and_proves_on_the_verdicts_ue_17 ... ok
+2026-11-16T17:36:49.7255773Z test the_cli_projects_and_checks_the_fixture_ue_01 ... ok
+2026-11-16T17:36:49.7256091Z 
+2026-11-16T17:36:49.7256287Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.84s
+2026-11-16T17:36:49.7256628Z 
+2026-11-16T17:36:49.7258293Z      Running tests/engine.rs (target/debug/deps/engine-9f84cfe59bb0839a)
+2026-11-16T17:36:49.7271967Z 
+2026-11-16T17:36:49.7272491Z running 28 tests
+2026-11-16T17:36:49.7277707Z test a_census_without_its_library_sources_refuses ... ok
+2026-11-16T17:36:49.7391214Z test a_constant_path_rustc_prints_for_two_items_is_refused ... ok
+2026-11-16T17:36:49.7397685Z test a_switch_on_ordering_reads_its_declared_discriminants ... ok
+2026-11-16T17:36:49.7641034Z test a_call_admission_resolves_lifts_as_the_function_it_resolves_to ... ok
+2026-11-16T17:36:49.7760472Z test core_bodies_are_translated_into_a_monotone_register ... ok
+2026-11-16T17:36:49.7800425Z test ambiguity_is_refused_with_a_typed_open_claim_ue_03 ... ok
+2026-11-16T17:36:49.8030654Z test a_lifted_kappa_that_turns_unlifted_is_refused_ue_16 ... ok
+2026-11-16T17:36:49.8114475Z test every_core_body_is_embedded_ue_19 ... ok
+2026-11-16T17:36:49.8569025Z test advisories_are_risks_on_the_supply_chain_ue_12 ... ok
+2026-11-16T17:36:50.1370126Z test each_module_is_an_opm_view_ue_09 ... ok
+2026-11-16T17:36:50.1390226Z test engine_modules_have_their_own_titles_ue_10 ... ok
+2026-11-16T17:36:50.1395509Z test every_mir_kind_of_the_pinned_toolchain_has_a_coverage_row_ue_17 ... ok
+2026-11-16T17:36:50.2090587Z test every_failure_is_a_typed_variant_ue_06 ... ok
+2026-11-16T17:36:50.3953839Z test every_retraction_is_witnessed ... ok
+2026-11-16T17:36:50.3961256Z test library_shards_read_their_sources_and_merge_only_whole ... ok
+2026-11-16T17:36:50.4475358Z test iterator_chains_methods_and_maps_lift_ue_15 ... ok
+2026-11-16T17:37:49.8586724Z test every_feature_of_this_workspace_is_accepted_ue_13 has been running for over 60 seconds
+2026-11-16T17:37:50.1371038Z test every_function_of_product_code_has_exactly_one_row_ue_16 has been running for over 60 seconds
+2026-11-16T17:37:50.3990152Z test no_lifted_kappa_turns_unlifted_ue_16 has been running for over 60 seconds
+2026-11-16T17:37:50.4490142Z test projections_are_byte_identical_ue_02 has been running for over 60 seconds
+2026-11-16T17:42:02.8839955Z test every_feature_of_this_workspace_is_accepted_ue_13 ... ok
+2026-11-16T17:42:03.2745729Z test pub_trait_methods_are_interface_calls_ue_08 ... ok
+2026-11-16T17:42:03.6444156Z test the_fixture_projects_to_the_committed_project_ue_01 ... ok
+2026-11-16T17:42:04.0427646Z test the_floor_lifts_and_the_rest_is_typed_residue_ue_04 ... ok
+2026-11-16T17:42:04.6008588Z test no_lifted_kappa_turns_unlifted_ue_16 ... ok
+2026-11-16T17:42:04.7175422Z test the_prover_keeps_a_decided_register_ue_17 ... ok
+2026-11-16T17:42:05.0203520Z test the_mir_path_translates_and_admits_on_verdicts_ue_17 ... ok
+2026-11-16T17:42:05.3848141Z test the_widened_lift_covers_the_fixture_ue_11 ... ok
+2026-11-16T17:42:05.3857201Z test vv_runs_the_sdk_checks_on_both_projections_ue_07 ... ok
+2026-11-16T17:42:06.7383723Z test every_function_of_product_code_has_exactly_one_row_ue_16 ... ok
+2026-11-16T17:43:04.7182408Z test the_self_projection_reproduces_the_hand_model_ue_14 has been running for over 60 seconds
+2026-11-16T17:43:17.9979922Z test projections_are_byte_identical_ue_02 ... ok
+2026-11-16T17:43:19.5337676Z test the_self_projection_reproduces_the_hand_model_ue_14 ... ok
+2026-11-16T17:43:19.5338252Z 
+2026-11-16T17:43:19.5338522Z test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 389.81s
+2026-11-16T17:43:19.5339117Z 
+2026-11-16T17:43:19.5366771Z      Running tests/routes.rs (target/debug/deps/routes-b41617450b68135d)
+2026-11-16T17:43:19.5374937Z 
+2026-11-16T17:43:19.5375671Z running 2 tests
+2026-11-16T17:43:19.5389897Z test a_planted_disagreement_is_caught_ue_05 ... ok
+2026-11-16T17:43:19.5407763Z test routes_agree_ue_05 ... ok
+2026-11-16T17:43:19.5408377Z 
+2026-11-16T17:43:19.5408724Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:19.5409063Z 
+2026-11-16T17:43:19.5410428Z      Running unittests src/lib.rs (target/debug/deps/uorust_certified-15337ed4ef0eb2be)
+2026-11-16T17:43:19.5416943Z 
+2026-11-16T17:43:19.5417211Z running 0 tests
+2026-11-16T17:43:19.5417390Z 
+2026-11-16T17:43:19.5417821Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:19.5418311Z 
+2026-11-16T17:43:19.5418727Z      Running unittests src/main.rs (target/debug/deps/xtask-d6cddd2171117a56)
+2026-11-16T17:43:19.5426215Z 
+2026-11-16T17:43:19.5426351Z running 22 tests
+2026-11-16T17:43:19.5430999Z test audit::tests::a_publish_false_crate_is_not_audited ... ok
+2026-11-16T17:43:19.5431714Z test audit::tests::the_lift_residue_is_sanctioned ... ok
+2026-11-16T17:43:19.5442621Z test audit::tests::any_other_error_type_is_still_refused ... ok
+2026-11-16T17:43:19.5443200Z test audit::tests::the_engine_error_is_sanctioned ... ok
+2026-11-16T17:43:19.5443756Z test bootstrap::tests::floating_action_plant_is_rejected ... ok
+2026-11-16T17:43:19.5452284Z test bootstrap::tests::host_docker_plugin_plant_is_rejected ... ok
+2026-11-16T17:43:19.5452975Z test bootstrap::tests::incomplete_release_lifecycle_plant_is_rejected ... ok
+2026-11-16T17:43:19.5455225Z test bootstrap::tests::accepted_promotion_bypass_plant_is_rejected ... ok
+2026-11-16T17:43:19.5464274Z test bootstrap::tests::dependency_updates_preserve_sdk_ownership_and_ordinary_maintenance ... ok
+2026-11-16T17:43:19.5465523Z test bootstrap::tests::mutable_sdk_plant_is_rejected ... ok
+2026-11-16T17:43:19.5466648Z test bootstrap::tests::missing_or_credential_nested_buildx_state_is_rejected ... ok
+2026-11-16T17:43:19.5477040Z test bootstrap::tests::narrowed_policy_boundary_plant_is_rejected ... ok
+2026-11-16T17:43:19.5477868Z test bootstrap::tests::native_platform_inventory_rejects_swaps_missing_platforms_and_legacy_drift ... ok
+2026-11-16T17:43:19.5478896Z test bootstrap::tests::dropped_native_coverage_plant_is_rejected ... ok
+2026-11-16T17:43:19.5479454Z test bootstrap::tests::shallow_checkout_plant_is_rejected ... ok
+2026-11-16T17:43:19.5480009Z test bootstrap::tests::universal_policy_drift_plant_is_rejected ... ok
+2026-11-16T17:43:19.5480548Z test bootstrap::tests::project_overwrite_plant_is_rejected ... ok
+2026-11-16T17:43:19.5481201Z test bootstrap::tests::sha256_identity_retains_canonical_lowercase_bytes ... ok
+2026-11-16T17:43:19.5490504Z test scaffold::tests::malformed_or_duplicate_capabilities_write_nothing ... ok
+2026-11-16T17:43:19.5491501Z test scaffold::tests::the_empty_register_becomes_a_table ... ok
+2026-11-16T17:43:19.5495446Z test scaffold::tests::scaffolded_capabilities_satisfy_the_meta_gate ... ok
+2026-11-16T17:43:19.5780610Z TAP version 13
+2026-11-16T17:43:19.6114472Z # Subtest: absent standards lock receives exact SDK bytes and matching bytes remain unchanged
+2026-11-16T17:43:19.6120017Z ok 1 - absent standards lock receives exact SDK bytes and matching bytes remain unchanged
+2026-11-16T17:43:19.6120529Z   ---
+2026-11-16T17:43:19.6121016Z   duration_ms: 5.332625
+2026-11-16T17:43:19.6121333Z   type: 'test'
+2026-11-16T17:43:19.6121849Z   ...
+2026-11-16T17:43:19.6150113Z # Subtest: different project standards bytes are rejected without replacement
+2026-11-16T17:43:19.6154569Z ok 2 - different project standards bytes are rejected without replacement
+2026-11-16T17:43:19.6155075Z   ---
+2026-11-16T17:43:19.6155293Z   duration_ms: 3.699363
+2026-11-16T17:43:19.6155514Z   type: 'test'
+2026-11-16T17:43:19.6155773Z   ...
+2026-11-16T17:43:19.6202364Z 1..2
+2026-11-16T17:43:19.6202826Z # tests 2
+2026-11-16T17:43:19.6203221Z # suites 0
+2026-11-16T17:43:19.6203935Z # pass 2
+2026-11-16T17:43:19.6204372Z # fail 0
+2026-11-16T17:43:19.6204640Z # cancelled 0
+2026-11-16T17:43:19.6204913Z # skipped 0
+2026-11-16T17:43:19.6205175Z # todo 0
+2026-11-16T17:43:19.6205433Z # duration_ms 50.774063
+2026-11-16T17:43:19.6231136Z test bootstrap::tests::initial_standards_binding_refuses_project_drift ... ok
+2026-11-16T17:43:19.6231765Z 
+2026-11-16T17:43:19.6232481Z test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+2026-11-16T17:43:19.6232838Z 
+2026-11-16T17:43:19.6233141Z      Running tests/cli.rs (target/debug/deps/cli-41c8427d59ff2107)
+2026-11-16T17:43:19.6241282Z 
+2026-11-16T17:43:19.6241456Z running 2 tests
+2026-11-16T17:43:19.6250932Z test an_unknown_task_prints_the_task_list_and_fails ... ok
+2026-11-16T17:43:19.6265005Z test check_model_passes_on_this_repository_cm_01 ... ok
+2026-11-16T17:43:19.6265232Z 
+2026-11-16T17:43:19.6265471Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:19.6265812Z 
+2026-11-16T17:43:19.6266206Z    Doc-tests repo_conformance
+2026-11-16T17:43:19.6543704Z 
+2026-11-16T17:43:19.6544142Z running 0 tests
+2026-11-16T17:43:19.6544353Z 
+2026-11-16T17:43:19.6545319Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:19.6545755Z 
+2026-11-16T17:43:19.6561395Z    Doc-tests repo_model
+2026-11-16T17:43:19.6849246Z 
+2026-11-16T17:43:19.6849610Z running 0 tests
+2026-11-16T17:43:19.6850219Z 
+2026-11-16T17:43:19.6850473Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:19.6850782Z 
+2026-11-16T17:43:19.6865411Z    Doc-tests uorust
+2026-11-16T17:43:20.2389648Z 
+2026-11-16T17:43:20.2390575Z running 0 tests
+2026-11-16T17:43:20.2391014Z 
+2026-11-16T17:43:20.2391311Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:20.2391584Z 
+2026-11-16T17:43:20.2413356Z    Doc-tests uorust_certified
+2026-11-16T17:43:21.8940145Z 
+2026-11-16T17:43:21.8941259Z running 0 tests
+2026-11-16T17:43:21.8941501Z 
+2026-11-16T17:43:21.8941829Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-11-16T17:43:21.8942194Z 
+2026-11-16T17:43:21.8985160Z cargo deny --all-features check
+2026-11-16T17:43:22.2059916Z advisories ok, bans ok, licenses ok, sources ok
+2026-11-16T17:43:22.2063709Z cd app && lexlean fmt --check && lexlean lock --check
+2026-11-16T17:43:22.6177597Z 25 modules are canonical
+2026-11-16T17:43:22.8940310Z lexlean.lock is current
+2026-11-16T17:43:22.9045995Z prismpm --project app verify
+2026-11-16T17:50:11.0900605Z prismpm: no proof statement (proof.input): the project has no prismpm.lock, so no SDK image is pinned to name as the verifier's host
+2026-11-16T17:50:11.1337409Z verified attestation: f35d5212ec17f020afc7a386049e61bf0cdf3ab5be10be1ea46ddc68a47e5bdf
+2026-11-16T17:50:11.1593774Z cargo run -q --locked -p uorust -- check crates/uorust/tests/fixtures/thermostat --out crates/uorust/tests/fixtures/thermostat-prism --name thermostat --last-modified 2026-11-11T00:00:00Z
+2026-11-16T17:50:11.4777385Z crates/uorust/tests/fixtures/thermostat-prism is the current projection
+2026-11-16T17:50:11.4793559Z cd crates/uorust/tests/fixtures/thermostat-prism && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+2026-11-16T17:50:11.9790379Z 14 modules are canonical
+2026-11-16T17:50:12.2603013Z lexlean.lock is current
+2026-11-16T17:50:41.0878817Z verified 14 modules; attestation ef39938c5bd17070053bf123802a24b02fb6726416d7867c17a29dff5dc55e7b
+2026-11-16T17:50:43.6136885Z check passed (semantic ID: 07d725533ee7906dbfd3c3f152758b6a0d62dd137fa9b5899460aaedaed7c694)
+2026-11-16T17:50:43.6400539Z rm -rf target/uorust-self
+2026-11-16T17:50:43.6418382Z cargo run -q --locked -p uorust -- mir . --out target/mir
+2026-11-16T17:53:29.3910208Z dumped the MIR of . into target/mir
+2026-11-16T17:53:29.3914765Z cargo run -q --locked -p uorust -- project . --out target/uorust-self --name uorust --last-modified 2026-11-11T00:00:00Z --mir target/mir --verdicts lift-verdicts.toml
+2026-11-16T17:54:45.9994626Z wrote 84 files to target/uorust-self
+2026-11-16T17:54:46.0616406Z cargo run -q --locked -p uorust -- check . --out target/uorust-self --name uorust --last-modified 2026-11-11T00:00:00Z --register frontier.toml --mir target/mir --verdicts lift-verdicts.toml
+2026-11-16T17:55:59.1557411Z target/uorust-self is the current projection
+2026-11-16T17:55:59.2152625Z cd target/uorust-self && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+2026-11-16T17:56:00.4693281Z 13 modules are canonical
+2026-11-16T17:56:00.7539925Z lexlean.lock is current
+2026-11-16T17:59:07.6117792Z verified 13 modules; attestation ea953d468d1cff12fc3de37a97a27ddd8d4fa2a8ba010d619d4fb6f8975fef99
+2026-11-16T17:59:12.7162362Z check passed (semantic ID: b8bab59e62cea12b4ee0da130497174f97854ba7008f671e43f3f54280615a1d)
+2026-11-16T17:59:12.7726157Z rm -rf target/uorust-advised
+2026-11-16T17:59:12.7751286Z cargo run -q --locked -p uorust -- project crates/uorust/tests/fixtures/advised --out target/uorust-advised --name advised --last-modified 2026-11-11T00:00:00Z --advisories crates/uorust/tests/fixtures/advised/advisory-db
+2026-11-16T17:59:12.8601891Z wrote 81 files to target/uorust-advised
+2026-11-16T17:59:12.8606538Z cd target/uorust-advised && lexlean fmt --check && lexlean lock --check && lexlean verify && prismpm check
+2026-11-16T17:59:13.1952088Z 13 modules are canonical
+2026-11-16T17:59:13.4723336Z lexlean.lock is current
+2026-11-16T17:59:31.0920566Z verified 13 modules; attestation 38ecd2ac2190778ef0e5c05e811739b43811e5ef0b607a7238ac54aaf8d6734b
+2026-11-16T17:59:32.8517119Z check passed (semantic ID: 8d2bec127e5043e5b662eaf94081a782767105ac60bd33f42adee724f901c591)
+2026-11-16T17:59:32.8678519Z vv: the acceptance gate passed
+2026-11-16T17:59:33.4734641Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-11-16T17:59:33.4735084Z with:
+2026-11-16T17:59:33.4735457Z   name: numeric-export-baseline-43919280445
+2026-11-16T17:59:33.4735745Z   path: evidence/
+2026-11-16T17:59:33.4735982Z   if-no-files-found: error
+2026-11-16T17:59:33.4736237Z   retention-days: 30
+2026-11-16T17:59:33.4736496Z   compression-level: 6
+2026-11-16T17:59:33.4736718Z   overwrite: false
+2026-11-16T17:59:33.4736941Z   include-hidden-files: false
+2026-11-16T17:59:33.4737201Z ##[endgroup]
+2026-11-16T17:59:34.1756190Z (node:37085) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-16T17:59:34.1756673Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-16T17:59:34.1895520Z With the provided path, there will be 5 files uploaded
+2026-11-16T17:59:34.1900259Z Artifact name is valid!
+2026-11-16T17:59:34.1900580Z Root directory input is valid!
+2026-11-16T17:59:34.6586771Z Beginning upload of artifact content to blob storage
+2026-11-16T17:59:34.8022567Z (node:37085) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-16T17:59:34.8507500Z Uploaded bytes 12702
+2026-11-16T17:59:34.8703641Z Finished uploading artifact content to blob storage!
+2026-11-16T17:59:34.8704212Z SHA256 digest of uploaded artifact zip is 47ceca49cd29eac9d04c5a3531620f7d2bee76818b3d9005a7b2b095cebec1c7
+2026-11-16T17:59:34.8705241Z Finalizing artifact upload
+2026-11-16T17:59:35.2124011Z Artifact numeric-export-baseline-43919280445.zip successfully finalized. Artifact ID 14254952619
+2026-11-16T17:59:35.2124734Z Artifact numeric-export-baseline-43919280445 has been successfully uploaded! Final size is 12702 bytes. Artifact ID is 14254952619
+2026-11-16T17:59:35.2129548Z Artifact download URL: https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43919280445/artifacts/14254952619
+2026-11-16T17:59:35.2318429Z Post job cleanup.
+2026-11-16T17:59:35.3034831Z [command]/usr/bin/git version
+2026-11-16T17:59:35.3124453Z git version 2.56.1
+2026-11-16T17:59:35.3148750Z Temporarily overriding HOME='/home/runner/work/_temp/49eeec8c-9469-4060-8d52-d278e5f760b5' before making global git config changes
+2026-11-16T17:59:35.3149656Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T17:59:35.3152223Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/uorust
+2026-11-16T17:59:35.3178089Z Removing SSH command configuration
+2026-11-16T17:59:35.3183016Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:59:35.3207464Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:59:35.3496193Z Removing HTTP extra header
+2026-11-16T17:59:35.3496884Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:59:35.3524069Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:59:35.3695555Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:59:35.3696261Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:59:35.3713814Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:59:35.3986202Z Post job cleanup.
+2026-11-16T17:59:35.4700984Z [command]/usr/bin/git version
+2026-11-16T17:59:35.4731832Z git version 2.56.1
+2026-11-16T17:59:35.4761288Z Temporarily overriding HOME='/home/runner/work/_temp/4517ed40-e3b2-42a7-8b1a-a9966a97d246' before making global git config changes
+2026-11-16T17:59:35.4761900Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T17:59:35.4765844Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/game
+2026-11-16T17:59:35.4794709Z Removing SSH command configuration
+2026-11-16T17:59:35.4799846Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T17:59:35.4823683Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T17:59:35.4983519Z Removing HTTP extra header
+2026-11-16T17:59:35.4987792Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T17:59:35.5012435Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T17:59:35.5169069Z Removing includeIf entries pointing to credentials config files
+2026-11-16T17:59:35.5169470Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T17:59:35.5191129Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T17:59:35.5495110Z Cleaning up orphan processes
+2026-11-16T17:59:35.5833935Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+

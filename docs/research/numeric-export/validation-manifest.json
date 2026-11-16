@@ -1,8 +1,8 @@
 {
   "schema": "cs1618/numeric-export-validation/1",
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
-  "candidate_tree": "80dcc02ddd30b4e44788189ed81bac2c3d4db80f",
-  "patch_sha256": "135bc1e6c6bc2f8aebf169c3c3fcff729a268862e548d368c8e0b1867eb4fa40",
+  "candidate_tree": "aa5082efb83d6fd38275d00aec404929fbe34d9c",
+  "patch_sha256": "05a866911f5c6386ccf6665cb178471e039cae6a2da1b84a27033491affa33e3",
   "bootstrap_sha256": "4461275d96f70e6feda725f2226a35c5a96416300801bc82dc954e02386a7bdd",
   "lock_sha256": "afd870ad28f323212ff11d1aa12b567ba584de7428be7aae567b6b0e7121d19f",
   "sdk_image": "ghcr.io/afflom/prismpm-sdk-patched@sha256:c1bfe8d5d3b3473a2c2ca6fdd417158a3e9f5fff3b24dcbf587fe21d6fd9b635",
@@ -16,6 +16,7 @@
     "crates/uorust/tests/fixtures/numeric-export/wasm.rs",
     "docs/numeric-export.md",
     "features/suites/engine.feature",
+    "frontier.toml",
     "model/ids.toml",
     "scripts/probe-numeric-export.sh"
   ]
