@@ -24,7 +24,7 @@ import {createRoundKernel} from '../shared/round-kernel';
 import {Match} from '../server/match';
 test('generated tactics complete a real emergency defuse while a visible enemy distracts the baseline',async()=>{
  const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm')),kernel=await createRoundKernel(await readFile('public/wasm/cs_round.wasm'));
- const run=(creative:boolean)=>{const m=new Match('TACTIC',engine,kernel,...(creative?[(facts:BotFacts)=>decideProgram(synthesizeTactics(42),facts)]:[]) as []);m.join('a','Enemy','attack');const bot=m.join('d','Defuser','defend',true)!;m.phase='live';m.phaseLeft=80;Object.assign(bot,{x:0,z:18,kit:true});Object.assign(m.players.get('a')!,{x:0,z:22});m.bomb={state:'planted',carrier:null,x:0,y:0,z:18,site:'A',remaining:6.2};for(let i=0;i<320;i++)m.step(1/60);return m;};
+ const run=(creative:boolean)=>{const m=new Match('TACTIC',engine,kernel,creative?(facts:BotFacts)=>decideProgram(synthesizeTactics(42),facts):()=>null);m.join('a','Enemy','attack');const bot=m.join('d','Defuser','defend',true)!;m.phase='live';m.phaseLeft=80;Object.assign(bot,{x:0,z:18,kit:true});Object.assign(m.players.get('a')!,{x:0,z:22});m.bomb={state:'planted',carrier:null,x:0,y:0,z:18,site:'A',remaining:6.2};for(let i=0;i<320;i++)m.step(1/60);return m;};
  assert.equal(run(true).reason,'Device defused');assert.notEqual(run(false).reason,'Device defused');
 });
 test('tactics receive local visible facts, never hidden enemy coordinates',async()=>{
