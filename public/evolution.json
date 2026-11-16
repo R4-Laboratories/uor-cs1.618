@@ -283,126 +283,30 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-16T22:16:32.345Z",
-    "base": "bef3ddd63b9e09d2a89fc636a097cb36eae21099",
+    "at": "2026-11-16T22:29:33.140Z",
+    "base": "06f3ee3b9758b649191454c29127fa7ad18eb768",
     "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
-    "previous": "49e2065444592cc9838d5482d9662382002613b10bc8076fbf5f5741342ca0af",
+    "previous": "cda0b71f84481b3c7d7ed3fab496326bc83674b23a5da07a53562e7f00751a5b",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "render-64-4",
+        "candidate": "render-8-4",
         "family": "render",
         "author": "optimizer",
         "metric": "work count",
-        "configHash": "aaff297533a7ab34fa573c6d8ee5dd282939cb3e94c880472631657b2ce5e856",
+        "configHash": "2c3bbb87ebb11b978146988f7cc58f90f5041f6f8cfd378ad53fd5ddba297c50",
         "baselineWork": 67276,
-        "candidateWork": 49964,
-        "fidelity": true,
-        "bounds": false,
-        "samples": 4,
-        "comparisons": [
-          {
-            "mean": 1.2254901960784314e-7,
-            "changed": 0
-          },
-          {
-            "mean": 0.0000010110294117647058,
-            "changed": 0.0000078125
-          },
-          {
-            "mean": 1.2254901960784314e-7,
-            "changed": 0
-          },
-          {
-            "mean": 2.9105392156862744e-7,
-            "changed": 0.00000390625
-          }
-        ],
-        "reference": [
-          {
-            "calls": 377,
-            "triangles": 4594,
-            "frameMs": 2.8000000000029104
-          },
-          {
-            "calls": 274,
-            "triangles": 3478,
-            "frameMs": 2
-          },
-          {
-            "calls": 317,
-            "triangles": 3762,
-            "frameMs": 3
-          },
-          {
-            "calls": 388,
-            "triangles": 4786,
-            "frameMs": 2.599999999991269
-          }
-        ],
-        "before": [
-          {
-            "calls": 141,
-            "triangles": 5038,
-            "frameMs": 5.600000000005821
-          },
-          {
-            "calls": 104,
-            "triangles": 4102,
-            "frameMs": 1.1999999999970896
-          },
-          {
-            "calls": 109,
-            "triangles": 4062,
-            "frameMs": 3
-          },
-          {
-            "calls": 136,
-            "triangles": 5074,
-            "frameMs": 1.8000000000029104
-          }
-        ],
-        "after": [
-          {
-            "calls": 84,
-            "triangles": 5398,
-            "frameMs": 1.3000000000029104
-          },
-          {
-            "calls": 61,
-            "triangles": 5242,
-            "frameMs": 0.9000000000087311
-          },
-          {
-            "calls": 66,
-            "triangles": 4926,
-            "frameMs": 1
-          },
-          {
-            "calls": 79,
-            "triangles": 5398,
-            "frameMs": 1.6000000000058208
-          }
-        ]
-      },
-      {
-        "candidate": "render-8-2",
-        "family": "render",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "ac5c513909c7eea1ec74468f3d281e3b45de14b329889e94979f79888aeaa254",
-        "baselineWork": 67276,
-        "candidateWork": 79016,
+        "candidateWork": 92276,
         "fidelity": true,
         "bounds": true,
         "samples": 4,
         "comparisons": [
           {
-            "mean": 5.616830065359477e-8,
+            "mean": 5.106209150326797e-8,
             "changed": 0
           },
           {
-            "mean": 0.0000010008169934640522,
+            "mean": 9.0890522875817e-7,
             "changed": 0.0000078125
           },
           {
@@ -418,72 +322,72 @@
           {
             "calls": 377,
             "triangles": 4594,
-            "frameMs": 3.6999999999825377
+            "frameMs": 8.599999999976717
           },
           {
             "calls": 274,
             "triangles": 3478,
-            "frameMs": 1.8999999999941792
+            "frameMs": 2.1999999999825377
           },
           {
             "calls": 317,
             "triangles": 3762,
-            "frameMs": 3.1999999999825377
+            "frameMs": 3
           },
           {
             "calls": 388,
             "triangles": 4786,
-            "frameMs": 2.6999999999825377
+            "frameMs": 3.2999999999883585
           }
         ],
         "before": [
           {
             "calls": 141,
             "triangles": 5038,
-            "frameMs": 2.3999999999941792
+            "frameMs": 4.100000000005821
           },
           {
             "calls": 104,
             "triangles": 4102,
-            "frameMs": 1.8999999999941792
+            "frameMs": 2.3000000000174623
           },
           {
             "calls": 109,
             "triangles": 4062,
-            "frameMs": 3.8999999999941792
+            "frameMs": 2.599999999976717
           },
           {
             "calls": 136,
             "triangles": 5074,
-            "frameMs": 2
+            "frameMs": 6.5
           }
         ],
         "after": [
           {
-            "calls": 177,
-            "triangles": 4990,
-            "frameMs": 2.2999999999883585
+            "calls": 209,
+            "triangles": 4834,
+            "frameMs": 5.600000000005821
           },
           {
-            "calls": 127,
-            "triangles": 3766,
-            "frameMs": 2.7999999999883585
+            "calls": 149,
+            "triangles": 3706,
+            "frameMs": 2.5
           },
           {
-            "calls": 139,
-            "triangles": 3882,
-            "frameMs": 2.1000000000058208
-          },
-          {
-            "calls": 171,
-            "triangles": 4978,
+            "calls": 175,
+            "triangles": 3858,
             "frameMs": 2.2000000000116415
+          },
+          {
+            "calls": 216,
+            "triangles": 4978,
+            "frameMs": 2.5
           }
         ]
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "cda0b71f84481b3c7d7ed3fab496326bc83674b23a5da07a53562e7f00751a5b"
+    "hash": "6ae1a11b25065e441823efe0b2b6ce6576d28a3359932b30f1958ab7159aff74"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -7304,6 +7208,115 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "cda0b71f84481b3c7d7ed3fab496326bc83674b23a5da07a53562e7f00751a5b"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-16T22:29:33.140Z",
+      "base": "06f3ee3b9758b649191454c29127fa7ad18eb768",
+      "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
+      "previous": "cda0b71f84481b3c7d7ed3fab496326bc83674b23a5da07a53562e7f00751a5b",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "render-8-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "2c3bbb87ebb11b978146988f7cc58f90f5041f6f8cfd378ad53fd5ddba297c50",
+          "baselineWork": 67276,
+          "candidateWork": 92276,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 5.106209150326797e-8,
+              "changed": 0
+            },
+            {
+              "mean": 9.0890522875817e-7,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.1744281045751634e-7,
+              "changed": 0
+            },
+            {
+              "mean": 5.1062091503267976e-9,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 8.599999999976717
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 2.1999999999825377
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 3
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 3.2999999999883585
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 4.100000000005821
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 2.3000000000174623
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 2.599999999976717
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 6.5
+            }
+          ],
+          "after": [
+            {
+              "calls": 209,
+              "triangles": 4834,
+              "frameMs": 5.600000000005821
+            },
+            {
+              "calls": 149,
+              "triangles": 3706,
+              "frameMs": 2.5
+            },
+            {
+              "calls": 175,
+              "triangles": 3858,
+              "frameMs": 2.2000000000116415
+            },
+            {
+              "calls": 216,
+              "triangles": 4978,
+              "frameMs": 2.5
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "6ae1a11b25065e441823efe0b2b6ce6576d28a3359932b30f1958ab7159aff74"
     }
   ]
 }
