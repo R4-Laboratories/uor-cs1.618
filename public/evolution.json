@@ -1,0 +1,16 @@
+{
+  "schema": "cs1618/evolution-public/1",
+  "generation": 0,
+  "config": {
+    "render": {
+      "cell": 0,
+      "minimum": 2
+    },
+    "navigation": {
+      "cell": 0
+    }
+  },
+  "lastEvaluation": null,
+  "scope": "Bounded rendering and navigation optimization; no unrestricted AI code generation.",
+  "history": []
+}

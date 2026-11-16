@@ -1,3 +1,4 @@
+import {optimizeScenery} from './generated/render-policy';
 import * as T from 'three';
 import {BOXES,MAP,type Box} from '../shared/map';
 import {RULES} from '../shared/config';
@@ -17,8 +18,11 @@ export class WorldView{
  renderer:T.WebGLRenderer;scene=new T.Scene();camera=new T.PerspectiveCamera(76,1,0.05,220);weaponScene=new T.Scene();weaponCamera=new T.PerspectiveCamera(60,1,.01,10);
  players=new Map<string,T.Group>();mats:Record<string,T.MeshStandardMaterial>={};gun=new T.Group();gunId='';flash:T.Mesh;tracers:{mesh:T.Line;life:number}[]=[];impacts:{mesh:T.Mesh;life:number}[]=[];
  bomb:T.Group;recoil=0;damage=0;elapsed=0;loaded=false;
- constructor(public canvas:HTMLCanvasElement){
-  this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
+ private buildingScenery=true;
+ private undoEvolution:(()=>void)|null=null;
+ evolutionStatus='baseline';
+ constructor(public canvas:HTMLCanvasElement,options:{evolution?:boolean;preserveDrawingBuffer?:boolean}={}){
+  this.renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:options.preserveDrawingBuffer??false});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1));this.renderer.shadowMap.enabled=true;this.renderer.shadowMap.autoUpdate=false;this.renderer.shadowMap.needsUpdate=true;this.renderer.shadowMap.type=T.PCFSoftShadowMap;this.renderer.outputColorSpace=T.SRGBColorSpace;this.renderer.toneMapping=T.ACESFilmicToneMapping;this.renderer.toneMappingExposure=1.18;
   this.scene.background=new T.Color(0xc6d4d3);this.scene.fog=new T.Fog(0xc6d4d3,50,155);
   this.scene.add(new T.HemisphereLight(0xdcebf4,0xa49575,2.3));
   const sun=new T.DirectionalLight(0xffe5bb,3.1);sun.position.set(-26,50,22);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,near:1,far:130});sun.shadow.bias=-.0003;sun.shadow.normalBias=.03;this.scene.add(sun);
@@ -29,12 +33,14 @@ export class WorldView{
   for(const b of BOXES)this.buildBox(b);
   this.details();
   for(const s of MAP.sites){const col=s.id==='A'?0xc67f4f:0x67aaa7;const ring=new T.Mesh(new T.RingGeometry(s.radius-.12,s.radius,64),new T.MeshBasicMaterial({color:col,transparent:true,opacity:.7,side:T.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(s.x,.018,s.z);this.scene.add(ring);this.sign(s.id,s.x,.03,s.z+2.5,2.2,col,true);this.sign(`SITE ${s.id}`,s.x,3.5,-20.45,2.8,col);}
+  this.buildingScenery=false;
+  if(options.evolution!==false){try{this.undoEvolution=optimizeScenery(this.scene);this.evolutionStatus='active';}catch{this.evolutionStatus='rolled-back';}}
   this.bomb=this.makeBomb();this.scene.add(this.bomb);this.bomb.visible=false;
   this.weaponScene.add(new T.HemisphereLight(0xe4f2f4,0x635f52,2.7));const gunLight=new T.DirectionalLight(0xffdfad,3);gunLight.position.set(-2,3,2);this.weaponScene.add(gunLight);this.weaponScene.add(this.gun);
   this.flash=new T.Mesh(new T.ConeGeometry(.09,.35,6),new T.MeshBasicMaterial({color:0xffe7a6,transparent:true,opacity:.9}));this.flash.rotation.x=Math.PI/2;this.flash.visible=false;this.gun.add(this.flash);
   this.resize();window.addEventListener('resize',()=>this.resize());this.loaded=true;
  }
- mesh(x:number,y:number,z:number,w:number,h:number,d:number,material:T.Material,parent:T.Object3D=this.scene){const m=new T.Mesh(boxGeo,material);m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+ mesh(x:number,y:number,z:number,w:number,h:number,d:number,material:T.Material,parent:T.Object3D=this.scene){const m=new T.Mesh(boxGeo,material);m.userData.staticScenery=this.buildingScenery;m.position.set(x,y,z);m.scale.set(w,h,d);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
  buildBox(b:Box){
   this.mesh(b.x,b.y+b.h/2,b.z,b.w,b.h,b.d,this.mats[b.material]);
   if(b.material==='crate'){
@@ -121,7 +127,7 @@ export class WorldView{
    this.gun.rotation.set(this.recoil*.09+reload*.5,bob*.006,-.05+reload*.7);
   }
   for(const list of [this.tracers,this.impacts])for(let i=list.length-1;i>=0;i--){const fx=list[i];fx.life-=dt;if(fx.life<=0){this.scene.remove(fx.mesh);fx.mesh.geometry.dispose();(fx.mesh.material as T.Material).dispose();list.splice(i,1);}else if(fx.mesh instanceof T.Mesh&&fx.life>.15)fx.mesh.scale.multiplyScalar(1+dt*6);}
-  this.renderer.autoClear=true;this.renderer.render(this.scene,this.camera);
+  this.renderer.autoClear=true;try{this.renderer.render(this.scene,this.camera);}catch(error){if(!this.undoEvolution)throw error;this.undoEvolution();this.undoEvolution=null;this.evolutionStatus='rolled-back';this.renderer.shadowMap.needsUpdate=true;this.renderer.render(this.scene,this.camera);}
   if(snapshot?.self.alive){this.renderer.autoClear=false;this.renderer.clearDepth();this.renderer.render(this.weaponScene,this.weaponCamera);}
  }
 }

@@ -39,10 +39,24 @@ jobs:
     permissions:
       pages: write
       id-token: write
+      contents: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Refuse to deploy a superseded main commit
+        id: tip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [ "$current" = "$GITHUB_SHA" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "current=false" >> "$GITHUB_OUTPUT"
+            echo "Newer main exists; leaving deployment to its verified workflow."
+          fi
       - name: Deploy game
+        if: steps.tip.outputs.current == 'true'
         id: deployment
         uses: actions/deploy-pages@v4

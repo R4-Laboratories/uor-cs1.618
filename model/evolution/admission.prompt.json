@@ -1,0 +1,151 @@
+{
+  "schema": "prism/prompt/1",
+  "goal": "Fail-closed admission of measured game improvements.",
+  "pattern": "decisionTable",
+  "license": "MIT",
+  "app": {
+    "name": "cs-evolution",
+    "title": "CS Evolution",
+    "purpose": "Admit a measured bounded game generation only when every independent obligation passes.",
+    "fields": [
+      {
+        "name": "fidelity",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "Independent equivalence checks"
+      },
+      {
+        "name": "benefit",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "Measured improvement against incumbent"
+      },
+      {
+        "name": "bounds",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "Resource and mutation bounds"
+      },
+      {
+        "name": "checks",
+        "kind": "choice",
+        "values": [
+          "pass",
+          "fail"
+        ],
+        "means": "Complete game validation"
+      }
+    ],
+    "outcomes": [
+      "admit",
+      "reject"
+    ],
+    "meanings": {
+      "admit": "All admission obligations passed",
+      "reject": "One or more obligations failed"
+    },
+    "rules": [
+      {
+        "when": [
+          {
+            "field": "fidelity",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "benefit",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "bounds",
+            "op": "is",
+            "value": "pass"
+          },
+          {
+            "field": "checks",
+            "op": "is",
+            "value": "pass"
+          }
+        ],
+        "then": "admit",
+        "why": "All four obligations are required."
+      }
+    ],
+    "otherwise": "reject",
+    "otherwiseWhy": "Missing or failed evidence cannot authorize a generation.",
+    "properties": [
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "fidelity",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "reject",
+        "why": "Independent equivalence checks is mandatory."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "benefit",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "reject",
+        "why": "Measured improvement against incumbent is mandatory."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "bounds",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "reject",
+        "why": "Resource and mutation bounds is mandatory."
+      },
+      {
+        "kind": "always",
+        "when": [
+          {
+            "field": "checks",
+            "op": "is",
+            "value": "fail"
+          }
+        ],
+        "then": "reject",
+        "why": "Complete game validation is mandatory."
+      }
+    ],
+    "examples": [
+      {
+        "request": "pass pass pass pass",
+        "response": "admit"
+      },
+      {
+        "request": "pass pass pass fail",
+        "response": "reject"
+      },
+      {
+        "request": "fail pass pass pass",
+        "response": "reject"
+      }
+    ]
+  }
+}

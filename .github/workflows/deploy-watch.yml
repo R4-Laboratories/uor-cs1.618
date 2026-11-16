@@ -1,0 +1,33 @@
+name: Deployment watch
+on:
+  workflow_run:
+    workflows: [Verify and publish cs1.618]
+    types: [completed]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+  pages: read
+concurrency:
+  group: cs-deploy-watch
+  cancel-in-progress: false
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Compare main with the served build and recover missing deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npm run evolution:watch

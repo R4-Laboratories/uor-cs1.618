@@ -2,6 +2,7 @@
   "schema": "cs1618/artifacts/1",
   "engine": "verdant-core",
   "engineRevision": "4c433f1c31792dae748e436d279fa7838131e3b8",
+  "evolutionBuild": "071558e95f9aa89316402ff5c6d6708e9a6b9d3608a9851a917d65dd88773181",
   "roundBuild": "3b66383a3d163668aae5e2d60725c77af763d6194aaf978f3869cfe621713620",
   "files": {
     "Cargo.lock": {
@@ -19,6 +20,10 @@
     "crates/cs-verdant/src/lib.rs": {
       "sha256": "e2a01dd04da28f142e45dc6fe59eeaae00fd143796e1de6904dab94670eb533b",
       "bytes": 6471
+    },
+    "model/evolution/admission.prompt.json": {
+      "sha256": "b5f402173bc77e84717c9dab55c678782f85ea6f5bf2900277ca566d23efda05",
+      "bytes": 3341
     },
     "model/round.prompt.json": {
       "sha256": "29f59605c4f00cf8dcf2bce31eb63d215c70876b98cb8b7f9ed3a7eca3740c38",
@@ -84,9 +89,77 @@
       "sha256": "d72057b68ca65750064d2616e08fce78c8fd28c42e4ee3f6befd4c969cbb1ba3",
       "bytes": 44982
     },
+    "prism/evolution/app/lexlean.lock": {
+      "sha256": "1291988ffc4c11823fb20fbc8a4bf707cbda6adbc992547ed634362592dd465f",
+      "bytes": 2695
+    },
+    "prism/evolution/app/src/Architecture.lex.tex": {
+      "sha256": "8e27c1bfa99e9afc8b1a8d33199ef0e813d69844078947bf6d1a53995497008a",
+      "bytes": 11963
+    },
+    "prism/evolution/app/src/Compliance.lex.tex": {
+      "sha256": "779d9bd1175fdce513fe5281dc8d367152e6964f9296a0b454f7cf1d59b86169",
+      "bytes": 4220
+    },
+    "prism/evolution/app/src/CsEvolution.lex.tex": {
+      "sha256": "de0113309fee292f968c94afe1510e33f336a5d278cf2a27d54c96fadc5cae95",
+      "bytes": 14127
+    },
+    "prism/evolution/app/src/CsEvolutionProofs.lex.tex": {
+      "sha256": "1948afe0c14c01c443f3f3b31bf9d97f1edd1a8abbcf9b81a14cc647375e0960",
+      "bytes": 4376
+    },
+    "prism/evolution/app/src/Design.lex.tex": {
+      "sha256": "ecff9e8f254752f30046b4e804699eec7f9a74fde2ad7421e1f470cf0c2080be",
+      "bytes": 16175
+    },
+    "prism/evolution/app/src/Features.lex.tex": {
+      "sha256": "175223a086e71346a7922d416f03c6641645da3dd9bd360a7b77c0c2c6a0561f",
+      "bytes": 3778
+    },
+    "prism/evolution/app/src/Foundation/Arch.lex.tex": {
+      "sha256": "ac98d00c82c37d523361ef2fa01419e796c359b74c4a87ac39d53d4821aa80d8",
+      "bytes": 8936
+    },
+    "prism/evolution/app/src/Foundation/Bytes.lex.tex": {
+      "sha256": "ce16e5b439128db3231979381f4599d3ff0617f62c2bf00c348bba35393abcd6",
+      "bytes": 1494
+    },
+    "prism/evolution/app/src/Foundation/Qual.lex.tex": {
+      "sha256": "6a0dbe7026dbdce3e52fa6082eac54d0155ca6bc40ac2abf25fd5e225de239bd",
+      "bytes": 2422
+    },
+    "prism/evolution/app/src/Foundation/Sec.lex.tex": {
+      "sha256": "518b968cbcf6251785d8bc450df0de8737b7e491235361a46f9b20684810a5b2",
+      "bytes": 2644
+    },
+    "prism/evolution/app/src/Foundation/View/Text/V1/Model.lex.tex": {
+      "sha256": "db124343ad8fe1295bc8eb305c7f59f83cf6ad76d46a5cabea500fe66f3ad5dc",
+      "bytes": 1739
+    },
+    "prism/evolution/app/src/Production/ThreatModel.lex.tex": {
+      "sha256": "bc6acde21335954805485e15c86d9f35178dceda8563d1dabdc062dcff6acc29",
+      "bytes": 6214
+    },
+    "prism/evolution/app/src/Quality.lex.tex": {
+      "sha256": "ba0e623941ebb0d19cc6de6a278e54ea2140f1e216b7d664eb9d699329ca97f5",
+      "bytes": 29267
+    },
+    "prism/evolution/app/src/Security.lex.tex": {
+      "sha256": "bb591fd77cc8771cac50aebce928e56c59d39c6c2a77541295ff07b3bd592b25",
+      "bytes": 47228
+    },
+    "public/prism/CS-Evolution.holo": {
+      "sha256": "f04c030e29d917f99d8d0651e990dad6154233e194373fffb5f9a608a8685fa4",
+      "bytes": 36810
+    },
     "public/prism/CS-Round.holo": {
       "sha256": "20bffd3d1512ce0d4abd9367d69928dabd9d197a8556f3000bc569392dd3058f",
       "bytes": 39724
+    },
+    "public/wasm/cs_evolution.wasm": {
+      "sha256": "b4763ff9796f52129b1c45f3669b43fe4b82c7841bfbcbd14f56a419cd195bf1",
+      "bytes": 1841
     },
     "public/wasm/cs_round.wasm": {
       "sha256": "ab75a7806437f5611bc2e28afbdd6e2d56b941390fee8d6a9f033d0b255618fa",

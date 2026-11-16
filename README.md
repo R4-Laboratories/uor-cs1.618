@@ -12,6 +12,12 @@ Two teams, five players per team, two objective sites, one original map: **Merid
 
 PeerJS Cloud supplies default rendezvous signaling and public STUN helps find direct routes. Restrictive networks may require your own TURN credentials. See [browser multiplayer and STUN/TURN setup](docs/BROWSER-MULTIPLAYER.md). **Practice with bots** still works locally in one browser.
 
+## GitHub-hosted improvement loop
+
+An hourly workflow generates and measures bounded rendering and navigation optimizations, admits passing candidates through a real Prism Wasm policy, commits the generated source, and explicitly redeploys Pages after the full game gates. [How self-improvement works, its limits and controls](docs/SELF-IMPROVEMENT.md) · [Live generation/evidence](https://r4-laboratories.github.io/uor-cs1.618/evolution.json).
+
+The current search optimizes scenery draw work and bot graph construction while preserving behavior. It has a finite frontier; it does not claim unrestricted AI code generation or continual artistic improvement.
+
 ## Play locally
 
 Node.js 22.12+ (Node 24 recommended):

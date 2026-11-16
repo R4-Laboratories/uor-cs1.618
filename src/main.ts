@@ -45,6 +45,7 @@ function busy(value:boolean){for(const id of ['join','practice','host-room'])$<H
 function peerSharing(){for(const el of document.querySelectorAll<HTMLElement>('.peer-share'))el.classList.toggle('hidden',!peerRoom);if(peerRoom){for(const el of document.querySelectorAll<HTMLInputElement>('.invitation-link'))el.value=peerRoom.invitation;}}
 for(const button of document.querySelectorAll<HTMLButtonElement>('.copy-invitation'))button.onclick=async()=>{if(!peerRoom)return;try{await navigator.clipboard.writeText(peerRoom.invitation);ui.toast('Invitation copied. Send it to your friends.');}catch{const field=button.parentElement!.querySelector<HTMLInputElement>('.invitation-link')!;field.focus();field.select();ui.toast('Copy the selected invitation link.');}};
 ui.show('loading',false);ui.show('lobby',true);
+void fetch(`${import.meta.env.BASE_URL}evolution.json`).then(r=>r.ok?r.json():null).then(data=>{$('evolution-generation').textContent=data&&Number.isSafeInteger(data.generation)?`generation ${data.generation}`:'unavailable';}).catch(()=>{$('evolution-generation').textContent='unavailable';});
 function send(message:unknown){if(peerRoom)peerRoom.send(message);else if(worker)worker.postMessage(message);else if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify(message));}
 function spectator():PublicPlayer|null{if(!snapshot||snapshot.self.alive)return null;const list=snapshot.players.filter(p=>p.team===snapshot!.self.team&&p.alive);return list[spectatorIndex%Math.max(1,list.length)]??null;}
 function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);keys.clear();fire=false;scope=false;}
@@ -153,4 +154,4 @@ function frame(now:number){
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',evolution:view.evolutionStatus,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

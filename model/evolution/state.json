@@ -1,0 +1,21 @@
+{
+  "schema": "cs1618/evolution-state/1",
+  "generation": 0,
+  "seed": 1618,
+  "config": {
+    "render": {
+      "cell": 0,
+      "minimum": 2
+    },
+    "navigation": {
+      "cell": 0
+    }
+  },
+  "weights": {
+    "render": 8,
+    "navigation": 8
+  },
+  "context": "",
+  "tried": [],
+  "history": []
+}

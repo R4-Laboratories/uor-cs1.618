@@ -10,3 +10,5 @@ prism/app/.lake/
 prism/**/.lexlean/
 prism/**/.prism/
 prism/**/.lake/
+
+public/build.json

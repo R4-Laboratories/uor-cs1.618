@@ -1,0 +1,6 @@
+name = "PrismCsEvolution"
+version = "0.1.0"
+defaultTargets = ["PrismCsEvolution"]
+
+[[lean_lib]]
+name = "PrismCsEvolution"

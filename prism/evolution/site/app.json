@@ -1,0 +1,111 @@
+{
+  "name": "CS Evolution",
+  "shortName": "CS",
+  "live": "https://owner.github.io/prism-cs-evolution/",
+  "purpose": "Admit a measured bounded game generation only when every independent obligation passes. Send fidelity, benefit, bounds or checks, separated by spaces; it answers admit or reject, and invalid request for anything else.",
+  "inputLabel": "Request: fidelity benefit bounds checks",
+  "placeholder": "pass pass pass pass",
+  "submitLabel": "Decide",
+  "outputLabel": "Answer",
+  "answers": {
+    "positive": [
+      "admit"
+    ],
+    "negative": [
+      "reject"
+    ],
+    "refusal": "invalid request"
+  },
+  "promise": {
+    "headline": "Says conformant exactly when every policy file matches its lock.",
+    "detail": "Each of the six universal policy files is compared with the digest the lock records, and any file that drifted is named."
+  },
+  "claim": "CE-01: the app always answers reject when fidelity is fail. CE-02: the app always answers reject when benefit is fail. CE-03: the app always answers reject when bounds is fail. CE-04: the app always answers reject when checks is fail.",
+  "proposition": {
+    "name": "judge",
+    "text": "judge request :=\n  fidelity is pass and benefit is pass and bounds is pass and checks is pass → admit\n  otherwise → reject",
+    "plain": "Admit a measured bounded game generation only when every independent obligation passes."
+  },
+  "theorems": [
+    {
+      "name": "inv001Holds",
+      "statement": "no request meets breaksInv001: the app always answers reject when fidelity is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsEvolutionProofs.lex.tex"
+    },
+    {
+      "name": "inv002Holds",
+      "statement": "no request meets breaksInv002: the app always answers reject when benefit is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsEvolutionProofs.lex.tex"
+    },
+    {
+      "name": "inv003Holds",
+      "statement": "no request meets breaksInv003: the app always answers reject when bounds is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsEvolutionProofs.lex.tex"
+    },
+    {
+      "name": "inv004Holds",
+      "statement": "no request meets breaksInv004: the app always answers reject when checks is fail",
+      "how": "Proved by linear arithmetic, checked by the Lean kernel on the UOR MCP server and again by prismpm verify in CI",
+      "where": "app/src/CsEvolutionProofs.lex.tex"
+    }
+  ],
+  "pinned": [
+    {
+      "name": "cs_evolution_ce_01",
+      "what": "CE-01's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_evolution.rs"
+    },
+    {
+      "name": "cs_evolution_ce_02",
+      "what": "CE-02's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_evolution.rs"
+    },
+    {
+      "name": "cs_evolution_ce_03",
+      "what": "CE-03's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_evolution.rs"
+    },
+    {
+      "name": "cs_evolution_ce_04",
+      "what": "CE-04's condition and the theorem that no request meets it. A string-matching test, not a theorem: a planted defect fails it.",
+      "where": "crates/conformance/tests/cs_evolution.rs"
+    }
+  ],
+  "trusted": [
+    {
+      "name": "SDK image",
+      "value": "the digest prismpm.lock pins; see the bootstrap workflow's log"
+    },
+    {
+      "name": "Lean toolchain",
+      "value": "leanprover/lean4:v4.32.1"
+    },
+    {
+      "name": "LexLean compiler semantics",
+      "value": "5262e5b4c8b5668ae7066ad686757a6bb7f80c941d515fb9d586894fbc7de69a"
+    },
+    {
+      "name": "prism-code runtime, vendored",
+      "value": "0.2.0, see try/vendor/prism-code/VENDOR.md"
+    },
+    {
+      "name": "Your browser",
+      "value": "runs the WebAssembly guest and this page"
+    }
+  ],
+  "attestations": {
+    "proof": {
+      "id": "not recorded: the proof ran in the SDK image, not on the UOR MCP server",
+      "url": "https://github.com/OWNER/prism-cs-evolution/actions/workflows/bootstrap.yml"
+    },
+    "build": {
+      "id": "printed by prismpm verify in every pages run",
+      "url": "https://github.com/OWNER/prism-cs-evolution/actions/workflows/pages.yml"
+    }
+  },
+  "repository": "https://github.com/OWNER/prism-cs-evolution",
+  "report": "https://github.com/OWNER/prism-cs-evolution/blob/main/TEMPLATE-VERIFICATION.md"
+}

@@ -1,0 +1,101 @@
+\begin{lexlean}{Features}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{prism.arch@1.0.0}
+\importmodule{CsEvolution}
+\importmodule{Architecture}
+\importmodule{Foundation.Arch}
+\title{feature}
+\begin{semanticmodule}
+definition{
+  name: acceptINV001,
+  parameters: [],
+  result: String,
+  body: "CsEvolutionProofs::inv001Holds"
+}
+
+definition{
+  name: acceptINV002,
+  parameters: [],
+  result: String,
+  body: "CsEvolutionProofs::inv002Holds"
+}
+
+definition{
+  name: acceptINV003,
+  parameters: [],
+  result: String,
+  body: "CsEvolutionProofs::inv003Holds"
+}
+
+definition{
+  name: acceptINV004,
+  parameters: [],
+  result: String,
+  body: "CsEvolutionProofs::inv004Holds"
+}
+
+definition{
+  name: featureRule1,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "When fidelity is pass and benefit is pass and bounds is pass and checks is pass, the answer is admit.", calls := (cons "CsEvolution::rule1" (cons "CsEvolution::judge" (nil String))), acceptance := (cons "CsEvolution::application" (nil String))})
+}
+
+definition{
+  name: featureOtherwise,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "When no rule matches, the answer is reject.", calls := (cons "CsEvolution::judge" (nil String)), acceptance := (cons "CsEvolution::application" (nil String))})
+}
+
+definition{
+  name: featureRefuseMalformed,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "A request that is not fidelity, benefit, bounds, checks in order, separated by single spaces, or is over 112 bytes, is answered invalid.", calls := (cons "CsEvolution::dispatch" (cons "CsEvolution::decodeField1" (nil String))), acceptance := (cons "CsEvolution::application" (nil String))})
+}
+
+definition{
+  name: featureINV001,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers reject when fidelity is fail.", calls := (cons "CsEvolution::judge" (nil String)), acceptance := (cons "Features::acceptINV001" (nil String))})
+}
+
+definition{
+  name: featureINV002,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers reject when benefit is fail.", calls := (cons "CsEvolution::judge" (nil String)), acceptance := (cons "Features::acceptINV002" (nil String))})
+}
+
+definition{
+  name: featureINV003,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers reject when bounds is fail.", calls := (cons "CsEvolution::judge" (nil String)), acceptance := (cons "Features::acceptINV003" (nil String))})
+}
+
+definition{
+  name: featureINV004,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "It always answers reject when checks is fail.", calls := (cons "CsEvolution::judge" (nil String)), acceptance := (cons "Features::acceptINV004" (nil String))})
+}
+
+definition{
+  name: journeyUser,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderUser", steps := (cons "Features::featureRule1" (cons "Features::featureOtherwise" (nil String)))})
+}
+
+definition{
+  name: journeyVerifier,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderVerifier", steps := (cons "Features::featureRefuseMalformed" (cons "Features::featureINV001" (cons "Features::featureINV002" (cons "Features::featureINV003" (cons "Features::featureINV004" (nil String))))))})
+}
+\end{semanticmodule}
+\end{lexlean}

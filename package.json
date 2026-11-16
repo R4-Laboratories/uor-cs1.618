@@ -1,20 +1,25 @@
 {
   "name": "cs1-618",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx server/index.ts --dev",
     "start": "tsx server/index.ts",
-    "build": "tsc --noEmit && vite build",
+    "build": "node scripts/stamp-build.mjs && tsc --noEmit && vite build",
     "test": "tsx --test tests/*.test.ts",
     "test:browser": "tsx scripts/browser-test.ts",
     "engine:build": "bash scripts/build-engine.sh",
     "prism:generate": "node scripts/prism-generate.mjs",
     "prism:verify": "bash scripts/verify-prism.sh",
-    "verify": "npm test && npm run build && node scripts/verify-artifacts.mjs",
+    "verify": "npm run evolution:check && npm test && npm run build && node scripts/verify-artifacts.mjs",
     "package": "node scripts/package.mjs",
-    "test:peer-browser": "tsx scripts/peer-browser-test.ts"
+    "test:peer-browser": "tsx scripts/peer-browser-test.ts",
+    "evolution:generate": "tsx scripts/evolution/generate.ts",
+    "evolution:check": "tsx scripts/evolution/generate.ts --check",
+    "evolution:tick": "tsx scripts/evolution/tick.ts",
+    "evolution:publish": "tsx scripts/evolution/publish.ts",
+    "evolution:watch": "tsx scripts/evolution/deploy-watch.ts"
   },
   "dependencies": {
     "@fontsource/barlow": "5.3.0",
@@ -27,10 +32,12 @@
   },
   "devDependencies": {
     "@types/node": "24.10.1",
+    "@types/pngjs": "6.0.5",
     "@types/three": "0.181.0",
     "@types/ws": "8.18.1",
     "peer": "1.0.2",
     "playwright": "1.56.1",
+    "pngjs": "7.0.0",
     "typescript": "5.9.3",
     "vite": "7.2.2"
   }

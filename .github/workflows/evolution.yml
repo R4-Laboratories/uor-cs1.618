@@ -1,0 +1,39 @@
+# Generated from the evolution policy by scripts/evolution/generate.ts.
+name: Autonomous game evolution
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: cs-evolution
+  cancel-in-progress: false
+jobs:
+  evolve:
+    if: github.ref == 'refs/heads/main' && vars.CS_EVOLUTION != 'off'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Generate, measure and validate candidate source
+        run: npm run evolution:tick -- --apply
+      - name: Publish only hash-bound validated outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npm run evolution:publish
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evolution-evidence-${{ github.run_id }}
+          path: artifacts/
+          retention-days: 30

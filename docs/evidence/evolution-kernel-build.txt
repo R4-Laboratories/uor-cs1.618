@@ -1,0 +1,8 @@
+Admission kernel build, 2026-11-16
+SDK image pinned by prism/prismpm.lock. Executed unmodified SDK tools through a chroot wrapper because the local Docker storage driver cannot safely duplicate the large image.
+Full prismpm verify was not run for this model.
+
+wrote lexlean.lock
+formatted 0 modules
+check passed (semantic ID: 4888747608ada9a7d5023fadfb7cdb7963c51093e95f2369de0863c0e06b4caf)
+build published: 071558e95f9aa89316402ff5c6d6708e9a6b9d3608a9851a917d65dd88773181
