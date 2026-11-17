@@ -28,6 +28,8 @@ jobs:
           repository: R4-Laboratories/uor-cs1.618
           run-id: 43986399997
           artifact-ids: 14288310173
+          # The validated sole ID must use the flat root expected below.
+          merge-multiple: true
           path: original
       - name: Stream complete reader inputs without extracting compilation caches
         run: |

@@ -222,6 +222,40 @@ class RetentionTests(unittest.TestCase):
                 self.assertEqual(retention.retain(self.evidence, self.evidence, source=original), 1)
                 self.assertFalse((self.evidence / "retained-reader-inputs.tar.gz").exists())
 
+    def test_local_hardlinks_fail_retention_and_preserve_original_status(self):
+        for relative in ("default.json", "default/prismpm.lock",
+                         "default/.prism/build/build-id/.private",
+                         "default/.prism/verified/verified-id/.nested/input.bin"):
+            with self.subTest(relative=relative):
+                selected_file = self.projects / relative
+                outside_alias = self.evidence / "outside-reader-trees"
+                os.link(selected_file, outside_alias)
+                try:
+                    before = self.snapshot()
+                    self.assertEqual(selected_file.stat().st_nlink, 2)
+                    self.assertEqual(self.run_finalizer(), 1)
+                    status = json.loads((self.evidence / "retention-status.json").read_text())
+                    self.assertFalse(status["complete_reader_inputs"])
+                    self.assertIn("hardlink", " ".join(status["errors"]))
+                    self.assertFalse((self.evidence / "retained-reader-inputs.tar.gz").exists())
+                    self.assertEqual(self.run_finalizer(42), 42)
+                    self.assertEqual(self.snapshot(), before)
+                    self.assertEqual(selected_file.stat().st_nlink, 2)
+                finally:
+                    outside_alias.unlink()
+
+    def test_recovery_download_flattening_contract(self):
+        workflow = (ROOT / ".github/workflows/prismpm-backport-recovery.yml").read_text()
+        download = workflow.split("      - name: Download only the fixed original diagnostic artifact\n", 1)[1]
+        download = download.split("      - name:", 1)[0]
+        # The pinned action treats artifact-ids as a multiple-artifact download,
+        # even for one ID; merging is required for the downstream flat root.
+        self.assertIn("          artifact-ids: 14288310173\n", download)
+        self.assertIn("          merge-multiple: true\n", download)
+        self.assertIn("          path: original\n", download)
+        self.assertIn("test -f original/retained-projects.tar.gz", workflow)
+        self.assertIn("logs original recovered/original-small", workflow)
+
     def test_raw_and_compressed_limits_keep_exact_basics_and_fail(self):
         for limits in ({"raw_limit": 32}, {"archive_limit": 64}):
             with self.subTest(limits=limits):

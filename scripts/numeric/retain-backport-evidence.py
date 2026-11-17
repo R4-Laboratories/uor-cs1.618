@@ -88,10 +88,12 @@ def local_results(root):
             if file.exists():
                 if file.parent.is_symlink() or file.is_symlink() or not file.is_file():
                     raise ValueError("basic input is not a regular file")
-                if file.stat().st_size > JSON_LIMIT:
+                metadata = file.stat()
+                if metadata.st_nlink != 1:
+                    raise ValueError("hardlinked basic reader input: " + relative)
+                if metadata.st_size > JSON_LIMIT:
                     raise ValueError("basic reader input oversized")
                 data = file.read_bytes()
-                metadata = file.stat()
                 member = tarfile.TarInfo(relative)
                 member.size, member.mode = len(data), stat.S_IMODE(metadata.st_mode)
                 member.uid, member.gid, member.mtime = metadata.st_uid, metadata.st_gid, metadata.st_mtime
@@ -135,6 +137,8 @@ def local_entries(root, exact, trees):
             for child in sorted(path.iterdir()):
                 yield from visit(child, name + "/" + child.name)
         elif stat.S_ISREG(metadata.st_mode):
+            if metadata.st_nlink != 1:
+                raise ValueError("hardlinked reader input: " + name)
             member.size = metadata.st_size
             with path.open("rb") as stream:
                 yield member, stream
