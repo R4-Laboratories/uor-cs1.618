@@ -36,8 +36,8 @@
       "sha256": "526db125215e0d2eae9f2cf2d29f17da3c441b677f878d4f26f1995b097eade3"
     },
     "browser-results.json": {
-      "bytes": 6336,
-      "sha256": "80a44748a4ced6575acd81db609451a98954cb49530ce575da6f10bf221f86e2"
+      "bytes": 14587,
+      "sha256": "88493949f674e706da4c6a007cc2bf258ff953a212ce83f9a313b731d8111872"
     },
     "objective-browser-results.json": {
       "bytes": 889,
@@ -50,7 +50,15 @@
     "after-objective-667x375-defusing.png": {
       "bytes": 155008,
       "sha256": "9fa2ced921e1ff1e4afe52b84965605226224d25ceb61e305df7266d31dc17b8"
+    },
+    "after-objective-320x568-defusing.png": {
+      "bytes": 107357,
+      "sha256": "6777bf021026b489fff16a396ef187ffe87aa692907d2ec166f22bb96fa4f5f0"
+    },
+    "after-objective-800x450-defusing.png": {
+      "bytes": 218031,
+      "sha256": "9b96dcdae91cf7eeb95c5211693d9aa2dac45721a386bbc393858e4c0a53ff1f"
     }
   },
-  "responsiveFixCommit": "1a8595e49ac6cea913d3a98f9a3f37ed1ee36950"
+  "responsiveFixCommit": "858f2e1efb6b2d41581bb7e4c7eb348a3e869346"
 }
