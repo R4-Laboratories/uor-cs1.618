@@ -283,22 +283,22 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-17T06:17:21.154Z",
-    "base": "791406ec4b885e22a08be327be986393fd146677",
+    "at": "2026-11-17T06:28:00.371Z",
+    "base": "55585c8aded6d85e289f4457315fb0fc17f22334",
     "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
-    "previous": "5b00a20ef14fa0fa6c2cfe9b6ad317c7cb3dbafb3496c239f1db5e1f9faaab32",
+    "previous": "128e27e9f3bdd701cbc3b8367a31966d4bedd23ecda1b627fdcf9b37ae587e5a",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "render-16-4",
+        "candidate": "render-32-4",
         "family": "render",
         "author": "optimizer",
         "metric": "work count",
-        "configHash": "1c882c74afc21cc548eeee27be599ca99513a00bacb2a72232bb674ee0ac1834",
+        "configHash": "14110a877320dc7fab6b1c9b9a952f4f0129ac8b0771acbc624734884efebe05",
         "baselineWork": 67276,
-        "candidateWork": 70572,
+        "candidateWork": 57836,
         "fidelity": true,
-        "bounds": true,
+        "bounds": false,
         "samples": 4,
         "comparisons": [
           {
@@ -306,11 +306,11 @@
             "changed": 0
           },
           {
-            "mean": 0.0000010008169934640522,
+            "mean": 0.0000010059232026143791,
             "changed": 0.0000078125
           },
           {
-            "mean": 1.1744281045751634e-7,
+            "mean": 1.2254901960784314e-7,
             "changed": 0
           },
           {
@@ -322,77 +322,77 @@
           {
             "calls": 377,
             "triangles": 4594,
-            "frameMs": 3.5
+            "frameMs": 6.100000000005821
           },
           {
             "calls": 274,
             "triangles": 3478,
-            "frameMs": 1.8000000000029104
+            "frameMs": 1.3000000000029104
           },
           {
             "calls": 317,
             "triangles": 3762,
-            "frameMs": 2.5
+            "frameMs": 2.1999999999970896
           },
           {
             "calls": 388,
             "triangles": 4786,
-            "frameMs": 2.7999999999956344
+            "frameMs": 2.400000000008731
           }
         ],
         "before": [
           {
             "calls": 141,
             "triangles": 5038,
-            "frameMs": 3.1999999999970896
+            "frameMs": 5.900000000008731
           },
           {
             "calls": 104,
             "triangles": 4102,
-            "frameMs": 2.099999999998545
+            "frameMs": 1.0999999999912689
           },
           {
             "calls": 109,
             "triangles": 4062,
-            "frameMs": 4.900000000001455
+            "frameMs": 1.2000000000116415
           },
           {
             "calls": 136,
             "triangles": 5074,
-            "frameMs": 1.7999999999956344
+            "frameMs": 1.7999999999883585
           }
         ],
         "after": [
           {
-            "calls": 146,
-            "triangles": 4906,
-            "frameMs": 2
-          },
-          {
             "calls": 110,
-            "triangles": 4102,
-            "frameMs": 1.7000000000043656
+            "triangles": 5158,
+            "frameMs": 0.6999999999970896
           },
           {
-            "calls": 121,
-            "triangles": 4038,
-            "frameMs": 2
+            "calls": 82,
+            "triangles": 4942,
+            "frameMs": 2.599999999991269
           },
           {
-            "calls": 148,
-            "triangles": 5026,
-            "frameMs": 1.8000000000029104
+            "calls": 86,
+            "triangles": 4614,
+            "frameMs": 1.3000000000029104
+          },
+          {
+            "calls": 102,
+            "triangles": 5122,
+            "frameMs": 1.5
           }
         ]
       },
       {
-        "candidate": "render-32-2",
+        "candidate": "render-64-2",
         "family": "render",
         "author": "optimizer",
         "metric": "work count",
-        "configHash": "68482dfc2950d0d4de66f76dd6509bd24aaa3e5d8d618a7365b0ebd60d158462",
+        "configHash": "2203993d904e1eb00a48df37fd855532700c906cd6ac4d930c3e8eec0fe55f11",
         "baselineWork": 67276,
-        "candidateWork": 52056,
+        "candidateWork": 49124,
         "fidelity": true,
         "bounds": false,
         "samples": 4,
@@ -418,72 +418,72 @@
           {
             "calls": 377,
             "triangles": 4594,
-            "frameMs": 4
+            "frameMs": 3
           },
           {
             "calls": 274,
             "triangles": 3478,
-            "frameMs": 2.8999999999941792
+            "frameMs": 1.2000000000116415
           },
           {
             "calls": 317,
             "triangles": 3762,
-            "frameMs": 2.8000000000029104
+            "frameMs": 1.6000000000058208
           },
           {
             "calls": 388,
             "triangles": 4786,
-            "frameMs": 2.6999999999970896
+            "frameMs": 2.1999999999970896
           }
         ],
         "before": [
           {
             "calls": 141,
             "triangles": 5038,
-            "frameMs": 3.3000000000029104
+            "frameMs": 2.1999999999970896
           },
           {
             "calls": 104,
             "triangles": 4102,
-            "frameMs": 1.5999999999912689
+            "frameMs": 1.1000000000058208
           },
           {
             "calls": 109,
             "triangles": 4062,
-            "frameMs": 2
+            "frameMs": 0.8999999999941792
           },
           {
             "calls": 136,
             "triangles": 5074,
-            "frameMs": 1.9000000000087311
+            "frameMs": 1.1999999999970896
           }
         ],
         "after": [
           {
-            "calls": 93,
-            "triangles": 5314,
-            "frameMs": 1.5
+            "calls": 80,
+            "triangles": 5398,
+            "frameMs": 1.3999999999941792
           },
           {
-            "calls": 68,
-            "triangles": 5038,
-            "frameMs": 2.1999999999970896
+            "calls": 59,
+            "triangles": 5254,
+            "frameMs": 0.7000000000116415
           },
           {
-            "calls": 71,
-            "triangles": 4686,
-            "frameMs": 1.0999999999912689
+            "calls": 64,
+            "triangles": 4938,
+            "frameMs": 0.7000000000116415
           },
           {
-            "calls": 86,
-            "triangles": 5218,
-            "frameMs": 2.2000000000116415
+            "calls": 78,
+            "triangles": 5434,
+            "frameMs": 0.7000000000116415
           }
         ]
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "128e27e9f3bdd701cbc3b8367a31966d4bedd23ecda1b627fdcf9b37ae587e5a"
+    "hash": "13cb9d26bcdd4251180c574acb13902088581e0c844f360aba9640bca69f9640"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
@@ -9361,6 +9361,211 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "128e27e9f3bdd701cbc3b8367a31966d4bedd23ecda1b627fdcf9b37ae587e5a"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T06:28:00.371Z",
+      "base": "55585c8aded6d85e289f4457315fb0fc17f22334",
+      "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
+      "previous": "128e27e9f3bdd701cbc3b8367a31966d4bedd23ecda1b627fdcf9b37ae587e5a",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "render-32-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "14110a877320dc7fab6b1c9b9a952f4f0129ac8b0771acbc624734884efebe05",
+          "baselineWork": 67276,
+          "candidateWork": 57836,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 5.616830065359477e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010059232026143791,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 5.1062091503267976e-9,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 6.100000000005821
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 1.3000000000029104
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 2.1999999999970896
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 2.400000000008731
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 5.900000000008731
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 1.0999999999912689
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 1.2000000000116415
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 1.7999999999883585
+            }
+          ],
+          "after": [
+            {
+              "calls": 110,
+              "triangles": 5158,
+              "frameMs": 0.6999999999970896
+            },
+            {
+              "calls": 82,
+              "triangles": 4942,
+              "frameMs": 2.599999999991269
+            },
+            {
+              "calls": 86,
+              "triangles": 4614,
+              "frameMs": 1.3000000000029104
+            },
+            {
+              "calls": 102,
+              "triangles": 5122,
+              "frameMs": 1.5
+            }
+          ]
+        },
+        {
+          "candidate": "render-64-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "2203993d904e1eb00a48df37fd855532700c906cd6ac4d930c3e8eec0fe55f11",
+          "baselineWork": 67276,
+          "candidateWork": 49124,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010212418300653596,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.2765522875816995e-7,
+              "changed": 0
+            },
+            {
+              "mean": 2.9105392156862744e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 3
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 1.2000000000116415
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 1.6000000000058208
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 2.1999999999970896
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 2.1999999999970896
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 1.1000000000058208
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 0.8999999999941792
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 1.1999999999970896
+            }
+          ],
+          "after": [
+            {
+              "calls": 80,
+              "triangles": 5398,
+              "frameMs": 1.3999999999941792
+            },
+            {
+              "calls": 59,
+              "triangles": 5254,
+              "frameMs": 0.7000000000116415
+            },
+            {
+              "calls": 64,
+              "triangles": 4938,
+              "frameMs": 0.7000000000116415
+            },
+            {
+              "calls": 78,
+              "triangles": 5434,
+              "frameMs": 0.7000000000116415
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "13cb9d26bcdd4251180c574acb13902088581e0c844f360aba9640bca69f9640"
     }
   ]
 }
