@@ -168,8 +168,9 @@ def collect(source, evidence):
                    "GIT_OBJECT_DIRECTORY": str(private / "objects"),
                    "GIT_ALTERNATE_OBJECT_DIRECTORIES": str(objects.resolve())}
             git(source, "add", "-N", "--", "tests/golden", env=env)
-            staged = git(source, "diff", "--cached", "HEAD", "--name-only", "-z", env=env)
-            unstaged = git(source, "diff", "--name-only", "-z", env=env)
+            # A rename must expose its deleted source as well as its destination.
+            staged = git(source, "diff", "--no-renames", "--cached", "HEAD", "--name-only", "-z", env=env)
+            unstaged = git(source, "diff", "--no-renames", "--name-only", "-z", env=env)
             untracked = git(source, "ls-files", "--others", "--exclude-standard", "-z", env=env)
             if any(path and not path.startswith("tests/golden/") for path in (staged + unstaged + untracked).decode().split("\0")):
                 raise ValueError("writer changed a path outside tests/golden")

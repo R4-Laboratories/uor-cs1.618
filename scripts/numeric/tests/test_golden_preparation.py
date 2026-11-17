@@ -127,6 +127,39 @@ class RetentionTests(unittest.TestCase):
         self.put('.devcontainer/devcontainer.json',original)
         self.failed()
 
+    def outside_to_inside_rename(self, staged):
+        self.put('outside.rs','outside original\n')
+        self.git('add','--','outside.rs')
+        self.git('-c','user.name=Unit','-c','user.email=unit@example.invalid','commit','-qm','Outside rename fixture')
+        revision=self.git('rev-parse','HEAD').strip();tree=self.git('rev-parse','HEAD^{tree}').strip()
+        patch.object(OWNER,'REVISION',revision).start();patch.object(OWNER,'TREE',tree).start()
+        self.candidate.update(candidate=revision,tree=tree)
+        self.identity_records['candidate.json']={'diagnosticOnly':True,**self.candidate}
+        self.identity_records['source-inputs.json'].update(revision=revision,tree=tree)
+        self.identity_records['source-container.json'].update(source_revision=revision,source_tree=tree)
+        for name,record in self.identity_records.items():OWNER.write_json(self.evidence/name,record)
+        self.git('config','diff.renames','true')
+        destination='tests/golden/stdlib/moved.rs'
+        if staged:self.git('mv','--','outside.rs',destination)
+        else:
+            (self.source/'outside.rs').rename(self.source/destination)
+            self.git('add','-N','--',destination)
+        # Demonstrate the original unsafe enumeration hides the outside source
+        # for both cached renames and configured worktree rename detection.
+        args=['diff']+(['--cached','HEAD'] if staged else [])+['--name-only','-z']
+        names=self.git(*args).split('\0')
+        self.assertIn(destination,names);self.assertNotIn('outside.rs',names)
+        with self.assertRaisesRegex(ValueError,'writer changed a path outside tests/golden'):
+            OWNER.collect(self.source,self.evidence)
+        self.assertEqual(json.loads((self.evidence/'result.json').read_text())['status'],'incomplete')
+        self.assertFalse((self.evidence/'golden.patch').exists())
+
+    def test_staged_outside_to_inside_rename_is_refused(self):
+        self.outside_to_inside_rename(staged=True)
+
+    def test_unstaged_outside_to_inside_rename_with_detection_is_refused(self):
+        self.outside_to_inside_rename(staged=False)
+
     def test_missing_identity_records_refused(self):
         for name, record in self.identity_records.items():
             with self.subTest(name=name):
