@@ -85,6 +85,14 @@ CI confirmed the next fixture error; both are retained and repaired. Final
 passes all31 gates, both focused replays, and original SDK/tool/lock checks for
 corrected source `2a13f942b04f0828e03c5d7db7e4db6ecb626d6e`; its generated diff is empty.
 
+The [dual-authority implementation report](numeric-export/recovery-2026-11-16/backport-authority-report-2a31ad0.md)
+and [scoped static review](numeric-export/recovery-2026-11-16/backport-authority-fix-review-2a31ad0.md)
+record PrismPM candidate `2a31ad07`. Its local focused controls pass, while full
+local validation failed and is not accepted. The same rebuilt verifier must still
+pass actual original-seed/candidate acquisition and retained-file replay in the
+unchanged SDK; [diagnostic run 43986399997](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43986399997)
+is pending. This is not SDK release or game production admission.
+
 Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
 that preserves the original SDK seed as the default, bounded shared-source
 adaptation, all four roots through canonical export, and independent review.
