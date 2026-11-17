@@ -1,0 +1,510 @@
+diff --git a/SPEC.md b/SPEC.md
+index 39770a27f9e73bd92c863f8219a0314c5dd95f9d..628577a9568de2bc8f867e75dfbce9ded2a217a2 100644
+--- a/SPEC.md
++++ b/SPEC.md
+@@ -1942,7 +1942,11 @@ projection, `prismpm/library-frontend-plan/1`, is the generated
+ `library/frontend.json` artifact. Both phases must project exactly that artifact;
+ actual Lean identities and compiled companion hashes remain verification evidence
+ and do not make generated library artifacts depend on the native platform.
+-Historical library `/1` and `/2` evidence cannot qualify a newly installed SDK.
++The `/3` publication schema admits the closed source-backport acquisition `/2`
++record in addition to historical cold/SDK-seed acquisition `/1` shapes; the
++source descriptor, archive, revision and independent SDK lock/inventory authority
++checks remain required. Historical library `/1` and `/2` evidence cannot qualify
++a newly installed SDK.
+ Readers bind replay to the original transcript, both phases to retained
+ inputs/products and native Lean/Lake preflight, and both exporter measurements
+ to the independent SDK authority where required. Whole-package custody is
+@@ -1980,7 +1984,9 @@ metadata, checked byte-for-byte against LexLean's runtime API by the Rust gate.
+ The original modeled-library 300-second compilation budget is shared by the
+ entire sequence, including identity measurement; it is never renewed per module.
+ The existing timeout process-group termination and 16-MiB-per-stream bounds
+-remain, with each stream's allowance shared over the sequence. The unchanged
++remain, with each stream's allowance shared over the sequence and charged
++against original bytes before decoding or normalization. Each child receives
++the independently remaining stdout and stderr limits. The unchanged
+ exporter build, actual export, package creation, full LexLean declaration/axiom
+ audit and kernel replay, independent regeneration, and std/no_std acceptance
+ remain mandatory. This profile does not claim a successful `lake build
+diff --git a/crates/prismpm/src/library_frontend.rs b/crates/prismpm/src/library_frontend.rs
+index 8e896dc96686332421898ea300c7377bfe9411cf..a0bf7bb1533049f47c96614ff7668d615c1422a0 100644
+--- a/crates/prismpm/src/library_frontend.rs
++++ b/crates/prismpm/src/library_frontend.rs
+@@ -373,7 +373,7 @@ impl Frontend {
+                 remaining.as_micros() / 1_000_000,
+                 remaining.as_micros() % 1_000_000
+             ),
+-            self.remaining_output.0.max(self.remaining_output.1),
++            self.remaining_output,
+         );
+         // A failed child is not an exemption from original tool/source custody.
+         let checked = self.check_sources_and_outputs();
+@@ -389,20 +389,7 @@ impl Frontend {
+             (Ok(_), Err(custody)) => return Err(custody),
+             (Ok(record), Ok(())) => record,
+         };
+-        self.remaining_output = (
+-            self.remaining_output
+-                .0
+-                .checked_sub(record.stdout.len())
+-                .ok_or_else(|| {
+-                    PrismError::new("PP5007", "native frontend total stdout limit exceeded")
+-                })?,
+-            self.remaining_output
+-                .1
+-                .checked_sub(record.stderr.len())
+-                .ok_or_else(|| {
+-                    PrismError::new("PP5007", "native frontend total stderr limit exceeded")
+-                })?,
+-        );
++        let record = record.charge(&mut self.remaining_output)?;
+         if self.next == 0 {
+             let host = match std::env::consts::ARCH {
+                 "x86_64" => "x86_64",
+@@ -762,6 +749,155 @@ mod tests {
+         assert_eq!(frontend.run(&[]).unwrap_err().code, "PP5007");
+         assert_eq!(frontend.next, 1);
+     }
++
++    #[test]
++    fn backport_manifest_v3_canonical_publication_preserves_independent_authority() {
++        // Structural publication regression, not a claim of SDK execution or
++        // generated-artifact acceptance. The lock is an independent fixture;
++        // neither canonical JSON nor self-consistent hashes authenticate it.
++        let (acquisition, lock) = crate::exporter::backport_authority_fixture("linux/amd64");
++        let source = crate::exporter::Source::NumericTask2c;
++        let binding = |path| Binding {
++            path,
++            byte_length: 1,
++            sha256: "a".repeat(64),
++        };
++        let receipt = Receipt {
++            schema: "prismpm/library-frontend/1".into(),
++            profile: PROFILE.into(),
++            working_directory: "$LIBRARY_WORK".into(),
++            launcher_sha256: "b".repeat(64),
++            lean_sha256: "c".repeat(64),
++            environment: environment(),
++            modules: vec![Module {
++                name: "Publication.Fixture".into(),
++                source: binding("Publication/Fixture.lean".into()),
++                imports: vec!["Init".into()],
++                runtime: false,
++                artifacts: artifact_paths("Publication.Fixture")
++                    .into_iter()
++                    .map(binding)
++                    .collect(),
++            }],
++        };
++        let process = |tool: &str, argv: Vec<String>, hash: &str| {
++            json!({"tool":tool,"argv":argv,
++            "executable_sha256":hash,"exit_code":0,"stdout":"","stderr":""})
++        };
++        let mut version = process(
++            "library-lean-version",
++            vec!["--version".into()],
++            &receipt.lean_sha256,
++        );
++        version["stdout"] = json!("Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)\n");
++        let mut export = process(
++            "prod-export",
++            vec!["exe".into(), "prod-export".into()],
++            &"d".repeat(64),
++        );
++        export["exporter"] = json!({"schema":"prismpm/exporter-execution/1", "source_archive_sha256":source.archive_sha256(),
++            "executable":{"byte_length":1234,"mode":0o755,"sha256":"a".repeat(64)}, "acquisition":acquisition});
++        let processes = vec![
++            version,
++            process(
++                "library-lean-frontend",
++                arguments("Publication.Fixture"),
++                &receipt.lean_sha256,
++            ),
++            process(
++                "lean4-prod-build",
++                vec!["build".into(), "prod-export".into()],
++                &"d".repeat(64),
++            ),
++            export,
++            process(
++                "native-library-package",
++                ["package", "--locked", "--offline", "--allow-dirty"]
++                    .map(str::to_owned)
++                    .into(),
++                &"e".repeat(64),
++            ),
++        ];
++        let bytes = crate::holo::canonical::encode_value(&receipt.source_plan()).unwrap();
++        let artifacts = json!([{"path":"library/frontend.json","byte_length":bytes.len(),"sha256":sha256(&bytes)}]);
++        let phases = ["controller-build", "replay"].map(|phase| {
++            json!({"phase":phase,"role":"library",
++            "model_sha256":"a".repeat(64),"lexlean_manifest_sha256":"b".repeat(64),
++            "artifacts":artifacts,"processes":processes,"frontend":receipt})
++        });
++        let mut top_processes = vec![
++            process("lean-version", vec!["--version".into()], &"b".repeat(64)),
++            process("lake-version", vec!["--version".into()], &"d".repeat(64)),
++        ];
++        top_processes.extend(processes);
++        let document = json!({"schema":"prismpm/library-verification-manifest/3","scope":"native-library-only",
++            "acceptance_sha256":"a".repeat(64),"build_id":"b".repeat(64),"lexlean_attestation_sha256":"c".repeat(64),
++            "model_sha256":"a".repeat(64),"artifacts":artifacts,"processes":top_processes,
++            "exporter_owner":{"schema":"prismpm/library-exporter-owner/2","phases":phases}});
++        let publish = |value: Value| {
++            crate::contracts::CanonicalDocument::from_value(
++                "prismpm/library-verification-manifest/3",
++                value,
++            )
++        };
++        publish(document.clone()).unwrap();
++        crate::exporter::validate_acquisition_authority(&acquisition, &"a".repeat(64), &lock)
++            .unwrap();
++        let replace_acquisition = |replacement: &Value| {
++            let mut changed = document.clone();
++            // Change all original/replay copies coherently so cross-phase
++            // equality cannot substitute for field/independent authority checks.
++            for pointer in [
++                "/processes/5/exporter/acquisition",
++                "/exporter_owner/phases/0/processes/3/exporter/acquisition",
++                "/exporter_owner/phases/1/processes/3/exporter/acquisition",
++            ] {
++                *changed.pointer_mut(pointer).unwrap() = replacement.clone();
++            }
++            changed
++        };
++        let mut unknown = acquisition.clone();
++        unknown["extra_authority"] = json!(true);
++        assert!(publish(replace_acquisition(&unknown)).is_err());
++        for field in acquisition.as_object().unwrap().keys() {
++            let mut missing = acquisition.clone();
++            missing.as_object_mut().unwrap().remove(field);
++            assert!(
++                publish(replace_acquisition(&missing)).is_err(),
++                "missing {field}"
++            );
++        }
++        for (field, replacement) in [
++            ("schema", json!("prismpm/exporter-acquisition/1")),
++            ("mode", json!("cold")),
++            ("source_id", json!("released")),
++            ("descriptor_sha256", json!("f".repeat(64))),
++            ("archive_sha256", json!("f".repeat(64))),
++            ("compiler_revision", json!("f".repeat(40))),
++            ("toolchain", json!("leanprover/lean4:v4.32.0")),
++            ("platform", json!("linux/arm64")),
++            ("inventory_sha256", json!("f".repeat(64))),
++            (
++                "sdk_lock_digest",
++                json!(format!("sha256:{}", "f".repeat(64))),
++            ),
++        ] {
++            let mut changed = acquisition.clone();
++            changed[field] = replacement;
++            let canonical = publish(replace_acquisition(&changed));
++            if matches!(field, "platform" | "inventory_sha256" | "sdk_lock_digest") {
++                // Syntactically valid authority labels need the independent lock.
++                canonical.unwrap();
++            } else {
++                assert!(canonical.is_err(), "published changed {field}");
++            }
++            assert!(
++                crate::exporter::validate_acquisition_authority(&changed, &"a".repeat(64), &lock)
++                    .is_err(),
++                "admitted changed {field}"
++            );
++        }
++    }
+     #[test]
+     #[ignore = "component diagnostic requires independently captured full numeric fixture and pinned exporter"]
+     fn complete_numeric_bounds_laws_frontend_kernel_and_export() {
+diff --git a/crates/prismpm/src/verification.rs b/crates/prismpm/src/verification.rs
+index d2673252c3a53f54775cfaf59be1f99cfe18cdcc..555ea7b83fbc0def1be20fa0fff6bc6858c252f3 100644
+--- a/crates/prismpm/src/verification.rs
++++ b/crates/prismpm/src/verification.rs
+@@ -1201,10 +1201,41 @@ pub(crate) fn run_process_limited_allowed(
+         replacements,
+         failure_code,
+         timeout_seconds,
+-        output_limit,
++        (output_limit, output_limit),
+         allowed_exit_codes,
+         true,
+     )
++    .map(|measured| measured.record)
++}
++
++/// Private execution accounting; serialized process evidence retains its existing
++/// normalized streams and closed fields. Charge original bytes before normalization.
++#[derive(Debug)]
++pub(crate) struct MeasuredProcess {
++    record: ProcessRecord,
++    raw_stdout_bytes: usize,
++    raw_stderr_bytes: usize,
++}
++impl MeasuredProcess {
++    pub(crate) fn charge(
++        self,
++        remaining: &mut (usize, usize),
++    ) -> Result<ProcessRecord, PrismError> {
++        let stdout = remaining
++            .0
++            .checked_sub(self.raw_stdout_bytes)
++            .ok_or_else(|| {
++                PrismError::new("PP5007", "native frontend total stdout limit exceeded")
++            })?;
++        let stderr = remaining
++            .1
++            .checked_sub(self.raw_stderr_bytes)
++            .ok_or_else(|| {
++                PrismError::new("PP5007", "native frontend total stderr limit exceeded")
++            })?;
++        *remaining = (stdout, stderr);
++        Ok(self.record)
++    }
+ }
+ 
+ /// The library frontend invokes an actual Lean binary with a completely closed
+@@ -1219,8 +1250,8 @@ pub(crate) fn run_process_closed_limited(
+     replacements: &[(&Path, &str)],
+     failure_code: &'static str,
+     timeout_seconds: &str,
+-    output_limit: usize,
+-) -> Result<ProcessRecord, PrismError> {
++    output_limits: (usize, usize),
++) -> Result<MeasuredProcess, PrismError> {
+     run_process_environment_limited_allowed(
+         tool,
+         program,
+@@ -1230,7 +1261,7 @@ pub(crate) fn run_process_closed_limited(
+         replacements,
+         failure_code,
+         timeout_seconds,
+-        output_limit,
++        output_limits,
+         &[0],
+         false,
+     )
+@@ -1246,10 +1277,10 @@ fn run_process_environment_limited_allowed(
+     replacements: &[(&Path, &str)],
+     failure_code: &'static str,
+     timeout_seconds: &str,
+-    output_limit: usize,
++    output_limits: (usize, usize),
+     allowed_exit_codes: &[i32],
+     inherit: bool,
+-) -> Result<ProcessRecord, PrismError> {
++) -> Result<MeasuredProcess, PrismError> {
+     if allowed_exit_codes.is_empty()
+         || allowed_exit_codes
+             .iter()
+@@ -1316,8 +1347,8 @@ fn run_process_environment_limited_allowed(
+         .stderr
+         .take()
+         .ok_or_else(|| PrismError::new("PP9001", "child stderr pipe is missing"))?;
+-    let stdout_thread = std::thread::spawn(move || pipe(stdout, output_limit));
+-    let stderr_thread = std::thread::spawn(move || pipe(stderr, output_limit));
++    let stdout_thread = std::thread::spawn(move || pipe(stdout, output_limits.0));
++    let stderr_thread = std::thread::spawn(move || pipe(stderr, output_limits.1));
+     let status = child
+         .wait()
+         .map_err(|error| PrismError::new(failure_code, format!("wait for {tool}: {error}")))?;
+@@ -1329,12 +1360,14 @@ fn run_process_environment_limited_allowed(
+         .join()
+         .map_err(|_| PrismError::new("PP9001", "stderr reader terminated"))?
+         .map_err(|error| PrismError::new(failure_code, format!("read stderr: {error}")))?;
+-    if stdout.len() > output_limit || stderr.len() > output_limit {
++    if stdout.len() > output_limits.0 || stderr.len() > output_limits.1 {
+         return Err(PrismError::new(
+             "PP5007",
+             format!("{tool} output limit exceeded"),
+         ));
+     }
++    let raw_stdout_bytes = stdout.len();
++    let raw_stderr_bytes = stderr.len();
+     let exit_code = status.code().unwrap_or(128);
+     let stdout = normalized(&String::from_utf8_lossy(&stdout), replacements);
+     let stderr = normalized(&String::from_utf8_lossy(&stderr), replacements);
+@@ -1369,17 +1402,21 @@ fn run_process_environment_limited_allowed(
+     }
+     let stdout = stable_success_output(tool, stdout);
+     let stderr = stable_success_output(tool, stderr);
+-    Ok(ProcessRecord {
+-        tool: tool.to_owned(),
+-        argv: args
+-            .iter()
+-            .map(|arg| normalized(arg, replacements))
+-            .collect(),
+-        executable_sha256,
+-        exit_code,
+-        stdout,
+-        stderr,
+-        exporter: None,
++    Ok(MeasuredProcess {
++        raw_stdout_bytes,
++        raw_stderr_bytes,
++        record: ProcessRecord {
++            tool: tool.to_owned(),
++            argv: args
++                .iter()
++                .map(|arg| normalized(arg, replacements))
++                .collect(),
++            executable_sha256,
++            exit_code,
++            stdout,
++            stderr,
++            exporter: None,
++        },
+     })
+ }
+ 
+@@ -3931,6 +3968,83 @@ mod tests {
+         assert_eq!(error.notes[2].message, "stderr: ");
+     }
+ 
++    fn closed_output(script: &str, limits: (usize, usize)) -> Result<MeasuredProcess, PrismError> {
++        run_process_closed_limited(
++            "test-child",
++            &executable("python3").unwrap(),
++            &["-c".into(), script.into()],
++            &std::env::current_dir().unwrap(),
++            &BTreeMap::new(),
++            &[],
++            "PP5004",
++            "10",
++            limits,
++        )
++    }
++
++    #[test]
++    fn closed_children_charge_cumulative_original_bytes_before_normalization() {
++        // Each finite child is individually below 16 MiB. Normalization shrinks
++        // 10.8 MB to 1.6 MB, but two children must exceed the original allowance.
++        for stream in ["stdout", "stderr"] {
++            let script =
++                format!("import sys; sys.{stream}.write(('x in '+ '0'*100 + '1s\\n')*100000)");
++            let mut remaining = (16_777_216, 16_777_216);
++            let first = closed_output(&script, remaining).unwrap();
++            let raw = if stream == "stdout" {
++                first.raw_stdout_bytes
++            } else {
++                first.raw_stderr_bytes
++            };
++            assert_eq!(raw, 10_800_000);
++            let record = first.charge(&mut remaining).unwrap();
++            let normalized = if stream == "stdout" {
++                record.stdout.len()
++            } else {
++                record.stderr.len()
++            };
++            assert!(normalized < raw / 2);
++            assert_eq!(
++                remaining,
++                if stream == "stdout" {
++                    (5_977_216, 16_777_216)
++                } else {
++                    (16_777_216, 5_977_216)
++                }
++            );
++            assert_eq!(
++                closed_output(&script, remaining).unwrap_err().code,
++                "PP5007"
++            );
++        }
++    }
++
++    #[test]
++    fn closed_children_enforce_independent_stdout_stderr_limits() {
++        for (stream, limits) in [("stdout", (8, 64)), ("stderr", (64, 8))] {
++            let script = format!("import sys; sys.{stream}.write('x'*9)");
++            assert_eq!(closed_output(&script, limits).unwrap_err().code, "PP5007");
++        }
++        let mut remaining = (8, 64);
++        let record = closed_output(
++            "import sys; sys.stdout.write('x'*8); sys.stderr.write('y'*64)",
++            remaining,
++        )
++        .unwrap()
++        .charge(&mut remaining)
++        .unwrap();
++        assert_eq!(remaining, (0, 0));
++        assert_eq!((record.stdout.len(), record.stderr.len()), (8, 64));
++        closed_output("pass", remaining)
++            .unwrap()
++            .charge(&mut remaining)
++            .unwrap();
++        assert_eq!(
++            closed_output("print('x')", remaining).unwrap_err().code,
++            "PP5007"
++        );
++    }
++
+     #[test]
+     fn child_timeout_preserves_both_actual_progress_streams() {
+         let error = limited(
+diff --git a/schemas/library-verification-manifest-v3.schema.json b/schemas/library-verification-manifest-v3.schema.json
+index ee14434d27e0850bf9feb1ef9e080eac240fac14..35c9d937870d24d72c23141a4bba53f1e9c63e52 100644
+--- a/schemas/library-verification-manifest-v3.schema.json
++++ b/schemas/library-verification-manifest-v3.schema.json
+@@ -326,6 +326,62 @@
+                       "platform",
+                       "toolchain"
+                     ]
++                  },
++                  {
++                    "type": "object",
++                    "additionalProperties": false,
++                    "properties": {
++                      "schema": {
++                        "const": "prismpm/exporter-acquisition/2"
++                      },
++                      "mode": {
++                        "const": "source-backport"
++                      },
++                      "source_id": {
++                        "const": "numeric-task2c"
++                      },
++                      "descriptor_sha256": {
++                        "type": "string",
++                        "pattern": "^[0-9a-f]{64}$"
++                      },
++                      "archive_sha256": {
++                        "type": "string",
++                        "pattern": "^[0-9a-f]{64}$"
++                      },
++                      "compiler_revision": {
++                        "type": "string",
++                        "pattern": "^[0-9a-f]{40}$"
++                      },
++                      "toolchain": {
++                        "const": "leanprover/lean4:v4.32.1"
++                      },
++                      "platform": {
++                        "enum": [
++                          "linux/amd64",
++                          "linux/arm64"
++                        ]
++                      },
++                      "inventory_sha256": {
++                        "type": "string",
++                        "pattern": "^[0-9a-f]{64}$"
++                      },
++                      "sdk_lock_digest": {
++                        "type": "string",
++                        "pattern": "^sha256:[0-9a-f]{64}$"
++                      }
++                    },
++                    "required": [
++                      "schema",
++                      "mode",
++                      "source_id",
++                      "descriptor_sha256",
++                      "archive_sha256",
++                      "compiler_revision",
++                      "toolchain",
++                      "platform",
++                      "inventory_sha256",
++                      "sdk_lock_digest"
++                    ]
+                   }
+                 ]
+               },

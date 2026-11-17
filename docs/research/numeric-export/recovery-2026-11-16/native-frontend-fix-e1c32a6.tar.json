@@ -1,0 +1,77 @@
+{
+  "scope": "focused-review-fix-evidence-not-SDK-acceptance",
+  "source_commit": "e1c32a64fd2a99b438341267e9d005e559ae2506",
+  "source_tree": "429f6a4e309b9dd52aed254efea60e701f006ab3",
+  "archive_sha256": "030337813b620f55427d48cda35b4bcf92d4e0c6fbc00e8aea60300822876ddb",
+  "archive_bytes": 4154,
+  "files": {
+    "backport_authority_generator_identity_distinguishes_equal_outputs-final.log": {
+      "sha256": "f51484664e6443ebb9c66efabac2c8835b9d17fa171f03f21dad38f8d35f3e01",
+      "byte_length": 363
+    },
+    "backport_authority_generator_identity_distinguishes_equal_outputs.log": {
+      "sha256": "f51484664e6443ebb9c66efabac2c8835b9d17fa171f03f21dad38f8d35f3e01",
+      "byte_length": 363
+    },
+    "backport_authority_independent_sdk_binding_and_original_seed_controls.log": {
+      "sha256": "4a2ab0c090e6bfb56165ad6af946e5b069f4599d0cda13c39477eaefc2367f42",
+      "byte_length": 384
+    },
+    "backport_manifest_v3_canonical_publication_preserves_independent_authority-final.log": {
+      "sha256": "32a91e7ee5bbf873b64ea23e140440663743f75e735513eb3e6b149042c0aad0",
+      "byte_length": 459
+    },
+    "backport_manifest_v3_canonical_publication_preserves_independent_authority.log": {
+      "sha256": "e7d1a67c448d8f51bd9598bddfe4f6a7f3d4730a68c96635440d784d07de7f46",
+      "byte_length": 378
+    },
+    "checkpoint.json": {
+      "sha256": "0b5270d884a55acee545500d768faa8cb231419fe608684a2aa8489eb3e514c6",
+      "byte_length": 2628
+    },
+    "child_timeout.log": {
+      "sha256": "5c583dc680109c03c2d168322a2a5919249c18711f72d7626ae238cdfce7447c",
+      "byte_length": 428
+    },
+    "clippy-final.log": {
+      "sha256": "14aef067fff1a9444ba451f72447c365809be158a4e591a07c8363a4dec2ede6",
+      "byte_length": 152
+    },
+    "clippy.log": {
+      "sha256": "ceea575c92aafe3bf5920c79c67d990cf100f00eea12bc18551426192cec8409",
+      "byte_length": 153
+    },
+    "closed_children.log": {
+      "sha256": "d023c288638a7c0fc364fead02402754de4c1d98550fc308eb76deca7a30f91d",
+      "byte_length": 460
+    },
+    "commands.json": {
+      "sha256": "a68da7668392f78ed6a620e097200a7ce7b5bae77299227ca8ec627fbad99135",
+      "byte_length": 3228
+    },
+    "evidence-index.json": {
+      "sha256": "9d4b19f0b50e03ef2def4503031ce08cf2d24afe25ad8b347b64d55b5e4ec59e",
+      "byte_length": 2838
+    },
+    "frontend_deadline_is_shared_and_expired_stage_cannot_start_next_child.log": {
+      "sha256": "1e7d171affda2be8f605f04e27fe9335bfea3eaa3b0aac232271896d6f4d76a6",
+      "byte_length": 373
+    },
+    "library_generator_binds_each_actual_cold_owner_source_without_hash_overrides-final.log": {
+      "sha256": "15643a8322a2d9af876f9b6610bd0c2a7f0748f238d928a823cb812b88d087bd",
+      "byte_length": 374
+    },
+    "library_generator_binds_each_actual_cold_owner_source_without_hash_overrides.log": {
+      "sha256": "5501615fc208211d4d41d070b67d6da6443810ab942162d5434d760c10a4889f",
+      "byte_length": 374
+    },
+    "model-registration.log": {
+      "sha256": "7f7723dc5e2b5ba9a72cc1d313b8694e72109d6701119ba0b32c82cf0d9374f4",
+      "byte_length": 1836
+    },
+    "native-recipe-seal.log": {
+      "sha256": "332b364effb392590f1d5bf36cc06650c031d9e80d9bc104d23067b89337be67",
+      "byte_length": 345
+    }
+  }
+}

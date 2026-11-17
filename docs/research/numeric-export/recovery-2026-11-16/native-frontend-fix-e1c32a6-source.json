@@ -1,0 +1,9 @@
+{
+  "base": "d8f8d8a05d697ef0258e1b85db01d5bf369a8385",
+  "candidate": "e1c32a64fd2a99b438341267e9d005e559ae2506",
+  "tree": "429f6a4e309b9dd52aed254efea60e701f006ab3",
+  "patch_sha256": "7fd32ded97ed96adef2fe6d44e4ae108786b27ed097cd5fb931bcb65dae55494",
+  "patch_bytes": 21838,
+  "review": "native-frontend-review-e1c32a6.md",
+  "status": "static-diagnostic-ready; actual-SDK-and-full-source-gates-pending"
+}

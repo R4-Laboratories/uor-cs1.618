@@ -197,7 +197,7 @@
       "repo": "lean4-prod / PrismPM / uor-cs1.618",
       "function": "Canonical bounded numeric export and conversion normalization",
       "summary": "Reviewed bounded roots and helpers pass component native/Wasm replay. Actual canonical package builds now fail generated-module timeout (NEXP-012); full source validation exposed baseline and wrapper omissions. No production admission.",
-      "reproduction": "Compiler2a13f94 passed all31 pinned-SDK source gates in43978245009. Reviewed Prism2a31 preserves Released default and explicit numeric-task2c authority; fresh repaired43999834837 passes actual acquisitions, retained readers/mutations,10authority controls, final original identities and all wrapper statuses. Typed bounded source453dc1bd avoids the application type/tuple failures using monomorphic helpers and LengthState; actual unmodified generated raw/canonical native and import-freeWasm all44648 vectors and helper controls pass. B2A commit efd0fc8 independently approved. FullsourceVV44002718718 pending; no production admission. Actual canonical44008985569: four prepare0/build1 PP5007 timeout124, verify/replaynot-run. FullVV44002718718: source/gates fail stale source/golden identities; conformance112/113 with inherited CARGO_BUILD_JOBS refusal; other parts pending.",
+      "reproduction": "Compiler2a13f94 passed all31 pinned-SDK source gates in43978245009. Reviewed Prism2a31 preserves Released default and explicit numeric-task2c authority; fresh repaired43999834837 passes actual acquisitions, retained readers/mutations,10authority controls, final original identities and all wrapper statuses. Typed bounded source453dc1bd avoids the application type/tuple failures using monomorphic helpers and LengthState; actual unmodified generated raw/canonical native and import-freeWasm all44648 vectors and helper controls pass. B2A commit efd0fc8 independently approved. FullsourceVV44002718718 pending; no production admission. Actual canonical44008985569: four prepare0/build1 PP5007 timeout124, verify/replaynot-run. FullVV44002718718: source/gates fail stale source/golden identities; conformance112/113 with inherited CARGO_BUILD_JOBS refusal; other parts pending. Later fullVV results: st-sy/dk-0-1/dk-2 pass for original2a31; ho-oc28/30 with known HO08 register failure and OC10 immutable-SDK/current-source boundary mismatch (NEXP-013). dk-3 remains pending. These old-source outcomes cannot qualify later candidates.",
       "acceptance_criteria": [
         "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
         "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
@@ -229,7 +229,9 @@
       ],
       "dependencies": [
         "NEXP-002",
-        "NEXP-003"
+        "NEXP-003",
+        "NEXP-012",
+        "NEXP-013"
       ],
       "production_admission": false
     },
@@ -288,11 +290,33 @@
         "recovery-2026-11-16/native-frontend-report-d8f8d8a.md",
         "recovery-2026-11-16/native-frontend-d8f8d8a.tar.json",
         "recovery-2026-11-16/laws-compilation-repair-recon.md",
-        "recovery-2026-11-16/native-frontend-review-d8f8d8a.md"
+        "recovery-2026-11-16/native-frontend-review-d8f8d8a.md",
+        "recovery-2026-11-16/native-frontend-report-e1c32a6.md",
+        "recovery-2026-11-16/native-frontend-review-e1c32a6.md",
+        "recovery-2026-11-16/native-frontend-fix-e1c32a6.tar.json"
       ],
       "dependencies": [],
       "production_admission": false,
-      "reproduction": "Original actual SDK44008985569 remains failed for all four builds. Proposed source d8f8d8a preserves the complete eight-module closure without optional C emission: two fresh frontend runs, eight pinned kernel checks and two identical full exports passed in45.14s locally; actual component reader rejected18 mutations. Independent review confirmed two repair requirements: /3 manifest rejects actual acquisition/2 source-backport, and cumulative output accounting charges normalized text rather than original stream bytes. Fix round1 is active; candidate remains unadmitted. Full SDK verification, new selected-output corpus and source/native baseline qualification remain pending."
+      "reproduction": "Original actual SDK44008985569 remains failed for all four builds. Proposed source d8f8d8a preserves the complete eight-module closure without optional C emission: two fresh frontend runs, eight pinned kernel checks and two identical full exports passed in45.14s locally; actual component reader rejected18 mutations. Independent review confirmed two repair requirements: /3 manifest rejects actual acquisition/2 source-backport, and cumulative output accounting charges normalized text rather than original stream bytes. Fix round1 is active; candidate remains unadmitted. Full SDK verification, new selected-output corpus and source/native baseline qualification remain pending. Reviewed fix e1c32a64 resolves both review findings: complete /3 publication and independent authority controls pass; cumulative raw-byte and asymmetric-stream controls pass. Independent scoped re-review approves diagnostic launch only. Actual SDK package and full source gates remain outstanding."
+    },
+    {
+      "id": "NEXP-013",
+      "status": "confirmed_open",
+      "repo": "PrismPM source validation / conditional SDK capture",
+      "function": "conditional-capture-sdk.py parent/guest current-source identity boundary",
+      "summary": "OC10 requires every current source file to already match unchanged d6 conformance-root; it transports measurements and ELF only. New exporter/source.rs is absent, masking other expected source differences. Actual test ELF does not start.",
+      "acceptance_criteria": [
+        "Preserve original d6 source tree, SDK inventory, locks and acceptance policies; no silent overlay or one-file substitution.",
+        "Design and review explicit complete candidate-source transport with separately bound guest execution authority and truthful source/ELF versus SDK identities, or record a distinct developmental environment without claiming unchanged-d6 coverage.",
+        "Run the original actual capture, source-free reader and 22 mutation controls with existing resource, custody and retirement checks; retain failures and complete evidence.",
+        "Rerun complete exact-source validation with all eight same-revision partition records after final baseline and source repairs."
+      ],
+      "evidence": [
+        "recovery-2026-11-16/ci-44002718718/README.md",
+        "recovery-2026-11-16/full-vv-oc10-diagnosis.md"
+      ],
+      "dependencies": [],
+      "production_admission": false
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
