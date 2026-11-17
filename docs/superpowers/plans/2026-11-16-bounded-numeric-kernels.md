@@ -16,6 +16,7 @@
 - First NaN operand wins and is quieted; invalid operations use positive canonical quiet NaN.
 - Four UInt32 limbs, 128 bits; no arbitrary-width public format parameters.
 - Preserve game SDK digest d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c and every current guest/policy pin.
+- Explicit additive dependency: the isolated diagnostic constructive-Nat compiler design in `../specs/2026-11-16-constructive-nat-backport-design.md` may introduce a separately identified effective proof compiler only inside its registered derived workspace. Keep pristine base/default package, SDK/tool/guest/exporter pins, original source authority and empty-theorem policy unchanged; no production admission follows from design or local tests.
 - Status0 success,1 unsupported operation,2 arithmetic failure,3 renderer-domain failure; no error-to-zero fallback.
 - Preserve exact hidden production bundles and source/compiler/target/output hashes; distinguish proof, tested conformance and measured performance.
 - Original UORust float guard remains unchanged; no upstream PRs in this phase.
