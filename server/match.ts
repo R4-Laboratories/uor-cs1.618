@@ -49,7 +49,7 @@ export class Match {
   const pos=MAP.spawns[p.team][index%5];p.x=pos[0];p.y=0;p.z=pos[1];p.vx=p.vy=p.vz=0;p.grounded=true;p.crouch=false;
   if(!p.alive){p.inventory=[gun('sidearm'),gun('sidearm')];p.armor=0;p.kit=false;}
   for(const g of p.inventory){g.ammo=WEAPONS[g.id].mag;}
-  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;p.botTarget=null;p.botReaction=0;p.botBurst=0;p.botShoot=0;
+  p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botPath=[];p.botPlan=0;p.botGoal=-1;p.botTarget=null;p.botReaction=0;p.botBurst=0;p.botShoot=0;
  }
  beginRound(){
   this.round++;this.phase='freeze';this.phaseLeft=R.freezeSeconds;this.winner=null;this.reason='Buy equipment. Prepare to deploy.';
@@ -229,8 +229,9 @@ export class Match {
   p.botPlan-=dt;p.botShoot-=dt;
   const i={...neutralInput(),yaw:p.yaw,slot:p.slot,seq:++p.processedSeq};
   if(this.phase!=='live'){p.input=i;return;}
-  const enemies=[...this.players.values()].filter(e=>e.alive&&e.team!==p.team).map(e=>({e,d:Math.hypot(e.x-p.x,e.z-p.z)})).sort((a,b)=>a.d-b.d);
-  const enemy=enemies.find(({e,d})=>d<45&&this.engine.ray(p.x,p.y+1.4,p.z,(e.x-p.x)/d,0,(e.z-p.z)/d,d)>=d-0.4)?.e;
+  const eye=p.y+(p.crouch?R.crouchEye:R.eyeHeight);
+  const enemies=[...this.players.values()].filter(e=>e.alive&&e.team!==p.team).map(e=>{const dx=e.x-p.x,dy=e.y+(e.crouch?0.75:1.2)-eye,dz=e.z-p.z;return {e,dx,dy,dz,d:Math.hypot(dx,dy,dz)};}).sort((a,b)=>a.d-b.d);
+  const enemy=enemies.find(({dx,dy,dz,d})=>d<45&&(d<1e-6||this.engine.ray(p.x,eye,p.z,dx/d,dy/d,dz/d,d)>=d-0.05))?.e;
   if(p.botTarget!==(enemy?.id??null)){p.botTarget=enemy?.id??null;p.botReaction=.22;p.botBurst=0;}else p.botReaction=Math.max(0,p.botReaction-dt);
   const b=this.bomb,assigned=this.botDefuser(),cover=b?.state==='planted'&&p.team==='defend'&&assigned!==p.id;
   let goal:{x:number;z:number}={x:MAP.sites[(this.round+(p.team==='defend'?1:0))%2].x,z:-11};
@@ -253,15 +254,17 @@ export class Match {
   if(tactic==='reload'&&p.inventory[p.slot].ammo<WEAPONS[p.inventory[p.slot].id].mag&&p.inventory[p.slot].reserve>0){i.reload=true;p.input=i;return;}
   if(tactic==='escort'&&p.team==='attack'&&b?.state==='carried'&&b.carrier!==p.id){const carrier=this.players.get(b.carrier!);if(carrier){goal={x:carrier.x,z:carrier.z};if(Math.hypot(goal.x-p.x,goal.z-p.z)<3&&!enemy){p.input=i;return;}}}
   if(enemy&&(tactic===null||tactic==='engage')){
-   const dx=enemy.x-p.x,dz=enemy.z-p.z,dy=enemy.y+(enemy.crouch?0.75:1.2)-(p.y+R.eyeHeight);const d=Math.hypot(dx,dz);
-   const aim=Math.atan2(-dx,-dz);let delta=Math.atan2(Math.sin(aim-p.yaw),Math.cos(aim-p.yaw));i.yaw=p.yaw+Math.max(-dt*4,Math.min(dt*4,delta));i.yaw=Math.atan2(Math.sin(i.yaw),Math.cos(i.yaw));i.pitch=Math.atan2(dy,d);
+   const dx=enemy.x-p.x,dz=enemy.z-p.z,dy=enemy.y+(enemy.crouch?0.75:1.2)-eye,d=Math.hypot(dx,dz),len=Math.hypot(dx,dy,dz);
+   const aim=d<1e-6?p.yaw:Math.atan2(-dx,-dz);let delta=Math.atan2(Math.sin(aim-p.yaw),Math.cos(aim-p.yaw));i.yaw=p.yaw+Math.max(-dt*4,Math.min(dt*4,delta));i.yaw=Math.atan2(Math.sin(i.yaw),Math.cos(i.yaw));i.pitch=len<1e-6?0:Math.max(-1.5,Math.min(1.5,Math.atan2(dy,d)));
    if(Math.abs(delta)<0.1&&p.botReaction<=0&&p.botShoot<=0&&p.cooldown<=dt){
-    const friendly=[...this.players.values()].some(f=>f.alive&&f.team===p.team&&f!==p&&this.engine.hitbox(p.x,p.y+R.eyeHeight,p.z,dx/Math.hypot(dx,dy,dz),dy/Math.hypot(dx,dy,dz),dz/Math.hypot(dx,dy,dz),f.x,f.y,f.z,.36,R.standingHeight)>=0&&Math.hypot(f.x-p.x,f.z-p.z)<d);
+    const friendly=len>=1e-6&&[...this.players.values()].some(f=>{if(!f.alive||f.team!==p.team||f===p)return false;const hit=this.engine.hitbox(p.x,eye,p.z,dx/len,dy/len,dz/len,f.x,f.y,f.z,.36,f.crouch?R.crouchHeight:R.standingHeight);return hit>=0&&hit<len;});
     if(!friendly){i.fire=true;const w=WEAPONS[p.inventory[p.slot].id];p.botBurst++;p.botShoot=w.automatic?(p.botBurst%3===0?.36:w.interval):.35;}
    }
    if(d>25)goal={x:enemy.x,z:enemy.z};else {p.input=i;if(p.inventory[p.slot].ammo===0)i.reload=true;return;}
   }
   if(b?.state==='carried'&&b.carrier===p.id){const site=MAP.sites[this.round%2];const candidates=this.nav.nodes.filter(n=>Math.hypot(n.x-site.x,n.z-site.z)<site.radius-1);candidates.sort((a,c)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(c.x-p.x,c.z-p.z));if(candidates[0])goal=candidates[0];}
+  const goalId=this.nav.nearest(goal.x,goal.z);
+  if(p.botGoal!==goalId){p.botGoal=goalId;p.botPath=[];p.botPlan=0;}
   const dist=Math.hypot(goal.x-p.x,goal.z-p.z);
   const canPlant=b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5);
   const canDefuse=facts.canDefuse;
@@ -270,11 +273,23 @@ export class Match {
   if(dist>1.2||approachingDevice){
    if(p.botPlan<=0){p.botPath=approachingDevice?this.defusePath(p,b):this.nav.path(p.x,p.z,goal.x,goal.z);p.botPlan=1+this.random();}
    // Keep the final defuse waypoint until interaction geometry becomes valid.
-   let next=this.nav.point(p.botPath[0]);if(next&&Math.hypot(next.x-p.x,next.z-p.z)<0.7&&(!approachingDevice||p.botPath.length>1)){p.botPath.shift();next=this.nav.point(p.botPath[0]);}
+   let next:{x:number;z:number}|undefined=this.nav.point(p.botPath[0]);if(next&&Math.hypot(next.x-p.x,next.z-p.z)<0.7&&(!approachingDevice||p.botPath.length>1)){p.botPath.shift();next=this.nav.point(p.botPath[0]);}
+   if(!next&&!approachingDevice&&dist<=3&&this.nav.nearest(p.x,p.z)===goalId&&this.clearFinalApproach(p,goal,dist))next=goal;
    if(next){i.yaw=Math.atan2(-(next.x-p.x),-(next.z-p.z));i.forward=1;}
   }
   if(p.inventory[p.slot].ammo===0||(p.inventory[p.slot].ammo<8&&!enemy))i.reload=true;
   p.input=i;
+ }
+ private clearFinalApproach(p:Player,goal:{x:number;z:number},distance:number){
+  const steps=Math.ceil(distance/.17),dx=(goal.x-p.x)/steps,dz=(goal.z-p.z)/steps;
+  // Verdant slides X then Z. Short sweeps enlarged by one step also enclose
+  // the straight segment between samples, so an axis detour cannot certify it.
+  const radius=R.radius+Math.hypot(dx,dz);
+  for(let n=0;n<steps;n++){
+   const x=p.x+dx*n,z=p.z+dz*n,moved=this.engine.move(x,p.y,z,dx,dz,radius,R.standingHeight);
+   if(Math.hypot(moved.x-x-dx,moved.z-z-dz)>1e-5)return false;
+  }
+  return true;
  }
  publicPlayer(p:Player):PublicPlayer{return {id:p.id,name:p.name,team:p.team,alive:p.alive,x:p.x,y:p.y,z:p.z,vx:p.vx,vy:p.vy,vz:p.vz,grounded:p.grounded,crouch:p.crouch,yaw:p.yaw,pitch:p.pitch,weapon:p.inventory[p.slot].id,kills:p.kills,deaths:p.deaths,bot:p.bot};}
  snapshot(id:string):Snapshot {
