@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/constructive-component-evidence-retention/1",
   "component_commit": "77dd61d5ecfc03da3af9d3ce49294863766dbcb0",
-  "independent_review": "pending-scoped-rereview",
+  "independent_review": "P1/P2 addressed; scoped SpecCompliance PASS and Quality PASS; component accepted",
   "qualification": "local component only; no SDK or production admission",
   "payload_count": 902,
   "payload_bytes": 7138607,
@@ -10,5 +10,10 @@
     "path": "constructive-nat-task1-77dd61d-evidence.tar.gz",
     "bytes": 1409136,
     "sha256": "bffa9269f3f57513af9c79e20d67738e931ca62ca3dceeb616c4fdf9148bc177"
+  },
+  "review_file": {
+    "path": "constructive-nat-task1-77dd61d-review.md",
+    "bytes": 6950,
+    "sha256": "967f74b094bb11a6de771f7da6272e87e05c762f767d68283871911b0d14dd46"
   }
 }
