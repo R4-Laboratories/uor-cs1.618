@@ -1,0 +1,5 @@
+# Portable process-owner host prerequisite
+
+The source frontend round2 broad JS invocation retained two unchanged process-owner failures with missing receipt files. A focused read-only reproduction now invokes the exact unchanged helper (SHA-256 `c0fcfd356d3101c2868f2e36ec5aed8543ba760f0e96d480cd4eff8b87652825`) with its original `installedEnvironment`, a one-second bound and a child that immediately exits17. The helper returns1 before publishing a receipt: `/proc/self/task/<pid>/children` is absent although the task directory exists. Original stderr and exact argv are in [result JSON](process-owner-host-diagnosis.json).
+
+This establishes a local process-cleanup prerequisite failure and reproduces the missing-receipt symptom. It is not a passing replay of the two original controls or an installed-SDK result. Keep their original failures; execute the real cleanup controls on the supported hosted Linux environment. No helper, kernel setting, environment policy or cleanup requirement was changed, and no replacement cleanup success was fabricated.

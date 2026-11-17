@@ -1,0 +1,27 @@
+{
+  "schema": "cs1618/process-owner-host-diagnosis/1",
+  "scope": "local host prerequisite diagnosis only; no SDK or source acceptance",
+  "owner_sha256": "c0fcfd356d3101c2868f2e36ec5aed8543ba760f0e96d480cd4eff8b87652825",
+  "argv": [
+    "-I",
+    "-B",
+    "/workspace/scratch/prismpm-numeric/scripts/portable-oracle-process-owner.py",
+    "1",
+    "/tmp/cs-process-owner-diagnosis-MWCe9C/receipt.json",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-c",
+    "import sys; sys.exit(17)"
+  ],
+  "status": 1,
+  "signal": null,
+  "error": null,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/workspace/scratch/prismpm-numeric/scripts/portable-oracle-process-owner.py\", line 77, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/workspace/scratch/prismpm-numeric/scripts/portable-oracle-process-owner.py\", line 51, in main\n    for pid in children():\n               ~~~~~~~~^^\n  File \"/workspace/scratch/prismpm-numeric/scripts/portable-oracle-process-owner.py\", line 12, in children\n    with open(f\"/proc/self/task/{os.getpid()}/children\", encoding=\"ascii\") as stream:\n         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/proc/self/task/335504/children'\n",
+  "receipt_exists": false,
+  "proc_probe": {
+    "children_path_exists": false,
+    "proc_task_exists": true
+  }
+}
