@@ -283,14 +283,71 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-17T18:50:19.811Z",
-    "base": "6be410fb2b7b3425c0634adb490d34bbdd908ced",
+    "at": "2026-11-17T19:02:28.922Z",
+    "base": "47a753851ad701133ed9a88619dd016ef30ef648",
     "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
-    "previous": "074fa0ebf3e3bdc4ebaf59038642c8d7b247c0dd5755b6cf41c9c9474a2515a4",
+    "previous": "2f2c7df9d344b01f3a5ceb86003e0de77b1516daa990da9c4099b03a8588be9c",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "experience-4-6",
+        "candidate": "experience-5-6",
+        "family": "experience",
+        "author": "typed-recipe-compiler",
+        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+        "configHash": "18ccf843c8bb2cdebc944866fced175896669acc0534fd42a86e169b4edd710e",
+        "baselineWork": 2.0865833333333366,
+        "candidateWork": 2.1355833333333383,
+        "fidelity": false,
+        "bounds": true,
+        "samples": 780,
+        "comparisons": {
+          "r4Verdict": "RefusedNonZeroDefect",
+          "heldOut": {
+            "before": {
+              "loss": 2.0751190476190517,
+              "lateBursts": 0,
+              "loadPixelRatio": 0.5751190476190519,
+              "voiceHighWater": 16,
+              "frames": 420,
+              "fidelity": true
+            },
+            "after": {
+              "loss": 2.1171190476190533,
+              "lateBursts": 0,
+              "loadPixelRatio": 0.6171190476190531,
+              "voiceHighWater": 16,
+              "frames": 420,
+              "fidelity": true
+            }
+          },
+          "interactions": [
+            {
+              "a": "downMs",
+              "b": "upMs",
+              "mixedLoss": 0
+            }
+          ]
+        },
+        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+        "before": {
+          "loss": 2.0865833333333366,
+          "lateBursts": 0,
+          "loadPixelRatio": 0.5865833333333367,
+          "voiceHighWater": 16,
+          "frames": 360,
+          "fidelity": true
+        },
+        "after": {
+          "loss": 2.1355833333333383,
+          "lateBursts": 0,
+          "loadPixelRatio": 0.6355833333333385,
+          "voiceHighWater": 16,
+          "frames": 360,
+          "fidelity": true
+        }
+      },
+      {
+        "candidate": "experience-6-6",
         "family": "experience",
         "author": "typed-recipe-compiler",
         "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
@@ -339,179 +396,13 @@
           "frames": 360,
           "fidelity": true
         }
-      },
-      {
-        "candidate": "experience-5-5",
-        "family": "experience",
-        "author": "typed-recipe-compiler",
-        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "72bb1967d6e7c8fa22fc90180849b2f863f3762befb64e8a27a9c3a40e8d95ec",
-        "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.1355833333333383,
-        "fidelity": false,
-        "bounds": true,
-        "samples": 780,
-        "comparisons": {
-          "r4Verdict": "RefusedNonZeroDefect",
-          "heldOut": {
-            "before": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            },
-            "after": {
-              "loss": 2.1171190476190533,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.6171190476190531,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            }
-          },
-          "interactions": []
-        },
-        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-        "before": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        },
-        "after": {
-          "loss": 2.1355833333333383,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.6355833333333385,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "2f2c7df9d344b01f3a5ceb86003e0de77b1516daa990da9c4099b03a8588be9c"
+    "hash": "c2b4340adb9669c759d35b3d922d9819c6c71049ee76fe0892f3d0e1e1c88740"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 8,
-      "author": null,
-      "at": "2026-11-16T09:48:39.300Z",
-      "base": "5e803e8ede1b16f3117a798b545d06b57620877e",
-      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-      "previous": "704abe789375bbdb6fd1fc9a30f42bfa28736d87575233baaf4cf02863e67935",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "experience-0-5",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "d50f9fba8753a49913d65e2f52c383b5752a9922d9d6b0a51f2d814533d338fb",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.1355833333333383,
-          "fidelity": false,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "RefusedNonZeroDefect",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.1171190476190533,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.6171190476190531,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.1355833333333383,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.6355833333333385,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          }
-        },
-        {
-          "candidate": "experience-0-6",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "9db9b7b24ac3bda9bd2e364a686e31a9d7ca3d131f34efe2e2b0b2222b242641",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.0865833333333366,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "CandidateAdmitted",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "6b06d7bf4f08819bb123c7cc31e9ec7730f92e78fd5825311ae807b8c639c8c1"
-    },
     {
       "generation": 8,
       "author": null,
@@ -9647,6 +9538,127 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "2f2c7df9d344b01f3a5ceb86003e0de77b1516daa990da9c4099b03a8588be9c"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T19:02:28.922Z",
+      "base": "47a753851ad701133ed9a88619dd016ef30ef648",
+      "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
+      "previous": "2f2c7df9d344b01f3a5ceb86003e0de77b1516daa990da9c4099b03a8588be9c",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "experience-5-6",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "18ccf843c8bb2cdebc944866fced175896669acc0534fd42a86e169b4edd710e",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.1355833333333383,
+          "fidelity": false,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "RefusedNonZeroDefect",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.1171190476190533,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.6171190476190531,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": [
+              {
+                "a": "downMs",
+                "b": "upMs",
+                "mixedLoss": 0
+              }
+            ]
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.1355833333333383,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.6355833333333385,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          }
+        },
+        {
+          "candidate": "experience-6-6",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "c3c3005d6f98ae2d529db032866151c164843a99d9b84c4d7d13829d5056e5b9",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.0865833333333366,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "CandidateAdmitted",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": []
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "c2b4340adb9669c759d35b3d922d9819c6c71049ee76fe0892f3d0e1e1c88740"
     }
   ]
 }
