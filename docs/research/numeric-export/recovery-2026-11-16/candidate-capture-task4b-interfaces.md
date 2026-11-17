@@ -1,0 +1,86 @@
+# Task4b dispatch interfaces (read-only refinement)
+
+2026-11-17. No code/tests/builds/Docker operations. These are proposed closed game-wrapper interfaces, not implemented commands or actualSDK evidence. Consume the independently reviewed Task4a successor of `f8808ad717a1582cd39d8c01bc452519a112afdd`; freeze its exact locator/control schemas and source commit/tree before snapshot. Preserve accepted881df278 transport/helper bytes. Prior scenario/cleanup ledger remains in `task-4-design.md` (Q1–Q6;12/12/7/6/6/7 final cleanup calls, <=18 per invocation,50 aggregate).
+
+## Fixed game probe delivery — supported seam, distinct authority
+
+Own `scripts/numeric/candidate-capture-probe.py` as reviewed **game** Git bytes, <=32768 UTF-8 bytes, no NUL. Host preparation obtains exact bytes with `git show GAME_COMMIT:scripts/numeric/candidate-capture-probe.py`, records Git blob OID, SHA256/length and game commit/tree, and verifies working/copy bytes against that blob. Supply the code directly in Docker argv; never insert it into source/fixture/authority inventories, input volume, SDK image or a new mount. If source-container execution needs game driver/probe copies, put them only beneath ignored `source/target/candidate-qualification-driver/`, authenticated by the host preparation record; they remain outside measured source.
+
+Existing seam is `Lifecycle.spec("execute", argv, source_root, socket_gid)` → `create` → `validate_actor`: entrypoint is fixed `/usr/bin/python3`, expected `Config.Cmd` equals the exact provided argv, image/environment/resource/mount policy is independently inspected. Actual accepted stage bootstrap and complete input materialization remain unchanged. The game probe is **qualification-only execution authority**, never the candidate application guest or a normal capture envelope producer.
+
+Closed probe argv (same bounded capsule parameter shape as the bootstrap, but a distinct mode/parser):
+
+```text
+/usr/bin/python3 -I -B -c <exact game probe bytes>
+  readonly-qualification-v1 <remaining_seconds> <descriptor_sha256>
+  <utility_bytes> <utility_sha256> <entry_bytes> <entry_sha256>
+```
+
+`sys.orig_argv` must have exactly12 entries, exact `/usr/bin/python3,-I,-B,-c` prefix; `sys.argv == ['-c'] + sys.orig_argv[5:]`. Mode is closed. Require Python3.12.3, UID/GID1000, actual SDK env/reference, isolated/no-bytecode flags and bounded remaining seconds1..1980. Hash the *actual* code string from `sys.orig_argv[4]`; the parent must compare it with independently measured game blob bytes and actual inspected actor argv. A child self-reported hash alone is insufficient. Parent retains sole original absolute deadline and clamps reads/retirement to it; computing a child remaining-seconds budget never renews the parent deadline.
+
+Authenticate fixed `/candidate-input/candidate-input.json` (<=32MiB, canonical bytes, descriptor hash from argv) and exactly two no-follow/single-link capsules under `/candidate-input/authority/{conditional-capture-sdk.py,conditional-capture-candidate.py}` (<=1MiB each, actual lengths/digests from argv and descriptor authority). Fixed utility digest remains `ca09b9de3bf57c3e2dc16e11d4d1a527b9b2f1f271566bb7a87846d0a24f8e9a`. Execute the checked candidate module bytes in an explicit private namespace with `__file__` equal to its capsule path, as the existing bootstrap does. Its `_utility()` then authenticates/loads the adjacent immutable utility by exact path. No ambient sys.path, arbitrary module, pyc or copied source shim.
+
+Call existing `validate_descriptor`, `verify_views`, `sdk_baseline`, `measured_listing` and complete materialized/source rechecks. Measure unchanged original inventory/marker/read-only SDK root/image-authority and baseline tree; require the original10GiB actual work-volume free check before execution qualification. Use the original limits and `deadline_scope`; no call to `guest` (it would run the actual capture), `publish_envelope` or a normal response writer. Mutations operate on the already reviewed closed view/path set; prove actual operation failure plus unchanged bytes/modes/paths. Repeat SDK baseline/source/ELF/listing afterwards.
+
+**Do not invoke the original bootstrap parser for this probe.** It admits only stage-v1/execute-v1 and binds its own code hash to the source bootstrap authority; game probe bytes intentionally are not that authority. A narrow game-owned parser is required. For Q6 use one additional closed `attachment-qualification-v1` mode in the same reviewed blob: after the same admission, produce a bounded ready record and wait under the original remaining deadline so the parent can interrupt the real attachment. It cannot emit a successful readonly/capture result. Q3's separately owned writer uses a separately fixed, measured literal argv in the driver, native Python/UID policy and only existing input RW mount; no extra capture attachment or source-member changes. Its inspected RW reference must block candidate execute creation. Do not pass a user-supplied program/path to either probe.
+
+## Fresh ELF custody — two actual compiled roots
+
+Q1 root must actually be the dedicated restored `/workspaces/NAME` checkout and satisfy `protected_root`; no symlink relocation. Q2 must actually be fresh `/tmp/prismpm-publication-capture-<owned-random>/source`, populated from the exact measured complete source inventory using existing private staging rules (including recursively consumed fixtures and direct aliases, excluding only original registered caches/Git). Measure Q2 source union separately; it is private/no Git, not a fabricated tracked commit. Both join the original reviewed source snapshot via independently retained file inventories.
+
+For **each root independently**, start with an absent private target and invoke from that root:
+
+```sh
+cargo test --locked --offline -p prismpm -p repo-conformance --lib --no-run \
+  --message-format=json --jobs 1 --config profile.dev.debug=0 --config build.incremental=false
+```
+
+Supply only that call's fresh `CARGO_TARGET_DIR` via the existing owning compiler environment; no global CARGO_BUILD/PROFILE/RUSTFLAGS or remap-prefix override. Exactly one fresh (`fresh:false`) actual prismpm libtest compiler artifact, expected target/manifest path under that root, regular singly linked inode within that target. Retain original Cargo JSON, move its actual emitted inode out of reconstructible target, measure dev/inode/length/SHA256/mode, create a distinct measured execution copy, run actual complete `--list --format=terse`, preserve exact case/count/list hash and source pre/post custody. No cached artifact, Q1 ELF re-used as Q2, relabelled descriptor root or second compilation in d6. A source/ELF closure failure is refusal. The original owner itself builds both crate libtests with these exact args; the qualifier may retain only the prismpm subject plus the full original compiler output, with explicit scope.
+
+Q2 requires the build cwd/private source root to match the eventual descriptor source_root: the Rust case derives repository from compiled `CARGO_MANIFEST_DIR`. Parent source measurement alone does not prove an unrelated ELF was compiled at that root. The fresh actual build/cwd/manifest/Cargo artifact custody establishes that join; genuine OC10 separately runs its own unchanged fresh private build and original compiler-artifact owners. Existing source rules cap captured compiler files more strictly than protocol ELF1GiB; never widen an existing owner cap for convenience.
+
+After both qualification subjects exist, negative Q3–Q6 may reuse an unchanged, reverified subject of the selected root; each scenario still owns fresh actor/volume/token and descriptor/runtime measurements. Do not rebuild per negative or reuse actors. Original component commands before real qualification:
+
+```sh
+python3 -I -B scripts/conditional-capture-candidate.test.py
+python3 -I -B scripts/conditional-capture-sdk.test.py "$ACTUAL_CURRENT_LIBTEST_ELF"
+node --test scripts/conditional-capture-candidate-command.test.mjs
+node --test tests/publication-context-linkage/candidate-transport.test.mjs
+```
+
+Then genuine registered OC10 (no workflow route/output/SDK-child override):
+
+```sh
+cargo test --locked --offline -p repo-conformance --test conformance \
+  conformance_oc_10 -- --exact --nocapture
+```
+
+Require registered outer test, exact65+2 owner counts, actual original application/22 refusals, independent reader/oracle, Task4a16-control sibling and fresh native/std/no_std/context/admission Wasm replay. Qualifier component or Python probe success is never a substitute.
+
+## Closed driver/result contracts
+
+Proposed CLI: `candidate-capture-qualification.py prepare|build-subjects|qualify|run-oc10|collect`, fixed named paths/defaults under the dedicated workspace; `qualify --scenario Q1|Q2|Q3|Q4|Q5|Q6` only. No arbitrary child command, image, root form or authority argument. `prepare` uses unchanged explicit-path restorer; build/run children use source-owned compiler/tool paths. Implement exact finite transitions; no phase fallback/retry. All schemas below reject unknown/missing/duplicate fields and use bounded regular records with final LF, SHA256/length inventories and explicit incomplete status.
+
+1. **Preparation** `cs1618/candidate-capture-preparation/1`: fields `schema,game,source,sdk,driver,probe,source_container`. `game={commit,tree}`; `source={commit,tree,snapshot_manifest_sha256,bundle_sha256,patch_sha256}`; `sdk={reference,config_digest,os,architecture}` from actual inspected unchanged d6; `driver={path,git_blob,sha256,bytes}` for the exact fixed game orchestration script/copy; `probe={path,git_blob,sha256,bytes}`; `source_container={config_digest,rootfs,os,architecture,definition_sha256}`. Separate original candidate receipt/source-inputs/actual inventory/lock files remain mandatory; this summary cannot replace them. At prepare before container exists, retain an explicitly partial phase record, not this final complete preparation shape.
+2. **Subject** `cs1618/candidate-capture-subject/1`: fields `schema,root_kind,source_root,source_sha256,union_sha256,cargo_output,artifact,execution,listing`. root_kind closed tracked/private; file references `{path,bytes,sha256}`; artifact additionally `{manifest_path,dev,ino,fresh:false}` and execution additionally `{dev,ino,mode}`; listing additionally `{test_count,exact_test}`. Actual source/fixture inventories retained separately and hashed. Paths constrained to this invocation's owned root/target/work, not supplied execution authority.
+3. **Probe** `cs1618/candidate-readonly-probe/1`: fields `schema,mode,complete_application_accepted:false,probe_sha256,descriptor_sha256,python,uid,gid,source_root,source_sha256,executable_sha256,listing_sha256,test_count,readonly_views,sdk_tree_sha256,checks,closure_unchanged`. readonly mode requires exact original view structure; checks fixed ordered `{id,path,operation,errno,rejected:true}` for all required views/operations; closure_unchanged true only after complete actual rechecks. <=1MiB response plus actual EOF/exit0. Attachment mode has a separate closed ready schema `cs1618/candidate-attachment-ready/1` containing only `schema,probe_sha256,descriptor_sha256,uid,gid`; it is never readonly success.
+4. **Scenario** `cs1618/candidate-capture-scenario/1`: fields `schema,id,status,scope,complete_application_accepted:false,preparation_sha256,subject_sha256,owner_token,descriptor_sha256,probe,observations,fault,retirement`. status closed `qualified|expected-refusal|incomplete`; scope `actual-daemon-qualification-only`. `probe` is null for cases without successful readonly result, otherwise typed receipt reference; `fault` closed `{kind,observed_refusal,execution_created}` with fixed per-scenario kind and actual booleans. `observations` ordered closed records `{role,kind,path,bytes,sha256}` referring to bounded raw actual argv/inspect/mount/volume/tool/stream files. `retirement={actors,volumes,cleanup_daemon_calls,attachment_waits,uncertain}`; each actor/volume row has exact name/role/ID where applicable and observed absent/retained state. Missing/unknown actor ID stays null+uncertain, not a fabricated success. Q1/Q2 require full absence; Q3–Q6 require their named refusal, authenticated actor absence and owned-volume retention. All records stay probe-only; never manufacture helper `candidate-transport-evidence.json`.
+5. **Final collection** `cs1618/candidate-capture-collection/1`: fields `schema,status,scope,complete_application_accepted:false,preparation,scenarios,oc10,locators,files,retained_bytes,missing`. status `complete-conditional-evidence|incomplete`; scope `actual-transport-and-original-OC10-only`; references `{path,bytes,sha256}`; scenarios exact Q1..Q6; oc10 references original command/status, exact gate results, original factory/owner/Task4a/control/replay records; files sorted bounded relative-path entries `{path,bytes,sha256}` (no symlinks). Only complete actual source/d6 identities, all scenario expected outcomes and successful complete original OC10 permit complete-conditional-evidence; still no production/application acceptance.
+
+These are **outer diagnostic wrappers**, not replacements for immutable inner protocol fields. Validate exact Task4a final locator/control/factory shapes as committed; if they differ from the reviewed draft, reconcile at review rather than guess.
+
+## Locator collector and failure discovery
+
+Task4a fixed ignored `repository/target/conditional-publication-capture-locators/` registry must be absent/empty at fresh Task4b invocation. Read only its new <=256 regular single-link files/<=1MiB aggregate, <=4KiB each, no-follow owned directory/file/ancestor checks. Locator fields are exactly the reviewed Task4a `schema,complete:false,accepted:false,work_basename,work_path,source_root,owner_module_sha256`; basename filename/path relation and module bytes join independently restored source. It discovers only this owner's private work; it does not reconstruct source/ELF ownership or authorize success.
+
+Collect fixed per-work receipt/capture/diagnostics/control paths and actual original inventories. Validate typed success receipts independently of locator; on failure retain locator, available regular files and exact outer status with missing evidence listed. No arbitrary `/tmp` scan or prose-log path parsing. Before any factory locator exists, preserve outer failure only and label `factory-not-recorded`; do not invent an SDK capture. Candidate pre-output spools lacking their own typed locator remain unavailable, explicitly. Failed Docker volumes remain authenticated/observed on hosted daemon, not falsely claimed durably exported; collector creates no additional actors.
+
+Remote cap remains4GiB with original per-product bounds and explicit byte inventory; overflow => incomplete. Local download: first <=32MiB metadata/status subset, then actual available-space calculation preserving8GiB and accounting compressed+extracted+working copies before fetching full selected evidence. A partial local subset is not complete artifact review. Do not auto-download4GiB or recursively retain target caches.
+
+## 360-minute outer scheduling constraint
+
+Six separate scenario ceilings total240min, unchanged OC10 owner ceiling approximately60min, leaving **60min maximum for setup, both fresh builds, controls and collection** in a single360min job. A cold original source-image build can itself consume the existing240min image-preparation allowance: those maxima categorically do **not** fit one360min qualification job. Do not increase inner2400s or OC10 bounds, skip scenarios, or call a truncated run complete.
+
+Smallest executable schedule: require a previously prepared exact original source-devcontainer cache (existing pinned cache mechanism); qualification job remains360min with an absolute outer deadline from job start. Reserve10min for final collection and60min for genuine OC10; before each scenario require enough remaining outer time for all remaining original40min scenario budgets plus those reserves. Thus source/image acquisition, two builds and component checks must fit the remaining50min planning allowance. If not, stop incomplete before starting an under-budget phase, retain evidence and prepare/cache the source image separately before a new reviewed run. The setup allowance is a workflow scheduling guard, not a modified compiler/helper timeout or a prediction that cold work will finish.
+
+Alternative separately reviewed matrix scheduling can reduce critical path, but is not needed to dispatch this minimal wrapper and must not invent shared actors or cross-source results. Actual elapsed setup and failed scheduling are reported, never converted to qualification. No actual SDK compatibility or capacity is established by this interface document.
