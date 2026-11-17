@@ -1,0 +1,28 @@
+{
+  "schema": "cs1618/retained-host-handoff-component/1",
+  "game_commit": "b09d45c1d9813a06925dfbcf5dea9399c612d20b",
+  "review": "pending",
+  "SDK_qualification": "not_run",
+  "local_tests": {
+    "passed": 49,
+    "skipped_privileged": 1
+  },
+  "evidence_index_sha256": "bf3ee419ed3ad092aa165a83f9d10540acd29a14b06be9c58516dd6c24d31b72",
+  "entries": [
+    {
+      "path": "candidate-capture-host-handoff-b09d45c.tar.gz",
+      "bytes": 30569,
+      "sha256": "5722ce6fd3f19fc1edb48ec83e178b3ae3202d671e23a9e7c2ac166b65cb438e"
+    },
+    {
+      "path": "candidate-capture-qualification-report-b09d45c.md",
+      "bytes": 37746,
+      "sha256": "3bf5400e5845dc631b66ad6a5ad40901d99d438e290ef975745827c94d0a4174"
+    },
+    {
+      "path": "candidate-capture-host-handoff-b09d45c.patch",
+      "bytes": 62252,
+      "sha256": "27a18baf8f1e67c9c4747aa4982d294eb1943e117eb245fb3c6236b2621bc12e"
+    }
+  ]
+}
