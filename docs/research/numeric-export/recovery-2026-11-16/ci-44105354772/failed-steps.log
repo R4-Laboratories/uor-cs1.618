@@ -1,0 +1,13 @@
+image	Exercise actual host privilege and artifact handoff	﻿2026-11-17T14:39:09.5927952Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image
+image	Exercise actual host privilege and artifact handoff	2026-11-17T14:39:09.5928883Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image[0m
+image	Exercise actual host privilege and artifact handoff	2026-11-17T14:39:09.5941581Z shell: /usr/bin/bash -e {0}
+image	Exercise actual host privilege and artifact handoff	2026-11-17T14:39:09.5941850Z ##[endgroup]
+image	Exercise actual host privilege and artifact handoff	2026-11-17T14:39:09.7837337Z host bridge incomplete: host access unsupported_acl: /home
+image	Exercise actual host privilege and artifact handoff	2026-11-17T14:39:09.7935233Z ##[error]Process completed with exit code 1.
+image	Retain actual source image and cleanliness	﻿2026-11-17T14:39:09.7999185Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.8000078Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect[0m
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.8012638Z shell: /usr/bin/bash -e {0}
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.8012909Z ##[endgroup]
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.9899786Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: completed actual bridge preflight required
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.9900820Z 
+image	Retain actual source image and cleanliness	2026-11-17T14:39:09.9989404Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,39 @@
+{
+  "schema": "cs1618/hosted-failure-evidence/1",
+  "run_id": 44105354772,
+  "game_commit": "1243d59531541ab1117539d37a48a1675fe318e0",
+  "conclusion": "failure",
+  "actual_blocker": "root getxattr system.posix_acl_default present on /home; source access not reached",
+  "files": [
+    {
+      "path": "completed-run.json",
+      "bytes": 2336,
+      "sha256": "b0e23f86a7c7a6dcc9617b4efd6908e403fc54f21f6ddd4bbeaf9c8dafbfb9df"
+    },
+    {
+      "path": "failed-steps.log",
+      "bytes": 1957,
+      "sha256": "b570203736fefce1bb01d54e96978d749fb746e9f8d43cca24b82938fca3cc98"
+    },
+    {
+      "path": "full-run.log",
+      "bytes": 162832,
+      "sha256": "ecdaa108bb3fa7ba7279f2fe1878ada3925051c2ff681b69638498a82e4124b7"
+    },
+    {
+      "path": "launch.json",
+      "bytes": 2823,
+      "sha256": "ad13144808d158b926749833686d88f8f7f82942b6eda7d8426ece23a5ddfffe"
+    },
+    {
+      "path": "observed-failure.json",
+      "bytes": 1702,
+      "sha256": "84b41352466cdfbf8de772d221c4573367eb4202c444681060ba62e884fb549e"
+    },
+    {
+      "path": "source-image-failure-artifact.zip",
+      "bytes": 784,
+      "sha256": "fd1c7192063fae0cc1570edc30ff7813f86ba5acc5f250f3c373c00c3761ff6f"
+    }
+  ]
+}
