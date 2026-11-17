@@ -1,0 +1,216 @@
+{
+  "schema": "cs1618/constructive-component-proof-checkpoint/1",
+  "scope": "14_selected_component_theorems_Lean_kernel_replay_and_empty_axioms_not_SDK_admission",
+  "entries": [
+    {
+      "path": "evidence/full-direct-validation-axioms.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-axioms.stdout",
+      "bytes": 1089,
+      "sha256": "9e99e00a338c4f1f4749b438191f5bda71aa41ed3b6e39505cab9a13b3528dfb"
+    },
+    {
+      "path": "evidence/full-direct-validation-build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-build.stdout",
+      "bytes": 99,
+      "sha256": "b7f85a992d7d1cbb6e5c34d6a0c00499190fce03fdd9da067df7f2f4435acfc1"
+    },
+    {
+      "path": "evidence/full-direct-validation-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-check.stdout",
+      "bytes": 167,
+      "sha256": "b768cb87e736a1c4342b68bd81fc54f4d09150dc775811ed5879dfd81184dbe1"
+    },
+    {
+      "path": "evidence/full-direct-validation-checker-ConstructiveComponent.Bounds.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-checker-ConstructiveComponent.Bounds.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-checker-ConstructiveComponent.Generic.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-checker-ConstructiveComponent.Generic.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-commands.json",
+      "bytes": 25160,
+      "sha256": "aebdb12d9ff3b0ddd436f91ba959ab7657f3867e4e998514f3cca4484eb00128"
+    },
+    {
+      "path": "evidence/full-direct-validation-fmt.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-fmt.stdout",
+      "bytes": 24,
+      "sha256": "f547a41e8369f002dfede3bde419450f2eacde5e69b979d8a4010bcb7a233db1"
+    },
+    {
+      "path": "evidence/full-direct-validation-lean-ConstructiveComponent.Bounds.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-lean-ConstructiveComponent.Bounds.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-lean-ConstructiveComponent.Generic.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-lean-ConstructiveComponent.Generic.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-lock.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/full-direct-validation-lock.stdout",
+      "bytes": 24,
+      "sha256": "dc089a4cfd5d488f53409e30183abc597de06975f0902f8a35005a468d24f317"
+    },
+    {
+      "path": "evidence/full-direct-validation-result.json",
+      "bytes": 7927,
+      "sha256": "553323e8a6484e26ff3c894332f8d4f608b2b226547dcb477eddb71d80f6d7f8"
+    },
+    {
+      "path": "fixtures/positive-direct/.lexlean/build/73b99cb4aba905bb87481955c1ce231298cdf2f5e6786261b8dbc837fd78af71/manifest.json",
+      "bytes": 4693,
+      "sha256": "8879452cbf5b539622a9ed85c1b097425daca882594779639ed95d7067f7954e"
+    },
+    {
+      "path": "fixtures/positive-direct/.lexlean/build/73b99cb4aba905bb87481955c1ce231298cdf2f5e6786261b8dbc837fd78af71/modules/ConstructiveComponent/Bounds.lean",
+      "bytes": 49766,
+      "sha256": "9826404ba2a9bdccc5eed0b31dd9722ea5c4e7120c028cb5da6969f5aaef7bc0"
+    },
+    {
+      "path": "fixtures/positive-direct/.lexlean/build/73b99cb4aba905bb87481955c1ce231298cdf2f5e6786261b8dbc837fd78af71/modules/ConstructiveComponent/Generic.lean",
+      "bytes": 109114,
+      "sha256": "129c077670237aeaf02d858f0362c92b75c1df889f1f873902bb23ee98326c6d"
+    },
+    {
+      "path": "fixtures/positive-direct/.lexlean/build/73b99cb4aba905bb87481955c1ce231298cdf2f5e6786261b8dbc837fd78af71/proofs/constructive-nat.json",
+      "bytes": 202039,
+      "sha256": "3d014b17c42141482faae7eafce8181381098588f6f69d1cfc39242c5ae1efbe"
+    },
+    {
+      "path": "fixtures/positive-direct/lake-manifest.json",
+      "bytes": 150,
+      "sha256": "e2d7568929818723dcc8517bf677001b81a9bcdcd0c8efa4ac5779d50d5cf0ef"
+    },
+    {
+      "path": "fixtures/positive-direct/lakefile.toml",
+      "bytes": 46,
+      "sha256": "64bbda1d8f6492d8e4a20b0eddffe2199e3654a1855324837a5a3bf3244f8abd"
+    },
+    {
+      "path": "fixtures/positive-direct/lean-toolchain",
+      "bytes": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "fixtures/positive-direct/lexlean.lock",
+      "bytes": 1597,
+      "sha256": "b2b41b302f44faf5dd6fd3f5fc32b9b0a648bfc6db36ea09ada77c2eb7fda74f"
+    },
+    {
+      "path": "fixtures/positive-direct/lexlean.toml",
+      "bytes": 723,
+      "sha256": "51e6e29c3e81b9a0c91894a0cfab6d924700f5a446e2f522ec0f3cbb85c20926"
+    },
+    {
+      "path": "fixtures/positive-direct/src/Bounds.lex.tex",
+      "bytes": 1269,
+      "sha256": "56fbb2a5b827291d33a9d5206dba0294c5cc82fc48f3451cf9339e2834d8c6cc"
+    },
+    {
+      "path": "fixtures/positive-direct/src/Compatibility.lex.tex",
+      "bytes": 430,
+      "sha256": "66531df920e9301b2a680a476dc9cfdd43354bec8ed082d61294fa4799686800"
+    },
+    {
+      "path": "fixtures/positive-direct/src/Generic.lex.tex",
+      "bytes": 1891,
+      "sha256": "0d4eb100bd279841d7bbbff290772454de3aa095394b218ca3bb16d6306a2cf3"
+    },
+    {
+      "path": "generated/positive-direct/AxiomAudit.lean",
+      "bytes": 917,
+      "sha256": "289f39628665a7d87e4bc886168544e3689a1e283c6046b42ecb300e279a084c"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Bounds.ir",
+      "bytes": 1400,
+      "sha256": "68da33e372cb0d31d484e9fd200a870000557dd424aabd492cd66fd1755941a3"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Bounds.olean",
+      "bytes": 10928,
+      "sha256": "4178669e668120f02a0b3cc8bb86dffd5a94c48f2fbd68d019ee0c1c3740f2f8"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Bounds.olean.private",
+      "bytes": 161608,
+      "sha256": "d50a6390b8b36907e2570eb3a84232105b1953255a261ff171310ee315bba38b"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Bounds.olean.server",
+      "bytes": 1528,
+      "sha256": "ece9d1d7938f4769e46bf359dab1c239a3216de9e2776a31a0d56dc2f548825e"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Generic.ir",
+      "bytes": 1400,
+      "sha256": "5cc239d9e69e138dc03cfeb4b0b434afbc8f4e3e5cc70f228d17c6eddda31d60"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Generic.olean",
+      "bytes": 14624,
+      "sha256": "c191b184ff3cbd7faf3cfd91b4a93d4b2920dbc8f2fc0c62e165d5a5b1ff57e4"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Generic.olean.private",
+      "bytes": 368808,
+      "sha256": "3dc8b4abe7f41934ca9be69d5a2e03aaabfdd4e9e6101e742181e174e568b13f"
+    },
+    {
+      "path": "generated/positive-direct/ConstructiveComponent/Generic.olean.server",
+      "bytes": 2456,
+      "sha256": "bee792457612eca9c847601f16abd0ebf2b3ebc4125681337faccc4eb23bc542"
+    }
+  ],
+  "archive": {
+    "path": "constructive-nat-full-proof-checkpoint.tar.gz",
+    "bytes": 222971,
+    "sha256": "b73069de684b9ba11bc37b495f1d86e6e9b866f6c3aa42e112f94b3b162bf7b7"
+  }
+}
