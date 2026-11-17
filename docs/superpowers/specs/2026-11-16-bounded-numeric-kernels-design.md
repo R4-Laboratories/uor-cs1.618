@@ -35,6 +35,8 @@ Integrate into `src/hd-budget.ts` at its three-second sampling boundary. Compute
 
 Compare the same numeric root through a persistent Wasm instance and the existing Text/1-style boundary, plus the original host computation. Measure initialization, warm batches and full sampling cost; compare final rank decisions at below8000, inclusive8000..20000, and above20000 microseconds. A slower arithmetic kernel may still supply checked-source assurance at this low-frequency boundary; no FPS or Three.js superiority claim follows. Do not replace GPU math or per-object culling based on this benchmark.
 
+The Text/1-style comparison may use a benchmark-only byte/ABI adapter calling the exact admitted generated numeric libraries. Identify its codec, limits, allocation policy and wrapper hashes separately; test its refusals and actual root execution. Label the result as transport measurement, not a Prism-generated Text/1 application or Holo qualification. Existing round-guest timings and host arithmetic cannot substitute for the same numeric roots. A genuinely generated numeric Text/1 application remains a separate follow-on; this comparison does not certify its codec or application pipeline.
+
 ## Acceptance
 
 Each admitted operation must export and replay successfully, pass exact-bit boundary/random corpora in native and Wasm, expose failures honestly, and have its actual proof scope recorded. The renderer must preserve reference decisions and pins, expose guest status, and stay within a declared measured sampling budget. Retain LexLean/PrismPM package custody and run relevant game/proof/browser gates before publishing the integration. Unsupported generic compiler roots stay refused. Upstream PR creation is outside this phase.
