@@ -1,0 +1,129 @@
+diff --git a/tests/browser-view/compile.mjs b/tests/browser-view/compile.mjs
+index e0ffb134..da2a0421 100644
+--- a/tests/browser-view/compile.mjs
++++ b/tests/browser-view/compile.mjs
+@@ -274,7 +274,9 @@ export function runPublicationCapture(executable, cwd, output) {
+   assert.ifError(result.error);
+   assert.equal(result.status, 0, 'actual publication capture failed\n' + result.stdout + '\n' + result.stderr);
+   assert.match(result.stdout, /test result: ok\. 1 passed; 0 failed; 0 ignored;/);
+-  assert.ok(result.stdout.includes('PASS complete actual conditional publication capture: ' + output));
++  // Forwarded guest/parent markers are best-effort diagnostics. The owning
++  // factory next verifies the original receipt, complete retained tree and
++  // candidate envelope/retirement before it can complete or replay anything.
+   return result.stdout;
+ }
+ export function createPrivateDriverTarget(work) {
+diff --git a/tests/publication-context-linkage/candidate-transport.test.mjs b/tests/publication-context-linkage/candidate-transport.test.mjs
+index 6f638c98..e44ffb78 100644
+--- a/tests/publication-context-linkage/candidate-transport.test.mjs
++++ b/tests/publication-context-linkage/candidate-transport.test.mjs
+@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
+ import test from 'node:test';
+ import {createHash} from 'node:crypto';
+ import {spawnSync} from 'node:child_process';
+-import {chmodSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync,
++import {chmodSync, cpSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync,
+   truncateSync, unlinkSync, writeFileSync} from 'node:fs';
+ import {tmpdir} from 'node:os';
+ import {dirname, join} from 'node:path';
+@@ -203,16 +203,91 @@ test('held outer tree detects coherent observation replacement without circular
+     assert.throws(() => f.verify(f.envelope, {envelopeBytes:malformed}), /exact candidate envelope framing/);
+ });
+ 
+-test('ambient route and SDK child conflicts refuse before compiler or capture execution', () => {
+-  for (const key of ['PRISMPM_OC10_CAPTURE_ROUTE', 'PRISMPM_OC10_SDK_CHILD']) {
+-    const previous = process.env[key];
+-    try {
+-      for (const value of ['', 'image-owned-v1', 'candidate-source-v1', 'unknown']) {
+-        process.env[key] = value;
+-        assert.throws(() => runPublicationCapture('/not-an-executable', '/not-a-directory', '/not-output'), /ambient .* refused/);
+-      }
+-    } finally {if (previous === undefined) delete process.env[key]; else process.env[key] = previous;}
++test('candidate caller completion uses outer test success and retained evidence, never forwarded markers', t => {
++  const f = fixture(t); f.verify();
++  const saved = join(f.work, 'retained-component-fixture');
++  cpSync(f.captureRoot, saved, {recursive:true});
++  const guest = 'PASS complete actual conditional publication capture: /workspace/conditional-capture/capture\n';
++  const host = 'PASS complete candidate-source conditional capture and measured actor/volume retirement: ' + f.captureRoot + '\n';
++  const summary = 'test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n';
++  const cases = [
++    {name:'guest and candidate host markers', stdout:guest + host + summary},
++    {name:'guest marker only', stdout:guest + summary},
++    {name:'candidate host marker only', stdout:host + summary},
++    {name:'no forwarded markers', stdout:summary},
++    {name:'failed outer process', stdout:guest + host + summary, status:1, refuses:true},
++    {name:'missing outer test summary', stdout:guest + host, refuses:true},
++    {name:'missing original receipt', stdout:summary, refuses:true,
++      alter:() => unlinkSync(join(f.captureRoot, 'capture-evidence.json'))},
++    {name:'incomplete original refusals', stdout:summary, refuses:true, alter:() => {
++      const path = join(f.captureRoot, 'capture-evidence.json'), receipt = JSON.parse(readFileSync(path));
++      receipt.graph_refusals.pop(); writeFileSync(path, json(receipt));
++    }},
++    {name:'missing envelope', stdout:summary, refuses:true,
++      alter:() => unlinkSync(join(f.captureRoot, 'candidate-transport-evidence.json'))},
++    {name:'altered envelope', stdout:summary, refuses:true, alter:() => {
++      const path = join(f.captureRoot, 'candidate-transport-evidence.json'), envelope = JSON.parse(readFileSync(path));
++      envelope.capture_receipt_sha256 = hex; writeFileSync(path, canonicalTransport(envelope));
++    }},
++    {name:'incomplete retirement', stdout:summary, refuses:true, alter:() => {
++      const path = join(f.captureRoot, 'candidate-transport-evidence.json'), envelope = JSON.parse(readFileSync(path));
++      envelope.retirement.attachment_eof_observed = false; writeFileSync(path, canonicalTransport(envelope));
++    }},
++    {name:'unreported retained file', stdout:summary, refuses:true,
++      alter:() => put(f.captureRoot, 'unreported', 'not in the complete original retained tree')},
++  ];
++  for (const example of cases) {
++    rmSync(f.captureRoot, {recursive:true}); mkdirSync(f.captureRoot, {mode:0o700});
++    for (const name of ['capture.stdout', 'capture.stderr']) rmSync(join(f.work, name), {force:true});
++    let launches = 0, retired = 0;
++    // Exact current caller body, with explicit process/tool-check doubles only.
++    // Source/ELF/receipt/envelope/tree verification below uses the real owned
++    // files. No SDK/helper execution or application success is claimed here.
++    const dependencies = {assert, process:{env:{}, getuid:() => process.getuid()}, compilerEnvironment:() => ({}),
++      compilerToolsVerified:true, verifyCompilerTools:() => assert.fail('component tools already checked'),
++      realpathSync, lstatSync, join, readdirSync, writeFileSync,
++      terminateOwnedGroup:pid => {assert.equal(pid, 0); retired++;},
++      spawnSync:(program, args, options) => {
++        launches++;
++        assert.equal(program, '/usr/bin/timeout');
++        assert.deepEqual(args, ['--signal=TERM', '--kill-after=5s', '2400s', f.executable.path, '--exact', testName, '--nocapture']);
++        assert.deepEqual(options.env, {PRISMPM_OC10_CAPTURE_OUTPUT:f.captureRoot, PRISMPM_OC10_CAPTURE_ROUTE:'candidate-source-v1'});
++        cpSync(saved, f.captureRoot, {recursive:true}); example.alter?.();
++        return {status:example.status ?? 0, signal:null, error:undefined, pid:0,
++          stdout:example.stdout, stderr:'component inherited diagnostic\n'};
++      }};
++    const invoke = new Function(...Object.keys(dependencies), 'return (' + runPublicationCapture.toString() + ');')(...Object.values(dependencies));
++    const complete = () => {
++      invoke(f.executable.path, f.work, f.captureRoot);
++      // This is the next owning-factory boundary, unchanged by the marker fix.
++      // A successful launch alone never enters completeOwners or generated replay.
++      return verifyCandidateTransport({envelopeBytes:readFileSync(join(f.captureRoot, 'candidate-transport-evidence.json')),
++        sourceRoot:f.sourceRoot, sourceRecords:f.sourceRecords, executable:f.executable, captureRoot:f.captureRoot,
++        sdkLock:f.sdkLock, inventoryBytes:f.inventoryBytes});
++    };
++    if (example.refuses) assert.throws(complete, undefined, example.name);
++    else assert.equal(complete().complete_application_accepted, false, example.name);
++    assert.equal(launches, 1); assert.equal(retired, 1);
++    assert.equal(readFileSync(join(f.work, 'capture.stdout'), 'utf8'), example.stdout);
++    assert.equal(readFileSync(join(f.work, 'capture.stderr'), 'utf8'), 'component inherited diagnostic\n');
++  }
++});
++
++test('ambient route and SDK child conflicts refuse in isolated children before execution', () => {
++  const keys = ['PRISMPM_OC10_CAPTURE_ROUTE', 'PRISMPM_OC10_SDK_CHILD'];
++  const baseline = {...process.env};
++  const environment = Object.fromEntries(Object.entries(baseline).filter(([key]) => !keys.includes(key)));
++  const module = new URL('../browser-view/compile.mjs', import.meta.url).href;
++  for (const key of keys) for (const value of ['', 'image-owned-v1', 'candidate-source-v1', 'unknown']) {
++    const message = key === keys[0] ? 'ambient capture route refused' : 'ambient SDK child refused';
++    const code = `import assert from 'node:assert/strict'; import {runPublicationCapture} from ${JSON.stringify(module)};
++      assert.throws(() => runPublicationCapture('/not-an-executable', '/not-a-directory', '/not-output'),
++        error => error.message.includes(${JSON.stringify(message)}));`;
++    const child = spawnSync(process.execPath, ['--input-type=module', '-e', code],
++      {env:{...environment, [key]:value}, encoding:'utf8', timeout:10000, maxBuffer:1048576});
++    assert.ifError(child.error); assert.equal(child.status, 0, child.stderr); assert.equal(child.signal, null);
+   }
++  assert.deepEqual({...process.env}, baseline, 'parent environment remains unchanged');
+ });
+ 
+ test('separate diagnostics index retains bounded channels without claiming completeness', t => {

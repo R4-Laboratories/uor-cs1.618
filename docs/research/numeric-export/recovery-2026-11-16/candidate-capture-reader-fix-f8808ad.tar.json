@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/recovery-evidence-archive/1",
+  "source_revision": "f8808ad717a1582cd39d8c01bc452519a112afdd",
+  "scope": "Task3 focused fix1, independent rereview pending; not SDK acceptance",
+  "archive": "candidate-capture-reader-fix-f8808ad.tar.gz",
+  "bytes": 9882,
+  "sha256": "a9f10f4c605781839b805e2b3d93d9eb6ccc7dd023941d8cfbdefcdaab9bef03",
+  "index_sha256": "22e7d032a70e765ebbdc515fc3d0b2c97956c0356dea61d90fc6beaa163df9fd",
+  "entries": 17
+}
