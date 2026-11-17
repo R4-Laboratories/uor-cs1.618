@@ -1,0 +1,31 @@
+   Compiling getrandom v0.3.4
+   Compiling bit-vec v0.8.0
+   Compiling bit-set v0.8.0
+   Compiling rand_core v0.9.5
+   Compiling tempfile v3.27.0
+   Compiling ahash v0.8.12
+   Compiling ppv-lite86 v0.2.21
+   Compiling wait-timeout v0.2.1
+   Compiling fnv v1.0.7
+   Compiling quick-error v1.2.3
+   Compiling rusty-fork v0.3.1
+   Compiling rand_chacha v0.9.0
+   Compiling referencing v0.50.1
+   Compiling jsonschema-value v0.50.1
+   Compiling rand v0.9.5
+   Compiling rand_xorshift v0.4.0
+   Compiling fancy-regex v0.19.0
+   Compiling unarray v0.1.4
+   Compiling proptest v1.11.0
+   Compiling jsonschema v0.50.1
+   Compiling lexlean v0.4.0 (/work/prismpm-b1/vendor/lexlean)
+   Compiling prismpm v0.4.0 (/work/prismpm-b1/crates/prismpm)
+    Finished `test` profile [unoptimized] target(s) in 1m 07s
+     Running unittests src/lib.rs (target/debug/deps/prismpm-587d1e8614ce3ac3)
+
+running 1 test
+retained backport projects: 3 independently bound; candidate mutation corpus rejected
+test release_verification::tests::backport_authority_retained_selection_is_independent_and_historical_laundering_fails ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 525 filtered out; finished in 10.02s
+

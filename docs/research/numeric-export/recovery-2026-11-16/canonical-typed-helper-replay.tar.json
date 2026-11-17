@@ -1,0 +1,8 @@
+{
+  "scope": "Actual canonical helper native/import-freeWasm diagnostics; ABI names/record packing adapted, independent oracle unchanged; no generated package edits",
+  "archive": "canonical-typed-helper-replay.tar.gz",
+  "sha256": "068c962d3fd1f9c105c03f07aaae674dc12e5c73459e971b809274e10577f446",
+  "bytes": 1482995,
+  "canonical_source_id": "453dc1bd8c46c374bbd40745d3204be62cc972ba4ae0971f66b997fbf625153d",
+  "parent_evidence": "canonical-typed-453dc1bd.tar.gz"
+}

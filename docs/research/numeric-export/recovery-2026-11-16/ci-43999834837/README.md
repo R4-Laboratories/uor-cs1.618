@@ -1,0 +1,5 @@
+# Fresh repaired SDK diagnostic run
+
+[Run43999834837](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43999834837) succeeded at game `6c7114a023ff928fea6f85eb4306a201d776622f`, restoring PrismPM `2a31ad07`. Container, host log capture and runner statuses are all zero. Both actual host/container write/read probes pass. Retained reader reports1passed and its required three-project mutation marker; authority controls report10passed. Final original SDK/tool/lock/source identities all match and the generated diff is empty. Both compact ZIP SHA256 values and sizes were independently checked against GitHub API metadata before bounded extraction.
+
+Complete selected reader inputs and small logs were retained without omissions. This confirms the repaired diagnostic wrapper in real GitHub Actions, unlike the historical host-write failure. It establishes the focused amd64 acquisition/readers and authority controls, not all eight source VV parts, arbitrary compiler correctness, SDK/product qualification or game production admission. The original failed run and its separate recovery remain preserved.

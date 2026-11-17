@@ -1,0 +1,13 @@
+Cargo.lock: OK
+tests/fixtures/exporter-backport/sdk-lock.json: OK
+vendor/lean4-prod/lean.tar: OK
+vendor/lean4-prod/backports/numeric-task2c/lean.tar: OK
+vendor/lean4-prod/backports/numeric-task2c/descriptor.json: OK
+/opt/prismpm/share/inventory.json: OK
+/opt/prismpm/share/exporter-seed/manifest.json: OK
+/usr/local/bin/prismpm: OK
+/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean: OK
+/usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/rustc: OK
+/usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/cargo: OK
+/usr/local/bin/node: OK
+/work/prismpm-b1/target/debug/prismpm: OK

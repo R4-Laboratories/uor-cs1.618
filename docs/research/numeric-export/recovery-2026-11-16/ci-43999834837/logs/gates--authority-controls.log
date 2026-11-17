@@ -1,0 +1,19 @@
+    Finished `test` profile [unoptimized] target(s) in 0.21s
+     Running unittests src/lib.rs (target/debug/deps/prismpm-587d1e8614ce3ac3)
+
+running 10 tests
+test controller::tests::backport_authority_generator_identity_distinguishes_equal_outputs ... ok
+test cli::tests::backport_authority_selector_rejects_unsupported_commands_and_unknown_ids ... ok
+test exporter::backport_authority_tests::backport_authority_no_sdk_no_fallback_or_source_publication ... ok
+test exporter::custody::tests::backport_authority_snapshots_compare_authority_before_identical_members ... ok
+test exporter::owner::tests::backport_authority_owner_selection_cannot_change_between_phases ... ok
+test exporter::source::tests::backport_authority_registry_is_closed_and_original_pins_are_unchanged ... ok
+test release_verification::tests::backport_authority_retained_selection_is_independent_and_historical_laundering_fails ... ok
+test exporter::backport_authority_tests::backport_authority_independent_sdk_binding_and_original_seed_controls ... ok
+test exporter::backport_authority_tests::backport_authority_selected_archive_and_execution_custody ... ok
+component construction only: {"archive_sha256":"7a1a716a57040ea2307f7a34e895a75ebdca7438cf9d5d0364007acb594366bf","executable":{"byte_length":226949656,"mode":493,"sha256":"b0081437c68a576ea0b19805568e8ac8c418cf5b7b366d7881b02f38dbaf77ed"},"source_id":"released"}
+component construction only: {"archive_sha256":"6963efb98d5a67a54a5a969d520f0090218115f86da1dd573b789dc027fafb52","executable":{"byte_length":227109272,"mode":493,"sha256":"15e2d1c3d45f181a0fb2c5de86c4cfe78a9b15b31712500defbe491828bd3915"},"source_id":"numeric-task2c"}
+test exporter::backport_authority_tests::backport_authority_fresh_native_compilers_execute_selected_source ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 516 filtered out; finished in 49.75s
+
