@@ -1,0 +1,7 @@
+{
+  "scope": "fresh complete no-C frontend and kernel-check/export component diagnostic; not governed SDK qualification",
+  "archive_sha256": "5f746a334b09b862f6adc47288bad5cb38817832c14c88d48a44093a00f95f76",
+  "bytes": 3916008,
+  "leanchecker_sha256": "c7c51e296d28dd443ed60f9414feef41253ede89dea76dbb2adde29768c3ed5f",
+  "excluded": "inconclusive optional emitter instrumentation is retained locally only; no handwritten diagnostic Lean enters this archive"
+}
