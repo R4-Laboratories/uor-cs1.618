@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/source-fix-evidence/1",
+  "revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "archive": "native-frontend-fix-324955b.tar.gz",
+  "archive_bytes": 4090,
+  "archive_sha256": "bc1835fcfab68c916e36aa3924e09b76a22a6a3748d2b03f142ba6af37adf85d",
+  "indexed_files": 14,
+  "archive_members": 15,
+  "scope": "Public retained-reader structural fixtures, real source-bootstrap held-tool controls and conformance compilation; not genuine full DK17 or installed-SDK acceptance."
+}

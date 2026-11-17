@@ -1,0 +1,13 @@
+{
+  "schema": "cs1618/source-fix-checkpoint/1",
+  "repository": "UOR-Foundation/prismpm",
+  "base": "c2139afad62941d2feae01442884056e2d850b75",
+  "revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "tree": "7cf463121cf5dd15b681ce1dfafd5694617cc474",
+  "patch": "native-frontend-fix-324955b.patch",
+  "patch_sha256": "177fd8c778a917630d123fe8e0300580b24e582e2264637e6b81806384387a51",
+  "patch_bytes": 50166,
+  "scope": "Complete SDK retained-reader inventory threading and distinct source-bootstrap replay; independent source review pending",
+  "production_admission": false,
+  "upstream_published": false
+}
