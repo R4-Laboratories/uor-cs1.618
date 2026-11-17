@@ -42,7 +42,7 @@
 
 **Files:** `server/match.ts`, `tests/bot-objective.test.ts` (or focused new bot test file), `server/navigation.ts` only if necessary for safe same-node handling.
 
-**Interfaces:** Keep generated BotFacts/tacticDecider and multiplayer snapshots unchanged. Existing Player.botGoal is available for nearest-goal invalidation; reset it at spawn. Use VerdantEngine.ray/move for sight/collision.
+**Interfaces:** Keep generated BotFacts/tacticDecider and multiplayer snapshots unchanged. Existing Player.botGoal is available for nearest-goal invalidation; reset it at spawn. Preserve the published canReachDevice/defusePath route-to-valid-interaction repair (287bb30) and its three legal-plant regressions; do not replace it with raw bomb-center routing. Use VerdantEngine.ray/move for sight/collision.
 
 - [ ] Add failing behavior tests for elevated/crouched visible targets, actual cover obstruction, overlapping targets with finite inputs, changed objective goal before old replanning interval, reachable short same-node goal and blocked/unreachable approach.
 - [ ] Use normalized 3D eye-to-target torso ray and full distance for sight. Preserve reaction delay, burst recovery and friendly-fire prevention.
