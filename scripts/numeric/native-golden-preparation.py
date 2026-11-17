@@ -289,6 +289,87 @@ def validate_names(evidence, output):
         require(set(p.name for p in (evidence / name).iterdir()) == allowed, 'missing/extra observer file')
 
 
+def validate_completion(transcript, source, lane, identity):
+    """Require the fixed owner's terminal protocol, independently of filenames.
+
+    Success retires acquisition before offline creation and ends with the
+    offline actor's authenticated inspect/rm/absent-CID/absent-name sequence.
+    Both creation responses and all cleanup joins are retained original bytes.
+    """
+    label = 'org.uor.prismpm.golden-review'
+    creations = []
+    for index, (value, stdout, _stderr) in enumerate(transcript):
+        if value['command'] != 'docker' or value['args'][:1] != ['create']:
+            continue
+        args = value['args']
+        fields = {}
+        for flag in ('--name', '--label', '--network'):
+            require(args.count(flag) == 1 and args.index(flag) + 1 < len(args), 'original actor creation identity required')
+            fields[flag] = args[args.index(flag) + 1]
+        cid = regular(stdout).strip().decode('ascii')
+        require(re.fullmatch('[a-f0-9]{64}', cid), 'original actor creation CID required')
+        require(fields['--label'] == label + '=' + fields['--name'], 'original actor ownership label differs')
+        creations.append((index, fields, cid))
+    require(len(creations) == 2, 'both original actor creation records required')
+    acquisition, offline = creations
+    actor = offline[1]['--name']
+    require(re.fullmatch('prismpm-native-golden-[a-f0-9]{24}', actor)
+            and acquisition[1]['--name'] == actor + '-dependencies'
+            and acquisition[1]['--network'] == 'bridge' and offline[1]['--network'] == 'none'
+            and acquisition[2] != offline[2], 'original acquisition/offline actor join differs')
+    absent_indices = set()
+    cleanup_starts = []
+    removal_indices = [i for i, (value, _, _) in enumerate(transcript)
+                       if value['command'] == 'docker' and value['args'][:1] == ['rm']]
+    require(len(removal_indices) == 2, 'both exact original actor removals required')
+    for creation, fields, cid in creations:
+        name = fields['--name']
+        removes = [i for i in removal_indices if transcript[i][0]['args'] == ['rm', '--force', '--volumes', cid]]
+        require(len(removes) == 1, 'exact original owned-CID removal required')
+        removal = removes[0]; start = removal - 1
+        require(start > creation and removal + 2 < len(transcript), 'complete authenticated cleanup suffix required')
+        expected = [['inspect', cid], ['rm', '--force', '--volumes', cid], ['inspect', cid], ['inspect', name]]
+        for offset, args in enumerate(expected):
+            value, stdout, stderr = transcript[start + offset]
+            require(value['command'] == 'docker' and value['args'] == args
+                    and value['status'] == (0 if offset < 2 else 1) and value['signal'] is None,
+                    'original cleanup command/status/actor join differs')
+            if offset == 0:
+                rows = json.loads(regular(stdout), object_pairs_hook=unique)
+                require(isinstance(rows, list) and len(rows) == 1, 'original cleanup actor inspection required')
+                row = rows[0]
+                require(row['Id'] == cid and row['Name'] == '/' + name and row['Image'] == identity['id']
+                        and row['Config']['Labels'][label] == name, 'authenticated cleanup CID/name/image/label differs')
+            elif offset >= 2:
+                require(re.search(b'No such (?:object|container)', regular(stderr)), 'authentic cleanup absence result required')
+                absent_indices.add(start + offset)
+        cleanup_starts.append(start)
+    require(cleanup_starts[0] + 4 <= offline[0], 'acquisition must be retired before offline actor creation')
+    final = cleanup_starts[1]
+    require(final + 4 == len(transcript), 'original final absent-actor inspection must be the transcript endpoint')
+    require(all(value['status'] == 0 or index in absent_indices for index, (value, _, _) in enumerate(transcript)),
+            'unexpected failed owner command outside authenticated cleanup')
+    git_prefix = ['-c', 'core.fsmonitor=false', '-c', 'core.hooksPath=/dev/null', '-c', 'core.quotePath=false', '-C', str(source)]
+    terminal = [['rev-parse', 'HEAD'], ['diff', '--name-only', 'HEAD'], ['ls-files', '--others', '--exclude-standard']]
+    require(final >= 3, 'original final source-check transcript required')
+    allowed = {profile(lane) + '/' + path for path in RECORDS}
+    for offset, args in enumerate(terminal):
+        value, stdout, _stderr = transcript[final - 3 + offset]
+        require(value['command'] == 'git' and value['args'] == git_prefix + args and value['status'] == 0,
+                'original final source-check command differs')
+        if offset == 0:
+            require(regular(stdout).decode().strip() == REVISION, 'original terminal source revision differs')
+        else:
+            require(all(path in allowed for path in regular(stdout).decode().splitlines()), 'original terminal source inventory differs')
+    base = ['cargo', 'run', '--locked', '--offline', '-p', 'xtask', '--', 'check-golden']
+    golden = [(index, value['args']) for index, (value, _, _) in enumerate(transcript)
+              if value['command'] == 'docker' and value['args'][:1] == ['exec'] and value['args'][2:2+len(base)] == base]
+    require(len(golden) == 2 and golden[0][1] == ['exec', actor, *base, '--write']
+            and golden[1][1] == ['exec', actor, *base]
+            and offline[0] < golden[0][0] < golden[1][0] and golden[1][0] + 4 == final,
+            'original native writer/readback/final-check/cleanup transcript differs')
+
+
 def owner_record(source, output, lane, state):
     review = read_json(output / 'review.json')
     require(set(review) == REVIEW_FIELDS and review['schema'] == 'prismpm/native-golden-review/1'
@@ -316,9 +397,6 @@ def owner_record(source, output, lane, state):
     require(preparation['preparation_sha256'] == review['dependency_preparation_sha256'] == digest(canonical), 'dependency preparation join differs')
     for name in ('cargo-seeded-inputs.json', 'cargo-inputs.json'):
         require(read_json(output / name), 'complete original Cargo evidence required')
-    for kind in ('build', 'verified'):
-        regular(output / 'generated' / kind / 'manifest.json')
-        require(inventory(output / 'generated' / kind, 'product') == inventory(source / '.prism' / kind, 'product'), 'missing/extra/changed retained original generated product')
     require([r['path'] for r in inventory(source / profile(lane), 'record')] == ['record/' + p for p in RECORDS], 'exact source native record inventory required')
     require(isinstance(review['records'], list) and len(review['records']) == 3, 'exact three raw records required')
     rows = []
@@ -328,10 +406,17 @@ def owner_record(source, output, lane, state):
                 and type(recorded['byte_length']) is int, 'original review/raw-record hash mismatch')
         require(regular(source / profile(lane) / path) == raw, 'source/native owner raw bytes differ')
         rows.append({'path': 'owner/records/' + path, 'bytes': len(raw), 'sha256': digest(raw)})
+    golden_record = read_json(output / 'records/golden-manifest.json')
+    for kind, key in (('build', 'build_id'), ('verified', 'attestation_id')):
+        selected = golden_record.get(key)
+        require(isinstance(selected, str) and re.fullmatch('[a-f0-9]{64}', selected), 'original golden product content ID required')
+        regular(output / 'generated' / kind / selected / 'manifest.json')
+        require(inventory(output / 'generated' / kind, 'product') == inventory(source / '.prism' / kind, 'product'),
+                'missing/extra/changed retained original generated product')
     command_files = sorted(output.glob('*.command.json'))
     require(command_files and [p.name for p in command_files] == [f'{i:03d}.command.json' for i in range(1, len(command_files)+1)], 'missing original command sequence')
     expected_files = set()
-    golden = []
+    transcript = []
     for path in command_files:
         value = read_json(path); stem = path.name.split('.')[0]
         require(set(value) == {'command', 'args', 'status', 'signal'} and value['command'] in ('git', 'docker')
@@ -343,11 +428,8 @@ def owner_record(source, output, lane, state):
                 and len(value['args']) == 2 and value['args'][0] == 'inspect'
                 and re.search(b'No such (?:object|container)', stderr)), 'failed original owner subprocess')
         expected_files.update({path.name, stem + '.stdout', stem + '.stderr'})
-        args = value['args']
-        base = ['cargo', 'run', '--locked', '--offline', '-p', 'xtask', '--', 'check-golden']
-        if value['command'] == 'docker' and args[:1] == ['exec'] and args[2:2+len(base)] == base:
-            golden.append(args[2:])
-    require(golden == [base + ['--write'], base], 'both exact original golden commands required')
+        transcript.append((value, output / (stem + '.stdout'), output / (stem + '.stderr')))
+    validate_completion(transcript, source, lane, identity)
     observed_files = {p.name for p in output.iterdir() if re.fullmatch(r'[0-9]{3,}\..*', p.name)}
     require(expected_files == observed_files, 'missing/extra original command streams')
     return {'review_path': 'owner/review.json', 'review_sha256': digest(regular(output / 'review.json')),

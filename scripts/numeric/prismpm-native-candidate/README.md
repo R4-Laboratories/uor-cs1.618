@@ -112,10 +112,18 @@ Each inventory traversal retains the original bounds: depth at most 32,
 retains its original 8 MiB telemetry, 16 KiB sample, 32 MiB log head and 1 MiB
 rotating tail bounds; any required log truncation remains incomplete. File byte
 lengths are nonnegative integers, and SHA-256 values are lowercase hex strings.
-The collector compares all generated build/verified files against the original
-source `.prism` trees, checks contiguous original command records and streams,
-and requires both unchanged golden writer/readback commands. Separate read-only
-staged/unstaged `--no-renames` inventories and untracked paths permit only the
+The collector reads selected `build_id` and `attestation_id` from the original
+raw golden record and requires `generated/build/<build_id>/manifest.json` and
+`generated/verified/<attestation_id>/manifest.json`. It compares all generated
+build/verified files against the whole original source `.prism` trees, including
+other products, and checks contiguous original command records and streams.
+Both actor creation responses must join exact names/CIDs/ownership labels and
+networks to their authenticated four-command cleanup blocks: inspect, owned-CID
+removal, absent-CID inspect and absent-name inspect. Acquisition retirement must
+precede offline creation. Both unchanged golden writer/readback commands must
+join the offline actor, followed by the exact final source checks and offline
+cleanup; the final absent-name inspect must be the transcript endpoint. Separate
+read-only staged/unstaged `--no-renames` inventories and untracked paths permit only the
 exact three records in the selected native profile. The original index and
 objects are not written during collection.
 

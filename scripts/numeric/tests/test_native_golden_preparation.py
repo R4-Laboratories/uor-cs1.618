@@ -87,12 +87,55 @@ class NativeControls(unittest.TestCase):
         for kind in ['build','verified']:
             (self.output/'generated'/kind).mkdir(parents=True);(self.output/'generated'/kind/'manifest.json').write_text('{}')
             shutil.copytree(self.output/'generated'/kind,self.source/'.prism'/kind)
-        write(self.output/'001.command.json',{'command':'git','args':['rev-parse','HEAD'],'status':0,'signal':None})
-        (self.output/'001.stdout').write_text(native.REVISION+'\n');(self.output/'001.stderr').touch()
+        self.actor='prismpm-native-golden-'+'1'*24
+        self.acquisition=self.actor+'-dependencies';self.cid='2'*64;self.acquisition_cid='3'*64
+        self.command_count=0
+        git_prefix=['-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-c','core.quotePath=false','-C',str(self.source)]
+        self.add_command('git',git_prefix+['rev-parse','HEAD'],stdout=(native.REVISION+'\n').encode())
+        self.add_command('git',git_prefix+['status','--porcelain=v1','--untracked-files=all'])
+        self.create_actor(self.acquisition,self.acquisition_cid,'bridge')
+        self.cleanup_actor(self.acquisition,self.acquisition_cid)
+        self.create_actor(self.actor,self.cid,'none')
         base=['cargo','run','--locked','--offline','-p','xtask','--','check-golden']
-        for number,args in [(2,base+['--write']),(3,base)]:
-            write(self.output/f'{number:03d}.command.json',{'command':'docker','args':['exec','fixture-container',*args],'status':0,'signal':None})
-            (self.output/f'{number:03d}.stdout').touch();(self.output/f'{number:03d}.stderr').touch()
+        self.add_command('docker',['exec',self.actor,*base,'--write'])
+        self.add_command('docker',['exec',self.actor,*base])
+        self.add_command('git',git_prefix+['rev-parse','HEAD'],stdout=(native.REVISION+'\n').encode())
+        self.add_command('git',git_prefix+['diff','--name-only','HEAD'])
+        self.add_command('git',git_prefix+['ls-files','--others','--exclude-standard'])
+        self.cleanup_actor(self.actor,self.cid)
+        self.nested_products()
+
+    def add_command(self,command,args,status=0,stdout=b'',stderr=b''):
+        self.command_count+=1;stem=f'{self.command_count:03d}'
+        write(self.output/(stem+'.command.json'),{'command':command,'args':args,'status':status,'signal':None})
+        (self.output/(stem+'.stdout')).write_bytes(stdout);(self.output/(stem+'.stderr')).write_bytes(stderr)
+
+    def create_actor(self,actor,cid,network):
+        self.add_command('docker',['create','--name',actor,'--label','org.uor.prismpm.golden-review='+actor,
+                                   '--network',network],stdout=(cid+'\n').encode())
+
+    def cleanup_actor(self,actor,cid):
+        row={'Id':cid,'Name':'/'+actor,'Image':'sha256:'+'f'*64,'Config':{'Labels':{'org.uor.prismpm.golden-review':actor}}}
+        self.add_command('docker',['inspect',cid],stdout=(json.dumps([row])+'\n').encode())
+        self.add_command('docker',['rm','--force','--volumes',cid],stdout=(cid+'\n').encode())
+        for target in [cid,actor]:
+            self.add_command('docker',['inspect',target],status=1,stdout=b'[]\n',stderr=('Error: No such object: '+target+'\n').encode())
+
+    def bind_raw_record(self,path,value):
+        raw=(json.dumps(value,separators=(',',':'))+'\n').encode()
+        for root in [self.output/'records',self.source/native.profile('amd64')]:
+            (root/path).write_bytes(raw)
+        row=next(row for row in self.review['records'] if row['path']==path)
+        row.update(byte_length=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+        write(self.output/'review.json',self.review)
+
+    def nested_products(self):
+        self.build_id='4'*64;self.attestation_id='5'*64
+        self.bind_raw_record('golden-manifest.json',{'build_id':self.build_id,'attestation_id':self.attestation_id})
+        for kind,identity in [('build',self.build_id),('verified',self.attestation_id)]:
+            for root in [self.output/'generated'/kind,self.source/'.prism'/kind]:
+                if (root/'manifest.json').exists():
+                    (root/identity).mkdir();(root/'manifest.json').rename(root/identity/'manifest.json')
 
     def collect(self):return native.collect(self.source,self.snapshot,self.evidence,self.output,'amd64')
     def refuses(self):
@@ -133,7 +176,7 @@ class NativeControls(unittest.TestCase):
         path=self.evidence/'observer/monitor-result.json';write(path,{'samples':1,'bytes':3,'reason':'collection-error'});self.refuses()
 
     def test_missing_extra_alias_oversize_and_original_hash(self):
-        for relative in ['review.json','generated/build/manifest.json','001.stdout','records/verified/manifest.json']:
+        for relative in ['review.json','generated/build/'+self.build_id+'/manifest.json','001.stdout','records/verified/manifest.json']:
             p=self.output/relative;raw=p.read_bytes();p.unlink();self.refuses();p.write_bytes(raw)
         p=self.output/'extra';p.write_text('extra');self.refuses();p.unlink()
         p=self.output/'records/golden-manifest.json';raw=p.read_bytes();p.write_text('changed');self.refuses();p.unlink();p.symlink_to(self.source/native.profile('amd64')/'golden-manifest.json');self.refuses();p.unlink();p.write_bytes(raw)
@@ -153,8 +196,8 @@ class NativeControls(unittest.TestCase):
         state=self.collect();self.assertFalse(state['commands'][0]['log_complete'])
 
     def test_missing_extra_and_changed_nonmanifest_generated_product(self):
-        original=self.source/'.prism/build/original.bin';original.write_bytes(b'original')
-        retained=self.output/'generated/build/original.bin'
+        original=self.source/'.prism/build'/self.build_id/'original.bin';original.write_bytes(b'original')
+        retained=self.output/'generated/build'/self.build_id/'original.bin'
         self.refuses();retained.write_bytes(b'original')
         self.assertEqual(self.collect()['status'],'complete-review-required')
         retained.write_bytes(b'changed');self.refuses()
@@ -192,6 +235,74 @@ class NativeControls(unittest.TestCase):
         self.assertEqual(state['status'],'incomplete');self.assertEqual(set(state),native.FIELDS)
         self.assertIsNone(state['source']);self.assertIsNone(state['inputs']);self.assertIsNone(state['owner'])
         self.assertEqual(state['commands'],[]);self.assertEqual(state['files'],[]);self.assertFalse(output.exists())
+
+    def test_real_writer_content_id_product_layout_completes(self):
+        self.nested_products()
+        raw=(self.output/'records/golden-manifest.json').read_bytes()
+        state=self.collect();self.assertEqual(state['status'],'complete-review-required',state['error'])
+        self.assertEqual((self.output/'records/golden-manifest.json').read_bytes(),raw)
+        # Both sides moving together cannot substitute another content-ID path.
+        for kind,identity in [('build',self.build_id),('verified',self.attestation_id)]:
+            manifest=self.output/'generated'/kind/identity/'manifest.json';raw=manifest.read_bytes();manifest.unlink()
+            self.refuses();manifest.write_bytes(raw)
+            for root in [self.output/'generated'/kind,self.source/'.prism'/kind]:
+                (root/identity).rename(root/('6'*64))
+            self.refuses()
+            for root in [self.output/'generated'/kind,self.source/'.prism'/kind]:
+                (root/('6'*64)).rename(root/identity)
+
+    def test_all_cleanup_suffix_deletions_refuse_completion(self):
+        state=self.collect();self.assertEqual(state['status'],'complete-review-required',state['error'])
+        originals={p:p.read_bytes() for p in self.output.iterdir() if p.name[:3].isdigit()}
+        for count in range(1,self.command_count+1):
+            with self.subTest(missing_suffix_commands=count):
+                try:
+                    for number in range(self.command_count-count+1,self.command_count+1):
+                        for suffix in ['command.json','stdout','stderr']:(self.output/f'{number:03d}.{suffix}').unlink()
+                    self.refuses()
+                finally:
+                    for path,raw in originals.items():path.write_bytes(raw)
+
+    def test_cleanup_actor_cid_label_image_status_and_endpoint_joins(self):
+        originals={p:p.read_bytes() for p in self.output.iterdir() if p.name[:3].isdigit()}
+        start=self.command_count-3
+        for field,value in [('Id','9'*64),('Name','/another-actor'),('Image','sha256:'+'9'*64),('Config',{'Labels':{'org.uor.prismpm.golden-review':'other'}})]:
+            path=self.output/f'{start:03d}.stdout';rows=json.loads(path.read_bytes());rows[0][field]=value;write(path,rows)
+            with self.subTest(field=field):self.refuses()
+            for p,raw in originals.items():p.write_bytes(raw)
+        path=self.output/f'{self.command_count:03d}.command.json';value=json.loads(path.read_bytes());value['status']=0;write(path,value);self.refuses()
+        for p,raw in originals.items():p.write_bytes(raw)
+        path=self.output/f'{self.command_count:03d}.stderr';path.write_bytes(b'other failure');self.refuses()
+        for p,raw in originals.items():p.write_bytes(raw)
+        # An extra successful-looking command after cleanup is not the owner endpoint.
+        self.add_command('git',['rev-parse','HEAD'],stdout=(native.REVISION+'\n').encode());self.refuses()
+
+    def test_actor_creation_response_and_final_source_check_joins(self):
+        originals={p:p.read_bytes() for p in self.output.iterdir() if p.name[:3].isdigit()}
+        creates=[p for p in self.output.glob('*.command.json') if json.loads(p.read_bytes())['args'][:1]==['create']]
+        for path in creates:
+            stem=path.name.split('.')[0];stdout=self.output/(stem+'.stdout');stdout.write_bytes(('9'*64+'\n').encode())
+            with self.subTest(create_cid=stem):self.refuses()
+            for p,raw in originals.items():p.write_bytes(raw)
+            value=json.loads(path.read_bytes());value['args'][value['args'].index('--label')+1]='org.uor.prismpm.golden-review=other';write(path,value)
+            with self.subTest(create_label=stem):self.refuses()
+            for p,raw in originals.items():p.write_bytes(raw)
+        for number in range(self.command_count-6,self.command_count-3):
+            path=self.output/f'{number:03d}.command.json';value=json.loads(path.read_bytes());value['args']=['other-source-check'];write(path,value)
+            with self.subTest(final_source_check=number):self.refuses()
+            for p,raw in originals.items():p.write_bytes(raw)
+
+    def test_interior_cleanup_and_individual_stream_deletions_refuse(self):
+        for stem in ['004',f'{self.command_count:03d}']:
+            for suffix in ['command.json','stdout','stderr']:
+                path=self.output/(stem+'.'+suffix);raw=path.read_bytes();path.unlink()
+                with self.subTest(path=path.name):self.refuses()
+                path.write_bytes(raw)
+        paths=[self.output/('004.'+suffix) for suffix in ['command.json','stdout','stderr']]
+        originals={path:path.read_bytes() for path in paths}
+        for path in paths:path.unlink()
+        self.refuses()
+        for path,raw in originals.items():path.write_bytes(raw)
 
     def test_closed_duplicate_and_extra_fields(self):
         path=self.evidence/'preparation.json';raw=path.read_bytes()
