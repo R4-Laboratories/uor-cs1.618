@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 2395297109,
+  "seed": 3530380629,
   "config": {
     "render": {
       "cell": 16,
@@ -284,8 +284,8 @@
   "weights": {
     "render": 1,
     "navigation": 6,
-    "art": 5,
-    "tactics": 6,
+    "art": 4,
+    "tactics": 5,
     "experience": 1
   },
   "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
@@ -293,7 +293,9 @@
     "art-synth-0",
     "art-synth-1",
     "navigation-6",
-    "tactics-synth-1"
+    "tactics-synth-1",
+    "tactics-synth-3",
+    "art-synth-2"
   ],
   "history": [
     {
@@ -7551,6 +7553,178 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "6671b1edde2383005d07d8877f55d58dc0a3512fbe41909779566c2c2be6f8be"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T04:20:05.802Z",
+      "base": "31d9878e8a3bcef9656f143ab9d5d9bb1e8a3179",
+      "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
+      "previous": "6671b1edde2383005d07d8877f55d58dc0a3512fbe41909779566c2c2be6f8be",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-3",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        },
+        {
+          "candidate": "art-synth-2",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "c786247ac6e9aebb7e2f9cd75f5d638d4184e4451920962d8fe836fbaf54e6a9",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.2454823669823661,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.01005203227124183,
+              "changed": 0.028890625
+            },
+            {
+              "mean": 0.010557858455882353,
+              "changed": 0.0275546875
+            },
+            {
+              "mean": 0.01690702614379085,
+              "changed": 0.041015625
+            },
+            {
+              "mean": 0.01778825571895425,
+              "changed": 0.0405546875
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6615373610938612,
+            "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 127,
+                "triangles": 4764,
+                "frameMs": 3.6999999999970896
+              },
+              {
+                "calls": 127,
+                "triangles": 4776,
+                "frameMs": 2.5
+              },
+              {
+                "calls": 42,
+                "triangles": 1860,
+                "frameMs": 0.5999999999912689
+              },
+              {
+                "calls": 32,
+                "triangles": 1596,
+                "frameMs": 0.8000000000029104
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.18522701603794894
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.1810707025073413
+              }
+            ],
+            "frames": [
+              {
+                "calls": 127,
+                "triangles": 4764,
+                "frameMs": 1.8000000000029104
+              },
+              {
+                "calls": 127,
+                "triangles": 4776,
+                "frameMs": 1.3999999999941792
+              },
+              {
+                "calls": 42,
+                "triangles": 1860,
+                "frameMs": 0.8000000000029104
+              },
+              {
+                "calls": 32,
+                "triangles": 1596,
+                "frameMs": 0.5
+              }
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "75849f90b0688e86b4295f2221ed374b194c34809f2b3ff83a30f31807885b51"
     }
   ]
 }
