@@ -10,7 +10,7 @@ export function objectiveHint(s:Snapshot,pos:Motion):string{
  if(s.phase==='ended'||s.phase==='matchEnd')return s.reason;
  if(s.phase==='freeze')return `${p.team==='attack'?'PLANT':'DEFEND'} · ${sites} · Press B to buy`;
  if(b?.terminal)return s.reason;
- if(p.action)return `${p.action} · HOLD E · stand still`;
+ if(p.action&&p.alive&&(p.action!=='DEFUSING'||b?.defuser===p.id))return `${p.action} · HOLD E · stand still`;
  if(b?.state==='planted'){
   if(p.team==='attack')return `PROTECT BOMB ${b.site} · ${bearing(b.x,b.z)} · ${Math.ceil(b.remaining)}s`;
   const near=Math.hypot(pos.x-b.x,pos.z-b.z,pos.y-b.y)<2.3;
@@ -25,4 +25,20 @@ export function objectiveHint(s:Snapshot,pos:Motion):string{
  }
  const carrier=s.players.find(player=>player.id===b?.carrier);
  return `ESCORT CARRIER${carrier?` · ${bearing(carrier.x,carrier.z)}`:''} · ${sites}`;
+}
+
+export interface PlantedObjective {
+ site:string;remaining:number;fuseFraction:number;
+ mode:'protect'|'defend'|'defusing'|'cover'|'spectating';
+ requiredSeconds:number|null;defuseLeft:number|null;margin:number|null;
+}
+/** Local timing estimate only; travel, cover and interaction eligibility are deliberately excluded. */
+export function plantedObjective(s:Snapshot):PlantedObjective|null{
+ const b=s.bomb,p=s.self;
+ if(s.phase!=='live'||!b||b.state!=='planted'||b.terminal||!Number.isFinite(b.remaining)||b.remaining<=0)return null;
+ const mode:PlantedObjective['mode']=!p.alive?'spectating':p.team==='attack'?'protect':b.defuser&&b.defuser!==p.id?'cover':b.defuser===p.id&&p.action==='DEFUSING'?'defusing':'defend';
+ const local=mode==='defend'||mode==='defusing',requiredSeconds=local?(p.kit?R.kitDefuseSeconds:R.defuseSeconds):null;
+ const progress=mode==='defusing'&&Number.isFinite(p.progress)?Math.max(0,Math.min(1,p.progress)):0;
+ const defuseLeft=requiredSeconds===null?null:requiredSeconds*(1-progress);
+ return {site:b.site??'?',remaining:b.remaining,fuseFraction:Math.min(1,b.remaining/R.bombSeconds),mode,requiredSeconds,defuseLeft,margin:defuseLeft===null?null:b.remaining-defuseLeft};
 }

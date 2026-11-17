@@ -1,4 +1,4 @@
-import {objectiveHint} from '../shared/objective-hud';
+import {objectiveHint,plantedObjective} from '../shared/objective-hud';
 import type {MatchListing} from '../shared/match-discovery';
 import {TEAM_NAMES,WEAPONS,EQUIPMENT,RULES} from '../shared/config';
 import {BOXES,MAP,zoneAt} from '../shared/map';
@@ -30,6 +30,12 @@ export class UI{
   <div class="radar-wrap"><canvas id="radar" width="200" height="200" aria-label="Tactical minimap"></canvas><span id="zone">MERIDIAN</span></div>
   <div class="round-bar"><div class="team-score ember"><small>EMBER</small><strong id="score-a">0</strong><span id="alive-a"></span></div><div class="clock"><small id="phase-label">BUY PHASE</small><strong id="clock">00:12</strong><span id="round-label">ROUND 01</span></div><div class="team-score tidal"><small>TIDAL</small><strong id="score-d">0</strong><span id="alive-d"></span></div></div>
   <div class="session-info"><span id="session-room">MERIDIAN</span><span id="ping">LOCAL</span></div>
+  <section id="bomb-card" class="bomb-card hidden" aria-label="Planted bomb status">
+   <div class="bomb-card-heading"><span id="bomb-site" class="bomb-site"></span><div><small>DEVICE ACTIVE</small><strong id="bomb-directive"></strong></div><span id="bomb-fuse" class="bomb-fuse"></span></div>
+   <div class="fuse-track" role="meter" aria-label="Bomb fuse remaining" aria-valuemin="0" aria-valuemax="40" id="bomb-fuse-meter"><i id="bomb-fuse-progress"></i></div>
+   <div class="bomb-detail"><span id="bomb-requirement"></span><span id="bomb-status"></span></div>
+   <div id="bomb-margin-row" class="bomb-margin-row"><span>LOCAL MARGIN · EXCLUDES TRAVEL</span><strong id="bomb-margin"></strong></div>
+  </section>
   <div id="kill-feed" class="kill-feed"></div>
   <div id="round-banner" class="round-banner hidden"><small id="banner-label">ROUND COMPLETE</small><h2 id="banner-title"></h2><p id="banner-detail"></p></div>
   <div id="crosshair" class="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hit-marker" class="hit-marker hidden">×</div><div id="hurt" class="hurt hidden"></div>
@@ -84,9 +90,21 @@ export class UI{
   $('zone').textContent=zoneAt(pos.x,pos.z);$('health').textContent=String(self.health);$('armor').textContent=String(self.armor);$('money').textContent=`$${self.money.toLocaleString()}`;
   $('equipment').textContent=[s.bomb?.carrier===self.id?'◈ BOMB':'',self.kit?'◇ KIT':''].filter(Boolean).join('  ');
   const g=self.inventory[self.slot];$('weapon-name').textContent=WEAPONS[g.id].name.toUpperCase();$('ammo').textContent=String(g.ammo).padStart(2,'0');$('reserve').textContent=String(g.reserve);$('reload-label').textContent=self.reloadLeft>0?`RELOADING  ${self.reloadLeft.toFixed(1)}s`:'1 PRIMARY  ·  2 SIDEARM';
+  const card=plantedObjective(s);this.show('bomb-card',!!card);
+  if(card){
+   $('bomb-card').dataset.mode=card.mode;$('bomb-card').classList.toggle('critical',card.remaining<10);
+   $('bomb-site').textContent=card.site;$('bomb-fuse').textContent=`${Math.ceil(card.remaining)}s`;
+   $('bomb-fuse-progress').style.width=`${card.fuseFraction*100}%`;$('bomb-fuse-meter').setAttribute('aria-valuenow',String(card.remaining));
+   $('bomb-directive').textContent=card.mode==='protect'?'PROTECT THE DEVICE':card.mode==='cover'?'TEAMMATE DEFUSING':card.mode==='defusing'?'DEFUSING':'DEFUSE THE DEVICE';
+   $('bomb-requirement').textContent=card.requiredSeconds===null?(card.mode==='protect'?'HOLD THE SITE':card.mode==='cover'?'COVER THEM':'DEFENDERS MUST DEFUSE'):`${self.kit?'KIT':'NO KIT'} · ${card.requiredSeconds}s DEFUSE`;
+   $('bomb-status').textContent=card.mode==='defusing'?`${card.defuseLeft!.toFixed(1)}s LEFT`:card.mode==='defend'?'HOLD E NEAR DEVICE':'';
+   this.show('bomb-margin-row',card.margin!==null);
+   if(card.margin!==null){$('bomb-margin').textContent=`${card.margin>=0?'+':''}${card.margin.toFixed(1)}s`;$('bomb-margin').classList.toggle('too-late',card.margin<=0);}
+  }
   const duration=self.action==='PLANTING'?RULES.plantSeconds:self.kit?RULES.kitDefuseSeconds:RULES.defuseSeconds;
-  this.show('objective',self.progress>0);$('objective-text').textContent=`${self.action} · ${Math.max(0,(1-self.progress)*duration).toFixed(1)}s`;$('objective-progress').style.width=`${Math.min(100,self.progress*100)}%`;
-  const hint=objectiveHint(s,pos),interacting=self.progress>0||hint.startsWith('HOLD E');
+  const ownInteraction=self.alive&&s.phase==='live'&&!s.bomb?.terminal&&self.progress>0&&self.progress<1&&(self.action==='PLANTING'&&s.bomb?.state==='carried'&&s.bomb.carrier===self.id||card?.mode==='defusing');
+  this.show('objective',ownInteraction);$('objective-text').textContent=`${self.action} · HOLD E · ${Math.max(0,(1-self.progress)*duration).toFixed(1)}s`;$('objective-progress').style.width=`${Math.min(100,self.progress*100)}%`;
+  const hint=objectiveHint(s,pos),interacting=ownInteraction||hint.startsWith('HOLD E');
   $('context-hint').textContent=hint+(self.alive&&s.phase==='live'&&g.ammo===0&&!interacting?' · PRESS R TO RELOAD':'');
   const ended=s.phase==='ended'||s.phase==='matchEnd';this.show('round-banner',ended);if(ended){$('banner-label').textContent=s.phase==='matchEnd'?'MATCH COMPLETE':'ROUND COMPLETE';$('banner-title').textContent=`${s.winner?TEAM_NAMES[s.winner]:'ROUND'} WINS`;$('banner-detail').textContent=s.reason;}
   this.show('crosshair',self.alive&&!this.buyOpen&&!this.pauseOpen);this.show('spectator',!self.alive);$('spectator-name').textContent=spectating?.name??'Waiting for next round';

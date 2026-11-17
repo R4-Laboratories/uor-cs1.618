@@ -17,12 +17,12 @@ test('weapon replacement disposes owned resources once and keeps shared geometry
  }
 });
 test('objective, reload and result cues have distinct bounded signatures',()=>{
- const types=['reload-start','reload-complete','reload-cancel','interaction-start','interaction-cancel','bomb-pickup','bomb-drop','plant','defuse','round','bomb-warning','bomb-critical'];
+ const types=['reload-start','reload-complete','reload-cancel','interaction-start','interaction-cancel','plant-progress','defuse-progress','bomb-pickup','bomb-drop','plant','defuse','round','bomb-warning','bomb-critical'];
  const profiles=types.map(type=>audioProfile(type,undefined,false));assert.equal(new Set(profiles.map(p=>JSON.stringify(p))).size,types.length);
  for(const p of profiles){assert(p.duration>0&&p.duration<=.9);assert(p.level>0&&p.level<=.5);}
 });
 test('bomb clock emits spatial warning, accelerates late and resets on terminal and round change',()=>{
- const audio=new GameAudio({} as any),events:any[]=[];audio.event=(...args:any[])=>{events.push(args);};const listener={x:1,y:0,z:0,yaw:0};
+ const audio=new GameAudio({} as any),events:any[]=[];audio.event=(...args:any[])=>{events.push(args);return undefined;};const listener={x:1,y:0,z:0,yaw:0};
  const snapshot:any={round:1,phase:'live',bomb:{state:'planted',x:8,y:0,z:2,remaining:30},self:{id:'self'}};
  for(let i=0;i<20;i++)(audio as any).update(.1,snapshot,listener);assert.equal(events.length,2);assert.equal(events[0][0].x,8);assert.equal(events[0][0].z,2);assert.equal(events[0][0].type,'bomb-warning');
  events.length=0;snapshot.bomb.remaining=5;for(let i=0;i<10;i++)(audio as any).update(.1,snapshot,listener);assert.equal(events.length,2);assert.equal(events[0][0].type,'bomb-critical');
@@ -30,4 +30,22 @@ test('bomb clock emits spatial warning, accelerates late and resets on terminal 
 });
 test('blast killfeed identifies the bomb rather than inventing a killer',()=>{
  const ui=Object.create(UI.prototype) as UI;ui.killLines=[];ui.event({id:1,type:'kill',target:'victim',text:'Device blast'},{self:{id:'self'},players:[{id:'victim',name:'Vega'}]} as any);assert.match(ui.killLines[0].text,/Bomb blast/);assert.doesNotMatch(ui.killLines[0].text,/Operator/);
+});
+test('local interaction pulses cancel immediately, restart fresh and respect authoritative defuser',()=>{
+ const audio=new GameAudio({} as any),events:string[]=[];let stops=0;
+ audio.event=((event:any)=>{events.push(event.type);return ()=>{stops++;};}) as any;
+ const listener={x:0,y:0,z:0,yaw:0},s:any={phase:'live',round:1,self:{id:'p',alive:true,action:'PLANTING',progress:.1},bomb:{state:'carried',carrier:'p'}};
+ audio.update(.01,s,listener);assert.deepEqual(events,['plant-progress']);
+ audio.update(.1,s,listener);assert.equal(events.length,1);
+ s.self.action='';audio.update(.01,s,listener);assert.equal(stops,1);
+ s.self.action='PLANTING';audio.update(.01,s,listener);assert.equal(events.at(-1),'plant-progress');assert.equal(events.length,2);
+ s.self.action='DEFUSING';s.bomb={state:'planted',remaining:20,defuser:'p'};audio.update(.01,s,listener);assert.equal(events.at(-1),'defuse-progress');assert.equal(stops,2);
+ s.bomb.defuser='other';audio.update(.01,s,listener);assert.equal(stops,3);
+ s.bomb.defuser='p';audio.update(.01,s,listener);assert.equal(events.length,4);
+ s.self.alive=false;audio.update(.01,s,listener);assert.equal(stops,4);
+ s.self.alive=true;s.phase='freeze';audio.update(.01,s,listener);assert.equal(events.length,4);
+ s.phase='live';audio.update(.01,s,listener);assert.equal(events.length,5);
+ s.round++;audio.update(.01,s,listener);assert.equal(stops,5);assert.equal(events.length,6);
+ s.bomb.terminal='defused';audio.update(.01,s,listener);assert.equal(stops,6);
+ delete s.bomb.terminal;s.bomb.remaining=0;audio.update(.01,s,listener);assert.equal(events.length,6);
 });

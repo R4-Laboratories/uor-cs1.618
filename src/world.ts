@@ -36,7 +36,7 @@ function noiseTexture(kind:string){
 export class WorldView{
  renderer:T.WebGLRenderer;scene=new T.Scene();camera=new T.PerspectiveCamera(76,1,0.05,220);weaponScene=new T.Scene();weaponCamera=new T.PerspectiveCamera(60,1,.01,10);
  players=new Map<string,T.Group>();mats:Record<string,T.MeshStandardMaterial>={};gun=new T.Group();gunId='';flash:T.Mesh;tracers:{mesh:T.Line;life:number}[]=[];impacts:{mesh:T.Mesh;life:number}[]=[];
- bomb:T.Group;private switchLeft=0;private magazine:T.Object3D|null=null;recoil=0;damage=0;elapsed=0;loaded=false;
+ bomb:T.Group;private bombDisplay:T.CanvasTexture|null=null;private bombDisplayKey='';private switchLeft=0;private magazine:T.Object3D|null=null;recoil=0;damage=0;elapsed=0;loaded=false;
  private buildingScenery=true;
  private undoEvolution:(()=>void)|null=null;
  evolutionStatus='baseline';
@@ -68,7 +68,14 @@ export class WorldView{
   const groundTex=noiseTexture('ground');groundTex.repeat.set(35,35);const ground=new T.Mesh(new T.PlaneGeometry(180,180),new T.MeshStandardMaterial({map:groundTex,color:0xc1b9a2,roughness:1}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;this.scene.add(ground);
   for(const b of BOXES)this.buildBox(b);
   this.details();
-  for(const s of MAP.sites){const col=s.id==='A'?0xc67f4f:0x67aaa7;const ring=new T.Mesh(new T.RingGeometry(s.radius-.12,s.radius,64),new T.MeshBasicMaterial({color:col,transparent:true,opacity:.7,side:T.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.set(s.x,.018,s.z);this.scene.add(ring);this.sign(s.id,s.x,.03,s.z+2.5,2.2,col,true);this.sign(`SITE ${s.id}`,s.x,3.5,-20.45,2.8,col);}
+  for(const s of MAP.sites){
+   const col=s.id==='A'?0xefad65:0x7acac5;
+   // Broken perimeter paint gives the objective an industrial silhouette without collision geometry.
+   const paint=new T.MeshBasicMaterial({color:col,transparent:true,opacity:.9,side:T.DoubleSide});
+   for(let i=0;i<24;i++){const ring=new T.Mesh(new T.RingGeometry(s.radius-.24,s.radius,6,1,i*Math.PI/12,Math.PI/12*.72),paint);ring.rotation.x=-Math.PI/2;ring.position.set(s.x,.02,s.z);this.scene.add(ring);}
+   this.sign(s.id,s.x,.03,s.z+1.5,3.8,col,true);
+   this.sign(`SITE ${s.id}`,s.x,3.5,-20.45,4,col,false,0,true);
+  }
   this.artwork=new ArtworkLayer(this.scene);
   this.buildingScenery=false;
   if(options.evolution!==false){try{this.undoEvolution=optimizeScenery(this.scene);this.evolutionStatus='active';}catch{this.evolutionStatus='rolled-back';}}
@@ -95,8 +102,11 @@ export class WorldView{
   }
  }
  window(x:number,y:number,z:number,rot=0){const g=new T.Group();g.position.set(x,y,z);g.rotation.y=rot;this.scene.add(g);this.mesh(0,0,0,.95,1.6,.12,this.mats.dark,g);this.mesh(0,-.86,.1,1.15,.14,.35,this.mats.trim,g);for(const sx of [-.32,0,.32])this.mesh(sx,0,.09,.045,1.6,.05,this.mats.teal,g);}
- sign(text:string,x:number,y:number,z:number,size:number,color:number,floor=false,rot=0){
-  const c=document.createElement('canvas');c.width=512;c.height=256;const ctx=c.getContext('2d')!;ctx.fillStyle='#'+color.toString(16).padStart(6,'0');ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${text.length>3?64:180}px sans-serif`;ctx.fillText(text,256,128);
+ sign(text:string,x:number,y:number,z:number,size:number,color:number,floor=false,rot=0,backed=false){
+  const c=document.createElement('canvas');c.width=512;c.height=256;const ctx=c.getContext('2d')!;const ink='#'+color.toString(16).padStart(6,'0');
+  if(backed){ctx.fillStyle='#14262b';ctx.fillRect(0,0,512,256);ctx.strokeStyle=ink;ctx.lineWidth=10;ctx.strokeRect(10,10,492,236);ctx.fillStyle=ink;ctx.fillRect(30,42,10,172);ctx.fillRect(472,42,10,172);}
+  ctx.fillStyle=ink;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${backed?88:text.length>3?64:180}px sans-serif`;ctx.fillText(text,256,backed?110:128);
+  if(backed){ctx.fillStyle='#dbe4d9';ctx.font='22px monospace';ctx.fillText('AUTHORIZED PLANT ZONE',256,184);}
   const mesh=new T.Mesh(new T.PlaneGeometry(size,size/2),new T.MeshBasicMaterial({map:new T.CanvasTexture(c),transparent:true,depthWrite:false,side:T.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1}));mesh.position.set(x,y,z);if(floor)mesh.rotation.x=-Math.PI/2;else mesh.rotation.y=rot;this.scene.add(mesh);return mesh;
  }
  details(){
@@ -119,7 +129,26 @@ export class WorldView{
   for(const x of [-26.4,26.4])this.mesh(x,.06,0,.28,.12,52,this.mats.trim);
   for(let z=10;z<24;z+=3)this.mesh(0,.012,z,.12,.015,1.2,new T.MeshBasicMaterial({color:0xd8cfab}));
  }
- makeBomb(){const g=new T.Group();this.mesh(0,.15,0,.62,.26,.42,this.mats.dark,g);this.mesh(0,.29,0,.55,.035,.35,this.mats.metal,g);const orange=new T.MeshStandardMaterial({color:0xe4a75b,roughness:.55});for(const x of [-.24,.24])this.mesh(x,.18,0,.06,.30,.44,orange,g);this.mesh(-.07,.32,0,.25,.025,.19,this.mats.dark,g);const display=new T.MeshBasicMaterial({color:0x9ddace});for(let i=0;i<3;i++)this.mesh(-.14+i*.065,.337,0,.035,.008,.09,display,g);for(let x=0;x<2;x++)for(let z=0;z<3;z++)this.mesh(.10+x*.05,.32,-.06+z*.05,.035,.02,.03,this.mats.trim,g);const led=new T.Mesh(new T.SphereGeometry(.04,8,6),new T.MeshBasicMaterial({color:0xff6e43}));led.name='bomb-led';led.position.set(.18,.35,-.13);g.add(led);return g;}
+ makeBomb(){
+  const g=new T.Group();this.mesh(0,.15,0,.72,.26,.50,this.mats.dark,g);this.mesh(0,.29,0,.65,.045,.44,this.mats.metal,g);
+  const orange=new T.MeshStandardMaterial({color:0xcf8d48,roughness:.68,metalness:.25});
+  for(const x of [-.29,.29]){this.mesh(x,.18,0,.07,.30,.52,orange,g);for(const z of [-.19,.19])this.mesh(x,.34,z,.045,.025,.045,this.mats.dark,g);}
+  this.mesh(-.09,.33,0,.40,.04,.27,this.mats.dark,g);
+  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=128;
+  this.bombDisplay=new T.CanvasTexture(canvas);this.bombDisplay.colorSpace=T.SRGBColorSpace;
+  const display=new T.Mesh(new T.PlaneGeometry(.34,.21),new T.MeshBasicMaterial({map:this.bombDisplay,toneMapped:false}));display.name='bomb-display';display.rotation.x=-Math.PI/2;display.position.set(-.09,.354,0);g.add(display);
+  for(let x=0;x<2;x++)for(let z=0;z<3;z++)this.mesh(.16+x*.055,.33,-.07+z*.06,.038,.025,.035,this.mats.dark,g);
+  const led=new T.Mesh(new T.SphereGeometry(.035,8,6),new T.MeshBasicMaterial({color:0xff6e43}));led.name='bomb-led';led.position.set(.20,.37,-.18);g.add(led);return g;
+ }
+ private updateBombDisplay(b:Snapshot['bomb']){
+  if(!b||!this.bombDisplay)return;
+  const planted=b.state==='planted',seconds=Math.ceil(Math.max(0,Number.isFinite(b.remaining)?b.remaining:0));
+  const state=b.terminal??(planted?'armed':'safe'),key=`${state}:${planted?seconds:''}`;
+  if(key===this.bombDisplayKey)return;this.bombDisplayKey=key;
+  const canvas=this.bombDisplay.image as HTMLCanvasElement,ctx=canvas.getContext('2d')!,color=planted&&seconds<10?'#ff9375':'#abe7c7';
+  ctx.fillStyle='#081b1b';ctx.fillRect(0,0,256,128);ctx.strokeStyle=color;ctx.lineWidth=3;ctx.strokeRect(4,4,248,120);ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 18px monospace';ctx.fillText(state.toUpperCase(),128,25);ctx.font='bold 61px monospace';ctx.fillText(planted?`00:${String(seconds).padStart(2,'0')}`:'--:--',128,78);this.bombDisplay.needsUpdate=true;
+ }
+
  makePlayer(p:PublicPlayer){
   if(this.characters){const g=this.characters.create(p);this.mesh(.16,1.15,-.5,.12,.14,.75,this.mats.dark,g);this.mesh(.16,1.2,-.91,.06,.06,.2,this.mats.metal,g);this.scene.add(g);this.players.set(p.id,g);return g;}
   const g=new T.Group();const outfit=new T.MeshStandardMaterial({color:p.team==='attack'?0x9a6842:0x416f7d,roughness:.8});const vest=new T.MeshStandardMaterial({color:p.team==='attack'?0x453d33:0x263c43,roughness:.8});const skin=new T.MeshStandardMaterial({color:0xc39b75,roughness:.8});
@@ -136,8 +165,8 @@ export class WorldView{
   this.gun.traverse(o=>{if(o instanceof T.Mesh&&o!==this.flash){for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.geometry!==boxGeo)geometries.add(o.geometry);}});
   for(const m of materials)m.dispose();for(const g of geometries)g.dispose();this.gun.clear();this.gunId=id;this.switchLeft=.26;
   const pistol=id==='sidearm',scout=id==='scout',smg=id==='smg';
-  const palette:Record<string,number[]>={sidearm:[0x94a5aa,0x397d80],kestrel:[0xb89b72,0xb45e37],m4:[0x85978e,0x537f79],smg:[0x9babb4,0xd28d47],scout:[0xb4ac8b,0x476879]};const [base,accent]=palette[id]??palette.sidearm;
-  const steel=new T.MeshStandardMaterial({color:0x45545e,roughness:.32,metalness:.78}),shell=new T.MeshStandardMaterial({color:base,roughness:.4,metalness:.48}),edge=new T.MeshStandardMaterial({color:0xc0c8c6,roughness:.28,metalness:.8}),grip=new T.MeshStandardMaterial({color:0x293a40,roughness:.92}),paint=new T.MeshStandardMaterial({color:accent,roughness:.52,metalness:.22});
+  const palette:Record<string,number[]>={sidearm:[0x263238,0x39736f],kestrel:[0x36342e,0x925335],m4:[0x2b3834,0x52766b],smg:[0x27343e,0xaf7944],scout:[0x3e4034,0x466473]};const [base,accent]=palette[id]??palette.sidearm;
+  const steel=new T.MeshStandardMaterial({color:0x344149,roughness:.40,metalness:.82}),shell=new T.MeshStandardMaterial({color:base,roughness:.57,metalness:.55}),edge=new T.MeshStandardMaterial({color:0x768886,roughness:.36,metalness:.82}),grip=new T.MeshStandardMaterial({color:0x172024,roughness:.94}),paint=new T.MeshStandardMaterial({color:accent,roughness:.62,metalness:.28});
   const part=(x:number,y:number,z:number,w:number,h:number,d:number,m:T.Material)=>this.mesh(x,y,z,w,h,d,m,this.gun);
   const tube=(x:number,y:number,z:number,r:number,length:number,m:T.Material)=>{const mesh=new T.Mesh(new T.CylinderGeometry(r,r,length,12),m);mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);this.gun.add(mesh);return mesh;};
   const front=pistol?-.48:smg?-.64:scout?-.98:-.85;
@@ -155,9 +184,9 @@ export class WorldView{
   part(0,.093,pistol?-.43:-.53,.008,.008,.015,paint);
   part(0,-.119,-.29,.075,.016,.12,steel);part(0,-.093,-.35,.075,.065,.018,steel);part(0,-.09,-.29,.012,.043,.018,edge);
   if(!pistol){
-   const handguard=part(0,.005,smg?-.49:-.56,.115,.105,smg?.15:.23,paint);
+   const handguard=part(0,.005,smg?-.49:-.56,.115,.105,smg?.15:.23,shell);
    for(let i=0;i<5;i++){part(-.06,.012,handguard.position.z-.08+i*.035,.008,.035,.022,grip);part(0,.071,-.48+i*.045,.13,.015,.017,steel);}
-   const stock=part(0,-.035,.005,.10,.12,.27,grip);stock.rotation.x=.04;part(0,-.025,.13,.12,.17,.04,paint);part(0,.035,.005,.105,.025,.20,shell);
+   const stock=part(0,-.035,.005,.10,.12,.27,grip);stock.rotation.x=.04;part(0,-.025,.13,.12,.17,.04,grip);part(0,.035,.005,.105,.025,.20,shell);
    this.magazine=part(0,-.18,smg?-.22:-.36,.074,smg?.25:.22,.10,steel);this.magazine.rotation.x=id==='kestrel'?-.22:0;
    for(let i=0;i<3;i++)part(-.04,-.14-i*.045,smg?-.22:-.36,.008,.014,.085,edge);
   }else this.magazine=part(0,-.243,-.16,.09,.025,.12,paint);
@@ -185,7 +214,7 @@ export class WorldView{
   if(this.qualityMode==='auto'){const next=adaptQuality(this.quality,active?dt:1);if(next.scale!==this.quality.scale){this.renderer.setPixelRatio(Math.min(devicePixelRatio,1)*next.scale);this.resize();}this.quality=next;}
   if(this.hdBudget&&this.hd?.diagnostics.status==='ready'&&this.qualityMode==='auto')this.requestHd(this.hdBudget.sample(this.hd.diagnostics.lod,dt,active));
   this.elapsed+=dt;this.recoil=Math.max(0,this.recoil-dt*8);this.flash.visible=this.recoil>.7;
-  if(!snapshot){this.cameraError='';this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
+  if(!snapshot){this.bomb.visible=false;this.cameraError='';this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
   else{
    const self=snapshot.self;const view=self.alive&&position?position:spectating??{x:0,y:14,z:20,crouch:false};
    this.camera.position.set(view.x,view.y+('crouch'in view&&view.crouch?RULES.crouchEye:RULES.eyeHeight),view.z);
@@ -194,7 +223,7 @@ export class WorldView{
    if(this.engine){try{const p=this.camera.position;const frame=this.engine.cameraFrame(p.x,p.y,p.z,this.camera.rotation.y,this.camera.rotation.x,this.camera.fov,this.camera.aspect);this.camera.position.set(frame.x,frame.y,frame.z);this.cameraGuard=frame;this.cameraError='';}catch(error){this.cameraGuard=null;this.cameraError=String(error);return;}}
    const ids=new Set(snapshot.players.map(p=>p.id));for(const[id,g]of this.players)if(!ids.has(id)){this.characters?.remove(id);this.scene.remove(g);this.players.delete(id);}
    for(const p of snapshot.players){const g=this.players.get(p.id)??this.makePlayer(p);g.visible=p.id!==self.id&&p.alive&&p.id!==spectating?.id;g.position.lerp(new T.Vector3(p.x,p.y,p.z),Math.min(1,dt*20));g.rotation.y=p.yaw;g.scale.y=p.crouch?.65:1;if(g.visible)this.characters?.update(p,dt,this.elapsed);const walking=Math.hypot(p.vx,p.vz)>1;for(const side of ['legL','legR']){const leg=g.getObjectByName(side);if(leg)leg.rotation.x=walking?Math.sin(this.elapsed*12+(side==='legL'?0:Math.PI))*.35:0;}}
-   const b=snapshot.bomb;this.bomb.visible=!!b&&!b.terminal&&b.state!=='carried';if(b){this.bomb.position.set(b.x,b.y,b.z);this.bomb.rotation.y=0;const led=this.bomb.getObjectByName('bomb-led');if(led)led.visible=b.state==='dropped'||Math.sin(this.elapsed*(b.remaining<10?18:6))>0;}
+   const b=snapshot.bomb;this.updateBombDisplay(b);this.bomb.visible=!!b&&!b.terminal&&b.state!=='carried';if(b){this.bomb.position.set(b.x,b.y,b.z);this.bomb.rotation.y=0;const led=this.bomb.getObjectByName('bomb-led');if(led)led.visible=b.state==='dropped'||Math.sin(this.elapsed*(b.remaining<10?18:6))>0;}
    this.setWeapon(self.weapon);
    const speed=position?Math.hypot(position.vx,position.vz):0;const bob=Math.sin(this.elapsed*11)*Math.min(1,speed/5);
    const progress=self.reloadLeft>0?1-self.reloadLeft/(WEAPONS[self.weapon]?.reload??2):0;const reload=self.reloadLeft>0?Math.sin(Math.max(0,progress)*Math.PI):0;this.switchLeft=Math.max(0,this.switchLeft-dt);const equip=this.switchLeft/.26;

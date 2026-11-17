@@ -2,7 +2,7 @@ import type {VerdantEngine} from '../shared/engine';
 import type {GameEvent,Snapshot} from '../shared/protocol';
 import {audioProfile} from '../shared/experience';
 import {admitVoice} from '../shared/generated-experience';
-export type AudioEvent=Omit<GameEvent,'type'>&{type:GameEvent['type']|'bomb-warning'|'bomb-critical'|'equip'};
+export type AudioEvent=Omit<GameEvent,'type'>&{type:GameEvent['type']|'bomb-warning'|'bomb-critical'|'equip'|'plant-progress'|'defuse-progress'};
 export function noiseBuffer(ctx:BaseAudioContext){
  const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.5),ctx.sampleRate),data=buffer.getChannelData(0);let seed=1618;
  for(let i=0;i<data.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;data[i]=seed/2147483648-1;}
@@ -35,6 +35,8 @@ export function playCue(ctx:BaseAudioContext,master:GainNode,noise:AudioBuffer,e
 export class GameAudio{
  ctx:AudioContext|null=null;master:GainNode|null=null;volume=.45;noise:AudioBuffer|null=null;
  private bombElapsed=0;private bombRound=-1;
+ private interactionKey='';private interactionElapsed=0;private interactionStop:(()=>void)|undefined;
+ private cancelInteraction(){this.interactionStop?.();this.interactionStop=undefined;this.interactionKey='';this.interactionElapsed=0;}
  private voices=new Map<()=>void,boolean>();
  get activeVoices(){return this.voices.size;}
  constructor(private engine:VerdantEngine){}
@@ -50,11 +52,20 @@ export class GameAudio{
   }
   const spatial=e.x!==undefined&&e.actor!==self;
   const cue=spatial?this.engine.audio(e.x!,e.y??0,e.z!,listener.x,listener.y+1.6,listener.z,listener.yaw):{pan:0,gain:1,occluded:false};
-  const stop=playCue(this.ctx,this.master,this.noise,e,{...cue,gain:spatial?Math.min(1,cue.gain*6):1},()=>this.voices.delete(stop));this.voices.set(stop,e.type==='step');
+  const stop=playCue(this.ctx,this.master,this.noise,e,{...cue,gain:spatial?Math.min(1,cue.gain*6):1},()=>this.voices.delete(stop));this.voices.set(stop,e.type==='step');return stop;
  }
- stop(){for(const stop of [...this.voices.keys()])stop();this.bombElapsed=0;this.bombRound=-1;}
+ stop(){this.cancelInteraction();for(const stop of [...this.voices.keys()])stop();this.bombElapsed=0;this.bombRound=-1;}
  update(dt:number,snapshot:Snapshot|null,listener:{x:number;y:number;z:number;yaw:number}){
-  const b=snapshot?.bomb;
+  const b=snapshot?.bomb,p=snapshot?.self;
+  const live=snapshot?.phase==='live'&&p?.alive&&p.progress>0&&p.progress<1&&!b?.terminal;
+  const type=live&&p.action==='PLANTING'&&b?.state==='carried'&&b.carrier===p.id?'plant-progress':live&&p.action==='DEFUSING'&&b?.state==='planted'&&b.remaining>0&&b.defuser===p.id?'defuse-progress':null;
+  const key=type?`${snapshot!.round}:${type}`:'';
+  if(key!==this.interactionKey){this.cancelInteraction();this.interactionKey=key;this.interactionElapsed=type?(type==='plant-progress'?.48:.32):0;}
+  if(type){
+   const interval=type==='plant-progress'?.48:.32;
+   this.interactionElapsed+=Number.isFinite(dt)?Math.min(.25,Math.max(0,dt)):0;
+   if(this.interactionElapsed+1e-9>=interval){this.interactionElapsed=0;this.interactionStop?.();this.interactionStop=this.event({id:0,type,actor:p!.id},listener,p!.id);}
+  }
   if(!snapshot||snapshot.phase!=='live'||!b||b.state!=='planted'||b.terminal){this.bombElapsed=0;this.bombRound=-1;return;}
   if(this.bombRound!==snapshot.round){this.bombElapsed=0;this.bombRound=snapshot.round;}
   const critical=b.remaining<10,interval=critical?.35:1;this.bombElapsed+=Math.min(.25,Math.max(0,dt));

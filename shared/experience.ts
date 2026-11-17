@@ -31,6 +31,7 @@ export function audioProfile(type:string,weapon:string|undefined,occluded:boolea
  // [tone, duration, level, second note / first note, pulse count]. Original cues.
  const cues:Record<string,[number,number,number,number,number]>={
   'reload-start':[230,.23,.13,.55,2],'reload-complete':[410,.14,.16,1.4,2],'reload-cancel':[160,.09,.09,.7,1],
+  'plant-progress':[270,.13,.075,1.45,2],'defuse-progress':[960,.09,.065,.72,2],
   'interaction-start':[520,.28,.12,1.25,2],'interaction-cancel':[340,.18,.10,.6,2],
   'bomb-pickup':[620,.22,.12,1.5,2],'bomb-drop':[145,.17,.16,.6,1],
   plant:[740,.46,.14,1.25,3],defuse:[880,.65,.16,.75,3],round:[330,.25,.12,1.25,2],'round-result':[392,.8,.18,1.5,3],
