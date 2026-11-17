@@ -1,5 +1,6 @@
 """Synthetic retention controls only; no golden generation or SDK qualification."""
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -23,12 +24,27 @@ class RetentionTests(unittest.TestCase):
         self.evidence = self.root / "evidence"
         self.git("init", "-q")
         self.put(".gitignore", "target/\n")
+        self.put(".devcontainer/devcontainer.json", '{"unitOnly":true}\n')
         self.put("tests/golden/stdlib/original.json", "original\n")
         self.git("add", ".")
         self.git("-c", "user.name=Unit", "-c", "user.email=unit@example.invalid", "commit", "-qm", "Synthetic")
         self.addCleanup(patch.stopall)
         patch.object(OWNER, "REVISION", self.git("rev-parse", "HEAD").strip()).start()
         patch.object(OWNER, "TREE", self.git("rev-parse", "HEAD^{tree}").strip()).start()
+        candidate = json.loads(PATH.with_name("prismpm-preparation-candidate").joinpath("manifest.json").read_bytes())
+        candidate.update(candidate=OWNER.REVISION, tree=OWNER.TREE)
+        self.candidate = candidate
+        patch.object(OWNER, "candidate_metadata", return_value=candidate).start()
+        self.identity_records = {
+            "candidate.json": {"diagnosticOnly": True, **candidate},
+            "source-inputs.json": {"revision": OWNER.REVISION, "tree": OWNER.TREE, "devcontainer_sha256": {
+                ".devcontainer/devcontainer.json": hashlib.sha256((self.source / ".devcontainer/devcontainer.json").read_bytes()).hexdigest()}},
+            "source-container.json": {"container_id": "a" * 64, "image_config_digest": "sha256:" + "b" * 64,
+                "repo_digests": [], "rootfs": {"Type": "layers", "Layers": ["sha256:" + "c" * 64]},
+                "source_revision": OWNER.REVISION, "source_tree": OWNER.TREE, "os": "linux", "architecture": "amd64"},
+        }
+        for name, record in self.identity_records.items():
+            OWNER.write_json(self.evidence / name, record)
         self.diagnostics = self.source / "target/ci-diagnostics/golden-preparation"
         for name, argv in OWNER.COMMANDS:
             OWNER.write_json(self.diagnostics / f"{name}.json", {"argv": argv, "exit_code": 0})
@@ -59,6 +75,96 @@ class RetentionTests(unittest.TestCase):
         self.assertEqual((self.evidence / "generated/tests/golden/stdlib/new.bin").read_bytes(), b"new\0binary\n")
         self.assertIn(b"GIT binary patch", (self.evidence / "golden.patch").read_bytes())
         self.assertIn("diagnostics/golden-write/gate.log", record["sha256"])
+        for name in self.identity_records:
+            self.assertEqual(record["sha256"][name], hashlib.sha256((self.evidence / name).read_bytes()).hexdigest())
+
+    def test_missing_identity_records_refused(self):
+        for name, record in self.identity_records.items():
+            with self.subTest(name=name):
+                (self.evidence / name).unlink()
+                self.failed()
+                OWNER.write_json(self.evidence / name, record)
+
+    def test_malformed_identity_records_refused(self):
+        for name, record in self.identity_records.items():
+            with self.subTest(name=name):
+                (self.evidence / name).write_text('{"malformed":')
+                self.failed()
+                OWNER.write_json(self.evidence / name, record)
+
+    def test_wrong_identity_source_refused(self):
+        for name, field in (("candidate.json", "candidate"), ("candidate.json", "tree"),
+                            ("source-inputs.json", "revision"), ("source-inputs.json", "tree"),
+                            ("source-container.json", "source_revision"), ("source-container.json", "source_tree")):
+            with self.subTest(name=name, field=field):
+                OWNER.write_json(self.evidence / name, {**self.identity_records[name], field: "f" * 40})
+                self.failed()
+                OWNER.write_json(self.evidence / name, self.identity_records[name])
+
+    def test_invalid_container_native_and_image_fields_refused(self):
+        for field, value in (("container_id", "short"), ("image_config_digest", "floating:latest"),
+                             ("os", "windows"), ("architecture", "arm64"), ("repo_digests", ["floating:latest"]),
+                             ("rootfs", {}), ("rootfs", {"Type": "layers", "Layers": []}),
+                             ("rootfs", {"Type": "layers", "Layers": ["bad"]})):
+            with self.subTest(field=field, value=value):
+                OWNER.write_json(self.evidence / "source-container.json", {**self.identity_records["source-container.json"], field: value})
+                self.failed()
+                OWNER.write_json(self.evidence / "source-container.json", self.identity_records["source-container.json"])
+
+    def test_wrong_preparation_records_refused(self):
+        for name, field, value in (("candidate.json", "diagnosticOnly", False), ("candidate.json", "diagnosticOnly", 1), ("candidate.json", "bundle_sha256", "f" * 64),
+                                   ("source-inputs.json", "devcontainer_sha256", {})):
+            with self.subTest(name=name, field=field):
+                OWNER.write_json(self.evidence / name, {**self.identity_records[name], field: value})
+                self.failed()
+                OWNER.write_json(self.evidence / name, self.identity_records[name])
+
+    def test_identity_symlinks_and_file_bounds_refused(self):
+        for name, record in self.identity_records.items():
+            with self.subTest(name=name):
+                target = self.evidence / name
+                target.unlink()
+                target.symlink_to(self.source / ".devcontainer/devcontainer.json")
+                self.failed()
+                target.unlink()
+                with target.open("wb") as stream:
+                    stream.truncate(OWNER.MAX_FILE + 1)
+                self.failed()
+                OWNER.write_json(target, record)
+
+    def test_failed_identity_capture_invalidates_old_record(self):
+        with patch.object(OWNER, "verify"), patch.object(OWNER, "command", side_effect=subprocess.CalledProcessError(1, "docker")):
+            with self.assertRaises(subprocess.CalledProcessError):
+                OWNER.container_identity(self.source, self.evidence)
+        self.failed()
+
+    def test_duplicate_identity_fields_refused(self):
+        target = self.evidence / "source-container.json"
+        text = target.read_text().replace('"os": "linux"', '"os": "windows", "os": "linux"')
+        target.write_text(text)
+        self.failed()
+
+    def test_container_capture_binds_actual_inspected_image(self):
+        record = self.identity_records["source-container.json"]
+        original_command = OWNER.command
+        container = {"Id": record["container_id"], "Image": record["image_config_digest"]}
+        image = {"Id": record["image_config_digest"], "RepoDigests": [], "RootFS": record["rootfs"], "Os": "linux", "Architecture": "amd64"}
+
+        def inspect(source, *args):
+            if args[0] != "docker":
+                return original_command(source, *args)
+            if args[1] == "ps":
+                return (record["container_id"] + "\n").encode()
+            return json.dumps([container if args[1] == "container" else image]).encode()
+
+        with patch.object(OWNER, "command", side_effect=inspect):
+            OWNER.container_identity(self.source, self.evidence)
+            self.assertEqual(json.loads((self.evidence / "source-container.json").read_bytes()), record)
+            OWNER.collect(self.source, self.evidence)
+            image["Id"] = "sha256:" + "f" * 64
+            with self.assertRaisesRegex(ValueError, "differs from container config"):
+                OWNER.container_identity(self.source, self.evidence)
+        self.failed()
 
     def test_missing_check_status_is_not_success(self):
         (self.diagnostics / "golden-check.json").unlink()
