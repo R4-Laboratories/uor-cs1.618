@@ -1,0 +1,13 @@
+{
+  "schema": "cs1618/host-architecture-diagnosis/1",
+  "run_id": 44105354772,
+  "implementation": "none",
+  "proposed_next_task": "bounded diagnostic-only fixed-layout observation; no admission",
+  "files": [
+    {
+      "path": "task-4c-host-architecture-diagnosis.md",
+      "bytes": 20358,
+      "sha256": "a999df66993941195395944644fead1d52ca23c57c8077b5141e39b92c6a603b"
+    }
+  ]
+}
