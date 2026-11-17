@@ -193,11 +193,11 @@
     },
     {
       "id": "NEXP-009",
-      "status": "source_stage_passed_backport_in_progress",
+      "status": "source_and_focused_sdk_passed_canonical_packaging_pending",
       "repo": "lean4-prod / PrismPM / uor-cs1.618",
       "function": "Canonical bounded numeric export and conversion normalization",
-      "summary": "Game-owned raw mul32/mul64/div32/div64 pass 44,648 native/Wasm vectors. The consumed-dictionary erasure defect is repaired and source-stage accepted; governed compiler acquisition, bounded shared-source adaptation and canonical game-root admission remain pending.",
-      "reproduction": "Reviewed source2a13f94 passes exact pinned-SDK CI43978245009: all31 gates, early and prepared-environment focused native/import-free Wasm O0/O2, four consumed-dependency refusals and unchanged AddOverflow replay. Original SDK/tool/lock hashes match. Dual-authority acquisition and canonical game roots remain pending. PrismPM candidate2a31ad07 preserves Released default and explicit numeric-task2c authority; scoped static review passes, Actual run43986399997 failed host evidence writes after printing the three-project retained-reader completion marker; final container status remains unrecovered. All four packed roots extract and generate Rust locally, but native compilation refuses missing numeric types and tuple fields; see NEXP-010/011. Local full validate failed and is not accepted. Recovery43999834995 independently confirms historical amd64 acquisition/readers with runner0, reader1pass, authority10pass and unchanged identities; original workflow stays failed. Typed453dc1bd source compiles all canonical roots and passes44648 native/import-freeWasm vectors in component diagnostics. Expanded raw/helper verification, full source VV and governed canonical packaging remain pending.",
+      "summary": "Reviewed bounded source453dc1bd exports four raw and canonical component roots and passes44648 native/Wasm vectors plus16 helper controls. Compiler source stage and focused dual-authority SDK integration pass; full source VV, governed numeric library packages and rendering integration remain pending.",
+      "reproduction": "Compiler2a13f94 passed all31 pinned-SDK source gates in43978245009. Reviewed Prism2a31 preserves Released default and explicit numeric-task2c authority; fresh repaired43999834837 passes actual acquisitions, retained readers/mutations,10authority controls, final original identities and all wrapper statuses. Typed bounded source453dc1bd avoids the application type/tuple failures using monomorphic helpers and LengthState; actual unmodified generated raw/canonical native and import-freeWasm all44648 vectors and helper controls pass. B2A commit efd0fc8 independently approved. FullsourceVV44002718718 pending; no production admission.",
       "acceptance_criteria": [
         "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
         "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
@@ -220,7 +220,10 @@
         "recovery-2026-11-16/ci-43986399997-review.md",
         "recovery-2026-11-16/canonical-type-recon.md",
         "recovery-2026-11-16/backport-recovered-evidence-review.md",
-        "recovery-2026-11-16/canonical-typed-453dc1bd.json"
+        "recovery-2026-11-16/canonical-typed-453dc1bd.json",
+        "recovery-2026-11-16/ci-43999834837/README.md",
+        "recovery-2026-11-16/bounded-source-review-efd0fc8.md",
+        "recovery-2026-11-16/bounded-source-453dc1bd.json"
       ],
       "dependencies": [
         "NEXP-002",
@@ -244,7 +247,8 @@
         "recovery-2026-11-16/canonical-type-recon/retained-files.json"
       ],
       "dependencies": [],
-      "production_admission": false
+      "production_admission": false,
+      "application_mitigation": "Reviewed source453dc1bd monomorphic helpers/named record pass actual canonical native/Wasm corpus and helper checks; generic compiler defect remains open."
     },
     {
       "id": "NEXP-011",
@@ -262,7 +266,8 @@
         "recovery-2026-11-16/canonical-type-recon/retained-files.json"
       ],
       "dependencies": [],
-      "production_admission": false
+      "production_admission": false,
+      "application_mitigation": "Reviewed source453dc1bd monomorphic helpers/named record pass actual canonical native/Wasm corpus and helper checks; generic compiler defect remains open."
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",

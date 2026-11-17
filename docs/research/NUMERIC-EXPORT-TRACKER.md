@@ -88,14 +88,10 @@ corrected source `2a13f942b04f0828e03c5d7db7e4db6ecb626d6e`; its generated diff 
 The [dual-authority implementation report](numeric-export/recovery-2026-11-16/backport-authority-report-2a31ad0.md)
 and [scoped static review](numeric-export/recovery-2026-11-16/backport-authority-fix-review-2a31ad0.md)
 record PrismPM candidate `2a31ad07`. Its local focused controls pass, while full
-local validation failed and is not accepted. The same rebuilt verifier must still
-pass actual original-seed/candidate acquisition and retained-file replay in the
-unchanged SDK; [diagnostic run 43986399997](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43986399997)
+local validation failed and is not accepted. The same rebuilt verifier has now passed actual original-seed/candidate acquisition and retained-file replay in the unchanged SDK; [diagnostic run 43986399997](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43986399997)
 failed during host evidence writes after the three-project retained-reader completion marker. [Recovery43999834995](numeric-export/recovery-2026-11-16/backport-recovered-evidence-review.md) now supplies runner exit0, retained-reader success, ten passing authority controls and final unchanged-identity checks. Independent inspection confirms complete retained files and receipt bindings for the historical amd64 acquisition/reader subgate. The original workflow remains failed; the repaired harness rerun and full source VV remain separate. This is not SDK release or game production admission.
 
-Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
-that preserves the original SDK seed as the default, bounded shared-source
-adaptation, all four roots through canonical export, and independent review.
+[Explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md) preserves the original SDK seed as default. The fresh [repaired SDK run43999834837](numeric-export/recovery-2026-11-16/ci-43999834837/README.md) passes with complete retained inputs, all statuses zero and unchanged original identities. Bounded shared-source adaptation is [independently approved](numeric-export/recovery-2026-11-16/bounded-source-review-efd0fc8.md): four raw roots, sixteen helpers, all44,648 native/Wasm pairs and mutation controls pass locally. Canonical component roots and helpers also pass. Remaining admission requires full source VV, governed canonical library packaging in the unchanged SDK, and integration review.
 Persistent rendering integration, the exact shift/add experiment and Text/1
 transport benchmarks remain pending. [AQM research](VERDANT-AQM-INTEGRATION.md)
 does not close any of these numerical/compiler questions; its first navigation
@@ -105,4 +101,6 @@ experiment did not justify a runtime import.
 
 [The target-type investigation](numeric-export/recovery-2026-11-16/canonical-type-recon.md) records two further open defects: NEXP-010 loses local numeric destination types, and NEXP-011 emits named fields for builtin Rust tuples. All four packed bounded roots extract and generate Rust, but native compilation refuses the emitted code. A minimal actual LexLean conversion fixture also refuses with E0790; no silently wrong numeric result was demonstrated. Typed source helpers and a named counter record are the next bounded application repair, subject to actual native/Wasm replay. They would not close the generic compiler defects.
 
-The typed source checkpoint `453dc1bd` now passes all four canonical extraction/codegen/native and import-free Wasm paths, with all44,648 oracle cases passing and native output identical to the frozen corpus. [Retained component evidence](numeric-export/recovery-2026-11-16/canonical-typed-453dc1bd.json) records its scope: expanded helper/source verification and governed canonical packaging remain required, and NEXP-010/011 generic compiler defects stay open.
+The typed source checkpoint `453dc1bd` now passes all four canonical extraction/codegen/native and import-free Wasm paths, with all44,648 oracle cases passing and native output identical to the frozen corpus. [Retained component evidence](numeric-export/recovery-2026-11-16/canonical-typed-453dc1bd.json) records its scope: expanded helper/source verification has since passed and been reviewed; governed canonical packaging remains required, and NEXP-010/011 generic compiler defects stay open.
+
+Full upstream source validation is running as [44002718718](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44002718718), using all eight unchanged partitions and their original assembler. A green focused SDK job or local arithmetic suite does not replace that result. The next implementation packages each actual root using PrismPM native-library contracts; no new numeric guest or Pages release is enabled yet.
