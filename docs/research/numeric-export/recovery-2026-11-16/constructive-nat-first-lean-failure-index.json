@@ -1,0 +1,66 @@
+{
+  "schema": "cs1618/constructive-component-failed-lean-checkpoint/1",
+  "status": "Lean_stopped_for_memory_no_kernel_or_axiom_qualification",
+  "entries": [
+    {
+      "path": "evidence/lean-audit-commands.json",
+      "bytes": 951,
+      "sha256": "b269099c0da1a7199242120cf4dda380b76b7f119e6a87ec5667e4ccfa5527e1"
+    },
+    {
+      "path": "evidence/lean-resource-stop.json",
+      "bytes": 1753,
+      "sha256": "aa2791565dbcfd3b95af198361a7acd7992032b9c438ea201fda72f6135500d2"
+    },
+    {
+      "path": "evidence/lean-audit.json",
+      "bytes": 3170,
+      "sha256": "506441a79acf45cd32d85e22ebb89993df4ebabd166633483fe25fdeebad1591"
+    },
+    {
+      "path": "evidence/lean-audit.stdout",
+      "bytes": 40,
+      "sha256": "ccd442c8ccd98fd4e6789c9127660b712079765d12f1f0eb925366df1a83688b"
+    },
+    {
+      "path": "evidence/lean-audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/original-runtime-identities.json",
+      "bytes": 13624,
+      "sha256": "143b7e22978765bf52b619c25bc3a49570bf6ab935ca41b7e952c6d270fc5043"
+    },
+    {
+      "path": "generated/Bounds.lean",
+      "bytes": 32570,
+      "sha256": "2ab5f286414a23fef5363e370da599caf4b5285c48a066c146851dd3f32ed03d"
+    },
+    {
+      "path": "generated/constructive-nat.json",
+      "bytes": 202039,
+      "sha256": "3d014b17c42141482faae7eafce8181381098588f6f69d1cfc39242c5ae1efbe"
+    },
+    {
+      "path": "authored/Bounds.lex.tex",
+      "bytes": 1269,
+      "sha256": "56fbb2a5b827291d33a9d5206dba0294c5cc82fc48f3451cf9339e2834d8c6cc"
+    },
+    {
+      "path": "authored/Generic.lex.tex",
+      "bytes": 1891,
+      "sha256": "0d4eb100bd279841d7bbbff290772454de3aa095394b218ca3bb16d6306a2cf3"
+    },
+    {
+      "path": "authored/Compatibility.lex.tex",
+      "bytes": 430,
+      "sha256": "66531df920e9301b2a680a476dc9cfdd43354bec8ed082d61294fa4799686800"
+    }
+  ],
+  "archive": {
+    "path": "constructive-nat-first-lean-failure.tar.gz",
+    "bytes": 24107,
+    "sha256": "6eed44712d3975b17da2939c027eaecef5339f63e929baf82470e1f9ccef5e20"
+  }
+}
