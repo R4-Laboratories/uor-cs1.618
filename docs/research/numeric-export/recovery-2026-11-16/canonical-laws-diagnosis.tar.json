@@ -1,0 +1,6 @@
+{
+  "scope": "component runtime byte comparison; no Lean recompilation or SDK acceptance",
+  "sha256": "2687eaea03048071a27190419788a464b3187657df9f5ea75f2a965d6babbbbd",
+  "bytes": 231456,
+  "excluded": "diagnostic runtime-api executable; its digest is recorded in comparison.json"
+}
