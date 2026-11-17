@@ -1,0 +1,22 @@
+{
+  "diagnostic_only": true,
+  "original_run": 44030198874,
+  "source_revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "source_tree": "7cf463121cf5dd15b681ce1dfafd5694617cc474",
+  "original_collection_complete": false,
+  "tracked_count": 424,
+  "retained_count": 424,
+  "changed": [
+    "tests/golden/stdlib/build/manifest.json",
+    "tests/golden/stdlib/build/model.prism.json",
+    "tests/golden/stdlib/golden-manifest.json",
+    "tests/golden/stdlib/verified/lexlean-attestation.json",
+    "tests/golden/stdlib/verified/manifest.json"
+  ],
+  "added": [],
+  "deleted": [],
+  "unchanged_count": 419,
+  "categories": {
+    "tests/golden/stdlib": 5
+  }
+}

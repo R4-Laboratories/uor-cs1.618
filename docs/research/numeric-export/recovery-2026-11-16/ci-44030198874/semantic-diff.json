@@ -1,0 +1,160 @@
+[
+  {
+    "path": "tests/golden/stdlib/build/manifest.json",
+    "differences": [
+      [
+        "/files/297/sha256",
+        {
+          "before": "81edf7c4d1add3b175f62e30d1145ebbbd6d7ee0b6e60bac06fb10e43284c68e",
+          "after": "47c8038d51cbf230c73a2bf565c10b729dab1d27e2bbad0d69c77619d304f97e"
+        }
+      ],
+      [
+        "/inputs/application_generator_sha256",
+        {
+          "before": "c2a8221267def5cd5a17bf006ef19a68dd3327dbfd9b4d422bf1e31b993ce749",
+          "after": "0eae6b594fc9edbb37ed52d038e15c48c1a2b5cea97fd49e4ec07135375d54f1"
+        }
+      ],
+      [
+        "/inputs/dependency_register_sha256",
+        {
+          "before": "391a46a090cdf7b604f793463f7ab5a5a3ecd185eef5c6d72435679b71dc7062",
+          "after": "277d2b5a5c52dfe98e7d06c98fad63c601c51b078f91d029830ecb7fcc33fac6"
+        }
+      ],
+      [
+        "/inputs/emitter_semantics_id",
+        {
+          "before": "1d5fe71ec83a87fc272bcc3cf94e0f84cabd27f77708e574f8e6ecf30a79b639",
+          "after": "c8213cedf16ad1691f136122a58a87a33a596a95e8e5c9b361bf78109df22133"
+        }
+      ],
+      [
+        "/inputs/model_id",
+        {
+          "before": "81edf7c4d1add3b175f62e30d1145ebbbd6d7ee0b6e60bac06fb10e43284c68e",
+          "after": "47c8038d51cbf230c73a2bf565c10b729dab1d27e2bbad0d69c77619d304f97e"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "tests/golden/stdlib/build/model.prism.json",
+    "differences": [
+      [
+        "/provenance/emitter_semantics_id",
+        {
+          "before": "1d5fe71ec83a87fc272bcc3cf94e0f84cabd27f77708e574f8e6ecf30a79b639",
+          "after": "c8213cedf16ad1691f136122a58a87a33a596a95e8e5c9b361bf78109df22133"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "tests/golden/stdlib/golden-manifest.json",
+    "differences": [
+      [
+        "/attestation_id",
+        {
+          "before": "22ba1ca2e7576e03b7273f208eea2ab2d65b5b9dc84e4e67f94f2990af847fcd",
+          "after": "f6fbaf3c36f235539aa4a9cb26d8df435f1bf28a74a3f5c33fe490ae1e69bf75"
+        }
+      ],
+      [
+        "/build_id",
+        {
+          "before": "2f6d98b15d8c6ed020903b49a798ce7ad523d56ad381df95343a53625dbd62b6",
+          "after": "92ffbe4993596c1abe331e3043922153dc3d59291609f03bdf7637a7f3904c7f"
+        }
+      ],
+      [
+        "/files/297/sha256",
+        {
+          "before": "c182315fb34d0c1c281e85dca15af779e0657e4aab51f4b8e740598ae545f201",
+          "after": "1388ec84c3fa97e9cbac0c4f4f7c0ddf7469f3f46e27fbf90cc70195f8d5c7c8"
+        }
+      ],
+      [
+        "/files/298/sha256",
+        {
+          "before": "81edf7c4d1add3b175f62e30d1145ebbbd6d7ee0b6e60bac06fb10e43284c68e",
+          "after": "47c8038d51cbf230c73a2bf565c10b729dab1d27e2bbad0d69c77619d304f97e"
+        }
+      ],
+      [
+        "/files/413/sha256",
+        {
+          "before": "aee729eb686e115324a545421a5d34abdbbbe0f67d063488370cb0f301eb675a",
+          "after": "8a009108372a5b0ffcb2243233282313348b7c2be8f22c06301de13ca2b2ec94"
+        }
+      ],
+      [
+        "/files/414/sha256",
+        {
+          "before": "22ba1ca2e7576e03b7273f208eea2ab2d65b5b9dc84e4e67f94f2990af847fcd",
+          "after": "f6fbaf3c36f235539aa4a9cb26d8df435f1bf28a74a3f5c33fe490ae1e69bf75"
+        }
+      ],
+      [
+        "/review_reason",
+        {
+          "before": "Review exact proposed golden source at 87e43de3c932cc72a45618055daf6e07a08e7ad1.",
+          "after": "Review exact proposed backport shared golden source."
+        }
+      ]
+    ]
+  },
+  {
+    "path": "tests/golden/stdlib/verified/lexlean-attestation.json",
+    "differences": [
+      [
+        "/attestation_id",
+        {
+          "before": "447e0916492771554975c642af95ab8296256b6dd72e6b655c8b91137f680764",
+          "after": "5a8decbce2d806491bd3e9c7a78cfec13607cbd3f7d4d7e4f77f2d289800cae4"
+        }
+      ],
+      [
+        "/lexlean/executable_sha256",
+        {
+          "before": "c723ebce86e34ecd80ac90a02a26a4516f5a5845705d208a224b4de73b2cae7c",
+          "after": "30798fad44a3a6770320819b346aa99e072b8811c08f6abbdf507c8b58ff4cda"
+        }
+      ]
+    ]
+  },
+  {
+    "path": "tests/golden/stdlib/verified/manifest.json",
+    "differences": [
+      [
+        "/artifacts/lexlean_attestation/sha256",
+        {
+          "before": "aee729eb686e115324a545421a5d34abdbbbe0f67d063488370cb0f301eb675a",
+          "after": "8a009108372a5b0ffcb2243233282313348b7c2be8f22c06301de13ca2b2ec94"
+        }
+      ],
+      [
+        "/artifacts/model/sha256",
+        {
+          "before": "81edf7c4d1add3b175f62e30d1145ebbbd6d7ee0b6e60bac06fb10e43284c68e",
+          "after": "47c8038d51cbf230c73a2bf565c10b729dab1d27e2bbad0d69c77619d304f97e"
+        }
+      ],
+      [
+        "/build_id",
+        {
+          "before": "2f6d98b15d8c6ed020903b49a798ce7ad523d56ad381df95343a53625dbd62b6",
+          "after": "92ffbe4993596c1abe331e3043922153dc3d59291609f03bdf7637a7f3904c7f"
+        }
+      ],
+      [
+        "/lexlean_attestation_id",
+        {
+          "before": "447e0916492771554975c642af95ab8296256b6dd72e6b655c8b91137f680764",
+          "after": "5a8decbce2d806491bd3e9c7a78cfec13607cbd3f7d4d7e4f77f2d289800cae4"
+        }
+      ]
+    ]
+  }
+]
