@@ -137,11 +137,12 @@ def manifest(root, uid):
             expectation['presence']='future'
             if expectation['type']=='directory' and path!=home/'host-bridge':expectation['private']=0o700
         expectation['owners']=([1000] if path==source or source in path.parents else
-                               [0] if path in (Path('/run'),Path('/var'),Path('/var/run'),Path('/run/docker.sock'),Path('/var/run/docker.sock')) else
+                               [0] if path==evidence/'.host-bridge-root' or path in (Path('/run'),Path('/var'),Path('/var/run'),Path('/run/docker.sock'),Path('/var/run/docker.sock')) else
                                [uid] if path==game or game in path.parents or path==evidence or evidence in path.parents else sorted(set((0,uid))))
         rows.append({'id':str(path),'parent':None if path==Path('/') else str(path.parent), 'name':path.name or '/',
                      'role':'socket_layout' if str(path) in ('/run','/var','/var/run','/run/docker.sock','/var/run/docker.sock') else
                      'source' if path==source or source in path.parents else 'game' if path==game or game in path.parents else
+                     'root_ledger' if path==evidence/'.host-bridge-root' else
                      'runner' if path==evidence or evidence in path.parents else 'ancestor',
                      'expectation':expectation,'state':'unmeasured','identity':None,'access_acl':None,
                      'default_acl':None,'blocked_by':None,'issue_ids':[]})
@@ -694,17 +695,62 @@ def root_observe():
     return 1
 
 
+def validate_first_issue(value):
+    """Closed <=512-byte root issue, with numeric node/errno and plain tokens.
+
+    Node is null or integer0..95, errno null or integer1..4095 (no booleans).
+    Stage is1..32 ASCII identifier characters; syscall is null or a1..64 token;
+    code is a1..128 token. Tokens cannot carry nested JSON/error serialization.
+    """
+    if value is None:return None
+    closed(value,'node stage syscall errno code')
+    require(value['node'] is None or type(value['node']) is int and 0<=value['node']<96,'control_issue_node')
+    require(value['errno'] is None or type(value['errno']) is int and 1<=value['errno']<=4095,'control_issue_errno')
+    require(type(value['stage']) is str and re.fullmatch('[a-z][a-z0-9_]{0,31}',value['stage']),'control_issue_stage')
+    require(value['syscall'] is None or type(value['syscall']) is str and
+            re.fullmatch('[A-Za-z0-9_.:-]{1,64}',value['syscall']),'control_issue_syscall')
+    require(type(value['code']) is str and re.fullmatch('[A-Za-z0-9_:-]{1,128}',value['code']),'control_issue_code')
+    require(len(encoded(value))<=512,'control_issue_limit')
+    return value
+
+
+def root_refusal(summary):
+    """Only after validate_control: closed <=1KiB status.error provenance.
+
+    Six exact keys: constant schema/provenance/runner_error strings, the joined
+    SHA256 request string and finite numeric deadline, and validated first_issue
+    (null or the closed <=512-byte record). This describes the returned control,
+    not authenticated source/layout facts. Fallback observer/context stay null.
+    """
+    value={'schema':SCHEMA+'root-refusal/1','provenance':'validated_root_control',
+           'runner_error':'root_no_report','request_sha256':summary['request_sha256'],
+           'deadline':summary['deadline'],'first_issue':summary['first_issue']}
+    require(len(encoded(value))<=1024,'root_refusal_limit')
+    return value
+
+
 def validate_control(value,code,deadline,request_hash):
     closed(value,'schema exit observation deadline request_sha256 report first_issue counts planned actual complete_application_accepted')
-    require(value['schema']==SCHEMA+'control/1' and type(value['exit']) is int and code==value['exit']==1 and
+    require(len(encoded(value))<=8192,'control_limit')
+    require(value['schema']==SCHEMA+'control/1' and type(value['exit']) is int and type(code) is int and code==value['exit']==1 and
             value['planned'] is None and value['actual'] is None and value['complete_application_accepted'] is False and
             value['observation'] in ('complete','incomplete'),'root_control')
-    require(value['deadline']==deadline and value['request_sha256']==request_hash,'control_clock_request')
+    require(finite(value['deadline']) and value['deadline']==deadline and
+            type(value['request_sha256']) is str and re.fullmatch('[0-9a-f]{64}',value['request_sha256']) and
+            value['request_sha256']==request_hash,'control_clock_request')
+    validate_first_issue(value['first_issue'])
     if value['report'] is not None:
         closed(value['report'],'name bytes sha256')
         require(value['report']['name']=='layout.json' and type(value['report']['bytes']) is int and
                 0<value['report']['bytes']<=65536 and type(value['report']['sha256']) is str and
                 re.fullmatch('[0-9a-f]{64}',value['report']['sha256']),'control_report')
+        counts=value['counts'];closed(counts,'expected accounted measured absent blocked unmeasured complete')
+        require(all(type(counts[k]) is int and 0<=counts[k]<=96 for k in counts if k!='complete') and
+                type(counts['complete']) is bool and counts['accounted']+counts['unmeasured']==counts['expected'] and
+                counts['measured']+counts['absent']+counts['blocked']<=counts['accounted'] and
+                counts['complete']==(value['observation']=='complete'),'control_counts')
+    else:
+        require(value['observation']=='incomplete' and value['counts'] is None,'control_no_report')
     return value
 
 
@@ -791,7 +837,7 @@ def runner():
                 layout,unused=custody.read(root/'evidence'/UPLOAD/'layout.json',65536,True)
                 value=verify_layout(layout,uid,gid,request_hash,summary['report'])
                 require(summary['observation']==('complete' if value['coverage']['complete'] else 'incomplete'),'coverage_join')
-            else:error='root_no_report'
+            else:error=root_refusal(summary)
         except (OSError,ValueError,TimeoutError,subprocess.SubprocessError):
             layout=None
             error='root_control_or_readback_failed'
@@ -800,7 +846,7 @@ def runner():
         custody.created_file(upload)
         if layout is None:
             fallback=new_record(rows,root,uid,gid,None,'runner_fallback')
-            issue(fallback,None,'runner',error or 'root_unavailable')
+            issue(fallback,None,'runner',error['runner_error'] if type(error) is dict else error or 'root_unavailable')
             fallback['timing'].update(deadline=deadline,finished=time.monotonic())
             layout=fit_record(fallback)
             # EXCL refuses a partially published or preexisting report. No replace.

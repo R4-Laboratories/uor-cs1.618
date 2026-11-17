@@ -19,7 +19,7 @@ spec = importlib.util.spec_from_file_location('host_layout', SCRIPT)
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
 ROOT = Path('/home/runner/work/uor-cs1.618/uor-cs1.618')
-FIXTURES = Path('/workspace/diagnostic-tools/host-layout-diagnostic/fixtures')
+FIXTURES = Path(os.environ.get('HOST_LAYOUT_TEST_FIXTURES', '/workspace/diagnostic-tools/host-layout-diagnostic/fixtures'))
 
 
 def acl(entries=None):
@@ -37,6 +37,21 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(sum(x['id'].startswith(str(ROOT/'prismpm')+'/') or x['id']==str(ROOT/'prismpm') for x in nodes),41)
         self.assertEqual(sum(x['id'].startswith(str(ROOT/'evidence')+'/') or x['id']==str(ROOT/'evidence') for x in nodes),12)
         self.assertFalse(any('pull-budget' in x['id'] or 'setup-budget' in x['id'] for x in nodes))
+    def test_root_ledger_has_exact_root_role(self):
+        rows=m.manifest(ROOT,1001);mapped={r['id']:r for r in rows}
+        ledger=mapped[str(ROOT/'evidence/.host-bridge-root')]
+        self.assertEqual(len(rows),81)
+        self.assertEqual(ledger['expectation']['owners'],[0])
+        self.assertEqual(ledger['role'],'root_ledger')
+        self.assertEqual(ledger['expectation']['presence'],'future')
+        self.assertEqual(ledger['expectation']['private'],0o700)
+        # Pure structural policy identities: no root ownership syscall/witness.
+        projected={'type':'directory','uid':0,'mode':stat.S_IFDIR|0o700,'nlink':2}
+        self.assertTrue(m.structure(ledger,projected))
+        self.assertFalse(m.structure(ledger,{**projected,'uid':1001}))
+        for name in ('host-bridge','metadata-upload','preflight-upload','raw-upload',m.CONTROL,m.UPLOAD,m.CONTROL+'/request.json'):
+            self.assertEqual(mapped[str(ROOT/'evidence'/name)]['expectation']['owners'],[1001])
+
     def test_limits_before_opens(self):
         with self.assertRaises(ValueError):m.manifest(Path('/'+'/'.join(['a']*25)),1001)
         with self.assertRaises(ValueError):m.manifest(Path('/'+'a'*513),1001)
@@ -242,6 +257,19 @@ class EncodingTests(unittest.TestCase):
         for row in record['nodes']:self.assertEqual(set(row),set(m.NODE_KEYS))
         for rule in record['creation_rules']:self.assertIsNone(rule['actual']);self.assertIsNone(rule['creation_witness'])
         self.assertFalse(record['complete_application_accepted'])
+    def test_nested_issue_types_keys_and_bounds(self):
+        first={'node':95,'stage':'root','syscall':'getxattr','errno':4095,'code':'a'*128}
+        control=m.control(20,'a'*64);control['first_issue']=first
+        self.assertEqual(m.validate_control(control,1,20,'a'*64),control)
+        for field,value in (('node',True),('node',96),('stage',''),('stage','a'*33),('syscall','a'*65),('errno',True),('errno',0),('errno',4096),('code',{}),('code','a'*129),('code','{"nested":true}')):
+            bad=json.loads(json.dumps(control));bad['first_issue'][field]=value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):m.validate_control(bad,1,20,'a'*64)
+        for key in ('extra','missing'):
+            bad=json.loads(json.dumps(control))
+            if key=='extra':bad['first_issue']['extra']=None
+            else:del bad['first_issue']['node']
+            with self.assertRaises(ValueError):m.validate_control(bad,1,20,'a'*64)
+
     def test_control_schema_always_nonacceptance(self):
         c=m.control(20,'a'*64)
         self.assertEqual(len(m.encoded(c))<8192,True)
@@ -334,6 +362,57 @@ class RunnerTests(OwnedFixture):
         self.assertTrue(all(r['identity'] is None for r in value['nodes']))
         self.assertFalse(value['coverage']['complete']);self.assertTrue(status['artifact_safe'])
         self.assertEqual(output.read_text(),'artifact_safe=true\n')
+    def refusal_process(self,first_issue,mutation=None):
+        def process(*args,**kwargs):
+            request=(self.root/'evidence'/m.CONTROL/'request.json').read_bytes()
+            summary=m.control(args[1],m.digest(request));summary['first_issue']=first_issue
+            if mutation:mutation(summary)
+            self.refusal_summary=summary
+            return 1,m.encoded(summary),b''
+        return process
+    def test_valid_root_refusal_survives_actual_runner_artifact(self):
+        output=self.prepare_runner()
+        first={'node':17,'stage':'authentication','syscall':'getxattr','errno':errno.EACCES,'code':'distinctive_acl_refusal'}
+        with patch.object(m,'fixed_root',return_value=self.root),patch.object(m,'bounded_process',side_effect=self.refusal_process(first)),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+            self.assertEqual(m.runner(),1)
+        upload=self.root/'evidence'/m.UPLOAD
+        layout=m.decode((upload/'layout.json').read_bytes());status=m.decode((upload/'status.json').read_bytes())
+        self.assertEqual(status['error'],{'schema':m.SCHEMA+'root-refusal/1','provenance':'validated_root_control',
+            'runner_error':'root_no_report','request_sha256':self.refusal_summary['request_sha256'],
+            'deadline':self.refusal_summary['deadline'],'first_issue':first})
+        self.assertEqual(status['root_exit'],1);self.assertEqual(status['observation'],'incomplete')
+        self.assertEqual(status['schema'],m.SCHEMA+'status/1');self.assertFalse(status['complete_application_accepted'])
+        self.assertEqual(layout['producer'],'runner_fallback');self.assertIsNone(layout['context']);self.assertIsNone(layout['observer'])
+        for key in ('planned','actual','kernel_witness','creation_witness'):self.assertIsNone(layout[key])
+        self.assertTrue(all(r['identity'] is None for r in layout['nodes']))
+        self.assertFalse(layout['coverage']['complete']);self.assertEqual(layout['issues'][0]['code'],'root_no_report')
+        self.assertEqual(set(p.name for p in upload.iterdir()),{'layout.json','status.json'})
+        self.assertEqual(output.read_text(),'artifact_safe=true\n')
+        self.assertLessEqual((upload/'status.json').stat().st_size,8192)
+        self.assertLessEqual((upload/'layout.json').stat().st_size,65536)
+    def test_invalid_or_unbound_refusal_has_no_root_provenance(self):
+        for case in ('malformed','oversize','unbound','deadline','counts'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir=FIXTURES) as path:
+                old_root=self.root;self.root=Path(path)
+                try:
+                    output=self.prepare_runner()
+                    first={'node':1,'stage':'root','syscall':None,'errno':None,'code':'untrusted_distinctive_code'}
+                    def mutate(summary):
+                        if case=='malformed':summary['first_issue']['errno']=True
+                        if case=='oversize':summary['first_issue']['code']='x'*9000
+                        if case=='unbound':summary['request_sha256']='0'*64
+                        if case=='deadline':summary['deadline']+=1
+                        if case=='counts':summary['counts']={'unexpected':'field'}
+                    with patch.object(m,'fixed_root',return_value=self.root),patch.object(m,'bounded_process',side_effect=self.refusal_process(first,mutate)),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                        self.assertEqual(m.runner(),1)
+                    upload=self.root/'evidence'/m.UPLOAD
+                    status=m.decode((upload/'status.json').read_bytes());layout=m.decode((upload/'layout.json').read_bytes())
+                    self.assertEqual(status['error'],'root_control_or_readback_failed')
+                    self.assertIsNone(layout['context']);self.assertIsNone(layout['observer'])
+                    self.assertNotIn('validated_root_control',(upload/'status.json').read_text())
+                    self.assertNotIn('untrusted_distinctive_code',(upload/'status.json').read_text())
+                finally:self.root=old_root
+
     def test_preexisting_upload_refuses_without_output(self):
         output=self.prepare_runner();(self.root/'evidence'/m.UPLOAD).mkdir(mode=0o700)
         with patch.object(m,'fixed_root',return_value=self.root),patch.object(m,'bounded_process') as proc,patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
@@ -357,6 +436,7 @@ class RunnerTests(OwnedFixture):
             body=m.fit_record(record);p=self.root/'evidence'/m.UPLOAD/'layout.json';p.write_bytes(body);p.chmod(0o400)
             summary=m.control(args[1],request_hash)
             summary['report']={'name':'layout.json','bytes':len(body),'sha256':'0'*64}
+            summary['counts']=record['coverage']
             return 1,m.encoded(summary),b''
         with patch.object(m,'fixed_root',return_value=self.root),patch.object(m,'bounded_process',side_effect=process),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
             self.assertEqual(m.runner(),1)
