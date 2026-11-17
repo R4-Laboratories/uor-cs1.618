@@ -387,6 +387,202 @@ class EvidenceBoundaryControls(unittest.TestCase):
             d.write(work/'publication-linkage-evidence.json',changed,replace=True)
             with self.assertRaises(ValueError):d.validate_linkage_join(capture,owner,{str(work):{}})
 
+    def linkage_fixture(self,work,kind):
+        # Fixed f292 compile.mjs modules/layout and checks.mjs mutant receipt.
+        # Small real files exercise collection only, never compiler/SDK success.
+        d=self.driver;files={};sources={}
+        modules=sorted(['Fixture','Production.PublicationAdmission.LinkageV1','Production.PublicationAdmission.LinkageV1Wire',
+                        'Production.PublicationAdmission.V1','Production.PublicationAdmission.V1Wire','Foundation.Bytes',
+                        'Foundation.Codec','Foundation.Codec.Cbor.V1.Primitive'])
+        def put(path,body=b'component evidence only'):
+            file=work/path;file.parent.mkdir(parents=True,exist_ok=True);file.write_bytes(body)
+            files[path]={'bytes':len(body),'sha256':d.sha(body)};return files[path]
+        for module in modules:sources[module]=put('project/src/'+module.replace('.','/')+'.lex.tex')['sha256']
+        for path in ['project/lexlean.toml','project/lean-toolchain','project/lakefile.toml','runner/src/main.rs','runner/Cargo.lock',
+                     'context-fields-runner/src/main.rs','context-fields-runner/Cargo.lock',
+                     *['runner/src/'+name+'_witnesses.rs' for name in ['collector','partition','payload','bitset']]]:put(path)
+        context=kind.startswith('context-');native={}
+        for role in (['context-fields-std','context-fields-no_std'] if context else ['std','no_std']):
+            native[role]=put('native-'+role+'-observer')['sha256']
+        put(('context-fields-runner' if context else 'runner')+'/Cargo.toml')
+        ir=put('export/kernel.ir')['sha256'];packages=[];wasm={}
+        roles=['context-fields-wasm','context-fields-wasm-repro','admission-wasm','admission-wasm-repro'] if context else ['wasm','wasm-repro']
+        for prefix,package_kind in [('generated','native')]+[('guest-'+role,'wasm') for role in roles]:
+            names=['Cargo.lock','Cargo.toml','src/lib.rs']+(['LICENSE-APACHE','LICENSE-MIT','README.md'] if package_kind=='native' else ['.cargo/config.toml'])
+            members={name:put(prefix+'/'+name)['sha256'] for name in sorted(names)}
+            manifest={'schema':'lean4-prod/cargo-package-manifest/1' if package_kind=='native' else 'lean4-prod/core-wasm-target/1',
+                      'input_ir_sha256':ir,'files':[{'path':name,'sha256':members[name]} for name in sorted(names)]}
+            members['generation-manifest.json']=put(prefix+'/generation-manifest.json',d.encoded(manifest))['sha256']
+            packages.append({'path':prefix,'kind':package_kind,'files':members})
+        for role in roles:
+            pair={}
+            for side,path in [('original','guest-'+role+'-target/wasm32-unknown-unknown/release/publication_context_linkage_wire_probe.wasm'),
+                              ('private','guest-'+role+'.wasm')]:
+                row=put(path);info=(work/path).stat()
+                pair[side]={'path':path,'device':str(info.st_dev),'inode':str(info.st_ino),'links':'1',
+                            'size':row['bytes'],'sha256':row['sha256']}
+            wasm[role]=pair
+        proof_prefix='project/.lexlean/verified/'+'a'*64
+        proof={'root':str(work/proof_prefix),'modules':modules,'runtime':[{'name':'LexLeanRuntime.Portable','text':'component runtime text\n'}],
+               'source_id':'b'*64,'semantic_id':'c'*64,'build_id':'d'*64,'attestation_id':'a'*64}
+        outputs=[];module_rows=[];inputs=[];oleans=[]
+        for module in modules:
+            stem='PrismPM/'+module.replace('.','/');lean='PrismPM.'+module
+            module_rows.append({'module':module,'lean_module':lean,'source_path':'src/'+module.replace('.','/')+'.lex.tex'})
+            source_path='project/src/'+module.replace('.','/')+'.lex.tex'
+            inputs.append({'kind':'source','path':source_path.removeprefix('project/'),'byte_length':files[source_path]['bytes'],'sha256':sources[module]})
+            for path,tag in [('modules/'+stem+'.lean','lean'),('modules/'+stem+'.tex','tex'),('maps/'+stem+'.map.json','map'),
+                             ('coverage/'+stem+'.coverage.json','coverage'),('lexicons/'+module+'.closure.json','lexicon-closure')]:
+                row=put(proof_prefix+'/'+path,b'import LexLeanRuntime.Portable\n' if tag=='lean' else b'component proof member')
+                outputs.append({'kind':tag,'path':path,'byte_length':row['bytes'],'sha256':row['sha256']})
+            for path in ['lean-src/'+stem+'.lean','process/lean/'+lean+'.json','process/leanchecker/'+lean+'.json']:put(proof_prefix+'/'+path)
+            row=put(proof_prefix+'/oleans/'+stem+'.olean');oleans.append({'module':lean,'byte_length':row['bytes'],'sha256':row['sha256']})
+        for runtime in proof['runtime']:
+            name=runtime['name'];stem=name.replace('.','/')
+            put(proof_prefix+'/lean-src/'+stem+'.lean',runtime['text'].encode())
+            for path in ['process/lean/'+name+'.json','process/leanchecker/'+name+'.json']:put(proof_prefix+'/'+path)
+            row=put(proof_prefix+'/oleans/'+stem+'.olean');oleans.append({'module':name,'byte_length':row['bytes'],'sha256':row['sha256']})
+        manifest={'spec':'lexlean/build-manifest/1','selection':modules,'modules':module_rows,'inputs':inputs,'outputs':outputs,
+                  **{key:proof[key] for key in ['source_id','semantic_id','build_id']}}
+        row=put(proof_prefix+'/build-manifest.json',d.encoded(manifest))
+        attestation={'spec':'lexlean/attestation/2','status':'verified','build_manifest':{'byte_length':row['bytes'],'sha256':row['sha256']},
+                     'oleans':oleans,**{key:proof[key] for key in ['source_id','semantic_id','build_id','attestation_id']}}
+        put(proof_prefix+'/attestation.json',d.encoded(attestation))
+        put('intended-mutation.tsv',(('CompleteSixFieldContext' if context else 'SystemReferenceMismatch')+'\t00\t00'+('\t-\t-' if context else '')+'\n').encode())
+        value={'spec':'prismpm/private-publication-linkage-evidence/1','scope':'component-only','completeApplicationAccepted':False,
+               'kind':kind,'intendedMutationRejected':True,'sources':sources,'proof':proof,'ir':ir,'native':native,'wasm':wasm,
+               'generatedPackages':packages,'retainedFiles':files}
+        d.write(work/'publication-linkage-evidence.json',value);return value
+
+    def test_mutant_inventory_omissions_never_redefine_complete_source_evidence(self):
+        d=self.driver
+        for kind in ['source','context-omission']:
+            for defect in [None,'native','wasm','package','source','proof','vector','runtime','runtime-proof']:
+                with self.subTest(kind=kind,defect=defect),tempfile.TemporaryDirectory() as temporary:
+                    root=pathlib.Path(temporary);work=root/'work';work.mkdir();value=self.linkage_fixture(work,kind)
+                    if defect=='native':value['native'].pop(next(iter(value['native'])))
+                    if defect=='wasm':value['wasm'].pop(next(iter(value['wasm'])))
+                    if defect=='package':value['generatedPackages'].pop()
+                    removed=None
+                    if defect=='source':
+                        module=next(iter(value['sources']));value['sources'].pop(module)
+                        removed='project/src/'+module.replace('.','/')+'.lex.tex'
+                    if defect=='proof':removed=str(pathlib.Path(value['proof']['root']).relative_to(work))+'/modules/PrismPM/Fixture.lean'
+                    if defect=='vector':removed='intended-mutation.tsv'
+                    if defect=='runtime':value['proof']['runtime']=[]
+                    if defect=='runtime-proof':removed=str(pathlib.Path(value['proof']['root']).relative_to(work))+'/oleans/LexLeanRuntime/Portable.olean'
+                    if removed:value['retainedFiles'].pop(removed);(work/removed).unlink()
+                    d.write(work/'publication-linkage-evidence.json',value,replace=True);store=d.Store(root/'raw')
+                    if defect:
+                        with self.assertRaises(ValueError):d.collect_linkage(store,work,value,'component-mutant',expected_kind=kind)
+                    else:d.collect_linkage(store,work,value,'component-mutant',expected_kind=kind)
+
+    def test_early_and_attachment_failures_retain_available_observations_and_typed_spool(self):
+        import uuid,shutil
+        d=self.driver
+        for missing in ['descriptor.json','stage-admission.json','probe.json']:
+            with self.subTest(missing=missing),tempfile.TemporaryDirectory() as temporary:
+                root=pathlib.Path(temporary);home=root/'driver';folder=home/'scenarios/Q1';folder.mkdir(parents=True,mode=0o700)
+                token=uuid.uuid4().hex;spool=pathlib.Path('/tmp/prismpm-candidate-diagnostics-'+token);spool.mkdir(mode=0o700)
+                try:
+                    raw=folder/'0000-daemon-stdout';raw.write_bytes(b'available component inspection failure bytes')
+                    row={'role':'daemon','kind':'stdout',**d.reference(raw)}
+                    value={'schema':'cs1618/candidate-capture-scenario/1','id':'Q1','status':'incomplete','owner_token':token,
+                           'observations':[row],'retirement':{'cleanup_daemon_calls':0}}
+                    d.write(folder/'scenario.json',value);d.write(folder/'observation-index.json',[row])
+                    d.write(spool/'manifest.json',{'component_spool_manifest':True});(spool/'execute.stderr').write_bytes(b'available component attachment error')
+                    locator={'schema':'prismpm/conditional-candidate-diagnostics-locator/1','owner_token':token,'directory':str(spool),
+                             'manifest':'manifest.json','manifest_sha256':d.sha(d.regular(spool/'manifest.json')),'complete_application_accepted':False}
+                    d.write(folder/'outcome.json',{'error':'component early failure','diagnostic_locator':locator,'remaining_seconds':10})
+                    for name in ['descriptor.json','stage-admission.json','probe.json']:
+                        if name!=missing:d.write(folder/name,{'component_only':True})
+                    with patch.object(d,'HOME',home),patch.object(d,'SOURCE',root/'absent-source'),patch.object(d,'docker',side_effect=AssertionError('no daemon')):
+                        with self.assertRaises(ValueError):d.collect()
+                    result=d.read_json(home/'metadata/collection.json');self.assertEqual(result['status'],'incomplete')
+                    paths={row['path'] for row in result['files']}
+                    self.assertIn('scenarios/Q1/0000-daemon-stdout',paths)
+                    self.assertIn('scenarios/Q1/diagnostics/execute.stderr',paths)
+                    self.assertNotIn('scenarios/Q1/'+missing,paths)
+                finally:shutil.rmtree(spool)
+
+    def test_collection_clock_caps_early_and_late_failures_without_renewal(self):
+        d=self.driver
+        early=d.collection_clock(1000,1600)
+        self.assertEqual(early,{'schema':'cs1618/candidate-collection-clock/1','started':1600,'source_deadline':2020,'deadline':2200,'job_deadline':22600})
+        late=d.collection_clock(1000,22400)
+        self.assertEqual(late['source_deadline'],22420);self.assertEqual(late['deadline'],22600)
+        for phase,now,wanted in [('host',2020,60),('metadata',2080,60),('raw',2140,60)]:
+            self.assertEqual(d.collection_phase_seconds(early,phase,now),wanted)
+        with self.assertRaises(ValueError):d.collection_phase_seconds(early,'metadata',2141)
+        with self.assertRaises(ValueError):d.collection_phase_seconds(early,'raw',2200)
+        with self.assertRaises(ValueError):d.collection_phase_seconds(late,'host',22421)
+
+    def test_actual_collection_timer_reuses_clock_and_marks_exhaustion_incomplete(self):
+        d=self.driver
+        for started,now,expected in [(1000,1600,420),(1000,22400,20)]:
+            with self.subTest(now=now),tempfile.TemporaryDirectory() as temporary:
+                home=pathlib.Path(temporary);d.write(home/'preparation-partial.json',{'started':started})
+                with patch.object(d,'HOME',home),patch.object(d.time,'monotonic',return_value=now),\
+                     patch.object(d.signal,'signal'),patch.object(d.signal,'setitimer') as timer,\
+                     patch.object(d,'collect',side_effect=ValueError('component collector failure')):
+                    with self.assertRaisesRegex(ValueError,'component collector failure'):d.run_collection()
+                    self.assertEqual(timer.call_args_list[0].args[1],expected)
+                    clock=(home/'collection-clock.json').read_bytes()
+                with patch.object(d,'HOME',home),patch.object(d.time,'monotonic',return_value=now+10),\
+                     patch.object(d.signal,'signal'),patch.object(d.signal,'setitimer') as timer,\
+                     patch.object(d,'collect',side_effect=ValueError('component collector failure')):
+                    with self.assertRaisesRegex(ValueError,'component collector failure'):d.run_collection()
+                    self.assertEqual(timer.call_args_list[0].args[1],expected-10)
+                    self.assertEqual((home/'collection-clock.json').read_bytes(),clock)
+                with patch.object(d,'HOME',home),patch.object(d.time,'monotonic',return_value=now+expected),patch.object(d,'collect') as collector:
+                    with self.assertRaises(d.CollectionDeadline):d.run_collection()
+                    collector.assert_not_called()
+                    self.assertEqual(d.read_json(home/'metadata/collection.json')['status'],'incomplete')
+
+    def test_host_upload_admission_reuses_source_clock_and_refuses_late_raw_upload(self):
+        d=self.driver
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);home=root/'prismpm/target/candidate-qualification-driver';home.mkdir(parents=True)
+            (root/'evidence').mkdir();d.write(root/'evidence/job-start.json',{'monotonic':1000})
+            clock=d.collection_clock(1000,1600);d.write(home/'collection-clock.json',clock)
+            output=root/'output';output.touch()
+            with patch.object(d.Path,'cwd',return_value=root),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}),\
+                 patch.object(d.time,'monotonic',return_value=2080):
+                d.upload_collection_budget('metadata')
+            self.assertEqual(output.read_text(),'admitted=true\n')
+            with patch.object(d.Path,'cwd',return_value=root),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}),\
+                 patch.object(d.time,'monotonic',return_value=2141):
+                with self.assertRaises(ValueError):d.upload_collection_budget('raw')
+            self.assertEqual(output.read_text(),'admitted=true\nadmitted=false\n')
+            self.assertEqual(d.read_json(root/'evidence/collection-clock.json'),clock)
+            self.assertEqual(d.read_json(home/'collection-clock.json'),clock)
+            self.assertEqual(d.read_json(root/'evidence/metadata-upload/collection.json')['status'],'incomplete')
+
+    def test_mutant_receipts_join_same_inputs_compiler_and_only_selected_source_change(self):
+        d=self.driver
+        baseline={'inputs':{'fixed-source':'a'*64},'inputSnapshot':'/component/frozen-inputs','compiler':{'component_only':True},
+                  'sources':{name:'b'*64 for name in d.LINKAGE_MODULES}}
+        value=copy.deepcopy(baseline);value['sources']['Production.PublicationAdmission.LinkageV1']='c'*64
+        d.validate_mutant_join(value,baseline,'source')
+        for defect in ['inputs','compiler','inputSnapshot','unmodified','wrong-module']:
+            changed=copy.deepcopy(value)
+            if defect in ['inputs','compiler']:changed[defect]={}
+            if defect=='inputSnapshot':changed[defect]='/component/unrelated'
+            if defect=='unmodified':changed['sources']=baseline['sources']
+            if defect=='wrong-module':changed['sources']['Fixture']='d'*64
+            with self.subTest(defect=defect),self.assertRaises(ValueError):d.validate_mutant_join(changed,baseline,'source')
+
+    def test_workflow_collection_host_and_uploads_have_fixed_same_clock_bounds(self):
+        import yaml
+        workflow=yaml.load((ROOT.parents[1]/'.github/workflows/prismpm-candidate-capture-qualification.yml').read_text(),Loader=yaml.BaseLoader)
+        steps=workflow['jobs']['qualification']['steps']
+        retention=next(step for step in steps if step.get('id')=='retention');self.assertEqual(retention.get('timeout-minutes'),'1')
+        for phase in ['metadata','raw']:
+            guard=next(step for step in steps if step.get('id')==phase+'-budget')
+            self.assertIn('collection-budget --collection-phase '+phase,guard['run']);self.assertIn('always()',guard['if'])
+            upload=next(step for step in steps if step.get('name','').startswith('Upload '+('initial metadata' if phase=='metadata' else 'bounded original raw')))
+            self.assertEqual(upload.get('timeout-minutes'),'1');self.assertIn('steps.'+phase+'-budget.outputs.admitted',upload['if'])
+
     def test_exact_gate_survivors_are_required_and_custody_bound(self):
         d=self.driver
         for defect in [None,'original','private','same-inode','digest']:

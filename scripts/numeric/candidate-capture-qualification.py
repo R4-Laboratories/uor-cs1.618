@@ -140,6 +140,109 @@ def admit_phase(phase, deadline, now=None):
     require(deadline-now>=required_seconds(phase),'insufficient absolute budget for '+phase)
 
 
+def collection_clock(job_started,now):
+    require(type(job_started) in (int,float) and type(now) in (int,float) and 0<job_started<=now,
+            'actual absolute collection clock')
+    deadline=min(now+600,job_started+21600)
+    return {'schema':'cs1618/candidate-collection-clock/1','started':now,'source_deadline':deadline-180,
+            'deadline':deadline,'job_deadline':job_started+21600}
+
+
+def validate_collection_clock(value):
+    closed(value,'schema started source_deadline deadline job_deadline')
+    require(value==collection_clock(value['job_deadline']-21600,value['started']),'fixed seven/three collection allocation')
+    return value
+
+
+def collection_phase_seconds(clock,phase,now):
+    validate_collection_clock(clock)
+    require(phase in ('host','metadata','raw') and now>=clock['started'],'fixed collection host/upload phase')
+    required={'host':180,'metadata':120,'raw':60}[phase]
+    require(clock['deadline']-now>=required,'fixed collection allowance exhausted before '+phase)
+    return 60
+
+
+def collection_incomplete(home,reason):
+    metadata=home/'metadata';metadata.mkdir(parents=True,mode=0o700,exist_ok=True)
+    path=metadata/'collection.json'
+    value=read_json(path) if path.exists() else {'schema':'cs1618/candidate-capture-collection/1',
+        'status':'incomplete','scope':'actual-transport-and-original-OC10-only','complete_application_accepted':False,
+        'preparation':None,'scenarios':{id:None for id in SCENARIOS},'oc10':None,'locators':[],'files':[],
+        'retained_bytes':0,'missing':[]}
+    value['status']='incomplete';value['missing'].append({'phase':'collection-budget','reason':reason[:4096]})
+    write(path,value,replace=True)
+    return value
+
+
+def run_collection():
+    partial=read_json(HOME/'preparation-partial.json');path=HOME/'collection-clock.json'
+    if not path.exists():write(path,collection_clock(partial['started'],time.monotonic()))
+    clock=validate_collection_clock(read_json(path))
+    require(clock['job_deadline']==partial['started']+21600,'original absolute source collection job clock')
+    remaining=clock['source_deadline']-time.monotonic()
+    if remaining<=0:
+        collection_incomplete(HOME,'fixed seven-minute source collection allowance exhausted')
+        raise CollectionDeadline('source collection budget exhausted')
+    def expired(signum,frame):raise CollectionDeadline('fixed/absolute source collection budget exhausted')
+    previous=signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,remaining)
+    try:return collect()
+    finally:signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)
+
+
+def host_collection_clock(root):
+    home=root/'prismpm/target/candidate-qualification-driver';target=root/'evidence/collection-clock.json'
+    source=home/'collection-clock.json'
+    if source.exists():
+        clock=validate_collection_clock(read_json(source))
+        if target.exists():require(read_json(target)==clock,'original persistent collection clock changed')
+        else:write(target,clock)
+    elif target.exists():clock=validate_collection_clock(read_json(target))
+    else:
+        # No source container reached collection: allocate once from actual
+        # first-step host clock, then use only the three one-minute host steps.
+        started=read_json(root/'evidence/job-start.json')['monotonic']
+        clock=collection_clock(started,time.monotonic());write(target,clock)
+    require(clock['job_deadline']==read_json(root/'evidence/job-start.json')['monotonic']+21600,'same absolute host job clock')
+    return clock
+
+
+def record_host_budget_failure(root,error):
+    destination=root/'evidence/metadata-upload';destination.mkdir(parents=True,mode=0o700,exist_ok=True)
+    home=root/'prismpm/target/candidate-qualification-driver'
+    try:
+        value=collection_incomplete(home,str(error));write(destination/'collection.json',value,replace=True)
+    finally:
+        write(destination/'collection-budget-failure.json',{'status':'incomplete','complete_application_accepted':False,
+              'error':str(error)[:4096]},replace=True)
+
+
+def bounded_host_export(phase):
+    if phase=='image':return export_host(phase)
+    root=Path.cwd().resolve()
+    try:seconds=collection_phase_seconds(host_collection_clock(root),'host',time.monotonic())
+    except Exception as error:record_host_budget_failure(root,error);raise
+    def expired(signum,frame):raise CollectionDeadline('one-minute host retention allowance exhausted')
+    previous=signal.signal(signal.SIGALRM,expired)
+    # Leave five seconds for export_host's genuine failure status; the Actions
+    # step independently bounds the complete host process at one minute.
+    signal.setitimer(signal.ITIMER_REAL,seconds-5)
+    try:return export_host(phase)
+    except BaseException as error:
+        record_host_budget_failure(root,error);raise
+    finally:signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)
+
+
+def upload_collection_budget(phase):
+    root=Path.cwd().resolve();admitted=False;failure=None
+    try:
+        clock=host_collection_clock(root)
+        collection_phase_seconds(clock,phase,time.monotonic());admitted=True
+    except Exception as error:failure=error;record_host_budget_failure(root,error)
+    finally:
+        with open(os.environ['GITHUB_OUTPUT'],'a') as output:output.write('admitted='+str(admitted).lower()+'\n')
+    if failure:raise failure
+
+
 def reject_environment(environment):
     forbidden={'PRISMPM_OC10_CAPTURE_ROUTE','PRISMPM_OC10_SDK_CHILD','PRISMPM_OC10_CAPTURE_OUTPUT',
         'RUSTFLAGS','RUSTDOCFLAGS','RUSTC','RUSTDOC','RUSTC_BOOTSTRAP','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER',
@@ -914,29 +1017,146 @@ def confined(root,path):
     return Path(path)
 
 
-def collect_linkage(store,work,value,label,baseline=False):
+LINKAGE_MODULES = tuple(sorted(('Fixture','Production.PublicationAdmission.LinkageV1','Production.PublicationAdmission.LinkageV1Wire',
+    'Production.PublicationAdmission.V1','Production.PublicationAdmission.V1Wire','Foundation.Bytes','Foundation.Codec','Foundation.Codec.Cbor.V1.Primitive')))
+MUTATION_PROBES = dict(zip(MUTATIONS,('SystemReferenceMismatch','MissingComponent','MissingControl','ChangedManifestRecord','WrongAssuranceKind',
+    'DuplicateRequirementMember','TrailingCBOR','CompleteConditionalCapture','AggregateComponentReferencesOver','OversizedComponentIdentity',
+    'MissingFinalBucketReference','DuplicateAcrossBoundaryBucket','DuplicateAcrossLastBucket','DuplicateAcrossFirstBucket',
+    'CompleteSixFieldContext','CompleteSixFieldContext','CombinedMaximumUtf8TextAndObligations',
+    'CompleteConditionalCapture','CompleteConditionalCapture','CompleteConditionalCapture')))
+
+
+def linkage_tree_inventory(work,prefix,retained):
+    """Reconcile complete fixed source-owned trees, in addition to required members."""
+    records=measure_tree(work/prefix)
+    require(all(row['kind'] in ('directory','file') for row in records.values()),'original generated products cannot be aliases')
+    actual={prefix+'/'+path:{key:row[key] for key in ('bytes','sha256')} for path,row in records.items() if row['kind']=='file'}
+    expected={path:row for path,row in retained.items() if path.startswith(prefix+'/')}
+    require(actual==expected,'complete original fixed-tree inventory: '+prefix)
+
+
+def linkage_proof_inventory(work,value):
+    proof=closed(value['proof'],'attestation_id build_id semantic_id source_id root modules runtime')
+    require(proof['modules']==list(LINKAGE_MODULES) and type(proof['runtime']) is list and len(proof['runtime'])<=5,
+            'original proof module inventory')
+    # f292 driver emits {name,text}, not just names. The fixed vendor registry
+    # owns five runtime modules; verification may also import these for its
+    # preservation certificates beyond the driver's project import closure.
+    runtime_names={'LexLeanRuntime.'+name for name in ('Portable','Collections','Models','Reasoning','Laws')}
+    runtime={}
+    for row in proof['runtime']:
+        closed(row,'name text');require(row['name'] in runtime_names and row['name'] not in runtime
+                and type(row['text']) is str and len(row['text'].encode())<=MAX_FILE,'typed original runtime module')
+        runtime[row['name']]=row['text']
+    for key in ('source_id','semantic_id','build_id','attestation_id'):
+        require(type(proof[key]) is str and re.fullmatch('[0-9a-f]{64}',proof[key]),'original proof identity')
+    root=confined(work,proof['root']);prefix='project/.lexlean/verified/'+proof['attestation_id']
+    require(root==work/prefix,'fixed original verified proof root')
+    manifest=read_json(root/'build-manifest.json');attestation=read_json(root/'attestation.json');retained=value['retainedFiles']
+    require(manifest['spec']=='lexlean/build-manifest/1' and manifest['selection']==list(LINKAGE_MODULES)
+            and attestation['spec']=='lexlean/attestation/2' and attestation['status']=='verified','actual typed original proof products')
+    for key in ('source_id','semantic_id','build_id'):
+        require(manifest[key]==proof[key] and attestation[key]==proof[key],'proof identity joins')
+    require(attestation['attestation_id']==proof['attestation_id'],'original attestation identity')
+    body=regular(root/'build-manifest.json',32*MIB)
+    require(attestation['build_manifest']=={'byte_length':len(body),'sha256':sha(body)},'original attested build manifest bytes')
+    expected_modules=[{'module':name,'lean_module':'PrismPM.'+name,'source_path':'src/'+name.replace('.','/')+'.lex.tex'} for name in LINKAGE_MODULES]
+    require(manifest['modules']==expected_modules,'all original staged proof modules')
+    required={prefix+'/build-manifest.json',prefix+'/attestation.json'}
+    output_rows={}
+    for row in manifest['outputs']:
+        closed(row,'kind path byte_length sha256');path=safe_relative(row['path'])
+        require(path not in output_rows,'unique original proof outputs');output_rows[path]=row
+        required.add(prefix+'/'+path)
+        require(retained.get(prefix+'/'+path)=={'bytes':row['byte_length'],'sha256':row['sha256']},'all declared original proof output bytes')
+    for name in LINKAGE_MODULES:
+        stem='PrismPM/'+name.replace('.','/')
+        for path,kind in [('modules/'+stem+'.lean','lean'),('modules/'+stem+'.tex','tex'),('maps/'+stem+'.map.json','map'),
+                          ('coverage/'+stem+'.coverage.json','coverage'),('lexicons/'+name+'.closure.json','lexicon-closure')]:
+            require(output_rows.get(path,{}).get('kind')==kind,'independently required original proof output')
+    source_inputs={row['path']:row for row in manifest['inputs'] if row['kind']=='source'}
+    require(set(source_inputs)=={row['source_path'] for row in expected_modules},'complete original proof source inputs')
+    for row in expected_modules:
+        source=source_inputs[row['source_path']];staged=retained.get('project/'+row['source_path'])
+        require(staged=={'bytes':source['byte_length'],'sha256':source['sha256']} and source['sha256']==value['sources'][row['module']],
+                'proof source/staged source digest join')
+    def imports(text):
+        return {line.removeprefix('public ').removeprefix('import ').strip() for line in text.splitlines()
+                if line.startswith(('import ','public import '))} & runtime_names
+    wanted=set()
+    for name in LINKAGE_MODULES:
+        wanted.update(imports(regular(root/('modules/PrismPM/'+name.replace('.','/')+'.lean')).decode('utf-8')))
+    visited=set()
+    while wanted-visited:
+        name=next(iter(wanted-visited));require(name in runtime,'complete project/runtime import closure')
+        wanted.update(imports(runtime[name]));visited.add(name)
+    require(wanted==set(runtime),'exact original driver runtime import closure')
+    for name,text in runtime.items():
+        body=text.encode();require(retained.get(prefix+'/lean-src/'+name.replace('.','/')+'.lean')=={'bytes':len(body),'sha256':sha(body)},
+                                   'original driver/runtime proof source bytes')
+    project_modules={'PrismPM.'+name for name in LINKAGE_MODULES};lean_modules={row['module'] for row in attestation['oleans']}
+    require(len(attestation['oleans'])==len(lean_modules) and project_modules|set(runtime)<=lean_modules
+            and lean_modules<=project_modules|runtime_names,
+            'complete original module/runtime olean inventory')
+    for row in attestation['oleans']:
+        closed(row,'module byte_length sha256');stem=row['module'].replace('.','/')
+        path=prefix+'/oleans/'+stem+'.olean';required.add(path)
+        require(retained.get(path)=={'bytes':row['byte_length'],'sha256':row['sha256']},'original attested olean bytes')
+        required.update(prefix+'/'+path for path in ('lean-src/'+stem+'.lean','process/lean/'+row['module']+'.json',
+                                                     'process/leanchecker/'+row['module']+'.json'))
+    require(required<=set(retained),'required original proof member omitted')
+    linkage_tree_inventory(work,prefix,retained)
+    return required
+
+
+def collect_linkage(store,work,value,label,baseline=False,expected_kind=None):
     require(value.get('spec')=='prismpm/private-publication-linkage-evidence/1' and value.get('scope')=='component-only'
             and value.get('completeApplicationAccepted') is False,'original linkage receipt contract')
     require(type(value['retainedFiles']) is dict and 0<len(value['retainedFiles'])<=100000,'full original replay inventory')
     required={'project/lexlean.toml','project/lean-toolchain','project/lakefile.toml','runner/src/main.rs','runner/Cargo.lock',
               'context-fields-runner/src/main.rs','context-fields-runner/Cargo.lock','export/kernel.ir','generated/generation-manifest.json'}
-    roles=WASM_ROLES if baseline else tuple(value['wasm'])
+    require(baseline is True and expected_kind is None or baseline is False and expected_kind in MUTATIONS,
+            'independently selected original linkage kind')
+    context=not baseline and expected_kind.startswith('context-')
+    roles=WASM_ROLES if baseline else WASM_ROLES[2:] if context else WASM_ROLES[:2]
+    native_roles=NATIVE_ROLES if baseline else NATIVE_ROLES[2:] if context else NATIVE_ROLES[:2]
+    require(set(value['wasm'])==set(roles) and set(value['native'])==set(native_roles),'all independently required original replay roles')
+    require(set(value['sources'])==set(LINKAGE_MODULES),'all independently required staged source modules')
+    for name in LINKAGE_MODULES:
+        path='project/src/'+name.replace('.','/')+'.lex.tex';required.add(path)
+        require(value['retainedFiles'].get(path,{}).get('sha256')==value['sources'][name],'original staged source digest join')
+    required.update('runner/src/'+name+'_witnesses.rs' for name in ('collector','partition','payload','bitset'))
+    required.update(prefix+'/Cargo.toml' for prefix in (('runner','context-fields-runner') if baseline else ('context-fields-runner',) if context else ('runner',)))
     if baseline:
         require(set(value['wasm'])==set(WASM_ROLES) and set(value['native'])==set(NATIVE_ROLES),'all actual baseline replay roles')
         required.update(('actual-capture-native.tsv','actual-context.tsv'))
         require(len(value['mutations'])==len(MUTATIONS) and tuple(row['kind'] for row in value['mutations'])==MUTATIONS,
                 'all original source mutant owners')
+    else:
+        require(value['kind']==expected_kind and value['intendedMutationRejected'] is True,'independent original mutant kind/refusal')
+        required.add('intended-mutation.tsv')
+        require('intended-mutation.tsv' in value['retainedFiles'],'required original mutation vector omitted')
+        vector=regular(work/'intended-mutation.tsv',MAX_FILE).decode('utf-8').splitlines()
+        require(len(vector)==1 and len(vector[0].split('\t'))==(5 if context else 3)
+                and vector[0].split('\t')[0]==MUTATION_PROBES[expected_kind],'original intended mutation vector')
     for role in value['native']:
         require(role in NATIVE_ROLES,'closed native replay role');required.add('native-'+role+'-observer')
     links={}
     for role in roles:
         require(role in WASM_ROLES,'closed original Wasm role')
         row=closed(value['wasm'][role],'original private')
+        require(row['original']['sha256']==row['private']['sha256'] and row['original']['size']==row['private']['size']
+                and (row['original']['device'],row['original']['inode'])!=(row['private']['device'],row['private']['inode']),
+                'original separate same-byte Wasm execution copy')
         for side in ('original','private'):
             artifact=row[side];path=safe_relative(artifact['path']);required.add(path)
+            require(path==('guest-'+role+'-target/wasm32-unknown-unknown/release/publication_context_linkage_wire_probe.wasm'
+                          if side=='original' else 'guest-'+role+'.wasm'),'fixed original Wasm artifact path')
             require(artifact['sha256']==value['retainedFiles'].get(path,{}).get('sha256'),'Wasm reference/inventory join')
             links[path]=int(artifact['links']);verify_custody(work/path,artifact)
     require(type(value['generatedPackages']) is list and value['generatedPackages'],'actual generated package inventory')
+    require([(row['path'],row['kind']) for row in value['generatedPackages']]==[('generated','native')]+[('guest-'+role,'wasm') for role in roles],
+            'all independently required generated packages')
     for package in value['generatedPackages']:
         closed(package,'path kind files');prefix=safe_relative(package['path'])
         require(package['kind'] in ('native','wasm') and type(package['files']) is dict and package['files'],'generated package contract')
@@ -945,9 +1165,16 @@ def collect_linkage(store,work,value,label,baseline=False):
         for path,digest in package['files'].items():
             joined=prefix+'/'+safe_relative(path);required.add(joined)
             require(value['retainedFiles'].get(joined,{}).get('sha256')==digest,'full original generated package joins')
+        manifest=read_json(work/prefix/'generation-manifest.json')
+        require(manifest['input_ir_sha256']==value['ir'] and manifest['schema']==('lean4-prod/cargo-package-manifest/1' if package['kind']=='native' else 'lean4-prod/core-wasm-target/1'),
+                'original generated package IR/schema join')
+        require(len(manifest['files'])==len(expected_package)-1 and {row['path']:row['sha256'] for row in manifest['files']}==
+                {path:digest for path,digest in package['files'].items() if path!='generation-manifest.json'},'original package manifest/member join')
+        linkage_tree_inventory(work,prefix,value['retainedFiles'])
     require(required<=set(value['retainedFiles']),'required replay endpoint omitted')
-    proof=confined(work,value['proof']['root']);proof_prefix=str(proof.relative_to(work))+'/'
-    require({proof_prefix+'build-manifest.json',proof_prefix+'attestation.json'}<=set(value['retainedFiles']),'original proof manifest/attestation required')
+    linkage_proof_inventory(work,value)
+    for prefix in ('project/src','runner/src','context-fields-runner/src','export'):
+        linkage_tree_inventory(work,prefix,value['retainedFiles'])
     for path,row in sorted(value['retainedFiles'].items()):
         safe_relative(path);closed(row,'bytes sha256')
         retained=store.add(work/path,label+'/products/'+path,links=links.get(path,1))
@@ -968,6 +1195,17 @@ def validate_linkage_join(capture_work,owner,by_work):
             'sha256':sha(regular(capture_work/'capture-owner-evidence.json',32*MIB))},'later forward original capture-owner join')
     require(linkage['ir']==owner['ir'] and linkage['compiler']==owner['compiler'],'original compiler/IR replay join')
     return work,linkage
+
+
+def validate_mutant_join(value,baseline,kind):
+    require(kind in MUTATIONS,'independently selected original mutant')
+    require(all(value[key]==baseline[key] for key in ('inputs','inputSnapshot','compiler')),
+            'same original frozen inputs/compiler for every mutant')
+    require(set(value['sources'])==set(baseline['sources'])==set(LINKAGE_MODULES),'complete original mutant source inventory')
+    module='Production.PublicationAdmission.'+('V1Wire' if kind.startswith('context-') else
+           'LinkageV1Wire' if kind.startswith('writer-') or kind in ('trailing','preimage') else 'LinkageV1')
+    require([name for name in LINKAGE_MODULES if value['sources'][name]!=baseline['sources'][name]]==[module],
+            'only the independently selected source mutation changed')
 
 
 def collect_original_oc10(store,captures,linkages):
@@ -1033,7 +1271,8 @@ def collect_original_oc10(store,captures,linkages):
         require(str(path.parent) in by_work and path.name=='publication-linkage-evidence.json'
                 and sha(regular(path,32*MIB))==ref['sha256'],'typed actual source-mutant receipt join')
         value=read_json(path);require(value['kind']==MUTATIONS[index] and value['intendedMutationRejected'] is True,'actual intended mutant refusal')
-        collect_linkage(store,path.parent,value,'oc10/mutants/'+MUTATIONS[index])
+        validate_mutant_join(value,linkage,MUTATIONS[index])
+        collect_linkage(store,path.parent,value,'oc10/mutants/'+MUTATIONS[index],expected_kind=MUTATIONS[index])
     require(set(by_work)=={str(work),*[str(Path(row['evidence']['path']).parent) for row in linkage['mutations']]},'no unjoined linkage work')
     input_root=Path(linkage['inputSnapshot']);require(input_root==work/'frozen-inputs','exact original complete input snapshot')
     for path,digest in sorted(linkage['inputs'].items()):
@@ -1248,7 +1487,7 @@ def collect():
         # Required endpoints are a fixed inventory, never the survivors of a glob.
         for name in ('preparation-partial.json','preparation.json','source-files.json','restoration-receipt.json',
                      'source-container-inspect.json','source-image-inspect.json','sdk-image-inspect.json','docker-version.json',
-                     'setup.json','harness.json','harness-cargo.jsonl','oc10.json','run-status.json','game-inputs.json','source-runtime.json','tool-identities.json','snapshot-manifest.json'):
+                     'setup.json','harness.json','harness-cargo.jsonl','oc10.json','run-status.json','game-inputs.json','source-runtime.json','tool-identities.json','snapshot-manifest.json','collection-clock.json'):
             attempt('required:'+name,lambda name=name:take(HOME/name,'orchestration/'+name,32*MIB))
         for role,name in AUTHORITY.items():attempt('authority:'+role,lambda name=name:take(HOME/name,'game/'+name,MIB))
         preparation=attempt('preparation-validation',lambda:validate_preparation(read_json(HOME/'preparation.json')))
@@ -1297,31 +1536,52 @@ def collect():
             attempt('subject:'+id,subject_products)
         for id in SCENARIOS:
             def scenario_products(id=id):
-                folder=HOME/'scenarios'/id;value=read_json(folder/'scenario.json')
-                result['scenarios'][id]=take(folder/'scenario.json','scenarios/'+id+'/scenario.json',32*MIB)
-                take(folder/'outcome.json','scenarios/'+id+'/outcome.json',MIB)
-                take(folder/'descriptor.json','scenarios/'+id+'/descriptor.json',32*MIB)
-                index=read_json(folder/'observation-index.json');require(index==value['observations'],'independent complete raw observation inventory')
-                take(folder/'observation-index.json','scenarios/'+id+'/observation-index.json',32*MIB)
-                validate_observation_calls(index,value['retirement']['cleanup_daemon_calls'])
-                for ordinal,row in enumerate(index):
-                    require(Path(row['path']).parent==folder and Path(row['path']).name.startswith(f'{ordinal:04d}-'),'ordered fixed observation paths')
-                    take(Path(row['path']),'scenarios/'+id+'/'+Path(row['path']).name,32*MIB)
-                if id in ('Q1','Q2','Q3','Q6'):take(folder/'stage-admission.json','scenarios/'+id+'/stage-admission.json',MIB)
-                if id in ('Q1','Q2'):
-                    take(folder/'probe.json','scenarios/'+id+'/probe.json',MIB)
-                    probe,code=load_probe();validate_probe(read_json(folder/'probe.json'),read_json(folder/'descriptor.json'),probe,code)
-                if id=='Q6':take(folder/'attachment-ready.json','scenarios/'+id+'/attachment-ready.json',MIB)
-                outcome=read_json(folder/'outcome.json');locator=outcome['diagnostic_locator']
-                if locator:
-                    # This is the original helper's own typed spool locator, not
-                    # a guessed /tmp path or a caller-selected export actor.
+                folder=HOME/'scenarios'/id;label='scenarios/'+id+'/'
+                names=['scenario.json','outcome.json','descriptor.json','observation-index.json']
+                if id in ('Q1','Q2','Q3','Q6'):names.append('stage-admission.json')
+                if id in ('Q1','Q2'):names.append('probe.json')
+                if id=='Q6':names.append('attachment-ready.json')
+                # Retention is independent of success admission: a missing early
+                # endpoint must not suppress later original failure observations.
+                for name in names:
+                    retained=attempt('scenario:'+id+':retain:'+name,lambda name=name:take(folder/name,label+name,
+                                     32*MIB if name in ('scenario.json','descriptor.json','observation-index.json') else MIB))
+                    if name=='scenario.json':result['scenarios'][id]=retained
+                value=attempt('scenario:'+id+':record',lambda:read_json(folder/'scenario.json'))
+                index=attempt('scenario:'+id+':index',lambda:read_json(folder/'observation-index.json'))
+                if type(index) is list and len(index)<=4096:
+                    for ordinal,row in enumerate(index):
+                        def observation(row=row,ordinal=ordinal):
+                            closed(row,'role kind path bytes sha256')
+                            require(row['role'] in ('daemon','stage','execute') and row['kind'] in
+                                    ('argv.json','failed.json','stdout','stderr','exception.stdout','exception.stderr','stream','eof'),
+                                    'closed available observation role/kind')
+                            path=Path(row['path'])
+                            require(path.parent==folder and path.name.startswith(f'{ordinal:04d}-'),'ordered fixed observation paths')
+                            verify_reference({key:row[key] for key in ('path','bytes','sha256')},32*MIB)
+                            take(path,label+path.name,32*MIB)
+                        attempt('scenario:'+id+':observation:'+str(ordinal),observation)
+                else:failures.append({'phase':'scenario:'+id+':index','reason':'bounded observation index unavailable'})
+                def diagnostic_spool():
+                    outcome=read_json(folder/'outcome.json');locator=outcome['diagnostic_locator']
+                    if locator is None:return
+                    require(type(value) is dict and value.get('schema')=='cs1618/candidate-capture-scenario/1'
+                            and value.get('id')==id and type(value.get('owner_token')) is str
+                            and re.fullmatch('[0-9a-f]{32}',value['owner_token']),'actual partial scenario owner binding')
                     closed(locator,'schema owner_token directory manifest manifest_sha256 complete_application_accepted')
-                    require(locator['schema']=='prismpm/conditional-candidate-diagnostics-locator/1' and locator['owner_token']==value['owner_token'] and locator['manifest']=='manifest.json' and locator['complete_application_accepted'] is False,'typed original diagnostic locator')
+                    require(locator['schema']=='prismpm/conditional-candidate-diagnostics-locator/1' and locator['owner_token']==value['owner_token']
+                            and locator['manifest']=='manifest.json' and locator['complete_application_accepted'] is False,'typed original diagnostic locator')
                     path=Path(locator['directory'])
-                    require(sha(regular(path/'manifest.json',MIB))==locator['manifest_sha256'],'original helper manifest digest')
                     require(str(path)=='/tmp/prismpm-candidate-diagnostics-'+value['owner_token'],'actual helper diagnostic owner path')
-                    retain_small_directory(store,path,'scenarios/'+id+'/diagnostics',100*MIB)
+                    require(sha(regular(path/'manifest.json',MIB))==locator['manifest_sha256'],'original helper manifest digest')
+                    retain_small_directory(store,path,label+'diagnostics',100*MIB)
+                attempt('scenario:'+id+':diagnostic-spool',diagnostic_spool)
+                # Complete admission is separate and cannot be satisfied by a
+                # partial record or merely by copying whichever files survived.
+                require(index==value['observations'],'independent complete raw observation inventory')
+                validate_observation_calls(index,value['retirement']['cleanup_daemon_calls'])
+                if id in ('Q1','Q2'):
+                    probe,code=load_probe();validate_probe(read_json(folder/'probe.json'),read_json(folder/'descriptor.json'),probe,code)
                 subject_id='Q2' if id=='Q2' else 'Q1'
                 validate_scenario(value,id,sha(regular(HOME/'preparation.json')),sha(regular(HOME/(subject_id+'-subject.json'))))
             attempt('scenario:'+id,scenario_products)
@@ -1390,7 +1650,7 @@ def collect():
         # Publish only after all required data. Any publication/metadata overflow
         # returns to incomplete; an earlier success file is never left in place.
         write(metadata/'collection.json',result,replace=True)
-        for name in ('preparation-partial.json','preparation.json','setup.json','oc10.json','run-status.json','retained-mapping.json'):
+        for name in ('preparation-partial.json','preparation.json','setup.json','oc10.json','run-status.json','retained-mapping.json','collection-clock.json'):
             path=HOME/name
             if path.exists():shutil.copyfile(path,metadata/name);os.chmod(metadata/name,0o400)
         size=sum(path.stat().st_size for path in metadata.iterdir())
@@ -1423,12 +1683,7 @@ def run_all():
     except BaseException as error:status['error']=str(error)[:4096]
     finally:
         write(HOME/'run-status.json',status,replace=True)
-        partial=read_json(HOME/'preparation-partial.json')
-        def expired(signum,frame):raise CollectionDeadline('absolute collection budget exhausted')
-        previous=signal.signal(signal.SIGALRM,expired)
-        signal.setitimer(signal.ITIMER_REAL,max(0.001,partial['started']+21600-time.monotonic()-120))
-        try:collect()
-        finally:signal.setitimer(signal.ITIMER_REAL,0);signal.signal(signal.SIGALRM,previous)
+        run_collection()
 
 
 def validate_collection_shape(value):
@@ -1518,7 +1773,7 @@ def export_host(phase):
             except Exception as error:summary['missing'].append(str(error)[:4096])
         total=8192
         for name in ('collection.json','preparation-partial.json','preparation.json','setup.json','oc10.json','run-status.json',
-                     'retained-mapping.json','source-container-inspect.json','source-image-inspect.json','restoration-receipt.json','source-files.json','game-inputs.json'):
+                     'retained-mapping.json','source-container-inspect.json','source-image-inspect.json','restoration-receipt.json','source-files.json','game-inputs.json','collection-clock.json'):
             path=metadata/name
             if not path.exists():continue
             try:
@@ -1546,13 +1801,16 @@ def admit_local_download(free_bytes,compressed_bytes,extracted_bytes,working_byt
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('operation',choices=('prepare','build-subjects','qualify','run-oc10','collect','run','host-collect','setup-budget'))
+    parser.add_argument('operation',choices=('prepare','build-subjects','qualify','run-oc10','collect','run','host-collect','setup-budget','collection-budget'))
     parser.add_argument('--scenario',choices=SCENARIOS)
+    parser.add_argument('--collection-phase',choices=('metadata','raw'))
     parser.add_argument('--phase',choices=('image','qualification'),default='qualification')
     args=parser.parse_args()
     require((args.operation=='qualify')==(args.scenario is not None),'scenario only belongs to qualify')
+    require((args.operation=='collection-budget')==(args.collection_phase is not None),'upload phase only belongs to collection-budget')
     if args.operation=='prepare':prepare(args.phase)
-    elif args.operation=='host-collect':export_host(args.phase)
+    elif args.operation=='host-collect':bounded_host_export(args.phase)
+    elif args.operation=='collection-budget':upload_collection_budget(args.collection_phase)
     elif args.operation=='setup-budget':
         partial=read_json(Path.cwd()/'prismpm/target/candidate-qualification-driver/preparation-partial.json')
         minutes=int((partial['started']+2700-time.monotonic())//60)
@@ -1564,7 +1822,7 @@ def main():
         elif args.operation=='build-subjects':build_subjects()
         elif args.operation=='qualify':qualify(args.scenario)
         elif args.operation=='run-oc10':run_oc10()
-        else:collect()
+        else:run_collection()
 
 
 if __name__=='__main__':

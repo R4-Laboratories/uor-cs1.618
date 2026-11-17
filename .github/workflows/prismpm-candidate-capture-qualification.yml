@@ -153,6 +153,7 @@ jobs:
       - name: Always validate retained raw artifacts and bounded metadata
         id: retention
         if: always()
+        timeout-minutes: 1
         run: |
           sudo mkdir -p evidence
           sudo chown -R 1000:1000 evidence
@@ -162,16 +163,32 @@ jobs:
             printf 'raw_safe=true\n' >> "$GITHUB_OUTPUT"
           fi
           exit "$status"
-      - name: Upload initial metadata subset at most32MiB
+      - name: Admit metadata upload under the original collection clock
+        id: metadata-budget
         if: always()
+        timeout-minutes: 1
+        run: |
+          sudo chown 1000:1000 "$GITHUB_OUTPUT"
+          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py collection-budget --collection-phase metadata
+      - name: Upload initial metadata subset at most32MiB
+        if: ${{ always() && steps.metadata-budget.outputs.admitted == 'true' }}
+        timeout-minutes: 1
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: candidate-capture-metadata-${{ github.run_id }}-${{ github.run_attempt }}
           path: evidence/metadata-upload/
           if-no-files-found: error
           retention-days: 30
+      - name: Admit raw upload under the original collection clock
+        id: raw-budget
+        if: always()
+        timeout-minutes: 1
+        run: |
+          sudo chown 1000:1000 "$GITHUB_OUTPUT"
+          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py collection-budget --collection-phase raw
       - name: Upload bounded original raw evidence separately
-        if: ${{ always() && steps.retention.outputs.raw_safe == 'true' }}
+        if: ${{ always() && steps.raw-budget.outputs.admitted == 'true' && steps.retention.outputs.raw_safe == 'true' }}
+        timeout-minutes: 1
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: candidate-capture-raw-${{ github.run_id }}-${{ github.run_attempt }}
