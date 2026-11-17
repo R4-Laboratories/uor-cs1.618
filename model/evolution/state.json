@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 3112392021,
+  "seed": 2395297109,
   "config": {
     "render": {
       "cell": 16,
@@ -283,15 +283,17 @@
   },
   "weights": {
     "render": 1,
-    "navigation": 7,
+    "navigation": 6,
     "art": 5,
-    "tactics": 7,
+    "tactics": 6,
     "experience": 1
   },
   "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
   "tried": [
     "art-synth-0",
-    "art-synth-1"
+    "art-synth-1",
+    "navigation-6",
+    "tactics-synth-1"
   ],
   "history": [
     {
@@ -7447,6 +7449,108 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "f60eda77bbd72a056aa0a3ea1d6418f21705598ef63f408b90644e014094b45e"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T04:08:42.666Z",
+      "base": "ab45050b5ec4c52ec1be594ce9c0bc229fada1b3",
+      "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
+      "previous": "f60eda77bbd72a056aa0a3ea1d6418f21705598ef63f408b90644e014094b45e",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "navigation-6",
+          "family": "navigation",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "11d4530247711838187ce07dd20bf8a5c54ab292630598989b8e0c7b81940db0",
+          "baselineWork": 2651,
+          "candidateWork": 9349,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 480,
+          "comparisons": null,
+          "reference": {
+            "pairs": 101926,
+            "elapsed": 30.144442000000026,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "before": {
+            "pairs": 2651,
+            "elapsed": 14.161192000000028,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "after": {
+            "pairs": 9349,
+            "elapsed": 16.220076999999947,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          }
+        },
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "6671b1edde2383005d07d8877f55d58dc0a3512fbe41909779566c2c2be6f8be"
     }
   ]
 }
