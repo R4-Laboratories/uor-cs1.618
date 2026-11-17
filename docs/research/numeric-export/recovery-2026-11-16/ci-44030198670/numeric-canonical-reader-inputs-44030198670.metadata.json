@@ -1,0 +1,19 @@
+{
+  "id": 14305318613,
+  "name": "numeric-canonical-reader-inputs-44030198670",
+  "size_in_bytes": 1740775,
+  "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14305318613",
+  "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14305318613/zip",
+  "expired": false,
+  "created_at": "2026-11-17T06:36:28Z",
+  "expires_at": "2026-12-17T06:36:26Z",
+  "updated_at": "2026-11-17T06:36:28Z",
+  "digest": "sha256:b1bb6f2c4b049819a08dfbb5203b036bbc60a5d430a3bef38320d9c23d6be449",
+  "workflow_run": {
+    "id": 44030198670,
+    "repository_id": 1459410356,
+    "head_repository_id": 1459410356,
+    "head_branch": "numeric-kernels",
+    "head_sha": "ab9d45adc02ef048a40f4a67b4d5186bccd6b328"
+  }
+}

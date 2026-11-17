@@ -1,0 +1,7 @@
+{
+  "argv": [
+    "just",
+    "golden-check"
+  ],
+  "exit_code": 0
+}

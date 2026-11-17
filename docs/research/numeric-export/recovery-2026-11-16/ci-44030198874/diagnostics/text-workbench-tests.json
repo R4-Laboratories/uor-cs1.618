@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "scripts/text-workbench.test.mjs"
+  ],
+  "exit_code": 0
+}

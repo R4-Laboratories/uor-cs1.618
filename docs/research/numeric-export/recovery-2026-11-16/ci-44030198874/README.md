@@ -1,0 +1,7 @@
+# Shared golden writer: genuine outputs, incomplete collection
+
+Run https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44030198874 used game ab9d45adc02ef048a40f4a67b4d5186bccd6b328 and preparation source324955b6923c1d194d7bc870a2d2a05eb687048c. The overall job failed in host-side collection, not in the original writer/checker.
+
+The actual original native-helper tests, text-workbench tests, `just golden-write` and `just golden-check` each returned exit0 with complete command observations. Host collection retained the original generated tree and diagnostics, then failed at `git add -N -- tests/golden`: the host runner could not create `.git/index.lock` after the workflow intentionally transferred source ownership to container UID1000. Therefore no complete proposal patch/receipt was produced. This is an orchestration defect; the job remains failed and these outputs are not imported or accepted yet.
+
+Original ZIP artifact14306046201 is 5,373,952 bytes, verified SHA-256 be296ea17316cbcac7fd1f1b8f15d223884b5add8e85617038b614519d634101. API metadata, original ZIP, result, identity records and complete command logs are retained. Every entry in the original result's SHA-256 table was independently checked against extracted bytes. Fix collection under an explicitly owned writable Git index (or restore host ownership after execution), retain outside-golden change checks, and independently review a genuine complete proposal before import. Do not rewrite this historical failed result as success or substitute hand-authored golden output.

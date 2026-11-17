@@ -1,0 +1,7 @@
+# Canonical native-library SDK run: compilation repaired, verification refused
+
+Run https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44030198670 used game ab9d45adc02ef048a40f4a67b4d5186bccd6b328 and reviewed source324955b6923c1d194d7bc870a2d2a05eb687048c with the unchanged d6 SDK. The job failed; retention correctly reports incomplete.
+
+All four frozen packages (mul32, mul64, div32, div64) completed preparation and build with exit0. This advances past the former generated-Laws C compilation timeout. Each original LexLean verification then refused PP5001/LLV7005: `BoundedNumeric.NumericPackage.acceptance` declares axiom policy `none`, but its transitive dependency closure observes `[Quot.sound, propext]`. Selection, controls, exact-package replay and runtime admission did not run. No policy was changed to suppress the refusal. The precise dependency path is under diagnosis.
+
+Original ZIPs and API metadata are retained. Byte counts and SHA-256 were independently checked before safe extraction: reader inputs artifact14305318613, 1,740,775 bytes, b1bb6f2c4b049819a08dfbb5203b036bbc60a5d430a3bef38320d9c23d6be449; status14305618129, 19,262 bytes, 8af1eedfc10b16a21cba26c674d9f4e99f1bedf1f111b7022eab2b624c8d2cf3; small logs14305767632, 60,747 bytes, 901381fb6befc309e0f9eec2ac8a3e476e2a821c7fb3d07853308ecb9e6c42e0. Extracted operation results are exact copies, not rewritten successful receipts.

@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "just",
+    "golden-write",
+    "Review exact proposed backport shared golden source."
+  ],
+  "exit_code": 0
+}
