@@ -1,0 +1,16 @@
+\begin{lexlean}{Main}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{addition}
+\begin{semanticmodule}
+definition{
+  name: narrowedIsZero,
+  parameters: [a : UInt64],
+  result: Bool,
+  body: (let narrowed : UInt8 := (match (prim checked_convert a : (Option UInt8))
+    | Option.some b => b
+    | Option.none => (0 : UInt8)); (prim equal narrowed (0 : UInt8) : Bool)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+\end{semanticmodule}
+\end{lexlean}

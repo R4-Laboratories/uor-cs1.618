@@ -1,0 +1,61 @@
+[
+  {
+    "args": [
+      "lake",
+      "build",
+      "TypeReconDiagnostic"
+    ],
+    "cwd": "/workspace/diagnostic-tools/type-recon/lean-work",
+    "exit": 0,
+    "log": "lake-build.log"
+  },
+  {
+    "args": [
+      "/workspace/scratch/compiler-restoration-check/lean/.lake/build/bin/prod-export",
+      "--module",
+      "TypeRecon.Main",
+      "--root",
+      "TypeRecon.Main.narrowedIsZero",
+      "--ir-module",
+      "type_recon",
+      "--out",
+      "/workspace/diagnostic-tools/type-recon/extracted"
+    ],
+    "cwd": "/workspace/diagnostic-tools/type-recon/lean-work",
+    "exit": 0,
+    "log": "extract.log"
+  },
+  {
+    "args": [
+      "/workspace/diagnostic-tools/canonical-codegen-target/debug/numeric-compat-codegen",
+      "/workspace/diagnostic-tools/type-recon/extracted/kernel.ir",
+      "/workspace/diagnostic-tools/type-recon/package"
+    ],
+    "cwd": "/workspace/diagnostic-tools/type-recon/lean-work",
+    "exit": 0,
+    "log": "codegen.log"
+  },
+  {
+    "args": [
+      "lean",
+      "Observe.lean"
+    ],
+    "cwd": "/workspace/diagnostic-tools/type-recon/lean-work",
+    "exit": 0,
+    "log": "lean-eval.log"
+  },
+  {
+    "args": [
+      "/workspace/diagnostic-tools/rust-1.97.1/bin/rustc",
+      "--edition=2021",
+      "--crate-type=rlib",
+      "--crate-name=type_recon",
+      "/workspace/diagnostic-tools/type-recon/package/src/lib.rs",
+      "-o",
+      "/workspace/diagnostic-tools/type-recon/libtype_recon.rlib"
+    ],
+    "cwd": "/workspace/diagnostic-tools/type-recon/lean-work",
+    "exit": 1,
+    "log": "native-compile.log"
+  }
+]

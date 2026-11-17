@@ -1,0 +1,61 @@
+{
+  "scope": "Component diagnostic; observed native compilation refusal, not production admission. Paths in original evidence refer to original workspace.",
+  "files": {
+    "source/src/Main.lex.tex": {
+      "sha256": "c4cd45bb35775fe77a4f1e07cd5015f9628da5b3bbc95145e2f3c6ac1eeabfd6",
+      "bytes": 452
+    },
+    "source/lexlean.toml": {
+      "sha256": "19c965609bbf08a57f117ed1c45607ede23a6e18366138c02d59ba2bbb9e821a",
+      "bytes": 651
+    },
+    "source/lexlean.lock": {
+      "sha256": "d13971ad2a907f3ccc05e98bb965f6c12a19d689b4f742cebbf07ed38fc2deb2",
+      "bytes": 1473
+    },
+    "commands.json": {
+      "sha256": "870b9629a637919aacabb64af39529ee16e9cb6fff4a2bee81b6b685b13558d8",
+      "bytes": 1572
+    },
+    "evidence-sha256.json": {
+      "sha256": "82636c772c0c88b117feb5da050ad6bee53771843e926a2f1fc4b6483fad8794",
+      "bytes": 2082
+    },
+    "stage-bindings.json": {
+      "sha256": "33c031f8b734c6e9ffc1e0cf7184f739a51b0450cbcc7c799f2ff8d0a8fa74d3",
+      "bytes": 1168
+    },
+    "run.py": {
+      "sha256": "a30ae8f623a263da10fe998e3f35790438875fb909882b69a7e9ca4a33ebfb17",
+      "bytes": 3245
+    },
+    "native-compile.log": {
+      "sha256": "fb8dd3e72f152944d2eb8644ff877d5119b67353a9386fa5a3d15f0c527cd261",
+      "bytes": 717
+    },
+    "lean-eval.log": {
+      "sha256": "97bb98e4fbd3799c7b4b5e6171f8356ed3cd270e6fe3a59c5d18f3155bca3fb1",
+      "bytes": 644
+    },
+    "extract.log": {
+      "sha256": "efbe7585743d74389d3005af2eea36ec4e9d3ed2a1a27cb218179daf4435c37c",
+      "bytes": 203
+    },
+    "codegen.log": {
+      "sha256": "72c46ee4818493af3836800650eaebe5cd7a26e1800c27fe9e480b5d7495ff7a",
+      "bytes": 57
+    },
+    "toolchain-versions.log": {
+      "sha256": "08e11a7bccd62a14883dee46bf4d900d1edb12e5103afdf518cb16079cef5200",
+      "bytes": 142
+    },
+    "extracted/kernel.ir": {
+      "sha256": "3e005a1b95627d95ccbb80fdf9afa34ea53d1fe31957592477762e51ae90119c",
+      "bytes": 455
+    },
+    "package/src/lib.rs": {
+      "sha256": "b6b5199639af56aaa4d3073349e9b20fc54c34989f62e8552a7669b40588f6a3",
+      "bytes": 740
+    }
+  }
+}

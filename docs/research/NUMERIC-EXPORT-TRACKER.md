@@ -91,7 +91,7 @@ record PrismPM candidate `2a31ad07`. Its local focused controls pass, while full
 local validation failed and is not accepted. The same rebuilt verifier must still
 pass actual original-seed/candidate acquisition and retained-file replay in the
 unchanged SDK; [diagnostic run 43986399997](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/43986399997)
-is pending. This is not SDK release or game production admission.
+failed during host evidence writes after the three-project retained-reader completion marker. Final container/authority status awaits artifact recovery; this is not SDK release or game production admission.
 
 Further admission requires [explicit dual-source acquisition and custody](numeric-export/recovery-2026-11-16/backport-selection-recon.md)
 that preserves the original SDK seed as the default, bounded shared-source
@@ -100,3 +100,7 @@ Persistent rendering integration, the exact shift/add experiment and Text/1
 transport benchmarks remain pending. [AQM research](VERDANT-AQM-INTEGRATION.md)
 does not close any of these numerical/compiler questions; its first navigation
 experiment did not justify a runtime import.
+
+### Additional canonical target failures
+
+[The target-type investigation](numeric-export/recovery-2026-11-16/canonical-type-recon.md) records two further open defects: NEXP-010 loses local numeric destination types, and NEXP-011 emits named fields for builtin Rust tuples. All four packed bounded roots extract and generate Rust, but native compilation refuses the emitted code. A minimal actual LexLean conversion fixture also refuses with E0790; no silently wrong numeric result was demonstrated. Typed source helpers and a named counter record are the next bounded application repair, subject to actual native/Wasm replay. They would not close the generic compiler defects.

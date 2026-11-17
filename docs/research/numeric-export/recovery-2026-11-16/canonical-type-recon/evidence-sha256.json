@@ -1,0 +1,17 @@
+{
+  "/workspace/diagnostic-tools/type-recon/source/src/Main.lex.tex": "c4cd45bb35775fe77a4f1e07cd5015f9628da5b3bbc95145e2f3c6ac1eeabfd6",
+  "/workspace/diagnostic-tools/type-recon/source/lexlean.toml": "19c965609bbf08a57f117ed1c45607ede23a6e18366138c02d59ba2bbb9e821a",
+  "/workspace/diagnostic-tools/type-recon/source/lexlean.lock": "d13971ad2a907f3ccc05e98bb965f6c12a19d689b4f742cebbf07ed38fc2deb2",
+  "/workspace/diagnostic-tools/type-recon/source/.lexlean/build/141f738743296ed2cbf7107c78b267ff6703b6023974b013af7a8d1c14c6708d/manifest.json": "0671ea8c11c78dbf3a3f711f273845813c82014aac9ddc0b0f81e27ae486ce63",
+  "/workspace/diagnostic-tools/type-recon/run.py": "a30ae8f623a263da10fe998e3f35790438875fb909882b69a7e9ca4a33ebfb17",
+  "/workspace/diagnostic-tools/type-recon/extracted/kernel.ir": "3e005a1b95627d95ccbb80fdf9afa34ea53d1fe31957592477762e51ae90119c",
+  "/workspace/diagnostic-tools/type-recon/package/src/lib.rs": "b6b5199639af56aaa4d3073349e9b20fc54c34989f62e8552a7669b40588f6a3",
+  "/workspace/diagnostic-tools/type-recon/native-compile.log": "fb8dd3e72f152944d2eb8644ff877d5119b67353a9386fa5a3d15f0c527cd261",
+  "/workspace/diagnostic-tools/type-recon/lean-eval.log": "97bb98e4fbd3799c7b4b5e6171f8356ed3cd270e6fe3a59c5d18f3155bca3fb1",
+  "/workspace/diagnostic-tools/type-recon/commands.json": "870b9629a637919aacabb64af39529ee16e9cb6fff4a2bee81b6b685b13558d8",
+  "/workspace/diagnostic-tools/type-recon/stage-bindings.json": "33c031f8b734c6e9ffc1e0cf7184f739a51b0450cbcc7c799f2ff8d0a8fa74d3",
+  "/workspace/scratch/compiler-restoration-check/lean/.lake/build/bin/prod-export": "15e2d1c3d45f181a0fb2c5de86c4cfe78a9b15b31712500defbe491828bd3915",
+  "/workspace/diagnostic-tools/canonical-codegen-target/debug/numeric-compat-codegen": "5f8c99acf8e06eda323b89333bea6aaa69f1d32e9f2f12054fd0f54c9a1c7113",
+  "/workspace/diagnostic-tools/canonical-codegen/Cargo.lock": "c975f803295242e11c7bf2c6b423cb9bb5375df51815bfd9c1103ac96889e4ff",
+  "/workspace/diagnostic-tools/lexlean-target/release/lexlean": "3765ef724d19a4d08681aaa0123ff637e65c1ffcc0b8d02ae268b521b5cf2c94"
+}

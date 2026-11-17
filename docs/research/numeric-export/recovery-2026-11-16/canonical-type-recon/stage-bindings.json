@@ -1,0 +1,17 @@
+[
+  {
+    "source": "/workspace/diagnostic-tools/type-recon/source/.lexlean/build/141f738743296ed2cbf7107c78b267ff6703b6023974b013af7a8d1c14c6708d/modules/TypeRecon/Main.lean",
+    "target": "/workspace/diagnostic-tools/type-recon/lean-work/TypeRecon/Main.lean",
+    "sha256": "60ce0aff73ffbf60b212023f641c7db94a61e14e41ded7a45e570e3966e7f718"
+  },
+  {
+    "source": "/workspace/scratch/cs-numeric-kernels/artifacts/numeric-canonical-probe/runtime-source/.lexlean/build/b2417b32339d6c95b594a79c0e52b2537638369ea14bd783f721b8d60369ee2f/modules/LexLeanRuntime/Portable.lean",
+    "target": "/workspace/diagnostic-tools/type-recon/lean-work/LexLeanRuntime/Portable.lean",
+    "sha256": "d2d34c01c5fff345c099279013f7d428dc5747f0401873fa9df36ca97a87705a"
+  },
+  {
+    "source": "/workspace/scratch/cs-numeric-kernels/artifacts/numeric-canonical-probe/runtime-source/.lexlean/build/b2417b32339d6c95b594a79c0e52b2537638369ea14bd783f721b8d60369ee2f/modules/LexLeanRuntime/Collections.lean",
+    "target": "/workspace/diagnostic-tools/type-recon/lean-work/LexLeanRuntime/Collections.lean",
+    "sha256": "c78bfaf21acedf3a0e9812d3fe575cd2903489c281df393113bb7cf0eaef3610"
+  }
+]
