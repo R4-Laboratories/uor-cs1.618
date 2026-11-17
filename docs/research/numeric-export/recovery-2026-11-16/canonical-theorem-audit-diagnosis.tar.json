@@ -1,0 +1,8 @@
+{
+  "archive": "canonical-theorem-audit-diagnosis.tar.gz",
+  "bytes": 252980,
+  "sha256": "c48806897697d24ba4c4ea92320841eb1703d76a0a8fc0abcfd20fa1ad28e7ff",
+  "evidence_index_sha256": "26fc153c959b27a90ceb5082c297ef523b5f0a6da31d71aaa3cea6079ae52968",
+  "indexed_files": 23,
+  "scope": "Pinned Lean diagnostics, not SDK or production acceptance"
+}

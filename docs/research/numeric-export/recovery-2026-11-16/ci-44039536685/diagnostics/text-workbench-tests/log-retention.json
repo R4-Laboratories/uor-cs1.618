@@ -1,0 +1,1 @@
+{"observedBytes":6685,"headBytes":6685,"tailBytes":0,"generation":-1,"truncated":false,"headLimit":33554432,"tailLimit":1048576,"note":"gate.log is the prefix; tail files alternate, newest generation modulo 2"}

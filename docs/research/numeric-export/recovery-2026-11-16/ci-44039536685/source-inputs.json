@@ -1,0 +1,10 @@
+{
+  "devcontainer_sha256": {
+    ".devcontainer/Dockerfile": "a1a47511564c4d086656bbc610edd33f517d3b27929c044ecde582577ac0789f",
+    ".devcontainer/devcontainer.json": "b5bff261fd045d141f208f52fef5dbcc15eaa2166fc8ceb60dcd3fe39c6087a0",
+    ".devcontainer/docker-entrypoint.sh": "b114632d1e4932d0188751b69f718d0a3d5f3e8ef66a9c043607243f9d6eb708",
+    ".devcontainer/docker-ready.sh": "94017902919da2a441835067ce51a1a8b594e69596cd644c07d7be44549b639a"
+  },
+  "revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "tree": "7cf463121cf5dd15b681ce1dfafd5694617cc474"
+}

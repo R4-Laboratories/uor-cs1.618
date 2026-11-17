@@ -1,0 +1,19 @@
+{
+  "id": 14309768342,
+  "name": "numeric-canonical-small-logs-44039536691",
+  "size_in_bytes": 60407,
+  "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14309768342",
+  "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14309768342/zip",
+  "expired": false,
+  "created_at": "2026-11-17T07:59:21Z",
+  "expires_at": "2026-12-17T07:59:21Z",
+  "updated_at": "2026-11-17T07:59:21Z",
+  "digest": "sha256:987ca3582ac4b0381a033925f4fece6355e60f1a60f53488b3750b5f77c9ac0f",
+  "workflow_run": {
+    "id": 44039536691,
+    "repository_id": 1459410356,
+    "head_repository_id": 1459410356,
+    "head_branch": "numeric-kernels",
+    "head_sha": "8b90be514ee25a7f65cb9a4552901e91aaf37ea5"
+  }
+}

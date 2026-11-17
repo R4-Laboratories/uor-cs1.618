@@ -1,0 +1,7 @@
+# Canonical SDK verification: empty-theorem audit blocker
+
+Actual [run 44039536691](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44039536691) failed at game `8b90be514ee25a7f65cb9a4552901e91aaf37ea5`, source `324955b6923c1d194d7bc870a2d2a05eb687048c`, with the unchanged d6 SDK. All four packages prepared and built successfully. The reviewed acceptance metadata correction passed the former LLV7005 boundary; each verify then refused PP5003: `library theorem has a nonempty axiom audit`. Selection, mutation controls, exact-package replay and runtime admission did not run.
+
+The [diagnosis](../canonical-theorem-audit-diagnosis.md) identifies all five affected Bounds theorems and confirms that the existing native-library contract requires empty theorem axioms. Pinned Lean checks establish constructive proofs of the unchanged statements with no axioms, but valid authored LexLean expressions remain unresolved. No policy waiver, hidden proof replacement or compiler-pin change is made.
+
+Original ZIPs and API metadata are retained, with independently verified exact API sizes and SHA-256 values. Reader artifact14309843019: 1,743,083 bytes, `a246b8fdc6cab01dd06241947e526f42a5b6ad4a109d446455f8298823715a26`; logs14309768342: 60,407 bytes, `987ca3582ac4b0381a033925f4fece6355e60f1a60f53488b3750b5f77c9ac0f`; status14310192423: 19,205 bytes, `31b8fa2cc1d3cd7733f38f625d3ca7208fc89b0c62b8ced9b9f1805a45edb8a7`. Extracted operation results are original failed records.

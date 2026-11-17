@@ -1,0 +1,19 @@
+{
+  "id": 14309928474,
+  "name": "backport-shared-golden-proposal-44039536685-1",
+  "size_in_bytes": 5942051,
+  "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14309928474",
+  "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14309928474/zip",
+  "expired": false,
+  "created_at": "2026-11-17T08:01:20Z",
+  "expires_at": "2026-12-17T08:01:19Z",
+  "updated_at": "2026-11-17T08:01:20Z",
+  "digest": "sha256:4e37c9b7c353b885b6180fc8be7161ca14a0fd702795d8d54e5c9cd539165aef",
+  "workflow_run": {
+    "id": 44039536685,
+    "repository_id": 1459410356,
+    "head_repository_id": 1459410356,
+    "head_branch": "numeric-kernels",
+    "head_sha": "8b90be514ee25a7f65cb9a4552901e91aaf37ea5"
+  }
+}
