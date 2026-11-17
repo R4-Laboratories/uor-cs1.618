@@ -1996,8 +1996,101 @@ def bridge_publish(path,value,uid,gid,deadline):
     finally:os.close(fd)
 
 
+class HostSocketError(ValueError):
+    def __init__(self,measurement):
+        self.measurement=measurement
+        body=encoded(measurement).decode().strip()
+        require(len(body.encode())<=1760,'bounded socket measurement')
+        super().__init__('host socket '+body)
+
+
+def _bridge_socket_measure(namespace,owner,deadline,expected=None):
+    """Private fixture primitive; production wrapper fixes namespace / and UID0."""
+    namespace=Path(namespace)
+    measurement={'schema':'cs1618/host-docker-socket/1','logical':'/var/run/docker.sock','canonical':None,
+                 'layout':None,'status':'incomplete','predicate':'missing_member','parents':{},
+                 'var_run':None,'socket':None,'logical_socket':None}
+    descriptors=[];held=[];alias=None
+    keys=('st_dev','st_ino','st_uid','st_gid','st_mode')
+    def identity(info):return tuple(getattr(info,key) for key in keys)
+    def row(info):
+        kind=('directory' if stat.S_ISDIR(info.st_mode) else 'symlink' if stat.S_ISLNK(info.st_mode)
+              else 'socket' if stat.S_ISSOCK(info.st_mode) else 'other')
+        return {'dev':info.st_dev,'ino':info.st_ino,'uid':info.st_uid,'gid':info.st_gid,'mode':info.st_mode,'kind':kind}
+    def check(ok,predicate):
+        if not ok:
+            measurement['status']='incomplete';measurement['predicate']=predicate
+            raise HostSocketError(measurement)
+    def directory_fd(label,name,parent=None):
+        bridge_time(deadline);info=os.stat(name,dir_fd=parent,follow_symlinks=False)
+        measurement['parents'][label]=row(info)
+        check(stat.S_ISDIR(info.st_mode) and info.st_uid==owner and not info.st_mode&0o7022,'unsafe_parent')
+        fd=os.open(name,os.O_PATH|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=parent);descriptors.append(fd)
+        check(identity(info)==identity(os.fstat(fd)),'identity_changed')
+        held.append((fd,parent,name,info));return fd
+    try:
+        bridge_time(deadline)
+        check(namespace.is_absolute() and namespace.resolve()==namespace,'unsafe_parent')
+        rootfd=directory_fd('/',namespace);varfd=directory_fd('/var','var',rootfd)
+        bridge_time(deadline);info=os.stat('run',dir_fd=varfd,follow_symlinks=False)
+        measurement['var_run']=row(info)
+        if stat.S_ISDIR(info.st_mode):
+            measurement['layout']='real-directory';measurement['canonical']='/var/run/docker.sock'
+            runtimefd=directory_fd('/var/run','run',varfd)
+            check(identity(info)==identity(os.fstat(runtimefd)),'identity_changed')
+        else:
+            check(stat.S_ISLNK(info.st_mode),'unexpected_parent_alias')
+            link=os.readlink('run',dir_fd=varfd)
+            measurement['var_run'].update(link=link[:64],link_bytes=len(os.fsencode(link)),link_truncated=len(link)>64)
+            check(info.st_uid==owner,'unsafe_parent')
+            check(link in ('../run',str(namespace/'run')),'unexpected_parent_alias')
+            measurement['layout']='os-run-alias';measurement['canonical']='/run/docker.sock'
+            alias=(varfd,info,link);runtimefd=directory_fd('/run','run',rootfd)
+        bridge_time(deadline)
+        # O_PATH holds the final inode without opening/connecting a Unix socket.
+        # O_NOFOLLOW can hold a symlink, so fstat must still reject that type.
+        socketfd=os.open('docker.sock',os.O_PATH|os.O_NOFOLLOW,dir_fd=runtimefd);descriptors.append(socketfd)
+        socket=os.fstat(socketfd);measurement['socket']=row(socket)
+        check(stat.S_ISSOCK(socket.st_mode),'final_not_socket')
+        check(socket.st_uid==owner and not socket.st_mode&0o7002,'unsafe_socket')
+        logical=os.stat(namespace/'var/run/docker.sock',follow_symlinks=False)
+        measurement['logical_socket']=row(logical)
+        check(identity(socket)==identity(logical)==identity(os.stat('docker.sock',dir_fd=runtimefd,follow_symlinks=False)),
+              'identity_changed')
+        for fd,parent,name,before in held:
+            bridge_time(deadline)
+            check(identity(before)==identity(os.fstat(fd))==identity(os.stat(name,dir_fd=parent,follow_symlinks=False)),
+                  'identity_changed')
+        if alias is not None:
+            parent,before,link=alias;bridge_time(deadline)
+            check(identity(before)==identity(os.stat('run',dir_fd=parent,follow_symlinks=False))
+                  and os.readlink('run',dir_fd=parent)==link,'identity_changed')
+        bridge_time(deadline)
+        check(identity(socket)==identity(os.fstat(socketfd))==identity(os.stat('docker.sock',dir_fd=runtimefd,follow_symlinks=False)),
+              'identity_changed')
+        measurement['status']='admitted';measurement['predicate']='admitted'
+        check(expected is None or measurement==expected,'identity_changed')
+        require(len(encoded(measurement))<=1760,'bounded successful socket metadata')
+        return measurement
+    except OSError as error:
+        measurement['status']='incomplete'
+        measurement['predicate']='missing_member' if error.errno==errno.ENOENT else 'filesystem_refusal'
+        measurement['errno']=error.errno
+        raise HostSocketError(measurement) from error
+    finally:
+        for fd in reversed(descriptors):os.close(fd)
+
+
+def bridge_socket(deadline,expected=None):
+    # No command-line socket path or configurable production ownership policy.
+    return _bridge_socket_measure(Path('/'),0,deadline,expected=expected)
+
+
 def bridge_child(operation,context,socket_group):
     bridge_drop(socket_group)
+    if context['socket'] is not None:
+        bridge_socket(context['deadline'],expected=context['socket'])
+        require(socket_group==context['socket']['socket']['gid'],'held actual socket group passed to dropped child')
     root=Path.cwd();home=root/'prismpm/target/candidate-qualification-driver'
     partial=validate_partial(read_json(home/'preparation-partial.json'))
     require(partial==context['partial'],'actual source-owned preparation join')
@@ -2019,7 +2112,7 @@ def bridge_child(operation,context,socket_group):
         destination=folder/'metadata-upload'
     write(destination/'bridge-context.json',{'operation':operation,'runner_uid':context['uid'],'runner_gid':context['gid'],
           'source_uid':os.getuid(),'source_gid':os.getgid(),'source_groups':os.getgroups(),
-          'job_started':partial['started'],'collection_clock':context['clock'],'child':result,
+          'job_started':partial['started'],'collection_clock':context['clock'],'child':result,'socket':context['socket'],
           'raw_mapping':{'from':'prismpm/target/candidate-qualification-driver/raw','to':'evidence/raw-upload'}
                         if operation=='qualification-collect' else None})
     return result
@@ -2108,18 +2201,19 @@ def bridge_privileged(operation):
             if operation.startswith('preflight-') or operation in ('pull-budget','setup-budget'):
                 deadline=min(deadline,partial['started']+(14400 if phase=='image' else 2700))
             bridge_time(deadline);signal.setitimer(signal.ITIMER_REAL,max(0.001,deadline-time.monotonic()))
-            socket_group=None
+            socket_group=None;socket_measurement=None
             if operation.startswith('preflight-') or operation=='image-collect':
-                socket=Path('/var/run/docker.sock').lstat()
-                require(stat.S_ISSOCK(socket.st_mode) and Path('/var/run/docker.sock').resolve()==Path('/var/run/docker.sock'),
-                        'actual fixed Docker socket');socket_group=socket.st_gid
-            context={'uid':uid,'gid':gid,'partial':partial,'phase':phase,'clock':clock}
+                socket_measurement=bridge_socket(deadline);socket_group=socket_measurement['socket']['gid']
+            context={'uid':uid,'gid':gid,'partial':partial,'phase':phase,'clock':clock,
+                     'socket':socket_measurement,'deadline':deadline}
             child=bridge_supervise(lambda:bridge_child(operation,context,socket_group),deadline)
             result={'exit':child['exit'],'controls':child.get('controls'),
                     'clock':clock,'deadline':deadline,'handoff':None}
             if operation not in ('pull-budget','setup-budget'):
                 folder=home/'host-bridge'/operation
                 metadata=folder/'metadata-upload'
+                if child['exit'] and not metadata.exists():
+                    raise ValueError('UID1000 host child: '+child.get('error','failed before export'))
                 inventory=bridge_inventory(metadata,1000,deadline,MAX_METADATA-8192)
                 raw=None
                 if operation=='qualification-collect' and (home/'raw-upload-ready.json').exists():

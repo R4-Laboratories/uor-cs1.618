@@ -7,6 +7,8 @@ import os
 import tempfile
 import copy
 import json
+import contextlib
+import socket
 from unittest.mock import patch
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -897,5 +899,169 @@ class EvidenceBoundaryControls(unittest.TestCase):
         self.assertIn('steps.retention.outputs.raw_safe',raw)
         self.assertIn('steps.setup-budget.outputs.minutes',raw)
         self.assertIn(self.driver.SDK,raw)
+
+class HostSocketLayoutControls(unittest.TestCase):
+    setUpClass=DriverContracts.__dict__['setUpClass']
+
+    @contextlib.contextmanager
+    def fixture(self,layout='relative'):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);(root/'var').mkdir(mode=0o700)
+            if layout=='directory':runtime=root/'var/run';runtime.mkdir(mode=0o700)
+            else:
+                runtime=root/'run';runtime.mkdir(mode=0o700)
+                (root/'var/run').symlink_to('../run' if layout=='relative' else runtime)
+            endpoint=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+            try:
+                endpoint.bind(str(runtime/'docker.sock'));(runtime/'docker.sock').chmod(0o660)
+                yield root,runtime,endpoint
+            finally:endpoint.close()
+
+    def test_host_socket_real_parent_alias_regression_and_closed_positive_layouts(self):
+        import stat,time
+        d=self.driver
+        for layout in ('relative','absolute','directory'):
+            with self.subTest(layout=layout),self.fixture(layout) as (root,runtime,endpoint):
+                logical=root/'var/run/docker.sock'
+                self.assertTrue(stat.S_ISSOCK(logical.lstat().st_mode))
+                # The exact old predicate rejects the two ordinary parent aliases.
+                self.assertEqual(logical.resolve()==logical,layout=='directory')
+                result=d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2)
+                self.assertEqual(result['status'],'admitted');self.assertEqual(result['predicate'],'admitted')
+                self.assertEqual(result['logical'],'/var/run/docker.sock')
+                self.assertEqual(result['canonical'],'/var/run/docker.sock' if layout=='directory' else '/run/docker.sock')
+                self.assertEqual(result['socket']['gid'],logical.lstat().st_gid)
+                self.assertEqual(result['socket']['ino'],logical.lstat().st_ino)
+
+    def test_host_socket_rejects_extra_aliases_types_ownership_and_writable_parents(self):
+        import time
+        d=self.driver
+        defects={'final-link':'final_not_socket','nested-final-link':'final_not_socket','unexpected-runtime':'unexpected_parent_alias',
+                 'indirect-runtime':'unexpected_parent_alias','var-alias':'unsafe_parent','run-alias':'unsafe_parent',
+                 'regular':'final_not_socket','fifo':'final_not_socket','directory':'final_not_socket',
+                 'missing':'missing_member','wrong-owner':'unsafe_parent','writable-parent':'unsafe_parent',
+                 'world-write-socket':'unsafe_socket'}
+        for defect,predicate in defects.items():
+            with self.subTest(defect=defect),self.fixture() as (root,runtime,endpoint):
+                leaf=runtime/'docker.sock';owner=os.getuid()
+                if defect in ('final-link','nested-final-link'):
+                    other=runtime/('actual.sock' if defect=='final-link' else 'codex-docker/docker.sock')
+                    other.parent.mkdir(exist_ok=True,mode=0o700);leaf.rename(other);leaf.symlink_to(other)
+                if defect in ('unexpected-runtime','indirect-runtime'):
+                    (root/'var/run').unlink()
+                    if defect=='indirect-runtime':(root/'alternate').symlink_to(runtime)
+                    (root/'var/run').symlink_to('../alternate' if defect=='indirect-runtime' else '../run/.')
+                if defect=='var-alias':(root/'var').rename(root/'actual-var');(root/'var').symlink_to(root/'actual-var')
+                if defect=='run-alias':runtime.rename(root/'actual-run');runtime.symlink_to(root/'actual-run')
+                if defect in ('regular','fifo','directory','missing'):
+                    leaf.unlink()
+                    if defect=='regular':leaf.write_bytes(b'not a socket')
+                    if defect=='fifo':os.mkfifo(leaf,0o600)
+                    if defect=='directory':leaf.mkdir(mode=0o700)
+                if defect=='wrong-owner':owner+=1
+                if defect=='writable-parent':runtime.chmod(0o777)
+                if defect=='world-write-socket':leaf.chmod(0o666)
+                with self.assertRaises(d.HostSocketError) as caught:d._bridge_socket_measure(root,owner,time.monotonic()+2)
+                record=caught.exception.measurement
+                self.assertEqual(record['status'],'incomplete');self.assertEqual(record['predicate'],predicate)
+                self.assertLessEqual(len(str(caught.exception).encode()),1792)
+
+    def test_host_socket_held_identity_and_child_remeasurement_refuse_changes(self):
+        import time
+        d=self.driver
+        with self.fixture() as (root,runtime,endpoint):
+            held=d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2)
+            for field in ('dev','ino','gid'):
+                changed=copy.deepcopy(held);changed['socket'][field]+=1
+                with self.subTest(field=field),self.assertRaises(d.HostSocketError) as caught:
+                    d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2,expected=changed)
+                self.assertEqual(caught.exception.measurement['predicate'],'identity_changed')
+            # Actual filesystem replacement, not a substituted stat() response.
+            (runtime/'docker.sock').rename(runtime/'retired.sock')
+            replacement=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+            try:
+                replacement.bind(str(runtime/'docker.sock'));(runtime/'docker.sock').chmod(0o660)
+                with self.assertRaises(d.HostSocketError) as caught:
+                    d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2,expected=held)
+                self.assertEqual(caught.exception.measurement['predicate'],'identity_changed')
+            finally:replacement.close()
+
+    def test_host_socket_deadline_and_fixed_production_wrapper(self):
+        import ast,time
+        d=self.driver
+        with self.fixture() as (root,runtime,endpoint):
+            with self.assertRaises(d.CollectionDeadline):d._bridge_socket_measure(root,os.getuid(),time.monotonic()-1)
+        source=(ROOT/'candidate-capture-qualification.py').read_text();tree=ast.parse(source)
+        functions={node.name:node for node in tree.body if isinstance(node,ast.FunctionDef)}
+        wrapper=ast.get_source_segment(source,functions['bridge_socket'])
+        self.assertIn("_bridge_socket_measure(Path('/'),0,deadline",wrapper)
+        privileged=ast.get_source_segment(source,functions['bridge_privileged'])
+        child=ast.get_source_segment(source,functions['bridge_child'])
+        self.assertIn("socket_measurement=bridge_socket(deadline)",privileged)
+        self.assertIn("socket_group=socket_measurement['socket']['gid']",privileged)
+        self.assertIn("'socket':socket_measurement",privileged)
+        self.assertIn("bridge_socket(context['deadline'],expected=context['socket'])",child)
+        self.assertIn("'socket':context['socket']",child)
+        self.assertNotIn('socket-path',source)
+
+    def test_host_socket_actual_replacement_during_held_measurement_and_descriptor_closure(self):
+        import time
+        d=self.driver
+        with self.fixture() as (root,runtime,endpoint):
+            original_stat=os.stat;replacement=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM);changed=[]
+            before=set(os.listdir('/proc/self/fd'))
+            def replace_at_logical_join(path,*args,**kwargs):
+                if str(path)==str(root/'var/run/docker.sock') and not changed:
+                    changed.append(True);os.rename(runtime/'docker.sock',runtime/'retired.sock')
+                    replacement.bind(str(runtime/'docker.sock'));os.chmod(runtime/'docker.sock',0o660)
+                return original_stat(path,*args,**kwargs)
+            try:
+                with patch.object(d.os,'stat',side_effect=replace_at_logical_join):
+                    with self.assertRaises(d.HostSocketError) as caught:d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2)
+                self.assertEqual(caught.exception.measurement['predicate'],'identity_changed')
+                self.assertEqual(changed,[True]);self.assertEqual(set(os.listdir('/proc/self/fd')),before)
+            finally:replacement.close()
+
+    def test_host_socket_group_and_identity_reach_existing_child_before_source_access(self):
+        import time
+        d=self.driver
+        class StopAfterSocket(Exception):pass
+        with self.fixture() as (root,runtime,endpoint):
+            measurement=d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2)
+            context={'socket':measurement,'deadline':time.monotonic()+2};groups=[];observed=[]
+            def component_socket(deadline,expected=None):
+                observed.append(expected)
+                return d._bridge_socket_measure(root,os.getuid(),deadline,expected=expected)
+            # Only the credential syscall boundary is substituted. This checks
+            # argument/context integration, not a privileged drop witness.
+            with patch.object(d,'bridge_drop',side_effect=groups.append),patch.object(d,'bridge_socket',side_effect=component_socket),patch.object(d,'read_json',side_effect=StopAfterSocket):
+                with self.assertRaises(StopAfterSocket):d.bridge_child('preflight-image',context,measurement['socket']['gid'])
+                with self.assertRaisesRegex(ValueError,'socket group'):d.bridge_child('preflight-image',context,measurement['socket']['gid']+1)
+            self.assertEqual(groups,[measurement['socket']['gid'],measurement['socket']['gid']+1])
+            self.assertEqual(observed,[measurement,measurement])
+
+    def test_host_socket_actual_failure_measurement_survives_runner_status_bound(self):
+        import time
+        d=self.driver
+        with self.fixture() as (namespace,runtime,endpoint):
+            (runtime/'docker.sock').rename(runtime/'actual.sock');(runtime/'docker.sock').symlink_to('actual.sock')
+            with self.assertRaises(d.HostSocketError) as caught:d._bridge_socket_measure(namespace,os.getuid(),time.monotonic()+2)
+            measurement=caught.exception.measurement
+            stderr=('candidate capture qualification incomplete: '+str(caught.exception)+'\n').encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+            script.parent.mkdir(parents=True,mode=0o700);script.write_bytes(b'component path fixture')
+            (root/'evidence').mkdir(mode=0o700);output=root/'output';output.touch(mode=0o600);previous=os.getcwd()
+            try:
+                os.chdir(root)
+                # Actual measured filesystem refusal through the existing
+                # runner handoff; root execution itself is not simulated as success.
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',return_value=(1,b'',stderr)),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('preflight-image'),1)
+                retained=d.read_json(root/'evidence/metadata-upload/bridge-failure.json')
+                self.assertEqual(json.loads(retained['error'].split('host socket ',1)[1]),measurement)
+                self.assertEqual(retained['exit'],1);self.assertFalse(retained['complete_application_accepted'])
+                self.assertEqual(output.read_bytes(),b'')
+            finally:os.chdir(previous)
 
 if __name__ == '__main__': unittest.main()
