@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "280edc8",
+  "command": "npm run verify",
+  "exitCode": 0,
+  "unitTests": 151,
+  "unitFailures": 0,
+  "artifactHashes": 77,
+  "upstreamPins": 6,
+  "presentationResponsiveStates": 16,
+  "offlineAudioCues": 16,
+  "objectiveBrowser": "passed after main integration; real keyboard/WebSocket interaction with late-progress/expiry fixtures",
+  "hostedWorkflow": "pending publication; GitHub Pages requires the complete browser suite",
+  "logSha256": "e5a4e9cc9f353bd2f5edbb6d6cbbdedc38f21e12d3314cadadfe84b77f6cc201"
+}

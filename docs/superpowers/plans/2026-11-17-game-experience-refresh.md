@@ -44,10 +44,10 @@
 
 **Interfaces:** Keep generated BotFacts/tacticDecider and multiplayer snapshots unchanged. Existing Player.botGoal is available for nearest-goal invalidation; reset it at spawn. Preserve the published canReachDevice/defusePath route-to-valid-interaction repair (287bb30) and its three legal-plant regressions; do not replace it with raw bomb-center routing. Use VerdantEngine.ray/move for sight/collision.
 
-- [ ] Add failing behavior tests for elevated/crouched visible targets, actual cover obstruction, overlapping targets with finite inputs, changed objective goal before old replanning interval, reachable short same-node goal and blocked/unreachable approach.
-- [ ] Use normalized 3D eye-to-target torso ray and full distance for sight. Preserve reaction delay, burst recovery and friendly-fire prevention.
-- [ ] Refresh navigation immediately when nearest goal changes. When the graph has no remaining route, only use a short direct final approach if collision checks admit the entire segment; do not turn an unreachable route into blind movement. Reset goal tracking on spawn.
-- [ ] Run focused real-engine bot/objective tests and full unit tests; retain integration/lifecycle cases. Self-review and commit explicit owned paths, write report. No push.
+- [x] Add failing behavior tests for elevated/crouched visible targets, actual cover obstruction, overlapping targets with finite inputs, changed objective goal before old replanning interval, reachable short same-node goal and blocked/unreachable approach.
+- [x] Use normalized 3D eye-to-target torso ray and full distance for sight. Preserve reaction delay, burst recovery and friendly-fire prevention.
+- [x] Refresh navigation immediately when nearest goal changes. When the graph has no remaining route, only use a short direct final approach if collision checks admit the entire segment; do not turn an unreachable route into blind movement. Reset goal tracking on spawn.
+- [x] Run focused real-engine bot/objective tests and full unit tests; retain integration/lifecycle cases. Self-review and commit explicit owned paths, write report. No push.
 
 ## Release verification (parent)
 

@@ -146,4 +146,4 @@ The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity
 
 ## Release evidence and rendering research
 
-[0.9.0 scope and validation](docs/RELEASE-0.9.0.md) records the browser fixtures, software-rendering limits and external relay evidence. [Three.js and Prism rendering research](docs/THREE-PRISM-RENDERING.md) explains the existing GPU/Wasm boundary and bounded follow-up experiments; [numeric export tracking](docs/research/NUMERIC-EXPORT-TRACKER.md) separates confirmed source facts from pending export investigations.
+[The tactical experience refresh](docs/GAME-EXPERIENCE-REFRESH.md) records the newer bomb HUD, interaction audio, weapon/site presentation and bot sight/routing improvements with before/after evidence. [0.9.0 scope and validation](docs/RELEASE-0.9.0.md) records the browser fixtures, software-rendering limits and external relay evidence. [Three.js and Prism rendering research](docs/THREE-PRISM-RENDERING.md) explains the existing GPU/Wasm boundary and bounded follow-up experiments; [numeric export tracking](docs/research/NUMERIC-EXPORT-TRACKER.md) separates confirmed source facts from pending export investigations.
