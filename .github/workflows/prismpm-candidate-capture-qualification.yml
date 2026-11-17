@@ -1,0 +1,182 @@
+name: PrismPM candidate capture qualification
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-candidate-capture-qualification.yml'
+      - 'scripts/numeric/candidate-capture-qualification.py'
+      - 'scripts/numeric/candidate-capture-probe.py'
+      - 'scripts/numeric/candidate-capture-subject.mjs'
+      - 'scripts/numeric/tests/test_candidate_capture_qualification.py'
+      - 'scripts/numeric/prismpm-capture-candidate/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+# Diagnostic qualification only; independently reviewed fixed source f292c710.
+# Publish only after independent implementation review; the narrow push starts this diagnostic.
+jobs:
+  image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - name: Start absolute source-image job clock
+        run: |
+          mkdir -p evidence
+          python3 -c 'import json,time; print(json.dumps({"monotonic":time.monotonic()}))' > evidence/job-start.json
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          fetch-depth: 0
+          path: prismpm
+          persist-credentials: false
+      - name: Restore exact reviewed source and bind game authorities
+        run: |
+          set -euo pipefail
+          umask 022
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare --phase image
+          sudo chown -R 1000:1000 prismpm evidence
+      - id: cache
+        uses: ./game/.github/actions/prismpm-source-cache
+      - uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        with:
+          subFolder: prismpm
+          skipContainerUserIdUpdate: true
+          inheritEnv: false
+          cacheFrom: ${{ steps.cache.outputs.cache-from }}
+          cacheTo: ${{ steps.cache.outputs.cache-to }}
+          push: never
+          runCmd: 'true'
+      - name: Retain actual source image and cleanliness
+        if: always()
+        run: |
+          sudo mkdir -p evidence
+          sudo chown -R 1000:1000 evidence
+          sudo -u '#1000' -g "#$(stat -c '%g' /var/run/docker.sock)" python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-collect --phase image
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: candidate-capture-source-image-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/metadata-upload/
+          if-no-files-found: error
+          retention-days: 30
+
+  qualification:
+    needs: image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - name: Start absolute 360-minute qualification clock
+        run: |
+          mkdir -p evidence
+          python3 -c 'import json,time; print(json.dumps({"monotonic":time.monotonic()}))' > evidence/job-start.json
+      - name: Free disposable hosted runner tool installations
+        run: |
+          set -euo pipefail
+          test "$GITHUB_ACTIONS" = true
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$RUNNER_OS" = Linux
+          test "$(. /etc/os-release; printf '%s:%s' "$ID" "$VERSION_ID")" = ubuntu:24.04
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/.ghcup \
+            /usr/share/swift /usr/local/share/boost /usr/local/julia* /opt/az /opt/microsoft \
+            /usr/lib/jvm /usr/share/miniconda /usr/local/share/powershell
+          df -h /
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          fetch-depth: 0
+          path: prismpm
+          persist-credentials: false
+      - name: Restore exact source and prepare bounded qualification
+        run: |
+          set -euo pipefail
+          umask 022
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare
+          sudo chown -R 1000:1000 prismpm evidence
+      - name: Guard remaining setup time before SDK acquisition
+        id: pull-budget
+        run: |
+          sudo chown 1000:1000 "$GITHUB_OUTPUT"
+          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT python3 -I -B game/scripts/numeric/candidate-capture-qualification.py setup-budget
+      - name: Acquire unchanged digest-pinned SDK oracle
+        timeout-minutes: ${{ fromJSON(steps.pull-budget.outputs.minutes) }}
+        run: docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+      - id: cache
+        uses: ./game/.github/actions/prismpm-source-cache
+      - name: Require warm setup budget before container startup
+        id: setup-budget
+        run: |
+          sudo chown 1000:1000 "$GITHUB_OUTPUT"
+          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT python3 -I -B game/scripts/numeric/candidate-capture-qualification.py setup-budget
+      - name: Materialize warm source environment within remaining45-minute setup
+        timeout-minutes: ${{ fromJSON(steps.setup-budget.outputs.minutes) }}
+        uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        with:
+          subFolder: prismpm
+          skipContainerUserIdUpdate: true
+          inheritEnv: false
+          cacheFrom: ${{ steps.cache.outputs.cache-from }}
+          push: never
+          runCmd: 'true'
+      - name: Warm setup45, six scenarios240, original OC10 65, collection10
+        uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        with:
+          subFolder: prismpm
+          skipContainerUserIdUpdate: true
+          inheritEnv: false
+          cacheFrom: ${{ steps.cache.outputs.cache-from }}
+          push: never
+          env: |
+            PRISMPM_TEST_SDK_IMAGE=ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+          runCmd: |
+            /usr/local/bin/prismpm-devcontainer-exec /bin/bash -euo pipefail <<'QUALIFICATION'
+            umask 022
+            test "$(id -u)" = 1000
+            test "$(pwd)" = /workspaces/prismpm
+            python3 -I -B target/candidate-qualification-driver/candidate-capture-qualification.py run
+            QUALIFICATION
+      - name: Always validate retained raw artifacts and bounded metadata
+        id: retention
+        if: always()
+        run: |
+          sudo mkdir -p evidence
+          sudo chown -R 1000:1000 evidence
+          status=0
+          sudo -u '#1000' -g "#$(stat -c '%g' /var/run/docker.sock)" python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-collect || status=$?
+          if test -f prismpm/target/candidate-qualification-driver/raw-upload-ready.json; then
+            printf 'raw_safe=true\n' >> "$GITHUB_OUTPUT"
+          fi
+          exit "$status"
+      - name: Upload initial metadata subset at most32MiB
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-capture-metadata-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/metadata-upload/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded original raw evidence separately
+        if: ${{ always() && steps.retention.outputs.raw_safe == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-capture-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: prismpm/target/candidate-qualification-driver/raw/
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
