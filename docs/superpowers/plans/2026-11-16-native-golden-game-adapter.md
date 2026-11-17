@@ -51,9 +51,9 @@
 
 **Interfaces:** Consume reviewed Task1 snapshot/envelope; actual owner output contains `review.json`, environment/acquisition/command evidence, original three records and complete generated products. Independent reviewer verifies original unchanged owner semantics, exact authority/identity/command joins and both architecture-specific byte outputs before import.
 
-- [ ] Push reviewed game diagnostic changes under existing authorization; record actual run IDs/game/source SHA and both lane conclusions. Keep previous failed evidence intact.
-- [ ] Independently verify actual artifact API sizes/hashes and safely extract bounded original output. Read failure outputs precisely; repair only demonstrated failures with focused review before rerun, never relabel structural controls as native success.
-- [ ] Review both complete real envelopes and all six raw records/products against original source writer and locks. A missing/failed lane keeps the prerequisite open.
+- [x] Push reviewed game diagnostic changes under existing authorization; record actual run IDs/game/source SHA and both lane conclusions. Keep previous failed evidence intact.
+- [x] Independently verify actual artifact API sizes/hashes and safely extract bounded original output. Read failure outputs precisely; repair only demonstrated failures with focused review before rerun, never relabel structural controls as native success.
+- [x] Review both complete real envelopes and all six raw records/products against original source writer and locks. A missing/failed lane keeps the prerequisite open.
 - [ ] Import only exact six reviewed raw file bytes at original source paths. Verify all unrelated paths unchanged, preserve original reasons/hashes/record schemas, commit and independently review byte equality. No handwritten replacement or regeneration on the controller.
 - [ ] Capture the final clean source with both approved baselines for parent full-VV/SDK/retained-reader/corpus gates. This closes native-baseline preparation only; not SDK, game or source-free acceptance.
 

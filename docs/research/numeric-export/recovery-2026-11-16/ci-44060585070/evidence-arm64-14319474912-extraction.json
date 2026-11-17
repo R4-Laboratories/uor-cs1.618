@@ -1,0 +1,138 @@
+{
+  "artifact_id": 14319474912,
+  "zip_bytes": 52304,
+  "zip_sha256": "11fee283a7113a9754057506dddbc007b2420d8af067781b68b9ae0018fb587f",
+  "files": [
+    {
+      "path": "native-helper-tests/gate-result.json",
+      "bytes": 60,
+      "sha256": "44ec95c472d1dae29f525858763441af30a86cb8cf3235cd4ccbaa312fc72884"
+    },
+    {
+      "path": "native-helper-tests/log-retention.json",
+      "bytes": 211,
+      "sha256": "dd1a38229c4bdefb7ce0ca81293b134225bc5a69407a67d1f20f6dc387e3dc47"
+    },
+    {
+      "path": "native-helper-tests/gate.log",
+      "bytes": 5979,
+      "sha256": "9fc79544f42185561b4abeb742633937942a2e21e3b74fcf39bfbe64f2f4332e"
+    },
+    {
+      "path": "native-helper-tests/monitor-result.json",
+      "bytes": 46,
+      "sha256": "cb7ea6eb0e082a6222681537568090546898b874c99a67e38198d00eec258200"
+    },
+    {
+      "path": "native-helper-tests/owner.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "native-helper-tests/ready.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "native-helper-tests/resources.jsonl",
+      "bytes": 1416,
+      "sha256": "1f68700499de00feb06c57fb8010e800dc8a4e380ec0d0b6b90cb058d3341926"
+    },
+    {
+      "path": "native-helper-tests/stop",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-helper-tests-command.json",
+      "bytes": 73,
+      "sha256": "933eef13c6da309118a76640de69e0a7aea7a6f0bde52a10dbd6d2e692fb8b32"
+    },
+    {
+      "path": "native-owner-run/gate-result.json",
+      "bytes": 60,
+      "sha256": "44ec95c472d1dae29f525858763441af30a86cb8cf3235cd4ccbaa312fc72884"
+    },
+    {
+      "path": "native-owner-run/gate.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-owner-run/log-retention.json",
+      "bytes": 205,
+      "sha256": "bb973b3470bd949fc1ed19fa84916cfe351ca0d4298c8168600eba3137cf6967"
+    },
+    {
+      "path": "native-owner-run/monitor-result.json",
+      "bytes": 49,
+      "sha256": "5e529ebc1d9e0fd312f89bd569389e25d28638d496c4cd3bbb05ea4358c27fc0"
+    },
+    {
+      "path": "native-owner-run/owner.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "native-owner-run/ready.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "native-owner-run/resources.jsonl",
+      "bytes": 119818,
+      "sha256": "1190720dd92c28266ad43f691c9e4fd772663e26ff733e39eb9d6aa81e1ceb9a"
+    },
+    {
+      "path": "native-owner-run/stop",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-owner-run-command.json",
+      "bytes": 156,
+      "sha256": "0dae6bb0abe95586f381b6f8d9a0032a69dc9f995ae56138e3c01b3e87702628"
+    },
+    {
+      "path": "observer/monitor-result.json",
+      "bytes": 49,
+      "sha256": "e81b9317b6b016947ced9e6efef6a562c1f2b5175345cc4d3fcc2f23fbcd6970"
+    },
+    {
+      "path": "observer/owner.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "observer/ready.json",
+      "bytes": 35,
+      "sha256": "511ecee04a5635f3443212dc52fe88b4ae652dfbfaa90544e88852738d5eb3ad"
+    },
+    {
+      "path": "observer/resources.jsonl",
+      "bytes": 115013,
+      "sha256": "3aa51d787f92d75a43c930a34d72bcae40eecd54c89aeb0ce3fb8c7b1f175893"
+    },
+    {
+      "path": "observer/stop",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "orchestration.json",
+      "bytes": 120432,
+      "sha256": "93300e636c96b80d74b84062a25cfe502831e62f28dafe33a7e664d6dc32f8d6"
+    },
+    {
+      "path": "preparation.json",
+      "bytes": 2822,
+      "sha256": "7267def42dbade909c74e4d028a953f282a1c21a9d422cf8ccd0e91b8a114e3e"
+    },
+    {
+      "path": "restoration-receipt.json",
+      "bytes": 469,
+      "sha256": "852fa7cdf6766caf67a8ce41796be32aa4b5179f992a2f202ae55d880c55d168"
+    }
+  ],
+  "total_bytes": 367068
+}

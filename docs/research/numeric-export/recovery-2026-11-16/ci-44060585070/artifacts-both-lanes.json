@@ -1,0 +1,80 @@
+{
+  "artifacts": [
+    {
+      "id": 14321141148,
+      "name": "backport-native-golden-arm64-881df278923ff271fc179703e55ea91c45f2394d-44060585070-1",
+      "size_in_bytes": 8319603,
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14321141148",
+      "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14321141148/zip",
+      "expired": false,
+      "created_at": "2026-11-17T10:40:45Z",
+      "expires_at": "2026-12-01T10:40:43Z",
+      "updated_at": "2026-11-17T10:40:45Z",
+      "digest": "sha256:0b98536a29d13bc924421b3ef5b38b0f9293ca306dd387e2e93958ecde8263a8",
+      "workflow_run": {
+        "id": 44060585070,
+        "repository_id": 1459410356,
+        "head_repository_id": 1459410356,
+        "head_branch": "numeric-kernels",
+        "head_sha": "e0355a99c8717724e0d1fd072dfac15013603d17"
+      }
+    },
+    {
+      "id": 14319474912,
+      "name": "backport-native-orchestration-arm64-881df278923ff271fc179703e55ea91c45f2394d-44060585070-1",
+      "size_in_bytes": 52304,
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319474912",
+      "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319474912/zip",
+      "expired": false,
+      "created_at": "2026-11-17T10:40:46Z",
+      "expires_at": "2026-12-01T10:40:45Z",
+      "updated_at": "2026-11-17T10:40:46Z",
+      "digest": "sha256:11fee283a7113a9754057506dddbc007b2420d8af067781b68b9ae0018fb587f",
+      "workflow_run": {
+        "id": 44060585070,
+        "repository_id": 1459410356,
+        "head_repository_id": 1459410356,
+        "head_branch": "numeric-kernels",
+        "head_sha": "e0355a99c8717724e0d1fd072dfac15013603d17"
+      }
+    },
+    {
+      "id": 14319337290,
+      "name": "backport-native-orchestration-amd64-881df278923ff271fc179703e55ea91c45f2394d-44060585070-1",
+      "size_in_bytes": 44721,
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319337290",
+      "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319337290/zip",
+      "expired": false,
+      "created_at": "2026-11-17T10:23:02Z",
+      "expires_at": "2026-12-01T10:23:01Z",
+      "updated_at": "2026-11-17T10:23:02Z",
+      "digest": "sha256:0c3790436072fd71a1fa62de34a5698105fcb93a934ba31eda29e3544257cfba",
+      "workflow_run": {
+        "id": 44060585070,
+        "repository_id": 1459410356,
+        "head_repository_id": 1459410356,
+        "head_branch": "numeric-kernels",
+        "head_sha": "e0355a99c8717724e0d1fd072dfac15013603d17"
+      }
+    },
+    {
+      "id": 14319083097,
+      "name": "backport-native-golden-amd64-881df278923ff271fc179703e55ea91c45f2394d-44060585070-1",
+      "size_in_bytes": 8398961,
+      "url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319083097",
+      "archive_download_url": "https://api.github.com/repos/R4-Laboratories/uor-cs1.618/actions/artifacts/14319083097/zip",
+      "expired": false,
+      "created_at": "2026-11-17T10:23:01Z",
+      "expires_at": "2026-12-01T10:23:00Z",
+      "updated_at": "2026-11-17T10:23:01Z",
+      "digest": "sha256:218e21171b401da49a53eaea154e8f794627f545ff6f2656105c99f40cc07aad",
+      "workflow_run": {
+        "id": 44060585070,
+        "repository_id": 1459410356,
+        "head_repository_id": 1459410356,
+        "head_branch": "numeric-kernels",
+        "head_sha": "e0355a99c8717724e0d1fd072dfac15013603d17"
+      }
+    }
+  ]
+}
