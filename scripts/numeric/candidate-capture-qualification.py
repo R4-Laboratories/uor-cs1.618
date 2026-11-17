@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fixed hosted game qualification. Component checks confer no SDK acceptance."""
 import argparse
+import ctypes
 import errno
 import hashlib
 import importlib.util
@@ -1702,8 +1703,9 @@ def validate_collection_shape(value):
     return value
 
 
-def host_collect(phase):
-    root=Path.cwd().resolve();home=root/'prismpm/target/candidate-qualification-driver';evidence=root/'evidence'
+def host_collect(phase, evidence=None):
+    root=Path.cwd().resolve();home=root/'prismpm/target/candidate-qualification-driver'
+    evidence=root/'evidence' if evidence is None else directory(evidence,private=True)
     partial=read_json(home/'preparation-partial.json')
     require(git(root/'game','rev-parse','HEAD').decode().strip()==partial['game']['commit'],'host game checkout identity')
     for role,name in AUTHORITY.items():
@@ -1743,12 +1745,13 @@ def host_collect(phase):
     require(valid,'host collection incomplete')
 
 
-def export_host(phase):
+def export_host(phase, evidence=None):
     root=Path.cwd().resolve();home=root/'prismpm/target/candidate-qualification-driver'
-    destination=root/'evidence/metadata-upload';destination.mkdir(parents=True,mode=0o700,exist_ok=True)
+    evidence=root/'evidence' if evidence is None else directory(evidence,private=True)
+    destination=evidence/'metadata-upload';destination.mkdir(parents=True,mode=0o700,exist_ok=True)
     failure=None
     (home/'raw-upload-ready.json').unlink(missing_ok=True)
-    try:host_collect(phase)
+    try:host_collect(phase,evidence)
     except BaseException as error:failure=error
     finally:
         if failure and (home/'metadata/collection.json').exists():
@@ -1758,7 +1761,7 @@ def export_host(phase):
         summary={'schema':'cs1618/candidate-host-export/1','status':'incomplete' if failure else 'completed',
                  'phase':phase,'error':None if failure is None else str(failure)[:4096],
                  'raw_safe':False,'raw_bytes':0,'metadata_files':[],'missing':[]}
-        raw=home/'raw';metadata=home/'metadata' if phase=='qualification' else root/'evidence'
+        raw=home/'raw';metadata=home/'metadata' if phase=='qualification' else evidence
         if raw.exists():
             try:
                 total=0;count=0
@@ -1791,6 +1794,472 @@ def export_host(phase):
     require(not summary['missing'],'host artifact export incomplete')
 
 
+BRIDGE_OPERATIONS=('preflight-image','preflight-qualification','image-collect','qualification-collect',
+                   'pull-budget','setup-budget','metadata-budget','raw-budget')
+
+
+def bridge_time(deadline):
+    if time.monotonic()>=deadline:raise CollectionDeadline('host handoff deadline exhausted')
+
+
+def bridge_owned(path,uid,limit,deadline):
+    """Only bridge control/export objects; never a replacement source reader."""
+    bridge_time(deadline);path=Path(path).absolute();before=path.lstat()
+    require(path.resolve()==path and stat.S_ISREG(before.st_mode) and before.st_nlink==1
+            and before.st_uid==uid and not before.st_mode&0o7022 and before.st_size<=limit,
+            'bounded owned unaliased bridge file')
+    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    try:
+        body=bytearray()
+        while True:
+            bridge_time(deadline);chunk=os.read(fd,min(MIB,limit+1-len(body)))
+            if not chunk:break
+            body.extend(chunk);require(len(body)<=limit,'bridge file size bound')
+        keys=('st_dev','st_ino','st_uid','st_gid','st_mode','st_size','st_nlink','st_mtime_ns','st_ctime_ns')
+        require(len(body)==before.st_size and all(getattr(before,k)==getattr(after,k)
+                for after in (os.fstat(fd),path.lstat()) for k in keys),'bridge file changed')
+        return bytes(body)
+    finally:os.close(fd)
+
+
+def bridge_directory(path,uid):
+    path=Path(path).absolute();info=path.lstat()
+    require(path.resolve()==path and stat.S_ISDIR(info.st_mode) and info.st_uid==uid
+            and not info.st_mode&0o7022,'owned unaliased bridge directory')
+    return info
+
+
+def bridge_inventory(root,uid,deadline,limit=MAX_TOTAL):
+    """Complete held copy inventory, including empty directories and identities."""
+    root=Path(root);top=bridge_directory(root,uid);rows=[];total=0
+    pending=[root]
+    while pending:
+        bridge_time(deadline);path=pending.pop();info=path.lstat()
+        name='.' if path==root else safe_relative(path.relative_to(root).as_posix())
+        require(info.st_dev==top.st_dev and info.st_uid==uid and not info.st_mode&0o7022
+                and path.resolve()==path,'same-device owned export member')
+        row={'path':name,'dev':info.st_dev,'ino':info.st_ino}
+        if stat.S_ISDIR(info.st_mode):
+            bridge_directory(path,uid);row['kind']='directory';pending.extend(sorted(path.iterdir(),reverse=True))
+        else:
+            require(stat.S_ISREG(info.st_mode) and info.st_nlink==1,'singly linked regular export copy')
+            total+=info.st_size;require(total<=limit,'aggregate export byte cap')
+            fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+            try:
+                digest=hashlib.sha256();size=0
+                while True:
+                    bridge_time(deadline);chunk=os.read(fd,MIB)
+                    if not chunk:break
+                    size+=len(chunk);require(size<=info.st_size,'growing export copy');digest.update(chunk)
+                keys=('st_dev','st_ino','st_uid','st_gid','st_mode','st_size','st_nlink','st_mtime_ns','st_ctime_ns')
+                require(size==info.st_size and all(getattr(info,k)==getattr(after,k)
+                        for after in (os.fstat(fd),path.lstat()) for k in keys),'export copy changed during hashing')
+                row.update(kind='file',bytes=size,sha256=digest.hexdigest())
+            finally:os.close(fd)
+        rows.append(row);require(len(rows)<=250000 and len(pending)<=250000,'export member count cap')
+    rows.sort(key=lambda row:row['path'])
+    require(len(encoded(rows))<=MAX_METADATA,'bounded handoff inventory')
+    return rows
+
+
+def bridge_relocate(source,target,expected,uid,gid,deadline):
+    """One same-device no-replace move of retained copies, never originals."""
+    bridge_time(deadline);source=Path(source);target=Path(target)
+    owner=source.lstat().st_uid
+    require(bridge_inventory(source,owner,deadline)==expected,'held export inventory changed')
+    parent=bridge_directory(target.parent,uid)
+    require(source.stat().st_dev==parent.st_dev and not os.path.lexists(target),'absent same-device export destination')
+    # renameat2, not rename(), also refuses a raced-in empty destination directory.
+    libc=ctypes.CDLL(None,use_errno=True);rename=libc.renameat2
+    rename.argtypes=(ctypes.c_int,ctypes.c_char_p,ctypes.c_int,ctypes.c_char_p,ctypes.c_uint)
+    rename.restype=ctypes.c_int
+    oldfd=os.open(source.parent,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    newfd=os.open(target.parent,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:
+        bridge_time(deadline)
+        if rename(oldfd,os.fsencode(source.name),newfd,os.fsencode(target.name),1)!=0:
+            error=ctypes.get_errno();raise OSError(error,os.strerror(error))
+    finally:os.close(oldfd);os.close(newfd)
+    # Root directory is transferred last. An interrupted transfer never admits.
+    for row in sorted(expected,key=lambda r:(r['path'].count('/'),r['path']!='.'),reverse=True):
+        bridge_time(deadline);path=target if row['path']=='.' else target/safe_relative(row['path'])
+        flags=os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK
+        if row['kind']=='directory':flags|=os.O_DIRECTORY
+        fd=os.open(path,flags)
+        try:
+            info=os.fstat(fd)
+            require((info.st_dev,info.st_ino,info.st_uid)==(row['dev'],row['ino'],owner)
+                    and (row['kind']=='directory' or (stat.S_ISREG(info.st_mode) and info.st_nlink==1)),
+                    'held descriptor identity before owner transfer')
+            os.fchown(fd,uid,gid);os.fchmod(fd,0o700 if row['kind']=='directory' else 0o400)
+        finally:os.close(fd)
+    bridge_time(deadline)
+
+
+def bridge_runner_admit(target,expected,deadline):
+    require(bridge_inventory(target,os.getuid(),deadline)==expected,'actual runner read/hash inventory mismatch')
+
+
+def bridge_supervise(callback,deadline):
+    """Fixed internal child only; result pipe is bounded, descendants retired."""
+    bridge_time(deadline);reader,writer=os.pipe();pid=os.fork()
+    if pid==0:
+        try:
+            os.setsid();signal.setitimer(signal.ITIMER_REAL,0)
+            for sig in (signal.SIGTERM,signal.SIGINT,signal.SIGALRM):signal.signal(sig,signal.SIG_DFL)
+            # No inherited root-open file, token/output descriptor, or stdio.
+            for entry in os.listdir('/proc/self/fd'):
+                fd=int(entry)
+                if fd!=writer:
+                    try:os.close(fd)
+                    except OSError:pass
+            null=os.open('/dev/null',os.O_RDWR)
+            for fd in (0,1,2):os.dup2(null,fd)
+            if null>2:os.close(null)
+            result=callback();require(type(result) is dict and type(result.get('exit')) is int
+                                      and 0<=result['exit']<=255,'bounded actual child exit')
+        except BaseException as error:result={'exit':1,'error':str(error)[:2048]}
+        try:
+            body=encoded(result);require(len(body)<=8192,'bounded child control pipe');os.write(writer,body)
+        except BaseException:os._exit(1)
+        os._exit(result['exit'])
+    os.close(writer);body=bytearray();status=None
+    try:
+        while True:
+            bridge_time(deadline)
+            ready,_,_=select.select([reader],[],[],min(0.05,max(0,deadline-time.monotonic())))
+            if ready:
+                chunk=os.read(reader,8193-len(body));body.extend(chunk)
+                require(len(body)<=8192,'bounded child control pipe')
+                if not chunk:break
+        while status is None:
+            bridge_time(deadline);done,value=os.waitpid(pid,os.WNOHANG)
+            if done:status=value;break
+            select.select([],[],[],0.005)
+        value=decode(bytes(body));require(os.WIFEXITED(status) and os.WEXITSTATUS(status)==value.get('exit'),
+                                         'actual child exit/result join')
+        return value
+    finally:
+        os.close(reader)
+        # Group retirement also handles descendants left after the direct child.
+        try:os.killpg(pid,signal.SIGKILL)
+        except ProcessLookupError:
+            try:os.kill(pid,signal.SIGKILL)
+            except ProcessLookupError:pass
+        if status is None:
+            try:os.waitpid(pid,0)
+            except ChildProcessError:pass
+
+
+def bridge_drop(socket_group):
+    groups=[] if socket_group is None else [socket_group]
+    os.setgroups(groups);os.setgid(1000);os.setuid(1000)
+    require(os.getuid()==os.geteuid()==1000 and os.getgid()==os.getegid()==1000
+            and os.getgroups()==groups,'actual dropped source credentials')
+    os.environ.clear();os.environ.update(PATH='/usr/bin:/bin',LANG='C.UTF-8')
+
+
+def bridge_controls(operation,value):
+    if operation in ('pull-budget','setup-budget'):
+        closed(value,'minutes');require(type(value['minutes']) is int and 1<=value['minutes']<=45,'bounded setup minutes')
+    else:
+        key=('preflight' if operation.startswith('preflight-') else 'metadata_safe' if operation=='image-collect'
+             else 'raw_safe' if operation=='qualification-collect' else 'admitted')
+        closed(value,key);require(type(value[key]) is bool,'typed host Boolean control')
+    return value
+
+
+def bridge_append_outputs(path,operation,value):
+    value=bridge_controls(operation,value);path=Path(path).absolute();before=path.lstat()
+    require(path.resolve()==path and stat.S_ISREG(before.st_mode) and before.st_nlink==1
+            and before.st_uid==os.getuid(),'actual runner-owned output file')
+    fd=os.open(path,os.O_WRONLY|os.O_APPEND|os.O_NOFOLLOW|os.O_NONBLOCK)
+    try:
+        info=os.fstat(fd);require((info.st_dev,info.st_ino,info.st_uid,info.st_gid,info.st_mode)==
+            (before.st_dev,before.st_ino,before.st_uid,before.st_gid,before.st_mode),'unchanged runner output identity')
+        body=''.join(key+'='+(str(v).lower() if type(v) is bool else str(v))+'\n' for key,v in value.items()).encode()
+        require(os.write(fd,body)==len(body),'complete bounded runner output append')
+    finally:os.close(fd)
+
+
+def bridge_read(path,uid,deadline,limit=8192):
+    return decode(bridge_owned(path,uid,limit,deadline))
+
+
+def bridge_publish(path,value,uid,gid,deadline):
+    bridge_time(deadline);bridge_directory(path.parent,uid);body=encoded(value)
+    require(len(body)<=MAX_METADATA,'bounded runner handoff file')
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o400)
+    try:
+        with os.fdopen(fd,'wb',closefd=False) as stream:stream.write(body);stream.flush()
+        bridge_time(deadline);os.fchown(fd,uid,gid)
+    finally:os.close(fd)
+
+
+def bridge_child(operation,context,socket_group):
+    bridge_drop(socket_group)
+    root=Path.cwd();home=root/'prismpm/target/candidate-qualification-driver'
+    partial=validate_partial(read_json(home/'preparation-partial.json'))
+    require(partial==context['partial'],'actual source-owned preparation join')
+    if operation in ('pull-budget','setup-budget'):
+        minutes=int((partial['started']+2700-time.monotonic())//60)
+        return {'exit':0,'controls':bridge_controls(operation,{'minutes':minutes})}
+    folder=home/'host-bridge'/operation;folder.mkdir(parents=True,mode=0o700)
+    if operation.startswith('preflight-'):
+        require(os.access('/var/run/docker.sock',os.R_OK|os.W_OK),'actual dropped Docker socket access')
+        original=folder/'original.json';write(original,{'purpose':'disposable host handoff preflight'})
+        destination=folder/'metadata-upload';destination.mkdir(mode=0o700)
+        shutil.copyfile(original,destination/'copy.json');os.chmod(destination/'copy.json',0o400)
+        info=original.stat()
+        result={'exit':0,'original':{key:getattr(info,key) for key in
+                ('st_dev','st_ino','st_uid','st_gid','st_mode','st_size','st_nlink')}}
+    else:
+        try:export_host(context['phase'],folder);result={'exit':0}
+        except BaseException as error:result={'exit':1,'error':str(error)[:2048]}
+        destination=folder/'metadata-upload'
+    write(destination/'bridge-context.json',{'operation':operation,'runner_uid':context['uid'],'runner_gid':context['gid'],
+          'source_uid':os.getuid(),'source_gid':os.getgid(),'source_groups':os.getgroups(),
+          'job_started':partial['started'],'collection_clock':context['clock'],'child':result,
+          'raw_mapping':{'from':'prismpm/target/candidate-qualification-driver/raw','to':'evidence/raw-upload'}
+                        if operation=='qualification-collect' else None})
+    return result
+
+
+def bridge_admission(root,operation,state,uid,deadline):
+    admission=bridge_read(root/'evidence/host-bridge'/(operation+'.admission.json'),uid,deadline)
+    require(admission=={'operation':operation,'handoff_sha256':state['handoff_sha256'],
+                       'deadline':state['deadline'],'metadata':True,'raw':state['raw']},
+            'actual runner admission joins one completed handoff')
+
+
+def bridge_guard(root,ledger,operation,uid,job_started,deadline):
+    require(operation in ('metadata-budget','raw-budget'),'closed control-only upload guard')
+    state=read_json(ledger/'qualification-collect.json')
+    closed(state,'status handoff_sha256 deadline clock raw')
+    require(state['status']=='completed','one completed collection handoff required')
+    bridge_admission(root,'qualification-collect',state,uid,deadline)
+    clock=validate_collection_clock(state['clock'])
+    require(clock['job_deadline']==job_started+21600,'original guard job clock')
+    require(read_json(ledger/'collection-clock.json')==clock,'unchanged persistent bridge collection clock')
+    collection_phase_seconds(clock,operation.split('-')[0],time.monotonic())
+    if operation=='raw-budget':require(state['raw'],'complete raw handoff required')
+    return clock
+
+
+def bridge_privileged(operation):
+    require(operation in BRIDGE_OPERATIONS and os.getuid()==os.geteuid()==0,'fixed root bridge entry')
+    root=Path.cwd();require(root.is_absolute() and root.resolve()==root,'unaliased fixed host workspace')
+    script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+    require(Path(__file__).absolute()==script,'fixed checked game bridge path')
+    # These are actual sudo-origin values, not identities supplied by request JSON.
+    require(re.fullmatch('[1-9][0-9]{0,9}',os.environ.get('SUDO_UID','')) is not None
+            and re.fullmatch('[0-9]{1,10}',os.environ.get('SUDO_GID','')) is not None,'actual nonroot sudo origin')
+    uid=int(os.environ['SUDO_UID']);gid=int(os.environ['SUDO_GID'])
+    os.environ.clear();os.environ.update(PATH='/usr/bin:/bin',LANG='C.UTF-8')
+    bridge_directory(root,uid);bridge_directory(root/'game',uid);bridge_directory(root/'evidence',uid)
+    control=root/'evidence/host-bridge';bridge_directory(control,uid)
+    preliminary=time.monotonic()+5
+    request=bridge_read(control/(operation+'.request.json'),uid,preliminary)
+    closed(request,'operation uid gid started');require(request['operation']==operation and request['uid']==uid
+            and request['gid']==gid and type(request['started']) in (float,int)
+            and 0<=time.monotonic()-request['started']<5,'fresh actual runner request')
+    cap=5 if operation.endswith('-budget') else 30 if operation.startswith('preflight-') else 60
+    deadline=request['started']+cap-0.5 # reserve a bounded runner return, never renew
+    def expired(signum,frame):raise CollectionDeadline('privileged host bridge interrupted or expired')
+    previous={sig:signal.signal(sig,expired) for sig in (signal.SIGALRM,signal.SIGTERM,signal.SIGINT)}
+    signal.setitimer(signal.ITIMER_REAL,max(0.001,deadline-time.monotonic()))
+    try:
+        job=bridge_read(root/'evidence/job-start.json',uid,deadline);closed(job,'monotonic')
+        partial=validate_partial(bridge_read(root/'evidence/preparation-partial.json',uid,deadline))
+        phase=partial['phase'];require(job=={'monotonic':partial['started']},'original actual runner job clock')
+        require(operation not in ('preflight-image','image-collect') or phase=='image','fixed image operation')
+        require(operation in ('preflight-image','image-collect') or phase=='qualification','fixed qualification operation')
+        deadline=min(deadline,partial['started']+(14400 if phase=='image' else 21600))
+        bridge_time(deadline)
+        require(git(root/'game','rev-parse','HEAD').decode().strip()==partial['game']['commit'],'fixed actual game commit')
+        body=bridge_owned(script,uid,MAX_METADATA,deadline)
+        require(body==git(root/'game','show',partial['game']['commit']+':scripts/numeric/candidate-capture-qualification.py')
+                and sha(body)==partial['driver']['sha256'],'authenticated exact bridge driver bytes')
+        ledger=root/'evidence/.host-bridge-root'
+        if not ledger.exists():ledger.mkdir(mode=0o700)
+        directory(ledger,private=True)
+        state_path=ledger/(operation+'.json')
+        write(state_path,{'status':'incomplete','request_sha256':sha(encoded(request))}) # no replay/replacement
+        preflight='preflight-'+phase
+        if operation!=preflight:
+            previous_state=read_json(ledger/(preflight+'.json'))
+            require(previous_state['status']=='completed','completed actual bridge preflight required')
+            bridge_admission(root,preflight,previous_state,uid,deadline)
+        clock=None
+        if operation in ('metadata-budget','raw-budget'):
+            # Control only: never revisit source/raw files or repeat relocation.
+            clock=bridge_guard(root,ledger,operation,uid,partial['started'],deadline)
+            result={'exit':0,'controls':{'admitted':True},'clock':clock,'deadline':deadline,'handoff':None}
+        else:
+            home=root/'prismpm/target/candidate-qualification-driver'
+            if operation=='qualification-collect':
+                source=home/'collection-clock.json'
+                clock=(validate_collection_clock(bridge_read(source,1000,deadline)) if source.exists()
+                       else collection_clock(partial['started'],request['started']))
+                require(clock['job_deadline']==partial['started']+21600,'original collection job clock')
+                write(ledger/'collection-clock.json',clock) # one persistent record, even on later failure
+                collection_phase_seconds(clock,'host',time.monotonic())
+                deadline=min(deadline,clock['deadline']-120)
+            if operation.startswith('preflight-') or operation in ('pull-budget','setup-budget'):
+                deadline=min(deadline,partial['started']+(14400 if phase=='image' else 2700))
+            bridge_time(deadline);signal.setitimer(signal.ITIMER_REAL,max(0.001,deadline-time.monotonic()))
+            socket_group=None
+            if operation.startswith('preflight-') or operation=='image-collect':
+                socket=Path('/var/run/docker.sock').lstat()
+                require(stat.S_ISSOCK(socket.st_mode) and Path('/var/run/docker.sock').resolve()==Path('/var/run/docker.sock'),
+                        'actual fixed Docker socket');socket_group=socket.st_gid
+            context={'uid':uid,'gid':gid,'partial':partial,'phase':phase,'clock':clock}
+            child=bridge_supervise(lambda:bridge_child(operation,context,socket_group),deadline)
+            result={'exit':child['exit'],'controls':child.get('controls'),
+                    'clock':clock,'deadline':deadline,'handoff':None}
+            if operation not in ('pull-budget','setup-budget'):
+                folder=home/'host-bridge'/operation
+                metadata=folder/'metadata-upload'
+                inventory=bridge_inventory(metadata,1000,deadline,MAX_METADATA-8192)
+                raw=None
+                if operation=='qualification-collect' and (home/'raw-upload-ready.json').exists():
+                    raw=bridge_inventory(home/'raw',1000,deadline,MAX_TOTAL-MAX_METADATA)
+                destination=root/'evidence'/('preflight-upload' if operation.startswith('preflight-') else 'metadata-upload')
+                manifest={'operation':operation,'metadata':inventory,'raw':raw,'clock':clock,'child':child,
+                          'from':str(metadata.relative_to(root)),'to':str(destination.relative_to(root))}
+                metadata_bytes=sum(row.get('bytes',0) for row in inventory)+len(encoded(manifest))+8192
+                require(metadata_bytes<=MAX_METADATA and metadata_bytes+sum(row.get('bytes',0) for row in raw or [])<=MAX_TOTAL,
+                        'metadata, mapping, handoff/status and raw combined byte caps')
+                bridge_relocate(metadata,destination,inventory,uid,gid,deadline)
+                if raw is not None:bridge_relocate(home/'raw',root/'evidence/raw-upload',raw,uid,gid,deadline)
+                # A separate private original is deliberately never transferred.
+                if operation.startswith('preflight-'):
+                    require(bridge_owned(folder/'original.json',1000,4096,deadline)==
+                            encoded({'purpose':'disposable host handoff preflight'}),'unchanged preflight original')
+                    info=(folder/'original.json').stat()
+                    require(child['original']=={key:getattr(info,key) for key in child['original']},
+                            'unchanged original device/inode/owner/mode during preflight handoff')
+                handoff=control/(operation+'.handoff.json')
+                bridge_publish(handoff,manifest,uid,gid,deadline)
+                result['handoff']=sha(encoded(manifest))
+                result['controls']=({'preflight':child['exit']==0} if operation.startswith('preflight-')
+                                    else {'metadata_safe':True} if operation=='image-collect' else {'raw_safe':raw is not None})
+                write(state_path,{'status':'completed','handoff_sha256':result['handoff'],'deadline':deadline,
+                                  'clock':clock,'raw':raw is not None},replace=True)
+        bridge_time(deadline);bridge_controls(operation,result['controls'])
+        # Root writes only this bounded typed stdout record, never GITHUB_OUTPUT.
+        print(encoded(result).decode(),end='')
+        return result['exit']
+    finally:
+        signal.setitimer(signal.ITIMER_REAL,0)
+        for sig,handler in previous.items():signal.signal(sig,handler)
+
+
+def bridge_call_root(script,operation,deadline):
+    """Only the fixed root command; bounded streams, no supplied child argv."""
+    require(operation in BRIDGE_OPERATIONS,'closed root call')
+    process=subprocess.Popen(['/usr/bin/sudo','-n','--','/usr/bin/python3','-I','-B',str(script),
+                              'host-root','--bridge-operation',operation],stdin=subprocess.DEVNULL,
+                             stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True,
+                             env={'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'})
+    streams={process.stdout:bytearray(),process.stderr:bytearray()};pending=set(streams)
+    try:
+        while pending:
+            bridge_time(deadline)
+            ready,_,_=select.select(list(pending),[],[],min(0.05,max(0,deadline-time.monotonic())))
+            for stream in ready:
+                chunk=os.read(stream.fileno(),8193-len(streams[stream]))
+                if chunk:streams[stream].extend(chunk)
+                else:pending.remove(stream)
+                require(len(streams[stream])<=8192,'bounded privileged control streams')
+        code=process.wait(timeout=max(0.001,deadline-time.monotonic()))
+        return code,bytes(streams[process.stdout]),bytes(streams[process.stderr])
+    finally:
+        for stream in streams:stream.close()
+        # The UID0 supervisor owns its earlier absolute timer and child reap.
+        # The ordinary runner cannot claim to kill a privileged process itself.
+        if process.poll() is None:
+            try:process.wait(timeout=max(0.001,deadline-time.monotonic()))
+            except subprocess.TimeoutExpired:pass
+
+
+def bridge_runner(operation):
+    require(operation in BRIDGE_OPERATIONS and os.getuid()==os.geteuid()!=0,'fixed normal runner bridge entry')
+    root=directory(Path.cwd());directory(root/'game');directory(root/'evidence')
+    script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+    require(Path(__file__).absolute()==script,'fixed runner driver path')
+    control=root/'evidence/host-bridge';control.mkdir(mode=0o700,exist_ok=True);directory(control,private=True)
+    began=time.monotonic();cap=5 if operation.endswith('-budget') else 30 if operation.startswith('preflight-') else 60
+    deadline=began+cap;request={'operation':operation,'uid':os.getuid(),'gid':os.getgid(),'started':began}
+    write(control/(operation+'.request.json'),request)
+    exit_code=1;failure=None;outputs=None
+    try:
+        # No environment preservation or selectable run-as owner/group/program.
+        exit_code,stdout,stderr=bridge_call_root(script,operation,deadline)
+        require(stdout,'root bridge did not return: '+stderr.decode(errors='replace')[:2048])
+        result=decode(stdout);closed(result,'exit controls clock deadline handoff')
+        require(type(result['exit']) is int and result['exit']==exit_code and 0<=exit_code<=255,
+                'actual privileged exit/result join')
+        require(type(result['deadline']) in (float,int) and began<result['deadline']<=deadline,'same charged host deadline')
+        deadline=min(deadline,result['deadline']) # includes the original absolute job/collection cutoffs
+        outputs=bridge_controls(operation,result['controls']);bridge_time(deadline)
+        require((result['handoff'] is None)==operation.endswith('-budget'),'export controls require one held handoff')
+        if result['handoff'] is not None:
+            require(type(result['handoff']) is str and re.fullmatch('[0-9a-f]{64}',result['handoff']),'typed handoff digest')
+            manifest=read_json(control/(operation+'.handoff.json'))
+            closed(manifest,'operation metadata raw clock child from to')
+            require(sha(encoded(manifest))==result['handoff'] and manifest['operation']==operation
+                    and manifest['clock']==result['clock'] and manifest['child']['exit']==exit_code,'held handoff/result join')
+            if operation=='qualification-collect':require(outputs['raw_safe']==(manifest['raw'] is not None),'raw-safe exact inventory join')
+            target=root/'evidence'/('preflight-upload' if operation.startswith('preflight-') else 'metadata-upload')
+            require(manifest['to']==str(target.relative_to(root)),'fixed export destination join')
+            bridge_runner_admit(target,manifest['metadata'],deadline)
+            if manifest['raw'] is not None:bridge_runner_admit(root/'evidence/raw-upload',manifest['raw'],deadline)
+            if operation.startswith('preflight-') and os.getuid()!=1000:
+                original=root/'prismpm/target/candidate-qualification-driver/host-bridge'/operation/'original.json'
+                try:
+                    fd=os.open(original,os.O_RDONLY|os.O_NOFOLLOW);os.close(fd)
+                except PermissionError:pass
+                else:raise ValueError('private original unexpectedly readable by distinct runner')
+            admission={'operation':operation,'handoff_sha256':result['handoff'],
+                       'deadline':result['deadline'],'metadata':True,'raw':manifest['raw'] is not None}
+            # These bounded runner-created records are in the root's reserved
+            # metadata allowance. Their exact bytes are read back as this UID.
+            bridge_time(deadline);write(target/'bridge-handoff.json',manifest);write(target/'runner-admission.json',admission)
+            require(read_json(target/'bridge-handoff.json')==manifest and read_json(target/'runner-admission.json')==admission,
+                    'actual runner-readable handoff/admission records')
+            bridge_time(deadline);write(control/(operation+'.admission.json'),admission)
+        bridge_time(deadline)
+        bridge_append_outputs(Path(os.environ['GITHUB_OUTPUT']),operation,outputs)
+        if exit_code:failure='original UID1000 collection failed; safe exports are diagnostic evidence only'
+    except BaseException as error:
+        failure=str(error)[:2048]
+        if exit_code==0:exit_code=1
+    status={'operation':operation,'exit':exit_code,'error':failure,'runner_uid':os.getuid(),'runner_gid':os.getgid(),
+            'elapsed_seconds':time.monotonic()-began,'complete_application_accepted':False}
+    write(control/(operation+'.status.json'),status)
+    if failure:
+        # Root never started, or incomplete transfer: retain a small readable
+        # diagnostic without treating a partially transferred tree as uploadable.
+        destination=root/'evidence/metadata-upload'
+        if not os.path.lexists(destination):
+            destination.mkdir(mode=0o700);write(destination/'bridge-failure.json',status)
+        if operation=='image-collect' and time.monotonic()<deadline:
+            # An early refusal may upload only the exact small runner-owned
+            # failure record. A partially transferred tree is never admitted.
+            try:
+                directory(destination,private=True)
+                require(set(path.name for path in destination.iterdir())=={'bridge-failure.json'},'failure-only export')
+                record=read_json(destination/'bridge-failure.json',8192)
+                closed(record,'operation exit error runner_uid runner_gid elapsed_seconds complete_application_accepted')
+                require(record['runner_uid']==os.getuid() and type(record['exit']) is int and record['exit']!=0
+                        and record['complete_application_accepted'] is False,'actual runner-readable failure metadata')
+                bridge_time(deadline);bridge_append_outputs(Path(os.environ['GITHUB_OUTPUT']),operation,{'metadata_safe':True})
+            except Exception:pass # preserve original failure; no safe output
+        print('host bridge incomplete: '+failure,file=__import__('sys').stderr)
+    return exit_code
+
+
 def admit_local_download(free_bytes,compressed_bytes,extracted_bytes,working_bytes):
     require(all(type(value) is int and value>=0 for value in (free_bytes,compressed_bytes,extracted_bytes,working_bytes)),
             'measured nonnegative local download sizes')
@@ -1801,14 +2270,18 @@ def admit_local_download(free_bytes,compressed_bytes,extracted_bytes,working_byt
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('operation',choices=('prepare','build-subjects','qualify','run-oc10','collect','run','host-collect','setup-budget','collection-budget'))
+    parser.add_argument('operation',choices=('prepare','build-subjects','qualify','run-oc10','collect','run','host-collect','setup-budget','collection-budget','host-bridge','host-root'))
+    parser.add_argument('--bridge-operation',choices=BRIDGE_OPERATIONS)
     parser.add_argument('--scenario',choices=SCENARIOS)
     parser.add_argument('--collection-phase',choices=('metadata','raw'))
     parser.add_argument('--phase',choices=('image','qualification'),default='qualification')
     args=parser.parse_args()
+    require((args.operation in ('host-bridge','host-root'))==(args.bridge_operation is not None),'closed bridge operation only')
     require((args.operation=='qualify')==(args.scenario is not None),'scenario only belongs to qualify')
     require((args.operation=='collection-budget')==(args.collection_phase is not None),'upload phase only belongs to collection-budget')
-    if args.operation=='prepare':prepare(args.phase)
+    if args.operation in ('host-bridge','host-root'):
+        raise SystemExit((bridge_runner if args.operation=='host-bridge' else bridge_privileged)(args.bridge_operation))
+    elif args.operation=='prepare':prepare(args.phase)
     elif args.operation=='host-collect':bounded_host_export(args.phase)
     elif args.operation=='collection-budget':upload_collection_budget(args.collection_phase)
     elif args.operation=='setup-budget':

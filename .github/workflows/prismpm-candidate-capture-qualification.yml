@@ -44,7 +44,9 @@ jobs:
           set -euo pipefail
           umask 022
           python3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare --phase image
-          sudo chown -R 1000:1000 prismpm evidence
+          sudo chown -R 1000:1000 prismpm
+      - name: Exercise actual host privilege and artifact handoff
+        run: python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image
       - id: cache
         uses: ./game/.github/actions/prismpm-source-cache
       - uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
@@ -57,13 +59,12 @@ jobs:
           push: never
           runCmd: 'true'
       - name: Retain actual source image and cleanliness
+        id: image-retention
         if: always()
         run: |
-          sudo mkdir -p evidence
-          sudo chown -R 1000:1000 evidence
-          sudo -u '#1000' -g "#$(stat -c '%g' /var/run/docker.sock)" python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-collect --phase image
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
+        if: ${{ always() && steps.image-retention.outputs.metadata_safe == 'true' }}
         with:
           name: candidate-capture-source-image-${{ github.run_id }}-${{ github.run_attempt }}
           path: evidence/metadata-upload/
@@ -107,12 +108,13 @@ jobs:
           set -euo pipefail
           umask 022
           python3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare
-          sudo chown -R 1000:1000 prismpm evidence
+          sudo chown -R 1000:1000 prismpm
+      - name: Exercise actual host privilege and artifact handoff
+        run: python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-qualification
       - name: Guard remaining setup time before SDK acquisition
         id: pull-budget
         run: |
-          sudo chown 1000:1000 "$GITHUB_OUTPUT"
-          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT python3 -I -B game/scripts/numeric/candidate-capture-qualification.py setup-budget
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation pull-budget
       - name: Acquire unchanged digest-pinned SDK oracle
         timeout-minutes: ${{ fromJSON(steps.pull-budget.outputs.minutes) }}
         run: docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
@@ -121,8 +123,7 @@ jobs:
       - name: Require warm setup budget before container startup
         id: setup-budget
         run: |
-          sudo chown 1000:1000 "$GITHUB_OUTPUT"
-          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT python3 -I -B game/scripts/numeric/candidate-capture-qualification.py setup-budget
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation setup-budget
       - name: Materialize warm source environment within remaining45-minute setup
         timeout-minutes: ${{ fromJSON(steps.setup-budget.outputs.minutes) }}
         uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
@@ -155,21 +156,13 @@ jobs:
         if: always()
         timeout-minutes: 1
         run: |
-          sudo mkdir -p evidence
-          sudo chown -R 1000:1000 evidence
-          status=0
-          sudo -u '#1000' -g "#$(stat -c '%g' /var/run/docker.sock)" python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-collect || status=$?
-          if test -f prismpm/target/candidate-qualification-driver/raw-upload-ready.json; then
-            printf 'raw_safe=true\n' >> "$GITHUB_OUTPUT"
-          fi
-          exit "$status"
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation qualification-collect
       - name: Admit metadata upload under the original collection clock
         id: metadata-budget
         if: always()
         timeout-minutes: 1
         run: |
-          sudo chown 1000:1000 "$GITHUB_OUTPUT"
-          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py collection-budget --collection-phase metadata
+          timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation metadata-budget
       - name: Upload initial metadata subset at most32MiB
         if: ${{ always() && steps.metadata-budget.outputs.admitted == 'true' }}
         timeout-minutes: 1
@@ -184,15 +177,14 @@ jobs:
         if: always()
         timeout-minutes: 1
         run: |
-          sudo chown 1000:1000 "$GITHUB_OUTPUT"
-          sudo -u '#1000' --preserve-env=GITHUB_OUTPUT timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py collection-budget --collection-phase raw
+          timeout 5s python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation raw-budget
       - name: Upload bounded original raw evidence separately
         if: ${{ always() && steps.raw-budget.outputs.admitted == 'true' && steps.retention.outputs.raw_safe == 'true' }}
         timeout-minutes: 1
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: candidate-capture-raw-${{ github.run_id }}-${{ github.run_attempt }}
-          path: prismpm/target/candidate-qualification-driver/raw/
+          path: evidence/raw-upload/
           include-hidden-files: true
           compression-level: 0
           if-no-files-found: error

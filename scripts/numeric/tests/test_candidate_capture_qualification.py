@@ -579,9 +579,261 @@ class EvidenceBoundaryControls(unittest.TestCase):
         retention=next(step for step in steps if step.get('id')=='retention');self.assertEqual(retention.get('timeout-minutes'),'1')
         for phase in ['metadata','raw']:
             guard=next(step for step in steps if step.get('id')==phase+'-budget')
-            self.assertIn('collection-budget --collection-phase '+phase,guard['run']);self.assertIn('always()',guard['if'])
+            self.assertIn('host-bridge --bridge-operation '+phase+'-budget',guard['run']);self.assertIn('timeout 5s ',guard['run']);self.assertIn('always()',guard['if'])
             upload=next(step for step in steps if step.get('name','').startswith('Upload '+('initial metadata' if phase=='metadata' else 'bounded original raw')))
             self.assertEqual(upload.get('timeout-minutes'),'1');self.assertIn('steps.'+phase+'-budget.outputs.admitted',upload['if'])
+
+    def test_host_bridge_control_output_is_closed_and_preserves_runner_file(self):
+        d=self.driver
+        with tempfile.TemporaryDirectory() as temporary:
+            output=pathlib.Path(temporary)/'output';output.write_bytes(b'existing=true\n');output.chmod(0o600);before=output.stat()
+            d.bridge_append_outputs(output,'pull-budget',{'minutes':12})
+            self.assertEqual(output.read_bytes(),b'existing=true\nminutes=12\n')
+            after=output.stat();self.assertEqual((after.st_uid,after.st_gid,after.st_mode),(before.st_uid,before.st_gid,before.st_mode))
+            for bad in [{'minutes':True},{'minutes':46},{'minutes':'1\nraw_safe=true'},{'minutes':1,'other':True}]:
+                with self.assertRaises(ValueError):d.bridge_append_outputs(output,'pull-budget',bad)
+            alias=output.parent/'alias';alias.symlink_to(output)
+            with self.assertRaises(ValueError):d.bridge_append_outputs(alias,'pull-budget',{'minutes':1})
+
+    def test_host_bridge_export_inventory_and_one_time_noreplace_transfer(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);source=root/'copies';source.mkdir(mode=0o700)
+            (source/'data').write_bytes(b'actual retained component bytes');(source/'data').chmod(0o400)
+            expected=d.bridge_inventory(source,os.getuid(),time.monotonic()+5)
+            destination=root/'runner-upload'
+            d.bridge_relocate(source,destination,expected,os.getuid(),os.getgid(),time.monotonic()+5)
+            self.assertFalse(source.exists());self.assertEqual(d.bridge_inventory(destination,os.getuid(),time.monotonic()+5),expected)
+            with self.assertRaises((ValueError,FileNotFoundError)):d.bridge_relocate(source,destination,expected,os.getuid(),os.getgid(),time.monotonic()+5)
+            (destination/'extra').write_bytes(b'extra')
+            with self.assertRaises(ValueError):d.bridge_runner_admit(destination,expected,time.monotonic()+5)
+
+    def test_host_bridge_unsafe_export_members_and_expired_transfer_refuse(self):
+        d=self.driver;import time
+        for defect in ['alias','hardlink','changed','timeout','occupied']:
+            with self.subTest(defect=defect),tempfile.TemporaryDirectory() as temporary:
+                root=pathlib.Path(temporary);source=root/'copies';source.mkdir(mode=0o700);path=source/'data';path.write_bytes(b'held');path.chmod(0o400)
+                held=d.bridge_inventory(source,os.getuid(),time.monotonic()+5);target=root/'upload'
+                if defect=='alias':path.unlink();path.symlink_to(root/'other')
+                if defect=='hardlink':os.link(path,source/'link')
+                if defect=='changed':path.chmod(0o600);path.write_bytes(b'changed')
+                if defect=='occupied':target.mkdir()
+                with self.assertRaises((ValueError,FileNotFoundError,FileExistsError,d.CollectionDeadline)):
+                    d.bridge_relocate(source,target,held,os.getuid(),os.getgid(),time.monotonic()+(-1 if defect=='timeout' else 5))
+
+    def test_host_bridge_supervisor_reaps_timeout_and_preserves_child_failure(self):
+        d=self.driver;import time
+        def failure():return {'exit':7,'detail':'actual component child failure'}
+        value=d.bridge_supervise(failure,time.monotonic()+2)
+        self.assertEqual(value['exit'],7)
+        def slow():
+            while True:time.sleep(0.05)
+        began=time.monotonic()
+        with self.assertRaises(d.CollectionDeadline):d.bridge_supervise(slow,began+0.1)
+        self.assertLess(time.monotonic()-began,2)
+        with self.assertRaises(ChildProcessError):os.waitpid(-1,os.WNOHANG)
+
+    def test_host_bridge_child_closes_unrelated_descriptors(self):
+        d=self.driver;import time
+        with tempfile.TemporaryFile() as privileged_handle:
+            fd=privileged_handle.fileno()
+            def child():
+                try:os.fstat(fd);return {'exit':1,'detail':'inherited unrelated descriptor'}
+                except OSError:return {'exit':0,'detail':'descriptor closed'}
+            self.assertEqual(d.bridge_supervise(child,time.monotonic()+2)['exit'],0)
+
+    @unittest.skipUnless(os.geteuid()==0,'real two-identity fixture unavailable: local UID1000 and sudo absent')
+    def test_host_bridge_actual_two_identity_drop_and_export(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);root.chmod(0o755)
+            private=root/'private';private.mkdir(mode=0o700);os.chown(private,1000,1000)
+            upload=root/'runner';upload.mkdir(mode=0o700);os.chown(upload,1001,1001)
+            def source_child():
+                d.bridge_drop(None)
+                d.write(private/'original.json',{'fixture':'original custody'})
+                copies=private/'copies';copies.mkdir(mode=0o700)
+                d.write(copies/'copy.json',{'fixture':'original custody'})
+                return {'exit':0,'uid':os.getuid(),'gid':os.getgid(),'groups':os.getgroups(),
+                        'environment':dict(os.environ)}
+            value=d.bridge_supervise(source_child,time.monotonic()+3)
+            self.assertEqual(value,{'exit':0,'uid':1000,'gid':1000,'groups':[],
+                                   'environment':{'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'}})
+            original=private/'original.json';before=original.stat();body=original.read_bytes()
+            held=d.bridge_inventory(private/'copies',1000,time.monotonic()+3)
+            d.bridge_relocate(private/'copies',upload/'copies',held,1001,1001,time.monotonic()+3)
+            output=upload/'output';output.touch(mode=0o600);os.chown(output,1001,1001)
+            def runner_child():
+                os.setgroups([]);os.setgid(1001);os.setuid(1001)
+                try:original.read_bytes();return {'exit':1,'reason':'private original readable'}
+                except PermissionError:pass
+                d.bridge_runner_admit(upload/'copies',held,time.monotonic()+2)
+                d.bridge_append_outputs(output,'pull-budget',{'minutes':1})
+                return {'exit':0,'uid':os.getuid(),'output_mode':output.stat().st_mode}
+            witness=d.bridge_supervise(runner_child,time.monotonic()+3)
+            self.assertEqual(witness['exit'],0);self.assertEqual(witness['uid'],1001)
+            after=original.stat()
+            for key in ('st_dev','st_ino','st_uid','st_gid','st_mode','st_size','st_mtime_ns','st_ctime_ns'):
+                self.assertEqual(getattr(before,key),getattr(after,key))
+            self.assertEqual(original.read_bytes(),body);self.assertEqual(output.stat().st_uid,1001)
+            self.assertEqual(output.stat().st_mode&0o777,0o600)
+
+    def test_host_bridge_workflow_keeps_runner_output_and_uses_early_real_preflight(self):
+        import yaml
+        path=ROOT.parents[1]/'.github/workflows/prismpm-candidate-capture-qualification.yml';raw=path.read_text()
+        value=yaml.load(raw,Loader=yaml.BaseLoader)
+        self.assertNotIn("sudo -u",raw);self.assertNotIn('chown 1000:1000 "$GITHUB_OUTPUT"',raw)
+        self.assertNotIn('prismpm evidence',raw)
+        self.assertNotIn('path: prismpm/target/candidate-qualification-driver/raw/',raw)
+        for name,job in value['jobs'].items():
+            preflight=next(i for i,s in enumerate(job['steps']) if 'host-bridge --bridge-operation preflight-'+name in s.get('run',''))
+            cache=next(i for i,s in enumerate(job['steps']) if s.get('id')=='cache')
+            self.assertLess(preflight,cache)
+        image_upload=next(step for step in value['jobs']['image']['steps'] if step.get('uses','').startswith('actions/upload-artifact'))
+        self.assertIn('steps.image-retention.outputs.metadata_safe',image_upload['if'])
+
+    def test_host_bridge_inventory_rejects_missing_ownership_cap_and_cross_device(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);source=root/'copies';source.mkdir(mode=0o700)
+            d.write(source/'data.json',{'actual':'bytes'})
+            held=d.bridge_inventory(source,os.getuid(),time.monotonic()+2)
+            with self.assertRaises(ValueError):d.bridge_inventory(source,os.getuid()+1,time.monotonic()+2)
+            with self.assertRaises(ValueError):d.bridge_inventory(source,os.getuid(),time.monotonic()+2,1)
+            with self.assertRaises(ValueError):d.bridge_relocate(source,root/'target',held[:-1],os.getuid(),os.getgid(),time.monotonic()+2)
+            if pathlib.Path('/dev/shm').is_dir() and pathlib.Path('/dev/shm').stat().st_dev!=source.stat().st_dev:
+                with tempfile.TemporaryDirectory(dir='/dev/shm') as other:
+                    with self.assertRaisesRegex(ValueError,'same-device'):
+                        d.bridge_relocate(source,pathlib.Path(other)/'target',held,os.getuid(),os.getgid(),time.monotonic()+2)
+                self.assertTrue(source.exists())
+
+    def test_host_bridge_partial_transfer_raises_without_replacement_or_admission(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);source=root/'copies';source.mkdir(mode=0o700)
+            for name in ('a','b'):d.write(source/name,{'fixture':name})
+            held=d.bridge_inventory(source,os.getuid(),time.monotonic()+2);calls=[];actual=os.fchown
+            def interruption(fd,uid,gid):
+                calls.append(fd)
+                if len(calls)==2:raise d.CollectionDeadline('planted interruption after first actual transfer')
+                return actual(fd,uid,gid)
+            with patch.object(d.os,'fchown',side_effect=interruption):
+                with self.assertRaises(d.CollectionDeadline):d.bridge_relocate(source,root/'target',held,os.getuid(),os.getgid(),time.monotonic()+2)
+            self.assertFalse(source.exists());self.assertTrue((root/'target').exists())
+            self.assertEqual(len(calls),2)
+            with self.assertRaises((ValueError,FileNotFoundError)):
+                d.bridge_relocate(source,root/'target',held,os.getuid(),os.getgid(),time.monotonic()+2)
+
+    def test_host_bridge_later_guards_are_control_only_and_keep_original_clock(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);ledger=root/'ledger';ledger.mkdir(mode=0o700)
+            control=root/'evidence/host-bridge';control.mkdir(parents=True,mode=0o700)
+            now=time.monotonic();clock=d.collection_clock(now-1000,now-450)
+            state={'status':'completed','handoff_sha256':'a'*64,'deadline':now-1,'clock':clock,'raw':True}
+            d.write(ledger/'qualification-collect.json',state);d.write(ledger/'collection-clock.json',clock)
+            admission={'operation':'qualification-collect','handoff_sha256':'a'*64,'deadline':now-1,'metadata':True,'raw':True}
+            d.write(control/'qualification-collect.admission.json',admission)
+            # No source, raw or export directory exists: guards must use only
+            # the held control state, even after an earlier metadata upload.
+            with patch.object(d,'host_collect',side_effect=AssertionError('recollection forbidden')),patch.object(d,'bridge_relocate',side_effect=AssertionError('repeat relocation forbidden')):
+                for operation in ('metadata-budget','raw-budget','metadata-budget'):
+                    self.assertEqual(d.bridge_guard(root,ledger,operation,os.getuid(),now-1000,time.monotonic()+2),clock)
+            self.assertFalse((root/'prismpm').exists())
+            admission['handoff_sha256']='b'*64;d.write(control/'qualification-collect.admission.json',admission,replace=True)
+            with self.assertRaisesRegex(ValueError,'admission'):
+                d.bridge_guard(root,ledger,'raw-budget',os.getuid(),now-1000,time.monotonic()+2)
+            admission['handoff_sha256']='a'*64;d.write(control/'qualification-collect.admission.json',admission,replace=True)
+            with self.assertRaisesRegex(ValueError,'job clock'):
+                d.bridge_guard(root,ledger,'raw-budget',os.getuid(),now-999,time.monotonic()+2)
+            state['status']='incomplete';d.write(ledger/'qualification-collect.json',state,replace=True)
+            with self.assertRaisesRegex(ValueError,'completed'):
+                d.bridge_guard(root,ledger,'metadata-budget',os.getuid(),now-1000,time.monotonic()+2)
+
+    def test_host_bridge_real_child_signal_and_oversized_control_refuse(self):
+        d=self.driver;import time,signal
+        def killed():os.kill(os.getpid(),signal.SIGTERM)
+        with self.assertRaises(ValueError):d.bridge_supervise(killed,time.monotonic()+2)
+        with self.assertRaises(ValueError):d.bridge_supervise(lambda:{'exit':0,'oversized':'x'*8192},time.monotonic()+2)
+        with self.assertRaises(ChildProcessError):os.waitpid(-1,os.WNOHANG)
+
+    def test_host_bridge_missing_root_entry_retains_actual_failure_and_runner_output(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+            script.parent.mkdir(parents=True,mode=0o700);script.write_bytes(b'fixture path only')
+            (root/'evidence').mkdir(mode=0o700);output=root/'output';output.touch(mode=0o600)
+            previous=os.getcwd()
+            try:
+                os.chdir(root)
+                # Fault injection models sudo refusing before Python, not a
+                # mocked privilege success or an actual hosted sudo witness.
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',return_value=(7,b'',b'planted sudo refusal')),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('preflight-image'),7)
+                status=d.read_json(root/'evidence/metadata-upload/bridge-failure.json')
+                self.assertEqual(status['exit'],7);self.assertIn('planted sudo refusal',status['error'])
+                self.assertEqual(output.read_bytes(),b'');self.assertEqual(output.stat().st_uid,os.getuid())
+                self.assertFalse((root/'evidence/host-bridge/preflight-image.admission.json').exists())
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',return_value=(9,b'',b'planted image refusal')),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('image-collect'),9)
+                self.assertEqual(output.read_bytes(),b'metadata_safe=true\n')
+            finally:os.chdir(previous)
+
+    def test_host_bridge_partial_image_export_never_sets_upload_safe(self):
+        d=self.driver
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+            script.parent.mkdir(parents=True,mode=0o700);script.write_bytes(b'fixture')
+            destination=root/'evidence/metadata-upload';destination.mkdir(parents=True,mode=0o700)
+            d.write(destination/'partially-transferred.json',{'fixture':'not an admitted export'})
+            output=root/'output';output.touch(mode=0o600);previous=os.getcwd()
+            try:
+                os.chdir(root)
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',return_value=(1,b'',b'planted transfer interruption')),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('image-collect'),1)
+                self.assertEqual(output.read_bytes(),b'')
+                self.assertFalse((root/'evidence/host-bridge/image-collect.admission.json').exists())
+            finally:os.chdir(previous)
+
+    def test_host_bridge_runner_verification_obeys_shortened_absolute_deadline(self):
+        d=self.driver;import time
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+            script.parent.mkdir(parents=True,mode=0o700);script.write_bytes(b'fixture')
+            target=root/'evidence/metadata-upload';target.mkdir(parents=True,mode=0o700)
+            control=root/'evidence/host-bridge';control.mkdir(mode=0o700)
+            d.write(target/'file.json',{'fixture':'actual readable bytes'})
+            manifest={'operation':'image-collect','metadata':d.bridge_inventory(target,os.getuid(),time.monotonic()+2),
+                      'raw':None,'clock':None,'child':{'exit':0},'from':'fixed fixture','to':'evidence/metadata-upload'}
+            d.write(control/'image-collect.handoff.json',manifest)
+            output=root/'output';output.touch(mode=0o600);previous=os.getcwd();verify=d.bridge_runner_admit
+            def reply(*args):
+                return 0,d.encoded({'exit':0,'controls':{'metadata_safe':True},'clock':None,
+                                   'deadline':time.monotonic()+0.02,'handoff':d.sha(d.encoded(manifest))}),b''
+            def slow_verification(*args):verify(*args);time.sleep(0.04)
+            try:
+                os.chdir(root)
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',side_effect=reply),patch.object(d,'bridge_runner_admit',side_effect=slow_verification),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('image-collect'),1)
+                self.assertEqual(output.read_bytes(),b'')
+                self.assertFalse((control/'image-collect.admission.json').exists())
+                self.assertFalse((target/'bridge-handoff.json').exists())
+            finally:os.chdir(previous)
+
+    def test_host_bridge_fixed_invocation_environment_and_privileged_deadline_structure(self):
+        import ast
+        tree=ast.parse((ROOT/'candidate-capture-qualification.py').read_text())
+        functions={node.name:node for node in tree.body if isinstance(node,ast.FunctionDef)}
+        call=ast.get_source_segment((ROOT/'candidate-capture-qualification.py').read_text(),functions['bridge_call_root'])
+        self.assertIn("['/usr/bin/sudo','-n','--','/usr/bin/python3','-I','-B',str(script)",call)
+        self.assertIn("env={'PATH':'/usr/bin:/bin','LANG':'C.UTF-8'}",call);self.assertIn('close_fds=True',call)
+        self.assertNotIn('shell=True',call);self.assertNotIn('preserve-env',call)
+        drop=ast.get_source_segment((ROOT/'candidate-capture-qualification.py').read_text(),functions['bridge_drop'])
+        self.assertLess(drop.index('os.setgroups'),drop.index('os.setgid'));self.assertLess(drop.index('os.setgid'),drop.index('os.setuid'))
+        privileged=ast.get_source_segment((ROOT/'candidate-capture-qualification.py').read_text(),functions['bridge_privileged'])
+        for text in ['signal.SIGALRM,signal.SIGTERM,signal.SIGINT','signal.setitimer','request[\'started\']+cap','bridge_supervise','bridge_relocate']:
+            self.assertIn(text,privileged)
+        with self.assertRaises(ValueError):self.driver.bridge_privileged('arbitrary-command')
 
     def test_exact_gate_survivors_are_required_and_custody_bound(self):
         d=self.driver
