@@ -1,0 +1,32 @@
+[
+  {
+    "path": "/workspace/diagnostic-tools/rust-1.97.1/bin/cargo",
+    "sha256": "828980723df339d62434390e9fb8ef8831036583343ae2316b7ab5646b5c1953",
+    "size": 42839824
+  },
+  {
+    "path": "/workspace/diagnostic-tools/rust-1.97.1/bin/rustc",
+    "sha256": "d3a664c970a9fd8361b64194861bebc1ae37b9054e5ee3400dc1c9e691797eea",
+    "size": 645000
+  },
+  {
+    "path": "/workspace/diagnostic-tools/rust-1.97.1/bin/rustfmt",
+    "sha256": "30de9e1efcd8f8fe7750e00d0c45ff8f4c480608ef1be5baf9ab6f1b4556e8f8",
+    "size": 5268472
+  },
+  {
+    "path": "/workspace/diagnostic-tools/lean-4.32.1-linux/bin/lean",
+    "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+    "size": 9024
+  },
+  {
+    "path": "/workspace/diagnostic-tools/lean-4.32.1-linux/bin/leanchecker",
+    "sha256": "c7c51e296d28dd443ed60f9414feef41253ede89dea76dbb2adde29768c3ed5f",
+    "size": 50592
+  },
+  {
+    "path": "/workspace/diagnostic-tools/lexlean-target/release/lexlean",
+    "sha256": "3765ef724d19a4d08681aaa0123ff637e65c1ffcc0b8d02ae268b521b5cf2c94",
+    "size": 59469600
+  }
+]

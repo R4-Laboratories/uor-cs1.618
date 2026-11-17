@@ -1,0 +1,131 @@
+{
+  "kind": "local-unadmitted-component",
+  "task": "constructive-nat-backport/1",
+  "review_status": "pending-independent-review",
+  "development_source_commit": "463177a0971d95e112e10ed5da39c8cbaf0a4c96",
+  "development_source_tree": "0990e900cf1cb5bb4a481bba781a86cc3fcf0999",
+  "game_packaging_diff_base": "5e066e55e9d4ee2fc0090b848d00761414525aec",
+  "package": {
+    "name": "lexlean-constructive-diagnostic",
+    "version": "0.4.0-constructive.1",
+    "lib_target": "lexlean_constructive_diagnostic",
+    "bin_target": "lexlean-constructive-diagnostic",
+    "publish": false
+  },
+  "changed_paths": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "language/semantics-1.2.toml",
+    "model/errors.toml",
+    "src/api.rs",
+    "src/backend/lean.rs",
+    "src/backend/mod.rs",
+    "src/backend/semantic.rs",
+    "src/lib.rs",
+    "src/main.rs",
+    "tests/embedded.rs",
+    "tests/end_children.rs",
+    "tests/interrupt.rs",
+    "tests/property.rs",
+    "tests/stop_without_kill.rs",
+    "tests/unit.rs"
+  ],
+  "added_paths": [
+    "DIAGNOSTIC-PROVENANCE.json",
+    "ERRORS.md",
+    "language/constructive-nat-1.2/rules.toml",
+    "schemas/constructive-nat-certificate.schema.json",
+    "src/backend/constructive_nat/certificate.rs",
+    "src/backend/constructive_nat/check.rs",
+    "src/backend/constructive_nat/emit.rs",
+    "src/backend/constructive_nat/mod.rs",
+    "src/backend/constructive_nat/synthesize.rs",
+    "src/backend/constructive_nat/tests.rs"
+  ],
+  "removed_paths": [
+    ".cargo_vcs_info.json",
+    "Cargo.toml.orig",
+    "MANIFEST.sha256"
+  ],
+  "original_four_authority_unchanged": {
+    "language/preservation-1.2/modules/LexLeanTarget/RustSemantics.lean": "4be743de0333df2264821d15ced344144d8c37b4a51d161b1f3d0b2df89c09b5",
+    "language/preservation-1.2/modules/LexLeanTarget/RustSyntax.lean": "d9190acb5db02ae27819ab4af621d27756473a5b4710f53757bbdef1adc38618",
+    "language/preservation-1.2/modules/LexLeanTarget/TargetSemantics.lean": "55206f1bafd9608b991b5181a2d2c531aca490e571143278ba05cdaa765c1cbb",
+    "language/preservation-1.2/modules/LexLeanTarget/TargetSyntax.lean": "c0e0bb061cfcdc7e7f4434e13fc8b7298dcb701db9ea8189e012d8068e04ee0c"
+  },
+  "semantics": {
+    "1.0": "07859acb5a756221018b7f65e7f725d99b00a694670eecc7cd264832ba1333fb",
+    "1.1": "cac35ee3f026aa21a6c8cbc61f3af3c760da0b94555876a4540cc235f461bfdb",
+    "1.2_original": "1427f8b629013648a480454d67202788f2303f5396f1d7c70a7c350ddab6f694",
+    "1.2_candidate": "bd003277b8a6a32f8f37f710eb6553f3fce4e5c56181578db0f86cec215a3729"
+  },
+  "fixed_certificate": {
+    "path": "proofs/constructive-nat.json",
+    "spec": "lexlean/constructive-nat-certificate/1",
+    "rule_version": "constructive-nat-v1",
+    "schema_path": "schemas/constructive-nat-certificate.schema.json",
+    "observed_rows": 14,
+    "sha256": "3d014b17c42141482faae7eafce8181381098588f6f69d1cfc39242c5ae1efbe",
+    "manifest_sha256": "8879452cbf5b539622a9ed85c1b097425daca882594779639ed95d7067f7954e"
+  },
+  "validation": {
+    "constructive_tests_passed": 14,
+    "existing_focused_tests_passed": 7,
+    "actual_candidate_integration_tests_passed": 2,
+    "selected_declarations_with_Lean_kernel_replay_and_empty_axioms": 14,
+    "shared_proof_validation_seconds": 7.8706943380020675,
+    "compatibility_receipt": "compatibility-final-v5-result.json",
+    "all_failures_retained": true,
+    "independent_review": false
+  },
+  "retained_candidate_cli": {
+    "path": "/workspace/diagnostic-tools/lexlean-target/release/lexlean-constructive-diagnostic",
+    "sha256": "809655b1688dfb6847c86159fcd6a2bee7de98a7f93e0e016dcf559a5cd31f89",
+    "bytes": 60574240,
+    "retained": true
+  },
+  "retained_candidate_integration_elf": {
+    "path": "/workspace/diagnostic-tools/lexlean-target/release/deps/unit-b7fb18457d3f2e09",
+    "sha256": "5d97add957eb83bce2b47f6fe4ed0cfdaa9990036045b3dcd12d5254031373ad",
+    "bytes": 3017272
+  },
+  "original_artifact_identity_receipt": "original-artifacts-current.json",
+  "resources": {
+    "aggregate_growth_bytes": 495243279,
+    "disk_free_bytes": 8987410432,
+    "growth_ceiling_bytes": 536870912,
+    "disk_floor_bytes": 8589934592,
+    "scoped_640MiB_build_exception": "closed; actual final build below512MiB"
+  },
+  "payload_custody": "Indexed local component evidence; parent archive/review separate. No embedded full package/binaries/caches.",
+  "files": {
+    "README.md": {
+      "bytes": 3617,
+      "sha256": "fac3fc21bd32d04f94f91878ce71bd0007f91f5f1d91128181677a39dd823382"
+    },
+    "candidate-package-inventory.json": {
+      "bytes": 211470,
+      "sha256": "1f11d66d93fad86f8e5859e4af0c308c50e0808e0709b5c391c0fc61a07b5118"
+    },
+    "evidence-index.json": {
+      "bytes": 126187,
+      "sha256": "2eb77a0003defc7e71755e4d0acb70d3a6db2b20f61e3dd07ae6748ca36d7b9a"
+    },
+    "lexlean-constructive-task1.patch": {
+      "bytes": 217244,
+      "sha256": "703b7e1563cd994c276ccc728be03d55d35e21e367246339de64b286adc85324"
+    },
+    "pristine-package-inventory.json": {
+      "bytes": 182881,
+      "sha256": "4d1cd87ed4bb301fc827cb2f5815ceb42b27e4bb660509c049aaa0040cbb2bbc"
+    },
+    "task-1-report.md": {
+      "bytes": 14682,
+      "sha256": "aeba84382c2acd44d074d1ad5bd0f2b73c6f588eb86f40f7a5bbb465fb59dc64"
+    },
+    "tool-identities.json": {
+      "bytes": 1083,
+      "sha256": "3f23849b6386099697aea280bdf33034bb21bcdbfd4e9f493645d7b254937dcc"
+    }
+  }
+}

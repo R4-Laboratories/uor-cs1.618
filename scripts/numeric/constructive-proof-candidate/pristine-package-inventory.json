@@ -1,0 +1,5355 @@
+{
+  "development_commit": "463177a0971d95e112e10ed5da39c8cbaf0a4c96",
+  "development_tree": "0990e900cf1cb5bb4a481bba781a86cc3fcf0999",
+  "package_root": "vendor/lexlean",
+  "upstream_revision": "e0b74b81e6f49c83596a957d232c8383a5db1a25",
+  "archive_sha256": "f2d579289052493d2c68274b10015d2cce544a78fbb876d73062184f09fb0a18",
+  "package_manifest_sha256": "dd35c1b0359c90c5896c5188c9e10bb4008883cb21ee92d35bc2fd4c8d4ac759",
+  "files": [
+    {
+      "path": ".cargo_vcs_info.json",
+      "size": 108,
+      "sha256": "a3b7aafd8fe6846e03388212bfd2f41728c24194248f59ac7d68c1aa20311a2b"
+    },
+    {
+      "path": "Cargo.lock",
+      "size": 22987,
+      "sha256": "008618c60e0ee0da9f33fd63f6d2d7c0d053a8d980de1a0315d85e308a7d1151"
+    },
+    {
+      "path": "Cargo.toml",
+      "size": 2724,
+      "sha256": "9adfd4195ed82e20cd1bf41a40773d25fec16d551cee34290b84b0a80607128f"
+    },
+    {
+      "path": "Cargo.toml.orig",
+      "size": 1747,
+      "sha256": "d6ee0cd6f70be0ecdfaf595cb26387f74b8b659c2696fa3e4da16e85b3b39438"
+    },
+    {
+      "path": "LICENSE-APACHE",
+      "size": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "LICENSE-MIT",
+      "size": 1075,
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee"
+    },
+    {
+      "path": "MANIFEST.sha256",
+      "size": 111382,
+      "sha256": "dd35c1b0359c90c5896c5188c9e10bb4008883cb21ee92d35bc2fd4c8d4ac759"
+    },
+    {
+      "path": "README.md",
+      "size": 38339,
+      "sha256": "35bac65159664b278220deddd2c53c5e7ee772edd45b8430405cb5a5614cf263"
+    },
+    {
+      "path": "build.rs",
+      "size": 8182,
+      "sha256": "97b1f6b35a0b5ef7b4a08f42168aa68110f5fa80a772d62be49f60c9faa27768"
+    },
+    {
+      "path": "language/bootstrap-1.1.toml",
+      "size": 4156,
+      "sha256": "47fc02a32ee5fac25bc7f89a18e4d5648af901b1da9f3fd2ee5a25321e34e36d"
+    },
+    {
+      "path": "language/bootstrap-1.2.toml",
+      "size": 4156,
+      "sha256": "11b4d391094090cc082116d36b333f0a20934f2f59658b54470a8b3ae60e5c40"
+    },
+    {
+      "path": "language/bootstrap.toml",
+      "size": 4161,
+      "sha256": "92fe846d536b6de645a27f1bfc1c697b7118ee94bd78e3564cfb3a1d36ef43ab"
+    },
+    {
+      "path": "language/core/entries/a.toml",
+      "size": 350,
+      "sha256": "ea6d67ef5ff2313f861ec039ddedb9f7bd5fe349b28e7710ce919c533dd1bd5a"
+    },
+    {
+      "path": "language/core/entries/allowaxioms.toml",
+      "size": 277,
+      "sha256": "6e0b267663ace4cf89b852f6e1beb3d1cd55cae715175a270e08d72bdb5dd0a9"
+    },
+    {
+      "path": "language/core/entries/alternative.toml",
+      "size": 284,
+      "sha256": "039237bb25cc684fabe650ee87bcb2516c9c0812eaaea7c1861ff195460ac081"
+    },
+    {
+      "path": "language/core/entries/an.toml",
+      "size": 356,
+      "sha256": "313e2d1dd1e998802eb7ab4b7a4f085059d4bfa4e2a0ce4e9db48593974dd96a"
+    },
+    {
+      "path": "language/core/entries/and-intro.toml",
+      "size": 549,
+      "sha256": "eecb5c6d558d2c41fda040ae613dc91383c7776c919ff6d802410727dc27502b"
+    },
+    {
+      "path": "language/core/entries/and.toml",
+      "size": 252,
+      "sha256": "a94d6f5bcb73fc151218f33cb0683d7cb0e2035f4eea76d6d5503a45fee815ab"
+    },
+    {
+      "path": "language/core/entries/apply-verb.toml",
+      "size": 273,
+      "sha256": "3c4d32f11097343e53adedd50d0cd87d167438df154dac07b026234240535f08"
+    },
+    {
+      "path": "language/core/entries/arrow.toml",
+      "size": 448,
+      "sha256": "eba7511779b1a61bbb58aa8c89d86bf1c60602d55a744887a7f68d8231febd6c"
+    },
+    {
+      "path": "language/core/entries/as.toml",
+      "size": 248,
+      "sha256": "506efec58dac2cfc8301316beac2d7b94422d094dc9c6e2fcafc81a136c233bf"
+    },
+    {
+      "path": "language/core/entries/assume.toml",
+      "size": 267,
+      "sha256": "918fd158b82b7142913e30e0270ea2e942fefcb888f8b9ab962cc8a38719a8c7"
+    },
+    {
+      "path": "language/core/entries/at.toml",
+      "size": 238,
+      "sha256": "9da12e86d91a674654888d3d0433a3b2515caf912e053a16752091fdcea29634"
+    },
+    {
+      "path": "language/core/entries/backward.toml",
+      "size": 265,
+      "sha256": "ebe141cac1cc924937873af7a4d99b7f331c53f0abdfddf4c4299b6d56d71744"
+    },
+    {
+      "path": "language/core/entries/begin.toml",
+      "size": 253,
+      "sha256": "8a15af625e9ba2082714ee78c0a9eda1acf697eabeaea927247d03061cb8a3ab"
+    },
+    {
+      "path": "language/core/entries/bind.toml",
+      "size": 249,
+      "sha256": "9576e1dc5d6404c97b2b41798c0f91cead395abf74883bfe65f20c1f0f88a961"
+    },
+    {
+      "path": "language/core/entries/brace-close.toml",
+      "size": 265,
+      "sha256": "692cfe14bc5f9ebd7be41387ddf1a6167888ff1a3d7f756f1672719eed780e92"
+    },
+    {
+      "path": "language/core/entries/brace-open.toml",
+      "size": 262,
+      "sha256": "d4a873aea857a08c2935ab2cc754d6a5d30aba3037843f50fc09208927525d51"
+    },
+    {
+      "path": "language/core/entries/bracket-close.toml",
+      "size": 271,
+      "sha256": "b8a1940677338b8d95e80b8610ceb33c4a7c13f3d8cbd0945a6eafa5f23bc5a5"
+    },
+    {
+      "path": "language/core/entries/bracket-open.toml",
+      "size": 268,
+      "sha256": "b42d70eaa04354af14b86249dc62ed369f888c153e9a918244df07f773c5a74b"
+    },
+    {
+      "path": "language/core/entries/branch-word.toml",
+      "size": 285,
+      "sha256": "b4934ed53b3627e8b7f47cdf0e7f4fb71888e86356e3751adabfebcefa588213"
+    },
+    {
+      "path": "language/core/entries/by.toml",
+      "size": 248,
+      "sha256": "63c3c748c5e5e600a82f011fd2a2557bb8ae44a4adcd068e8c0df01e99ea4eb9"
+    },
+    {
+      "path": "language/core/entries/case-word.toml",
+      "size": 277,
+      "sha256": "2e2ebfcf64b1991a06295e38ababb05907a85a5969974b5f9f24729dd37c3d8c"
+    },
+    {
+      "path": "language/core/entries/cases-noun.toml",
+      "size": 270,
+      "sha256": "512242e9918b4f833fd5396ac4a5df08d69347ff0d0a38b9811f81f43e764eb6"
+    },
+    {
+      "path": "language/core/entries/close.toml",
+      "size": 263,
+      "sha256": "a2a67a560fc15dd098e196306849be9e25f533a31b6d4b59cef791ca39aaf563"
+    },
+    {
+      "path": "language/core/entries/colon.toml",
+      "size": 247,
+      "sha256": "36056284465c94a52f55a1dfb05f64cdb210f7642532f4a990844a98b510b3eb"
+    },
+    {
+      "path": "language/core/entries/comma.toml",
+      "size": 247,
+      "sha256": "b02b3faa278a5cd5c76bcc2390efefd0bcf72474f0eb72f49dd9078205fd2d8b"
+    },
+    {
+      "path": "language/core/entries/consider.toml",
+      "size": 275,
+      "sha256": "b70aad818dcee807e02ffa85f6e1f85f146dbd3bc2469304eea6546a6b31d21b"
+    },
+    {
+      "path": "language/core/entries/defined.toml",
+      "size": 268,
+      "sha256": "933eef21ecf0e97d8021ff0798c5316136f4ff882710218fc50e7a0dffde10eb"
+    },
+    {
+      "path": "language/core/entries/display-close.toml",
+      "size": 273,
+      "sha256": "1dbb7a7c0338ea43b91fa5285797502584206cf96a2f807174132313f93394ed"
+    },
+    {
+      "path": "language/core/entries/display-open.toml",
+      "size": 270,
+      "sha256": "a1d6d5be2dc3f9026d1ada947f75e4460f48aebb9bc99cf8c35f9af5c6419023"
+    },
+    {
+      "path": "language/core/entries/end.toml",
+      "size": 245,
+      "sha256": "fbdc887c5f6334899900386fd3d738a011a9d611e0b941804b6f578fa1438296"
+    },
+    {
+      "path": "language/core/entries/env/apply.toml",
+      "size": 259,
+      "sha256": "c64f679760f43cec629bcbcb4f9bc5b485702bab4bb42a571b5870d409824475"
+    },
+    {
+      "path": "language/core/entries/env/branch.toml",
+      "size": 263,
+      "sha256": "70136cd216bc4f1700f77a49cc13fce1dade0bec63ace28e12d76032626f1697"
+    },
+    {
+      "path": "language/core/entries/env/calculate.toml",
+      "size": 275,
+      "sha256": "43819583dcc0f5a2edd99652ee819057acc727f0689d0837e6a49dfbd07a4984"
+    },
+    {
+      "path": "language/core/entries/env/case.toml",
+      "size": 255,
+      "sha256": "25bf82e296307e87ab16e2dd52eba49bc088a2ed3ac63bfe1284cc1a58d03ff9"
+    },
+    {
+      "path": "language/core/entries/env/cases.toml",
+      "size": 259,
+      "sha256": "5da2416629c5430e78eb21d7870c51d261f095a60e620bc43902ea4f5fe4aaee"
+    },
+    {
+      "path": "language/core/entries/env/constructor.toml",
+      "size": 283,
+      "sha256": "7d7653a919fece903f447dda4823b10781191e82aea819ba8b7580920a50616e"
+    },
+    {
+      "path": "language/core/entries/env/corollary.toml",
+      "size": 275,
+      "sha256": "e18e50ebdf75197a6a5df713809dc6e0052130d6a3cbbd4994a998f8ccabb43b"
+    },
+    {
+      "path": "language/core/entries/env/have.toml",
+      "size": 255,
+      "sha256": "141be8123aabd20453c5eb3d704a3432a0e3b3ea52184d22fe43359e423f5751"
+    },
+    {
+      "path": "language/core/entries/env/induction.toml",
+      "size": 275,
+      "sha256": "3e129720a6f68241ed53bc7b4a007ea1e78bdc8203c3a6a80717063c064756d4"
+    },
+    {
+      "path": "language/core/entries/env/lemma.toml",
+      "size": 259,
+      "sha256": "f7d26829adf24e21ed9df93f669414a356cbc5b9811aed38bcd5639640ad0c7e"
+    },
+    {
+      "path": "language/core/entries/env/lexlean.toml",
+      "size": 267,
+      "sha256": "dd36dd19428887c08afb5fccd80cb7a182908458af10e0400c094a74d8a64bcd"
+    },
+    {
+      "path": "language/core/entries/env/predicatedefinition.toml",
+      "size": 315,
+      "sha256": "295f4626f75c282310bdf0da93674e28a5be6ae610a47d14f84a789a6a20360f"
+    },
+    {
+      "path": "language/core/entries/env/premise.toml",
+      "size": 267,
+      "sha256": "70b9f93bde65675c7a9a952c6dea36432243bf86c329a42d854305d4487077aa"
+    },
+    {
+      "path": "language/core/entries/env/proof.toml",
+      "size": 259,
+      "sha256": "463bcb03396591ee7d7eefb26b50b0826f946081a98921fbc805f48e81ce2214"
+    },
+    {
+      "path": "language/core/entries/env/rewrite.toml",
+      "size": 267,
+      "sha256": "f4335b577da9a2e292d620a0624547428be4b069df3902eb30751565175295cb"
+    },
+    {
+      "path": "language/core/entries/env/section.toml",
+      "size": 267,
+      "sha256": "c38f655dbaedf45ad72366a25853fa1d1e522de9ded3a0e93719ad36f4b37717"
+    },
+    {
+      "path": "language/core/entries/env/simplify.toml",
+      "size": 271,
+      "sha256": "093a709fd0c5452ea620eae382093fe1929a41a4e8deb52d9ca8b5d1c5e2b995"
+    },
+    {
+      "path": "language/core/entries/env/termdefinition.toml",
+      "size": 295,
+      "sha256": "0bd5c8db679fb777486cb862bf662ebd5dabf1b3375db433f9216f3cb3f93821"
+    },
+    {
+      "path": "language/core/entries/env/theorem.toml",
+      "size": 267,
+      "sha256": "09a9726cff0b5910f8a60f48e6f833fb8ee6267406dc50971f8c88e1b5cf6055"
+    },
+    {
+      "path": "language/core/entries/env/typedefinition.toml",
+      "size": 295,
+      "sha256": "f4985365e2ddf1beae6433963cc4315d6084c81c9d185927b6554ac0d057675d"
+    },
+    {
+      "path": "language/core/entries/eq.toml",
+      "size": 512,
+      "sha256": "d22d08f8e8a0ad5cfe6b06fa2bd2af08f3291da3a9bc178d822b14d3ecdc4777"
+    },
+    {
+      "path": "language/core/entries/establish.toml",
+      "size": 276,
+      "sha256": "8ade3dd217b7ae0975d7d70e6db81b004fdb6f70dd7d6a1213a68cb6ccf7ef22"
+    },
+    {
+      "path": "language/core/entries/every.toml",
+      "size": 260,
+      "sha256": "07da867885a3900382e87e450f9afb959d9d0bcdc6cde63f1bd83828718c4cfc"
+    },
+    {
+      "path": "language/core/entries/exactaxioms.toml",
+      "size": 277,
+      "sha256": "1b275c3d441f63b6a23bdf00703ccee6f03ab7e65651331584735d5343779771"
+    },
+    {
+      "path": "language/core/entries/exactly.toml",
+      "size": 268,
+      "sha256": "95fd5e73490a7ec52b7e708aed587aadfa40df59a82c28c7cf49892bec1c0b7f"
+    },
+    {
+      "path": "language/core/entries/exists-intro.toml",
+      "size": 667,
+      "sha256": "842822f585c8eba57f7cb03bc3c44ff8c8ab89ba32b6ae376bb8056cebf447bb"
+    },
+    {
+      "path": "language/core/entries/exists-op.toml",
+      "size": 674,
+      "sha256": "429fd403fd0d5fe6b5223f2648c586308407f7220c6572db52f129f6c69af045"
+    },
+    {
+      "path": "language/core/entries/exists.toml",
+      "size": 264,
+      "sha256": "e3e222542300733fada90ec6e9b03090d829d93bc6b68514762e29787d2c0c4a"
+    },
+    {
+      "path": "language/core/entries/first.toml",
+      "size": 260,
+      "sha256": "97b93629e88656fe61f52d6e98db630e276fd589d34ef8885d8fc300efdea13c"
+    },
+    {
+      "path": "language/core/entries/follows.toml",
+      "size": 268,
+      "sha256": "f24572596dccd01a87ab5db0b3c3188e8474f7a02aeabf26f50b646ed0a0269c"
+    },
+    {
+      "path": "language/core/entries/for.toml",
+      "size": 362,
+      "sha256": "5a630988b8bcb650fbdefab320bfb3320d80ac812ef4009b6669b6a1cc1a7ee0"
+    },
+    {
+      "path": "language/core/entries/forward.toml",
+      "size": 261,
+      "sha256": "9a380b7d2f1475e7e34e15a27379dd7faad410bfa03a4830c84bdf4ac021a97a"
+    },
+    {
+      "path": "language/core/entries/from.toml",
+      "size": 256,
+      "sha256": "3a982a08dd321d369f4ff043717fed1f6ce9c43b9b94322fc6adef074c79fb52"
+    },
+    {
+      "path": "language/core/entries/goal.toml",
+      "size": 256,
+      "sha256": "5c3dea1834b5935a0e3e531d3e5bd11289e25b8e1ddb2c6e83a36795f6da10aa"
+    },
+    {
+      "path": "language/core/entries/heading.toml",
+      "size": 261,
+      "sha256": "1ad9e8e9167559c7df08e21728ac11adf3bbb8c44935f022b9aa181b9fbcd094"
+    },
+    {
+      "path": "language/core/entries/holds.toml",
+      "size": 260,
+      "sha256": "7b9593a39124cfa64af968f821d83df7f23fd3a329b9cd93c246a00e4f2b734f"
+    },
+    {
+      "path": "language/core/entries/hyphen.toml",
+      "size": 250,
+      "sha256": "a1e210fc515c01d4b1656ee042ad0823e30b375638c450ba40f904412a98d3c0"
+    },
+    {
+      "path": "language/core/entries/if.toml",
+      "size": 356,
+      "sha256": "85519b1b5fe8d07f7f9d56c67506d4e0f9a0ed267d17809de5c332fbc194805b"
+    },
+    {
+      "path": "language/core/entries/iff-intro.toml",
+      "size": 604,
+      "sha256": "be2f454806ca25d94b516d80a2f2a82045f15035fb36eda1638cc9f3c4e23e14"
+    },
+    {
+      "path": "language/core/entries/iff.toml",
+      "size": 650,
+      "sha256": "3ec257e8a3d9417cdd9f6e7dc72af647c72ddaeec05cca1d18e06de92f6d274e"
+    },
+    {
+      "path": "language/core/entries/implies.toml",
+      "size": 268,
+      "sha256": "adadd6ad8647cb4d06cef77473dbe8acfe172bc8222a5f2eda39d94f744a9be3"
+    },
+    {
+      "path": "language/core/entries/importmodule.toml",
+      "size": 281,
+      "sha256": "7d874d1e9c1a11b8fb1d2965da8e1d60bfa67ace92ab4b1f47051fa8ff4ac78f"
+    },
+    {
+      "path": "language/core/entries/induction-noun.toml",
+      "size": 286,
+      "sha256": "5e62523080f89e8b7fccf81a10f06c1adc492ee74eada40e5de3bc27abffca70"
+    },
+    {
+      "path": "language/core/entries/is.toml",
+      "size": 248,
+      "sha256": "270bd204dc23e4719a77bac9fc29007cf8590b23981dd7b63e7ee4f30b253d41"
+    },
+    {
+      "path": "language/core/entries/land.toml",
+      "size": 665,
+      "sha256": "decc60f94ddc431db8fc70113580a7971dd58272d57e149231a68026a4a43829"
+    },
+    {
+      "path": "language/core/entries/left.toml",
+      "size": 256,
+      "sha256": "73a0e7162ea7bf3c03e7e8a3b38765ef2ca105aa787ced66a2c3cc53493a5537"
+    },
+    {
+      "path": "language/core/entries/lexeme.toml",
+      "size": 257,
+      "sha256": "71cd83433b44b08877003cb43478a9f3b843c5d0bcca23b0143126eb442b454d"
+    },
+    {
+      "path": "language/core/entries/lnot.toml",
+      "size": 375,
+      "sha256": "07901636c0933cd5dd4f5a377cf455747177767c1056d18942cace7397420c39"
+    },
+    {
+      "path": "language/core/entries/lor.toml",
+      "size": 762,
+      "sha256": "334928daa0c6ac8b9934640480897d7686674016c96e63a8d629234f46d633f5"
+    },
+    {
+      "path": "language/core/entries/math-close.toml",
+      "size": 264,
+      "sha256": "e2b8cd89d49a7258e5ac405c18e41157716fd315ee61955c09a7da61b4fb856b"
+    },
+    {
+      "path": "language/core/entries/math-open.toml",
+      "size": 261,
+      "sha256": "9451f994f35cfa7023879b7f10779361c5ff516bfb4ff3f2a5fa08ac57ed6196"
+    },
+    {
+      "path": "language/core/entries/noaxioms.toml",
+      "size": 265,
+      "sha256": "2ee1eab2f2e2d3d2a43dda0dca948db6ee54703c41dad495385d710ebd862c07"
+    },
+    {
+      "path": "language/core/entries/not.toml",
+      "size": 362,
+      "sha256": "8d8315e91e7331ab08335b7a10925760522f038618abf9119895352114026b61"
+    },
+    {
+      "path": "language/core/entries/of.toml",
+      "size": 248,
+      "sha256": "3d7878efa24be7b6eba49cf60af094205ec1f3fc16c1169d5ab2b01d01f468cf"
+    },
+    {
+      "path": "language/core/entries/on.toml",
+      "size": 248,
+      "sha256": "23ac481c8e8d87867bb9b7e50d42e21129f7ba2e9913d514908d6f5b1212a0ef"
+    },
+    {
+      "path": "language/core/entries/one.toml",
+      "size": 252,
+      "sha256": "48e2f7b9a7c51916bcef86ad3866129cb2bc63c623a573a160b3d8be8a59045c"
+    },
+    {
+      "path": "language/core/entries/only.toml",
+      "size": 256,
+      "sha256": "7222e0707b20c73c9979bec81c80e0b135173fa04eb4264dde48dad8fed574b7"
+    },
+    {
+      "path": "language/core/entries/or-inl.toml",
+      "size": 466,
+      "sha256": "22785711b673b762d476c00da4e513d8ce8fa0193f237dd77a2981e1ea3dd89e"
+    },
+    {
+      "path": "language/core/entries/or-inr.toml",
+      "size": 466,
+      "sha256": "e95f429f9664c7fa332f1f365a36480e9ccfbf73fd4b1a9a57e0195ae17ef65f"
+    },
+    {
+      "path": "language/core/entries/or.toml",
+      "size": 248,
+      "sha256": "427266c94b2170cb6239b85c52dffbdb31263721bf1e73d6290df1c8c2aaa4ff"
+    },
+    {
+      "path": "language/core/entries/parameters-concept.toml",
+      "size": 304,
+      "sha256": "843e33c408af04be73e692182a6b0609d18a4560f592acf9a59b2035344485f0"
+    },
+    {
+      "path": "language/core/entries/parameters.toml",
+      "size": 273,
+      "sha256": "2aab5df9b2dffbbc1e3e7d24db381385c8cec72ace42d2d483e40311ad3b417f"
+    },
+    {
+      "path": "language/core/entries/paren-close.toml",
+      "size": 265,
+      "sha256": "80cba6511446ddabf6e62caee5f6f771499fa1f724c026de0c9b6e5f1471ecb6"
+    },
+    {
+      "path": "language/core/entries/paren-open.toml",
+      "size": 262,
+      "sha256": "a7e8b29ac5a92bafa7af4dcb71384a59f71d5841e4afd840f946ddf8cdadd1fb"
+    },
+    {
+      "path": "language/core/entries/period.toml",
+      "size": 250,
+      "sha256": "36d3e3209128ca274dca68fea22bdcc9c7603a409e75bf21700d31306044f296"
+    },
+    {
+      "path": "language/core/entries/premise-word.toml",
+      "size": 289,
+      "sha256": "23b0f93b2d3922cd9894c032f389848bd791f06a8314ba7d49c3f038ffc94b27"
+    },
+    {
+      "path": "language/core/entries/proceed.toml",
+      "size": 271,
+      "sha256": "120c271516785825519d6b81d3e6e3d8ed42f6bf1620e9afe3aaa8d2d2a019b4"
+    },
+    {
+      "path": "language/core/entries/reference.toml",
+      "size": 269,
+      "sha256": "303c52e2e3fb0ff9938a1da03f0c8cba951fbc31196f4e4dac156d2cfe874bed"
+    },
+    {
+      "path": "language/core/entries/reflexivity.toml",
+      "size": 284,
+      "sha256": "54cf6958281c9e3684dd05ccbbfd0b8b04bc574b725e1432c3d18e7872a4b2ff"
+    },
+    {
+      "path": "language/core/entries/rewrite-verb.toml",
+      "size": 281,
+      "sha256": "11b157daf7ecb1176b4a01d26cbc45a7dba81144ab49659cdf73d380178882d8"
+    },
+    {
+      "path": "language/core/entries/right.toml",
+      "size": 260,
+      "sha256": "483005d683d47d16526d72fd230c810406c89b2be1789381a7e47177a1f58959"
+    },
+    {
+      "path": "language/core/entries/rule.toml",
+      "size": 249,
+      "sha256": "8cfba494c281aa44973a9069039bfd22ea8eee12b668563d4ec5fd9e9ec6995f"
+    },
+    {
+      "path": "language/core/entries/select.toml",
+      "size": 267,
+      "sha256": "b850797a9988872dbd418e27f6bbff10a560f51f6691ab5b9c970cf93f2ca7cc"
+    },
+    {
+      "path": "language/core/entries/semicolon.toml",
+      "size": 259,
+      "sha256": "bb8464d3fd5607f7031742be05404387872896c6a6eb98e694e8c2c401640959"
+    },
+    {
+      "path": "language/core/entries/simplify-verb.toml",
+      "size": 285,
+      "sha256": "537df92b5c09ab0367fcba1003f1eb02b2f2570ab783ad7c57e9da7175e3f5a8"
+    },
+    {
+      "path": "language/core/entries/start.toml",
+      "size": 253,
+      "sha256": "fcdc0aeb671dded38503d9208179b6471c234c5088bef60a596e86f0a827dfb4"
+    },
+    {
+      "path": "language/core/entries/step.toml",
+      "size": 249,
+      "sha256": "27de95d81c768039819d54e8a9e8a74a3bd802a9c687556ccea6285a04a0fbcd"
+    },
+    {
+      "path": "language/core/entries/such.toml",
+      "size": 256,
+      "sha256": "57b791f9ad5552048f236e95fa1f16334b6d95c56ef3aaca25ac8ac80b8a289d"
+    },
+    {
+      "path": "language/core/entries/that.toml",
+      "size": 256,
+      "sha256": "e476b5a12f15fbc6fa05581895b92e926598570247d34e7c4f09ce9ad3103b74"
+    },
+    {
+      "path": "language/core/entries/the.toml",
+      "size": 362,
+      "sha256": "60178a4a3cb93bae462b927a49f8ec36ac8e9ca49d359b1f3c275783b3832a42"
+    },
+    {
+      "path": "language/core/entries/then.toml",
+      "size": 256,
+      "sha256": "a00c7076082fdd68b9a7bce65fd356dd2c09c5c9e27c6f04982a7de8be93856c"
+    },
+    {
+      "path": "language/core/entries/there.toml",
+      "size": 374,
+      "sha256": "73af0942ff95186f06de021986d308196e3a8705409f559396a93581a749be10"
+    },
+    {
+      "path": "language/core/entries/title.toml",
+      "size": 253,
+      "sha256": "dc80b931788eacbe12a60236ee3af0cf30d079eee83ea8b9cffd043d20d899d6"
+    },
+    {
+      "path": "language/core/entries/use.toml",
+      "size": 255,
+      "sha256": "0bd33e56ce98ac71623d353d229aafafcfcffa8b18895fbebea448eb25e50059"
+    },
+    {
+      "path": "language/core/entries/useglossary.toml",
+      "size": 277,
+      "sha256": "2788e8acd316250979695502661ec6b086231313e6389a1818bf69c25851b0a6"
+    },
+    {
+      "path": "language/core/entries/using.toml",
+      "size": 260,
+      "sha256": "2583acec09ca1394e44adb59c4454b926bb560b54e8a3eeddc392f189f76fc93"
+    },
+    {
+      "path": "language/core/entries/we.toml",
+      "size": 251,
+      "sha256": "7000e6d435a63d1d026b1dad0f9547ed0dc1605a4a67d57c605cf0372b82205b"
+    },
+    {
+      "path": "language/core/entries/when.toml",
+      "size": 256,
+      "sha256": "589e78f48363b75a1812a3f90e73f1d84f86a5095e01f6bde482ff2a38f9c16f"
+    },
+    {
+      "path": "language/core/entries/with.toml",
+      "size": 256,
+      "sha256": "e40b2ecf1f60ab387404a485af58d3d118610a9c945a2ddb91452745ac98bc3e"
+    },
+    {
+      "path": "language/core/entries/witness.toml",
+      "size": 268,
+      "sha256": "2f11eea7f1a991356627681002306d6a40cfa58994f406c760ad80c157a9416f"
+    },
+    {
+      "path": "language/core/lexicon.toml",
+      "size": 100,
+      "sha256": "3de2c46e1eea7eabf082c18797aae7c12113195c806f01115b3f1a13f7ab4ec1"
+    },
+    {
+      "path": "language/core-1.1/entries/a.toml",
+      "size": 350,
+      "sha256": "ea6d67ef5ff2313f861ec039ddedb9f7bd5fe349b28e7710ce919c533dd1bd5a"
+    },
+    {
+      "path": "language/core-1.1/entries/allowaxioms.toml",
+      "size": 277,
+      "sha256": "6e0b267663ace4cf89b852f6e1beb3d1cd55cae715175a270e08d72bdb5dd0a9"
+    },
+    {
+      "path": "language/core-1.1/entries/alternative.toml",
+      "size": 284,
+      "sha256": "039237bb25cc684fabe650ee87bcb2516c9c0812eaaea7c1861ff195460ac081"
+    },
+    {
+      "path": "language/core-1.1/entries/an.toml",
+      "size": 356,
+      "sha256": "313e2d1dd1e998802eb7ab4b7a4f085059d4bfa4e2a0ce4e9db48593974dd96a"
+    },
+    {
+      "path": "language/core-1.1/entries/and-intro.toml",
+      "size": 549,
+      "sha256": "eecb5c6d558d2c41fda040ae613dc91383c7776c919ff6d802410727dc27502b"
+    },
+    {
+      "path": "language/core-1.1/entries/and.toml",
+      "size": 252,
+      "sha256": "a94d6f5bcb73fc151218f33cb0683d7cb0e2035f4eea76d6d5503a45fee815ab"
+    },
+    {
+      "path": "language/core-1.1/entries/apply-verb.toml",
+      "size": 273,
+      "sha256": "3c4d32f11097343e53adedd50d0cd87d167438df154dac07b026234240535f08"
+    },
+    {
+      "path": "language/core-1.1/entries/arrow.toml",
+      "size": 448,
+      "sha256": "eba7511779b1a61bbb58aa8c89d86bf1c60602d55a744887a7f68d8231febd6c"
+    },
+    {
+      "path": "language/core-1.1/entries/as.toml",
+      "size": 248,
+      "sha256": "506efec58dac2cfc8301316beac2d7b94422d094dc9c6e2fcafc81a136c233bf"
+    },
+    {
+      "path": "language/core-1.1/entries/assume.toml",
+      "size": 267,
+      "sha256": "918fd158b82b7142913e30e0270ea2e942fefcb888f8b9ab962cc8a38719a8c7"
+    },
+    {
+      "path": "language/core-1.1/entries/at.toml",
+      "size": 238,
+      "sha256": "9da12e86d91a674654888d3d0433a3b2515caf912e053a16752091fdcea29634"
+    },
+    {
+      "path": "language/core-1.1/entries/backward.toml",
+      "size": 265,
+      "sha256": "ebe141cac1cc924937873af7a4d99b7f331c53f0abdfddf4c4299b6d56d71744"
+    },
+    {
+      "path": "language/core-1.1/entries/begin.toml",
+      "size": 253,
+      "sha256": "8a15af625e9ba2082714ee78c0a9eda1acf697eabeaea927247d03061cb8a3ab"
+    },
+    {
+      "path": "language/core-1.1/entries/bind.toml",
+      "size": 249,
+      "sha256": "9576e1dc5d6404c97b2b41798c0f91cead395abf74883bfe65f20c1f0f88a961"
+    },
+    {
+      "path": "language/core-1.1/entries/brace-close.toml",
+      "size": 265,
+      "sha256": "692cfe14bc5f9ebd7be41387ddf1a6167888ff1a3d7f756f1672719eed780e92"
+    },
+    {
+      "path": "language/core-1.1/entries/brace-open.toml",
+      "size": 262,
+      "sha256": "d4a873aea857a08c2935ab2cc754d6a5d30aba3037843f50fc09208927525d51"
+    },
+    {
+      "path": "language/core-1.1/entries/bracket-close.toml",
+      "size": 271,
+      "sha256": "b8a1940677338b8d95e80b8610ceb33c4a7c13f3d8cbd0945a6eafa5f23bc5a5"
+    },
+    {
+      "path": "language/core-1.1/entries/bracket-open.toml",
+      "size": 268,
+      "sha256": "b42d70eaa04354af14b86249dc62ed369f888c153e9a918244df07f773c5a74b"
+    },
+    {
+      "path": "language/core-1.1/entries/branch-word.toml",
+      "size": 285,
+      "sha256": "b4934ed53b3627e8b7f47cdf0e7f4fb71888e86356e3751adabfebcefa588213"
+    },
+    {
+      "path": "language/core-1.1/entries/by.toml",
+      "size": 248,
+      "sha256": "63c3c748c5e5e600a82f011fd2a2557bb8ae44a4adcd068e8c0df01e99ea4eb9"
+    },
+    {
+      "path": "language/core-1.1/entries/case-word.toml",
+      "size": 277,
+      "sha256": "2e2ebfcf64b1991a06295e38ababb05907a85a5969974b5f9f24729dd37c3d8c"
+    },
+    {
+      "path": "language/core-1.1/entries/cases-noun.toml",
+      "size": 270,
+      "sha256": "512242e9918b4f833fd5396ac4a5df08d69347ff0d0a38b9811f81f43e764eb6"
+    },
+    {
+      "path": "language/core-1.1/entries/close.toml",
+      "size": 263,
+      "sha256": "a2a67a560fc15dd098e196306849be9e25f533a31b6d4b59cef791ca39aaf563"
+    },
+    {
+      "path": "language/core-1.1/entries/colon.toml",
+      "size": 247,
+      "sha256": "36056284465c94a52f55a1dfb05f64cdb210f7642532f4a990844a98b510b3eb"
+    },
+    {
+      "path": "language/core-1.1/entries/comma.toml",
+      "size": 247,
+      "sha256": "b02b3faa278a5cd5c76bcc2390efefd0bcf72474f0eb72f49dd9078205fd2d8b"
+    },
+    {
+      "path": "language/core-1.1/entries/consider.toml",
+      "size": 275,
+      "sha256": "b70aad818dcee807e02ffa85f6e1f85f146dbd3bc2469304eea6546a6b31d21b"
+    },
+    {
+      "path": "language/core-1.1/entries/defined.toml",
+      "size": 268,
+      "sha256": "933eef21ecf0e97d8021ff0798c5316136f4ff882710218fc50e7a0dffde10eb"
+    },
+    {
+      "path": "language/core-1.1/entries/display-close.toml",
+      "size": 273,
+      "sha256": "1dbb7a7c0338ea43b91fa5285797502584206cf96a2f807174132313f93394ed"
+    },
+    {
+      "path": "language/core-1.1/entries/display-open.toml",
+      "size": 270,
+      "sha256": "a1d6d5be2dc3f9026d1ada947f75e4460f48aebb9bc99cf8c35f9af5c6419023"
+    },
+    {
+      "path": "language/core-1.1/entries/end.toml",
+      "size": 245,
+      "sha256": "fbdc887c5f6334899900386fd3d738a011a9d611e0b941804b6f578fa1438296"
+    },
+    {
+      "path": "language/core-1.1/entries/env/apply.toml",
+      "size": 259,
+      "sha256": "c64f679760f43cec629bcbcb4f9bc5b485702bab4bb42a571b5870d409824475"
+    },
+    {
+      "path": "language/core-1.1/entries/env/branch.toml",
+      "size": 263,
+      "sha256": "70136cd216bc4f1700f77a49cc13fce1dade0bec63ace28e12d76032626f1697"
+    },
+    {
+      "path": "language/core-1.1/entries/env/calculate.toml",
+      "size": 275,
+      "sha256": "43819583dcc0f5a2edd99652ee819057acc727f0689d0837e6a49dfbd07a4984"
+    },
+    {
+      "path": "language/core-1.1/entries/env/case.toml",
+      "size": 255,
+      "sha256": "25bf82e296307e87ab16e2dd52eba49bc088a2ed3ac63bfe1284cc1a58d03ff9"
+    },
+    {
+      "path": "language/core-1.1/entries/env/cases.toml",
+      "size": 259,
+      "sha256": "5da2416629c5430e78eb21d7870c51d261f095a60e620bc43902ea4f5fe4aaee"
+    },
+    {
+      "path": "language/core-1.1/entries/env/constructor.toml",
+      "size": 283,
+      "sha256": "7d7653a919fece903f447dda4823b10781191e82aea819ba8b7580920a50616e"
+    },
+    {
+      "path": "language/core-1.1/entries/env/corollary.toml",
+      "size": 275,
+      "sha256": "e18e50ebdf75197a6a5df713809dc6e0052130d6a3cbbd4994a998f8ccabb43b"
+    },
+    {
+      "path": "language/core-1.1/entries/env/have.toml",
+      "size": 255,
+      "sha256": "141be8123aabd20453c5eb3d704a3432a0e3b3ea52184d22fe43359e423f5751"
+    },
+    {
+      "path": "language/core-1.1/entries/env/induction.toml",
+      "size": 275,
+      "sha256": "3e129720a6f68241ed53bc7b4a007ea1e78bdc8203c3a6a80717063c064756d4"
+    },
+    {
+      "path": "language/core-1.1/entries/env/lemma.toml",
+      "size": 259,
+      "sha256": "f7d26829adf24e21ed9df93f669414a356cbc5b9811aed38bcd5639640ad0c7e"
+    },
+    {
+      "path": "language/core-1.1/entries/env/lexlean.toml",
+      "size": 267,
+      "sha256": "dd36dd19428887c08afb5fccd80cb7a182908458af10e0400c094a74d8a64bcd"
+    },
+    {
+      "path": "language/core-1.1/entries/env/predicatedefinition.toml",
+      "size": 315,
+      "sha256": "295f4626f75c282310bdf0da93674e28a5be6ae610a47d14f84a789a6a20360f"
+    },
+    {
+      "path": "language/core-1.1/entries/env/premise.toml",
+      "size": 267,
+      "sha256": "70b9f93bde65675c7a9a952c6dea36432243bf86c329a42d854305d4487077aa"
+    },
+    {
+      "path": "language/core-1.1/entries/env/proof.toml",
+      "size": 259,
+      "sha256": "463bcb03396591ee7d7eefb26b50b0826f946081a98921fbc805f48e81ce2214"
+    },
+    {
+      "path": "language/core-1.1/entries/env/rewrite.toml",
+      "size": 267,
+      "sha256": "f4335b577da9a2e292d620a0624547428be4b069df3902eb30751565175295cb"
+    },
+    {
+      "path": "language/core-1.1/entries/env/section.toml",
+      "size": 267,
+      "sha256": "c38f655dbaedf45ad72366a25853fa1d1e522de9ded3a0e93719ad36f4b37717"
+    },
+    {
+      "path": "language/core-1.1/entries/env/simplify.toml",
+      "size": 271,
+      "sha256": "093a709fd0c5452ea620eae382093fe1929a41a4e8deb52d9ca8b5d1c5e2b995"
+    },
+    {
+      "path": "language/core-1.1/entries/env/termdefinition.toml",
+      "size": 295,
+      "sha256": "0bd5c8db679fb777486cb862bf662ebd5dabf1b3375db433f9216f3cb3f93821"
+    },
+    {
+      "path": "language/core-1.1/entries/env/theorem.toml",
+      "size": 267,
+      "sha256": "09a9726cff0b5910f8a60f48e6f833fb8ee6267406dc50971f8c88e1b5cf6055"
+    },
+    {
+      "path": "language/core-1.1/entries/env/typedefinition.toml",
+      "size": 295,
+      "sha256": "f4985365e2ddf1beae6433963cc4315d6084c81c9d185927b6554ac0d057675d"
+    },
+    {
+      "path": "language/core-1.1/entries/eq.toml",
+      "size": 512,
+      "sha256": "d22d08f8e8a0ad5cfe6b06fa2bd2af08f3291da3a9bc178d822b14d3ecdc4777"
+    },
+    {
+      "path": "language/core-1.1/entries/establish.toml",
+      "size": 276,
+      "sha256": "8ade3dd217b7ae0975d7d70e6db81b004fdb6f70dd7d6a1213a68cb6ccf7ef22"
+    },
+    {
+      "path": "language/core-1.1/entries/every.toml",
+      "size": 260,
+      "sha256": "07da867885a3900382e87e450f9afb959d9d0bcdc6cde63f1bd83828718c4cfc"
+    },
+    {
+      "path": "language/core-1.1/entries/exactaxioms.toml",
+      "size": 277,
+      "sha256": "1b275c3d441f63b6a23bdf00703ccee6f03ab7e65651331584735d5343779771"
+    },
+    {
+      "path": "language/core-1.1/entries/exactly.toml",
+      "size": 268,
+      "sha256": "95fd5e73490a7ec52b7e708aed587aadfa40df59a82c28c7cf49892bec1c0b7f"
+    },
+    {
+      "path": "language/core-1.1/entries/exists-intro.toml",
+      "size": 667,
+      "sha256": "842822f585c8eba57f7cb03bc3c44ff8c8ab89ba32b6ae376bb8056cebf447bb"
+    },
+    {
+      "path": "language/core-1.1/entries/exists-op.toml",
+      "size": 674,
+      "sha256": "429fd403fd0d5fe6b5223f2648c586308407f7220c6572db52f129f6c69af045"
+    },
+    {
+      "path": "language/core-1.1/entries/exists.toml",
+      "size": 264,
+      "sha256": "e3e222542300733fada90ec6e9b03090d829d93bc6b68514762e29787d2c0c4a"
+    },
+    {
+      "path": "language/core-1.1/entries/first.toml",
+      "size": 260,
+      "sha256": "97b93629e88656fe61f52d6e98db630e276fd589d34ef8885d8fc300efdea13c"
+    },
+    {
+      "path": "language/core-1.1/entries/follows.toml",
+      "size": 268,
+      "sha256": "f24572596dccd01a87ab5db0b3c3188e8474f7a02aeabf26f50b646ed0a0269c"
+    },
+    {
+      "path": "language/core-1.1/entries/for.toml",
+      "size": 362,
+      "sha256": "5a630988b8bcb650fbdefab320bfb3320d80ac812ef4009b6669b6a1cc1a7ee0"
+    },
+    {
+      "path": "language/core-1.1/entries/forward.toml",
+      "size": 261,
+      "sha256": "9a380b7d2f1475e7e34e15a27379dd7faad410bfa03a4830c84bdf4ac021a97a"
+    },
+    {
+      "path": "language/core-1.1/entries/from.toml",
+      "size": 256,
+      "sha256": "3a982a08dd321d369f4ff043717fed1f6ce9c43b9b94322fc6adef074c79fb52"
+    },
+    {
+      "path": "language/core-1.1/entries/goal.toml",
+      "size": 256,
+      "sha256": "5c3dea1834b5935a0e3e531d3e5bd11289e25b8e1ddb2c6e83a36795f6da10aa"
+    },
+    {
+      "path": "language/core-1.1/entries/heading.toml",
+      "size": 261,
+      "sha256": "1ad9e8e9167559c7df08e21728ac11adf3bbb8c44935f022b9aa181b9fbcd094"
+    },
+    {
+      "path": "language/core-1.1/entries/holds.toml",
+      "size": 260,
+      "sha256": "7b9593a39124cfa64af968f821d83df7f23fd3a329b9cd93c246a00e4f2b734f"
+    },
+    {
+      "path": "language/core-1.1/entries/hyphen.toml",
+      "size": 250,
+      "sha256": "a1e210fc515c01d4b1656ee042ad0823e30b375638c450ba40f904412a98d3c0"
+    },
+    {
+      "path": "language/core-1.1/entries/if.toml",
+      "size": 356,
+      "sha256": "85519b1b5fe8d07f7f9d56c67506d4e0f9a0ed267d17809de5c332fbc194805b"
+    },
+    {
+      "path": "language/core-1.1/entries/iff-intro.toml",
+      "size": 604,
+      "sha256": "be2f454806ca25d94b516d80a2f2a82045f15035fb36eda1638cc9f3c4e23e14"
+    },
+    {
+      "path": "language/core-1.1/entries/iff.toml",
+      "size": 650,
+      "sha256": "3ec257e8a3d9417cdd9f6e7dc72af647c72ddaeec05cca1d18e06de92f6d274e"
+    },
+    {
+      "path": "language/core-1.1/entries/implies.toml",
+      "size": 268,
+      "sha256": "adadd6ad8647cb4d06cef77473dbe8acfe172bc8222a5f2eda39d94f744a9be3"
+    },
+    {
+      "path": "language/core-1.1/entries/importmodule.toml",
+      "size": 281,
+      "sha256": "7d874d1e9c1a11b8fb1d2965da8e1d60bfa67ace92ab4b1f47051fa8ff4ac78f"
+    },
+    {
+      "path": "language/core-1.1/entries/induction-noun.toml",
+      "size": 286,
+      "sha256": "5e62523080f89e8b7fccf81a10f06c1adc492ee74eada40e5de3bc27abffca70"
+    },
+    {
+      "path": "language/core-1.1/entries/is.toml",
+      "size": 248,
+      "sha256": "270bd204dc23e4719a77bac9fc29007cf8590b23981dd7b63e7ee4f30b253d41"
+    },
+    {
+      "path": "language/core-1.1/entries/land.toml",
+      "size": 665,
+      "sha256": "decc60f94ddc431db8fc70113580a7971dd58272d57e149231a68026a4a43829"
+    },
+    {
+      "path": "language/core-1.1/entries/left.toml",
+      "size": 256,
+      "sha256": "73a0e7162ea7bf3c03e7e8a3b38765ef2ca105aa787ced66a2c3cc53493a5537"
+    },
+    {
+      "path": "language/core-1.1/entries/lexeme.toml",
+      "size": 257,
+      "sha256": "71cd83433b44b08877003cb43478a9f3b843c5d0bcca23b0143126eb442b454d"
+    },
+    {
+      "path": "language/core-1.1/entries/lnot.toml",
+      "size": 375,
+      "sha256": "07901636c0933cd5dd4f5a377cf455747177767c1056d18942cace7397420c39"
+    },
+    {
+      "path": "language/core-1.1/entries/lor.toml",
+      "size": 762,
+      "sha256": "334928daa0c6ac8b9934640480897d7686674016c96e63a8d629234f46d633f5"
+    },
+    {
+      "path": "language/core-1.1/entries/math-close.toml",
+      "size": 264,
+      "sha256": "e2b8cd89d49a7258e5ac405c18e41157716fd315ee61955c09a7da61b4fb856b"
+    },
+    {
+      "path": "language/core-1.1/entries/math-open.toml",
+      "size": 261,
+      "sha256": "9451f994f35cfa7023879b7f10779361c5ff516bfb4ff3f2a5fa08ac57ed6196"
+    },
+    {
+      "path": "language/core-1.1/entries/noaxioms.toml",
+      "size": 265,
+      "sha256": "2ee1eab2f2e2d3d2a43dda0dca948db6ee54703c41dad495385d710ebd862c07"
+    },
+    {
+      "path": "language/core-1.1/entries/not.toml",
+      "size": 362,
+      "sha256": "8d8315e91e7331ab08335b7a10925760522f038618abf9119895352114026b61"
+    },
+    {
+      "path": "language/core-1.1/entries/of.toml",
+      "size": 248,
+      "sha256": "3d7878efa24be7b6eba49cf60af094205ec1f3fc16c1169d5ab2b01d01f468cf"
+    },
+    {
+      "path": "language/core-1.1/entries/on.toml",
+      "size": 248,
+      "sha256": "23ac481c8e8d87867bb9b7e50d42e21129f7ba2e9913d514908d6f5b1212a0ef"
+    },
+    {
+      "path": "language/core-1.1/entries/one.toml",
+      "size": 252,
+      "sha256": "48e2f7b9a7c51916bcef86ad3866129cb2bc63c623a573a160b3d8be8a59045c"
+    },
+    {
+      "path": "language/core-1.1/entries/only.toml",
+      "size": 256,
+      "sha256": "7222e0707b20c73c9979bec81c80e0b135173fa04eb4264dde48dad8fed574b7"
+    },
+    {
+      "path": "language/core-1.1/entries/or-inl.toml",
+      "size": 466,
+      "sha256": "22785711b673b762d476c00da4e513d8ce8fa0193f237dd77a2981e1ea3dd89e"
+    },
+    {
+      "path": "language/core-1.1/entries/or-inr.toml",
+      "size": 466,
+      "sha256": "e95f429f9664c7fa332f1f365a36480e9ccfbf73fd4b1a9a57e0195ae17ef65f"
+    },
+    {
+      "path": "language/core-1.1/entries/or.toml",
+      "size": 248,
+      "sha256": "427266c94b2170cb6239b85c52dffbdb31263721bf1e73d6290df1c8c2aaa4ff"
+    },
+    {
+      "path": "language/core-1.1/entries/parameters-concept.toml",
+      "size": 304,
+      "sha256": "843e33c408af04be73e692182a6b0609d18a4560f592acf9a59b2035344485f0"
+    },
+    {
+      "path": "language/core-1.1/entries/parameters.toml",
+      "size": 273,
+      "sha256": "2aab5df9b2dffbbc1e3e7d24db381385c8cec72ace42d2d483e40311ad3b417f"
+    },
+    {
+      "path": "language/core-1.1/entries/paren-close.toml",
+      "size": 265,
+      "sha256": "80cba6511446ddabf6e62caee5f6f771499fa1f724c026de0c9b6e5f1471ecb6"
+    },
+    {
+      "path": "language/core-1.1/entries/paren-open.toml",
+      "size": 262,
+      "sha256": "a7e8b29ac5a92bafa7af4dcb71384a59f71d5841e4afd840f946ddf8cdadd1fb"
+    },
+    {
+      "path": "language/core-1.1/entries/period.toml",
+      "size": 250,
+      "sha256": "36d3e3209128ca274dca68fea22bdcc9c7603a409e75bf21700d31306044f296"
+    },
+    {
+      "path": "language/core-1.1/entries/premise-word.toml",
+      "size": 289,
+      "sha256": "23b0f93b2d3922cd9894c032f389848bd791f06a8314ba7d49c3f038ffc94b27"
+    },
+    {
+      "path": "language/core-1.1/entries/proceed.toml",
+      "size": 271,
+      "sha256": "120c271516785825519d6b81d3e6e3d8ed42f6bf1620e9afe3aaa8d2d2a019b4"
+    },
+    {
+      "path": "language/core-1.1/entries/reference.toml",
+      "size": 269,
+      "sha256": "303c52e2e3fb0ff9938a1da03f0c8cba951fbc31196f4e4dac156d2cfe874bed"
+    },
+    {
+      "path": "language/core-1.1/entries/reflexivity.toml",
+      "size": 284,
+      "sha256": "54cf6958281c9e3684dd05ccbbfd0b8b04bc574b725e1432c3d18e7872a4b2ff"
+    },
+    {
+      "path": "language/core-1.1/entries/rewrite-verb.toml",
+      "size": 281,
+      "sha256": "11b157daf7ecb1176b4a01d26cbc45a7dba81144ab49659cdf73d380178882d8"
+    },
+    {
+      "path": "language/core-1.1/entries/right.toml",
+      "size": 260,
+      "sha256": "483005d683d47d16526d72fd230c810406c89b2be1789381a7e47177a1f58959"
+    },
+    {
+      "path": "language/core-1.1/entries/rule.toml",
+      "size": 249,
+      "sha256": "8cfba494c281aa44973a9069039bfd22ea8eee12b668563d4ec5fd9e9ec6995f"
+    },
+    {
+      "path": "language/core-1.1/entries/select.toml",
+      "size": 267,
+      "sha256": "b850797a9988872dbd418e27f6bbff10a560f51f6691ab5b9c970cf93f2ca7cc"
+    },
+    {
+      "path": "language/core-1.1/entries/semicolon.toml",
+      "size": 259,
+      "sha256": "bb8464d3fd5607f7031742be05404387872896c6a6eb98e694e8c2c401640959"
+    },
+    {
+      "path": "language/core-1.1/entries/simplify-verb.toml",
+      "size": 285,
+      "sha256": "537df92b5c09ab0367fcba1003f1eb02b2f2570ab783ad7c57e9da7175e3f5a8"
+    },
+    {
+      "path": "language/core-1.1/entries/start.toml",
+      "size": 253,
+      "sha256": "fcdc0aeb671dded38503d9208179b6471c234c5088bef60a596e86f0a827dfb4"
+    },
+    {
+      "path": "language/core-1.1/entries/step.toml",
+      "size": 249,
+      "sha256": "27de95d81c768039819d54e8a9e8a74a3bd802a9c687556ccea6285a04a0fbcd"
+    },
+    {
+      "path": "language/core-1.1/entries/such.toml",
+      "size": 256,
+      "sha256": "57b791f9ad5552048f236e95fa1f16334b6d95c56ef3aaca25ac8ac80b8a289d"
+    },
+    {
+      "path": "language/core-1.1/entries/that.toml",
+      "size": 256,
+      "sha256": "e476b5a12f15fbc6fa05581895b92e926598570247d34e7c4f09ce9ad3103b74"
+    },
+    {
+      "path": "language/core-1.1/entries/the.toml",
+      "size": 362,
+      "sha256": "60178a4a3cb93bae462b927a49f8ec36ac8e9ca49d359b1f3c275783b3832a42"
+    },
+    {
+      "path": "language/core-1.1/entries/then.toml",
+      "size": 256,
+      "sha256": "a00c7076082fdd68b9a7bce65fd356dd2c09c5c9e27c6f04982a7de8be93856c"
+    },
+    {
+      "path": "language/core-1.1/entries/there.toml",
+      "size": 374,
+      "sha256": "73af0942ff95186f06de021986d308196e3a8705409f559396a93581a749be10"
+    },
+    {
+      "path": "language/core-1.1/entries/title.toml",
+      "size": 253,
+      "sha256": "dc80b931788eacbe12a60236ee3af0cf30d079eee83ea8b9cffd043d20d899d6"
+    },
+    {
+      "path": "language/core-1.1/entries/use.toml",
+      "size": 255,
+      "sha256": "0bd33e56ce98ac71623d353d229aafafcfcffa8b18895fbebea448eb25e50059"
+    },
+    {
+      "path": "language/core-1.1/entries/useglossary.toml",
+      "size": 277,
+      "sha256": "2788e8acd316250979695502661ec6b086231313e6389a1818bf69c25851b0a6"
+    },
+    {
+      "path": "language/core-1.1/entries/using.toml",
+      "size": 260,
+      "sha256": "2583acec09ca1394e44adb59c4454b926bb560b54e8a3eeddc392f189f76fc93"
+    },
+    {
+      "path": "language/core-1.1/entries/we.toml",
+      "size": 251,
+      "sha256": "7000e6d435a63d1d026b1dad0f9547ed0dc1605a4a67d57c605cf0372b82205b"
+    },
+    {
+      "path": "language/core-1.1/entries/when.toml",
+      "size": 256,
+      "sha256": "589e78f48363b75a1812a3f90e73f1d84f86a5095e01f6bde482ff2a38f9c16f"
+    },
+    {
+      "path": "language/core-1.1/entries/with.toml",
+      "size": 256,
+      "sha256": "e40b2ecf1f60ab387404a485af58d3d118610a9c945a2ddb91452745ac98bc3e"
+    },
+    {
+      "path": "language/core-1.1/entries/witness.toml",
+      "size": 268,
+      "sha256": "2f11eea7f1a991356627681002306d6a40cfa58994f406c760ad80c157a9416f"
+    },
+    {
+      "path": "language/core-1.1/lexicon.toml",
+      "size": 100,
+      "sha256": "b40fae762f71fbe14c8f5012adde6ab3033bf17cdb6462ddfee26041e878d567"
+    },
+    {
+      "path": "language/core-1.2/entries/a.toml",
+      "size": 350,
+      "sha256": "ea6d67ef5ff2313f861ec039ddedb9f7bd5fe349b28e7710ce919c533dd1bd5a"
+    },
+    {
+      "path": "language/core-1.2/entries/allowaxioms.toml",
+      "size": 277,
+      "sha256": "6e0b267663ace4cf89b852f6e1beb3d1cd55cae715175a270e08d72bdb5dd0a9"
+    },
+    {
+      "path": "language/core-1.2/entries/alternative.toml",
+      "size": 284,
+      "sha256": "039237bb25cc684fabe650ee87bcb2516c9c0812eaaea7c1861ff195460ac081"
+    },
+    {
+      "path": "language/core-1.2/entries/an.toml",
+      "size": 356,
+      "sha256": "313e2d1dd1e998802eb7ab4b7a4f085059d4bfa4e2a0ce4e9db48593974dd96a"
+    },
+    {
+      "path": "language/core-1.2/entries/and-intro.toml",
+      "size": 549,
+      "sha256": "eecb5c6d558d2c41fda040ae613dc91383c7776c919ff6d802410727dc27502b"
+    },
+    {
+      "path": "language/core-1.2/entries/and.toml",
+      "size": 252,
+      "sha256": "a94d6f5bcb73fc151218f33cb0683d7cb0e2035f4eea76d6d5503a45fee815ab"
+    },
+    {
+      "path": "language/core-1.2/entries/apply-verb.toml",
+      "size": 273,
+      "sha256": "3c4d32f11097343e53adedd50d0cd87d167438df154dac07b026234240535f08"
+    },
+    {
+      "path": "language/core-1.2/entries/arrow.toml",
+      "size": 448,
+      "sha256": "eba7511779b1a61bbb58aa8c89d86bf1c60602d55a744887a7f68d8231febd6c"
+    },
+    {
+      "path": "language/core-1.2/entries/as.toml",
+      "size": 248,
+      "sha256": "506efec58dac2cfc8301316beac2d7b94422d094dc9c6e2fcafc81a136c233bf"
+    },
+    {
+      "path": "language/core-1.2/entries/assume.toml",
+      "size": 267,
+      "sha256": "918fd158b82b7142913e30e0270ea2e942fefcb888f8b9ab962cc8a38719a8c7"
+    },
+    {
+      "path": "language/core-1.2/entries/at.toml",
+      "size": 238,
+      "sha256": "9da12e86d91a674654888d3d0433a3b2515caf912e053a16752091fdcea29634"
+    },
+    {
+      "path": "language/core-1.2/entries/backward.toml",
+      "size": 265,
+      "sha256": "ebe141cac1cc924937873af7a4d99b7f331c53f0abdfddf4c4299b6d56d71744"
+    },
+    {
+      "path": "language/core-1.2/entries/begin.toml",
+      "size": 253,
+      "sha256": "8a15af625e9ba2082714ee78c0a9eda1acf697eabeaea927247d03061cb8a3ab"
+    },
+    {
+      "path": "language/core-1.2/entries/bind.toml",
+      "size": 249,
+      "sha256": "9576e1dc5d6404c97b2b41798c0f91cead395abf74883bfe65f20c1f0f88a961"
+    },
+    {
+      "path": "language/core-1.2/entries/brace-close.toml",
+      "size": 265,
+      "sha256": "692cfe14bc5f9ebd7be41387ddf1a6167888ff1a3d7f756f1672719eed780e92"
+    },
+    {
+      "path": "language/core-1.2/entries/brace-open.toml",
+      "size": 262,
+      "sha256": "d4a873aea857a08c2935ab2cc754d6a5d30aba3037843f50fc09208927525d51"
+    },
+    {
+      "path": "language/core-1.2/entries/bracket-close.toml",
+      "size": 271,
+      "sha256": "b8a1940677338b8d95e80b8610ceb33c4a7c13f3d8cbd0945a6eafa5f23bc5a5"
+    },
+    {
+      "path": "language/core-1.2/entries/bracket-open.toml",
+      "size": 268,
+      "sha256": "b42d70eaa04354af14b86249dc62ed369f888c153e9a918244df07f773c5a74b"
+    },
+    {
+      "path": "language/core-1.2/entries/branch-word.toml",
+      "size": 285,
+      "sha256": "b4934ed53b3627e8b7f47cdf0e7f4fb71888e86356e3751adabfebcefa588213"
+    },
+    {
+      "path": "language/core-1.2/entries/by.toml",
+      "size": 248,
+      "sha256": "63c3c748c5e5e600a82f011fd2a2557bb8ae44a4adcd068e8c0df01e99ea4eb9"
+    },
+    {
+      "path": "language/core-1.2/entries/case-word.toml",
+      "size": 277,
+      "sha256": "2e2ebfcf64b1991a06295e38ababb05907a85a5969974b5f9f24729dd37c3d8c"
+    },
+    {
+      "path": "language/core-1.2/entries/cases-noun.toml",
+      "size": 270,
+      "sha256": "512242e9918b4f833fd5396ac4a5df08d69347ff0d0a38b9811f81f43e764eb6"
+    },
+    {
+      "path": "language/core-1.2/entries/close.toml",
+      "size": 263,
+      "sha256": "a2a67a560fc15dd098e196306849be9e25f533a31b6d4b59cef791ca39aaf563"
+    },
+    {
+      "path": "language/core-1.2/entries/colon.toml",
+      "size": 247,
+      "sha256": "36056284465c94a52f55a1dfb05f64cdb210f7642532f4a990844a98b510b3eb"
+    },
+    {
+      "path": "language/core-1.2/entries/comma.toml",
+      "size": 247,
+      "sha256": "b02b3faa278a5cd5c76bcc2390efefd0bcf72474f0eb72f49dd9078205fd2d8b"
+    },
+    {
+      "path": "language/core-1.2/entries/consider.toml",
+      "size": 275,
+      "sha256": "b70aad818dcee807e02ffa85f6e1f85f146dbd3bc2469304eea6546a6b31d21b"
+    },
+    {
+      "path": "language/core-1.2/entries/defined.toml",
+      "size": 268,
+      "sha256": "933eef21ecf0e97d8021ff0798c5316136f4ff882710218fc50e7a0dffde10eb"
+    },
+    {
+      "path": "language/core-1.2/entries/display-close.toml",
+      "size": 273,
+      "sha256": "1dbb7a7c0338ea43b91fa5285797502584206cf96a2f807174132313f93394ed"
+    },
+    {
+      "path": "language/core-1.2/entries/display-open.toml",
+      "size": 270,
+      "sha256": "a1d6d5be2dc3f9026d1ada947f75e4460f48aebb9bc99cf8c35f9af5c6419023"
+    },
+    {
+      "path": "language/core-1.2/entries/end.toml",
+      "size": 245,
+      "sha256": "fbdc887c5f6334899900386fd3d738a011a9d611e0b941804b6f578fa1438296"
+    },
+    {
+      "path": "language/core-1.2/entries/env/apply.toml",
+      "size": 259,
+      "sha256": "c64f679760f43cec629bcbcb4f9bc5b485702bab4bb42a571b5870d409824475"
+    },
+    {
+      "path": "language/core-1.2/entries/env/branch.toml",
+      "size": 263,
+      "sha256": "70136cd216bc4f1700f77a49cc13fce1dade0bec63ace28e12d76032626f1697"
+    },
+    {
+      "path": "language/core-1.2/entries/env/calculate.toml",
+      "size": 275,
+      "sha256": "43819583dcc0f5a2edd99652ee819057acc727f0689d0837e6a49dfbd07a4984"
+    },
+    {
+      "path": "language/core-1.2/entries/env/case.toml",
+      "size": 255,
+      "sha256": "25bf82e296307e87ab16e2dd52eba49bc088a2ed3ac63bfe1284cc1a58d03ff9"
+    },
+    {
+      "path": "language/core-1.2/entries/env/cases.toml",
+      "size": 259,
+      "sha256": "5da2416629c5430e78eb21d7870c51d261f095a60e620bc43902ea4f5fe4aaee"
+    },
+    {
+      "path": "language/core-1.2/entries/env/constructor.toml",
+      "size": 283,
+      "sha256": "7d7653a919fece903f447dda4823b10781191e82aea819ba8b7580920a50616e"
+    },
+    {
+      "path": "language/core-1.2/entries/env/corollary.toml",
+      "size": 275,
+      "sha256": "e18e50ebdf75197a6a5df713809dc6e0052130d6a3cbbd4994a998f8ccabb43b"
+    },
+    {
+      "path": "language/core-1.2/entries/env/have.toml",
+      "size": 255,
+      "sha256": "141be8123aabd20453c5eb3d704a3432a0e3b3ea52184d22fe43359e423f5751"
+    },
+    {
+      "path": "language/core-1.2/entries/env/induction.toml",
+      "size": 275,
+      "sha256": "3e129720a6f68241ed53bc7b4a007ea1e78bdc8203c3a6a80717063c064756d4"
+    },
+    {
+      "path": "language/core-1.2/entries/env/lemma.toml",
+      "size": 259,
+      "sha256": "f7d26829adf24e21ed9df93f669414a356cbc5b9811aed38bcd5639640ad0c7e"
+    },
+    {
+      "path": "language/core-1.2/entries/env/lexlean.toml",
+      "size": 267,
+      "sha256": "dd36dd19428887c08afb5fccd80cb7a182908458af10e0400c094a74d8a64bcd"
+    },
+    {
+      "path": "language/core-1.2/entries/env/predicatedefinition.toml",
+      "size": 315,
+      "sha256": "295f4626f75c282310bdf0da93674e28a5be6ae610a47d14f84a789a6a20360f"
+    },
+    {
+      "path": "language/core-1.2/entries/env/premise.toml",
+      "size": 267,
+      "sha256": "70b9f93bde65675c7a9a952c6dea36432243bf86c329a42d854305d4487077aa"
+    },
+    {
+      "path": "language/core-1.2/entries/env/proof.toml",
+      "size": 259,
+      "sha256": "463bcb03396591ee7d7eefb26b50b0826f946081a98921fbc805f48e81ce2214"
+    },
+    {
+      "path": "language/core-1.2/entries/env/rewrite.toml",
+      "size": 267,
+      "sha256": "f4335b577da9a2e292d620a0624547428be4b069df3902eb30751565175295cb"
+    },
+    {
+      "path": "language/core-1.2/entries/env/section.toml",
+      "size": 267,
+      "sha256": "c38f655dbaedf45ad72366a25853fa1d1e522de9ded3a0e93719ad36f4b37717"
+    },
+    {
+      "path": "language/core-1.2/entries/env/simplify.toml",
+      "size": 271,
+      "sha256": "093a709fd0c5452ea620eae382093fe1929a41a4e8deb52d9ca8b5d1c5e2b995"
+    },
+    {
+      "path": "language/core-1.2/entries/env/termdefinition.toml",
+      "size": 295,
+      "sha256": "0bd5c8db679fb777486cb862bf662ebd5dabf1b3375db433f9216f3cb3f93821"
+    },
+    {
+      "path": "language/core-1.2/entries/env/theorem.toml",
+      "size": 267,
+      "sha256": "09a9726cff0b5910f8a60f48e6f833fb8ee6267406dc50971f8c88e1b5cf6055"
+    },
+    {
+      "path": "language/core-1.2/entries/env/typedefinition.toml",
+      "size": 295,
+      "sha256": "f4985365e2ddf1beae6433963cc4315d6084c81c9d185927b6554ac0d057675d"
+    },
+    {
+      "path": "language/core-1.2/entries/eq.toml",
+      "size": 512,
+      "sha256": "d22d08f8e8a0ad5cfe6b06fa2bd2af08f3291da3a9bc178d822b14d3ecdc4777"
+    },
+    {
+      "path": "language/core-1.2/entries/establish.toml",
+      "size": 276,
+      "sha256": "8ade3dd217b7ae0975d7d70e6db81b004fdb6f70dd7d6a1213a68cb6ccf7ef22"
+    },
+    {
+      "path": "language/core-1.2/entries/every.toml",
+      "size": 260,
+      "sha256": "07da867885a3900382e87e450f9afb959d9d0bcdc6cde63f1bd83828718c4cfc"
+    },
+    {
+      "path": "language/core-1.2/entries/exactaxioms.toml",
+      "size": 277,
+      "sha256": "1b275c3d441f63b6a23bdf00703ccee6f03ab7e65651331584735d5343779771"
+    },
+    {
+      "path": "language/core-1.2/entries/exactly.toml",
+      "size": 268,
+      "sha256": "95fd5e73490a7ec52b7e708aed587aadfa40df59a82c28c7cf49892bec1c0b7f"
+    },
+    {
+      "path": "language/core-1.2/entries/exists-intro.toml",
+      "size": 667,
+      "sha256": "842822f585c8eba57f7cb03bc3c44ff8c8ab89ba32b6ae376bb8056cebf447bb"
+    },
+    {
+      "path": "language/core-1.2/entries/exists-op.toml",
+      "size": 674,
+      "sha256": "429fd403fd0d5fe6b5223f2648c586308407f7220c6572db52f129f6c69af045"
+    },
+    {
+      "path": "language/core-1.2/entries/exists.toml",
+      "size": 264,
+      "sha256": "e3e222542300733fada90ec6e9b03090d829d93bc6b68514762e29787d2c0c4a"
+    },
+    {
+      "path": "language/core-1.2/entries/first.toml",
+      "size": 260,
+      "sha256": "97b93629e88656fe61f52d6e98db630e276fd589d34ef8885d8fc300efdea13c"
+    },
+    {
+      "path": "language/core-1.2/entries/follows.toml",
+      "size": 268,
+      "sha256": "f24572596dccd01a87ab5db0b3c3188e8474f7a02aeabf26f50b646ed0a0269c"
+    },
+    {
+      "path": "language/core-1.2/entries/for.toml",
+      "size": 362,
+      "sha256": "5a630988b8bcb650fbdefab320bfb3320d80ac812ef4009b6669b6a1cc1a7ee0"
+    },
+    {
+      "path": "language/core-1.2/entries/forward.toml",
+      "size": 261,
+      "sha256": "9a380b7d2f1475e7e34e15a27379dd7faad410bfa03a4830c84bdf4ac021a97a"
+    },
+    {
+      "path": "language/core-1.2/entries/from.toml",
+      "size": 256,
+      "sha256": "3a982a08dd321d369f4ff043717fed1f6ce9c43b9b94322fc6adef074c79fb52"
+    },
+    {
+      "path": "language/core-1.2/entries/goal.toml",
+      "size": 256,
+      "sha256": "5c3dea1834b5935a0e3e531d3e5bd11289e25b8e1ddb2c6e83a36795f6da10aa"
+    },
+    {
+      "path": "language/core-1.2/entries/heading.toml",
+      "size": 261,
+      "sha256": "1ad9e8e9167559c7df08e21728ac11adf3bbb8c44935f022b9aa181b9fbcd094"
+    },
+    {
+      "path": "language/core-1.2/entries/holds.toml",
+      "size": 260,
+      "sha256": "7b9593a39124cfa64af968f821d83df7f23fd3a329b9cd93c246a00e4f2b734f"
+    },
+    {
+      "path": "language/core-1.2/entries/hyphen.toml",
+      "size": 250,
+      "sha256": "a1e210fc515c01d4b1656ee042ad0823e30b375638c450ba40f904412a98d3c0"
+    },
+    {
+      "path": "language/core-1.2/entries/if.toml",
+      "size": 356,
+      "sha256": "85519b1b5fe8d07f7f9d56c67506d4e0f9a0ed267d17809de5c332fbc194805b"
+    },
+    {
+      "path": "language/core-1.2/entries/iff-intro.toml",
+      "size": 604,
+      "sha256": "be2f454806ca25d94b516d80a2f2a82045f15035fb36eda1638cc9f3c4e23e14"
+    },
+    {
+      "path": "language/core-1.2/entries/iff.toml",
+      "size": 650,
+      "sha256": "3ec257e8a3d9417cdd9f6e7dc72af647c72ddaeec05cca1d18e06de92f6d274e"
+    },
+    {
+      "path": "language/core-1.2/entries/implies.toml",
+      "size": 268,
+      "sha256": "adadd6ad8647cb4d06cef77473dbe8acfe172bc8222a5f2eda39d94f744a9be3"
+    },
+    {
+      "path": "language/core-1.2/entries/importmodule.toml",
+      "size": 281,
+      "sha256": "7d874d1e9c1a11b8fb1d2965da8e1d60bfa67ace92ab4b1f47051fa8ff4ac78f"
+    },
+    {
+      "path": "language/core-1.2/entries/induction-noun.toml",
+      "size": 286,
+      "sha256": "5e62523080f89e8b7fccf81a10f06c1adc492ee74eada40e5de3bc27abffca70"
+    },
+    {
+      "path": "language/core-1.2/entries/is.toml",
+      "size": 248,
+      "sha256": "270bd204dc23e4719a77bac9fc29007cf8590b23981dd7b63e7ee4f30b253d41"
+    },
+    {
+      "path": "language/core-1.2/entries/land.toml",
+      "size": 665,
+      "sha256": "decc60f94ddc431db8fc70113580a7971dd58272d57e149231a68026a4a43829"
+    },
+    {
+      "path": "language/core-1.2/entries/left.toml",
+      "size": 256,
+      "sha256": "73a0e7162ea7bf3c03e7e8a3b38765ef2ca105aa787ced66a2c3cc53493a5537"
+    },
+    {
+      "path": "language/core-1.2/entries/lexeme.toml",
+      "size": 257,
+      "sha256": "71cd83433b44b08877003cb43478a9f3b843c5d0bcca23b0143126eb442b454d"
+    },
+    {
+      "path": "language/core-1.2/entries/lnot.toml",
+      "size": 375,
+      "sha256": "07901636c0933cd5dd4f5a377cf455747177767c1056d18942cace7397420c39"
+    },
+    {
+      "path": "language/core-1.2/entries/lor.toml",
+      "size": 762,
+      "sha256": "334928daa0c6ac8b9934640480897d7686674016c96e63a8d629234f46d633f5"
+    },
+    {
+      "path": "language/core-1.2/entries/math-close.toml",
+      "size": 264,
+      "sha256": "e2b8cd89d49a7258e5ac405c18e41157716fd315ee61955c09a7da61b4fb856b"
+    },
+    {
+      "path": "language/core-1.2/entries/math-open.toml",
+      "size": 261,
+      "sha256": "9451f994f35cfa7023879b7f10779361c5ff516bfb4ff3f2a5fa08ac57ed6196"
+    },
+    {
+      "path": "language/core-1.2/entries/noaxioms.toml",
+      "size": 265,
+      "sha256": "2ee1eab2f2e2d3d2a43dda0dca948db6ee54703c41dad495385d710ebd862c07"
+    },
+    {
+      "path": "language/core-1.2/entries/not.toml",
+      "size": 362,
+      "sha256": "8d8315e91e7331ab08335b7a10925760522f038618abf9119895352114026b61"
+    },
+    {
+      "path": "language/core-1.2/entries/of.toml",
+      "size": 248,
+      "sha256": "3d7878efa24be7b6eba49cf60af094205ec1f3fc16c1169d5ab2b01d01f468cf"
+    },
+    {
+      "path": "language/core-1.2/entries/on.toml",
+      "size": 248,
+      "sha256": "23ac481c8e8d87867bb9b7e50d42e21129f7ba2e9913d514908d6f5b1212a0ef"
+    },
+    {
+      "path": "language/core-1.2/entries/one.toml",
+      "size": 252,
+      "sha256": "48e2f7b9a7c51916bcef86ad3866129cb2bc63c623a573a160b3d8be8a59045c"
+    },
+    {
+      "path": "language/core-1.2/entries/only.toml",
+      "size": 256,
+      "sha256": "7222e0707b20c73c9979bec81c80e0b135173fa04eb4264dde48dad8fed574b7"
+    },
+    {
+      "path": "language/core-1.2/entries/or-inl.toml",
+      "size": 466,
+      "sha256": "22785711b673b762d476c00da4e513d8ce8fa0193f237dd77a2981e1ea3dd89e"
+    },
+    {
+      "path": "language/core-1.2/entries/or-inr.toml",
+      "size": 466,
+      "sha256": "e95f429f9664c7fa332f1f365a36480e9ccfbf73fd4b1a9a57e0195ae17ef65f"
+    },
+    {
+      "path": "language/core-1.2/entries/or.toml",
+      "size": 248,
+      "sha256": "427266c94b2170cb6239b85c52dffbdb31263721bf1e73d6290df1c8c2aaa4ff"
+    },
+    {
+      "path": "language/core-1.2/entries/parameters-concept.toml",
+      "size": 304,
+      "sha256": "843e33c408af04be73e692182a6b0609d18a4560f592acf9a59b2035344485f0"
+    },
+    {
+      "path": "language/core-1.2/entries/parameters.toml",
+      "size": 273,
+      "sha256": "2aab5df9b2dffbbc1e3e7d24db381385c8cec72ace42d2d483e40311ad3b417f"
+    },
+    {
+      "path": "language/core-1.2/entries/paren-close.toml",
+      "size": 265,
+      "sha256": "80cba6511446ddabf6e62caee5f6f771499fa1f724c026de0c9b6e5f1471ecb6"
+    },
+    {
+      "path": "language/core-1.2/entries/paren-open.toml",
+      "size": 262,
+      "sha256": "a7e8b29ac5a92bafa7af4dcb71384a59f71d5841e4afd840f946ddf8cdadd1fb"
+    },
+    {
+      "path": "language/core-1.2/entries/period.toml",
+      "size": 250,
+      "sha256": "36d3e3209128ca274dca68fea22bdcc9c7603a409e75bf21700d31306044f296"
+    },
+    {
+      "path": "language/core-1.2/entries/premise-word.toml",
+      "size": 289,
+      "sha256": "23b0f93b2d3922cd9894c032f389848bd791f06a8314ba7d49c3f038ffc94b27"
+    },
+    {
+      "path": "language/core-1.2/entries/proceed.toml",
+      "size": 271,
+      "sha256": "120c271516785825519d6b81d3e6e3d8ed42f6bf1620e9afe3aaa8d2d2a019b4"
+    },
+    {
+      "path": "language/core-1.2/entries/reference.toml",
+      "size": 269,
+      "sha256": "303c52e2e3fb0ff9938a1da03f0c8cba951fbc31196f4e4dac156d2cfe874bed"
+    },
+    {
+      "path": "language/core-1.2/entries/reflexivity.toml",
+      "size": 284,
+      "sha256": "54cf6958281c9e3684dd05ccbbfd0b8b04bc574b725e1432c3d18e7872a4b2ff"
+    },
+    {
+      "path": "language/core-1.2/entries/rewrite-verb.toml",
+      "size": 281,
+      "sha256": "11b157daf7ecb1176b4a01d26cbc45a7dba81144ab49659cdf73d380178882d8"
+    },
+    {
+      "path": "language/core-1.2/entries/right.toml",
+      "size": 260,
+      "sha256": "483005d683d47d16526d72fd230c810406c89b2be1789381a7e47177a1f58959"
+    },
+    {
+      "path": "language/core-1.2/entries/rule.toml",
+      "size": 249,
+      "sha256": "8cfba494c281aa44973a9069039bfd22ea8eee12b668563d4ec5fd9e9ec6995f"
+    },
+    {
+      "path": "language/core-1.2/entries/select.toml",
+      "size": 267,
+      "sha256": "b850797a9988872dbd418e27f6bbff10a560f51f6691ab5b9c970cf93f2ca7cc"
+    },
+    {
+      "path": "language/core-1.2/entries/semicolon.toml",
+      "size": 259,
+      "sha256": "bb8464d3fd5607f7031742be05404387872896c6a6eb98e694e8c2c401640959"
+    },
+    {
+      "path": "language/core-1.2/entries/simplify-verb.toml",
+      "size": 285,
+      "sha256": "537df92b5c09ab0367fcba1003f1eb02b2f2570ab783ad7c57e9da7175e3f5a8"
+    },
+    {
+      "path": "language/core-1.2/entries/start.toml",
+      "size": 253,
+      "sha256": "fcdc0aeb671dded38503d9208179b6471c234c5088bef60a596e86f0a827dfb4"
+    },
+    {
+      "path": "language/core-1.2/entries/step.toml",
+      "size": 249,
+      "sha256": "27de95d81c768039819d54e8a9e8a74a3bd802a9c687556ccea6285a04a0fbcd"
+    },
+    {
+      "path": "language/core-1.2/entries/such.toml",
+      "size": 256,
+      "sha256": "57b791f9ad5552048f236e95fa1f16334b6d95c56ef3aaca25ac8ac80b8a289d"
+    },
+    {
+      "path": "language/core-1.2/entries/that.toml",
+      "size": 256,
+      "sha256": "e476b5a12f15fbc6fa05581895b92e926598570247d34e7c4f09ce9ad3103b74"
+    },
+    {
+      "path": "language/core-1.2/entries/the.toml",
+      "size": 362,
+      "sha256": "60178a4a3cb93bae462b927a49f8ec36ac8e9ca49d359b1f3c275783b3832a42"
+    },
+    {
+      "path": "language/core-1.2/entries/then.toml",
+      "size": 256,
+      "sha256": "a00c7076082fdd68b9a7bce65fd356dd2c09c5c9e27c6f04982a7de8be93856c"
+    },
+    {
+      "path": "language/core-1.2/entries/there.toml",
+      "size": 374,
+      "sha256": "73af0942ff95186f06de021986d308196e3a8705409f559396a93581a749be10"
+    },
+    {
+      "path": "language/core-1.2/entries/title.toml",
+      "size": 253,
+      "sha256": "dc80b931788eacbe12a60236ee3af0cf30d079eee83ea8b9cffd043d20d899d6"
+    },
+    {
+      "path": "language/core-1.2/entries/use.toml",
+      "size": 255,
+      "sha256": "0bd33e56ce98ac71623d353d229aafafcfcffa8b18895fbebea448eb25e50059"
+    },
+    {
+      "path": "language/core-1.2/entries/useglossary.toml",
+      "size": 277,
+      "sha256": "2788e8acd316250979695502661ec6b086231313e6389a1818bf69c25851b0a6"
+    },
+    {
+      "path": "language/core-1.2/entries/using.toml",
+      "size": 260,
+      "sha256": "2583acec09ca1394e44adb59c4454b926bb560b54e8a3eeddc392f189f76fc93"
+    },
+    {
+      "path": "language/core-1.2/entries/we.toml",
+      "size": 251,
+      "sha256": "7000e6d435a63d1d026b1dad0f9547ed0dc1605a4a67d57c605cf0372b82205b"
+    },
+    {
+      "path": "language/core-1.2/entries/when.toml",
+      "size": 256,
+      "sha256": "589e78f48363b75a1812a3f90e73f1d84f86a5095e01f6bde482ff2a38f9c16f"
+    },
+    {
+      "path": "language/core-1.2/entries/with.toml",
+      "size": 256,
+      "sha256": "e40b2ecf1f60ab387404a485af58d3d118610a9c945a2ddb91452745ac98bc3e"
+    },
+    {
+      "path": "language/core-1.2/entries/witness.toml",
+      "size": 268,
+      "sha256": "2f11eea7f1a991356627681002306d6a40cfa58994f406c760ad80c157a9416f"
+    },
+    {
+      "path": "language/core-1.2/lexicon.toml",
+      "size": 100,
+      "sha256": "271079763d269cc873531f515e56da960cd6321393b9460ff0e617666fa01d71"
+    },
+    {
+      "path": "language/lcnf-1.2/tooling/lake-manifest.json",
+      "size": 144,
+      "sha256": "30921e9439adf6b3cf315af98fa53b2845a4557ea196e208bbd2e292a083f3c6"
+    },
+    {
+      "path": "language/lcnf-1.2/tooling/lakefile.toml",
+      "size": 40,
+      "sha256": "89c8259111fba4a7c5979499c771e941348527de5d646be50f6c081db2303eb9"
+    },
+    {
+      "path": "language/lcnf-1.2/tooling/lean-toolchain",
+      "size": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "language/lcnf-1.2/tooling/lexlean.toml",
+      "size": 649,
+      "sha256": "10f661790be954d917d570bae11f99ca92637af53402844aff3086683bae3a0e"
+    },
+    {
+      "path": "language/lcnf-1.2/tooling/src/Extract.lex.tex",
+      "size": 585488,
+      "sha256": "ec0ab22bf6a367ce4dc992c13ccfac42bda49fa6c3eb498d034a763c89d9806f"
+    },
+    {
+      "path": "language/package-1.2/library/glossary/package.titles/entries/rustpackage.toml",
+      "size": 319,
+      "sha256": "6941fa3d8ac684293104f873709b80d0c123a8342d66d1c88dd6ff840fb06cd6"
+    },
+    {
+      "path": "language/package-1.2/library/glossary/package.titles/lexicon.toml",
+      "size": 147,
+      "sha256": "0a50bdaee31a3c0c0f8a4b8358c49538f893b266f7d9a01823a47adae46be3d2"
+    },
+    {
+      "path": "language/package-1.2/library/lakefile.toml",
+      "size": 43,
+      "sha256": "0000b7a85323a7ce6093592e4b1e3ce6b92c06ec7581af3e3b8cfbced0a8b050"
+    },
+    {
+      "path": "language/package-1.2/library/lean-toolchain",
+      "size": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "language/package-1.2/library/lexlean.toml",
+      "size": 758,
+      "sha256": "8aefc5ed673664b5a3fd8e446c63e6d527b0a04751ab1e3dd94ff70125e414ae"
+    },
+    {
+      "path": "language/package-1.2/library/src/RustPackage.lex.tex",
+      "size": 5305,
+      "sha256": "8c0fc99c08e5940a5713b6a835846d4431bba415645bd672080ae0bd9620fabe"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/compose.toml",
+      "size": 319,
+      "sha256": "d322c45e4cac52d7ad0d59475cf3df978e916cb1914d5635fe2c865690fd1d83"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/core.toml",
+      "size": 306,
+      "sha256": "550b05c3070e5a74c2d9d928bf520985606a9dfad749f214f823bc226db41416"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/fixed.toml",
+      "size": 309,
+      "sha256": "13a50dd4a133e4fd7c20fc4bb71bde81fe3d3ac5b49c4277a65dae6e605981a1"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/keys.toml",
+      "size": 306,
+      "sha256": "e87d4e33a3d0f25b3d670ac9a87a8bac9035c6a118ac42e9a86fa2bd0aab5b12"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/primitives.toml",
+      "size": 324,
+      "sha256": "f3595128796e39ce787b9c3378aac3a1e7a584a550ec01eb405d32ed99953fbd"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/rustbase.toml",
+      "size": 319,
+      "sha256": "d52b2660b49d474a06e0d5ceb33b64558cb6b4cf7a68fd381228b5f3ce0c3e53"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/rustcorr.toml",
+      "size": 329,
+      "sha256": "49b191f8cc76fe54f6e473b9ec852bab1791019beaec939727b77d6046cbbf0b"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/rustlemmas.toml",
+      "size": 325,
+      "sha256": "64e29d9cf058ac9422d1bd4a3ce68980302a4f4d8a33a0bd94df267b01eaf1a0"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/rustmatches.toml",
+      "size": 328,
+      "sha256": "42523673f224c60a8ac444a2a715c5cff44428778153ee22eeaf5273dc0009fc"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/rustsound.toml",
+      "size": 326,
+      "sha256": "f374728af6785d9ab92bbcf28be18a5a3600c58969642f7f27c9a80cc237f98a"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/templates.toml",
+      "size": 321,
+      "sha256": "95c7232b887e0b068d3285bb7c0d5b543b08949d82e49c08811b1703e3e2224c"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/validate.toml",
+      "size": 320,
+      "sha256": "c2be7e0bd055d6edba3cc84924bf66935ccaa3aeb4bab652785834cf2a8a4ee8"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/entries/values.toml",
+      "size": 312,
+      "sha256": "69784f7e0000bd8387be6885e0c8522e81961510f61edd6679d34a8edea2b1e5"
+    },
+    {
+      "path": "language/preservation-1.2/library/glossary/preservation.titles/lexicon.toml",
+      "size": 152,
+      "sha256": "5a606ed4d06b3e08a1e0ca8694f3c4d09be482d4bbabba74f8d9930ef450abdc"
+    },
+    {
+      "path": "language/preservation-1.2/library/lake-manifest.json",
+      "size": 152,
+      "sha256": "e6b529f3178cc55f45630f08edb1eef7093ff010e426db888d749bea3274e2be"
+    },
+    {
+      "path": "language/preservation-1.2/library/lakefile.toml",
+      "size": 48,
+      "sha256": "361d0d7f642dbdac1105ab320ca6e89a2e72222b4dcdb64d2197d571878ba9fe"
+    },
+    {
+      "path": "language/preservation-1.2/library/lean-toolchain",
+      "size": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "language/preservation-1.2/library/lexlean.toml",
+      "size": 795,
+      "sha256": "4f1d5b9c752074413ebdda82df02a9063a3a9897d8137c381437ff06aca0e6ed"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Compose.lex.tex",
+      "size": 140680,
+      "sha256": "6fa11e255700f3bd2a48da1b55d17098641e10f88231642de11496c05b5b6dac"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Core.lex.tex",
+      "size": 968302,
+      "sha256": "372a30b6d74724cd6997894c62b1eafff247ba2beab93dadd8b2226a5c290655"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Fixed.lex.tex",
+      "size": 510964,
+      "sha256": "8dbcfff86baf608dfa07646582777afef3f49e9ebe441898c061f2bc76bc1771"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Keys.lex.tex",
+      "size": 211428,
+      "sha256": "c4156b605e32745dd0642309fcb674172853224637fdd862379321785e6f3a5d"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Primitives.lex.tex",
+      "size": 146765,
+      "sha256": "3e53077b4fe95cd6019fd461631c9f8f6856beec9c717290fcd5a7c5804fe04b"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/RustBase.lex.tex",
+      "size": 920250,
+      "sha256": "e25749fc6eac5bd5c70a5a7efdd8638d17a5fcc75a5716ab92121e74962f8b53"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/RustCorr.lex.tex",
+      "size": 1476170,
+      "sha256": "3d8014bdfdc6f230179733985b350cec49efa56f3ac2154d152ed0eebc1c209e"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/RustLemmas.lex.tex",
+      "size": 17189578,
+      "sha256": "cafcbe2256f485fe463ab2916fb1fcdcefc9fe22c257de94483aef19d1025689"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/RustMatches.lex.tex",
+      "size": 5540088,
+      "sha256": "a00fc2f76dfded3fc98b0fe789eb818ded5bb53f879e007713bb2d9ed7063fbb"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/RustSound.lex.tex",
+      "size": 4031221,
+      "sha256": "67dfb47d92c833ea7380db12443e19c6635e9768815af445c638afc7dc9e2220"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Templates.lex.tex",
+      "size": 765497,
+      "sha256": "9d9a12f1bbd6e469ca6166de08a713da836fe3d5e0d1537f72e7bda3fafa5551"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Validate.lex.tex",
+      "size": 238989,
+      "sha256": "84b99d78a624210e9c988f9ea6133d65b2d20020c7bf7762ddfc5cb6cd2a67f6"
+    },
+    {
+      "path": "language/preservation-1.2/library/src/Values.lex.tex",
+      "size": 70609,
+      "sha256": "6b50d56af5f50b491e17c2e03af8c01261ddd17548dc2442ab175dce02544202"
+    },
+    {
+      "path": "language/preservation-1.2/library.toml",
+      "size": 501,
+      "sha256": "b6b6c4378093e343e4c8ce8d767c5d8e8c44685c31c01ac9eeb9b0a91c5289d4"
+    },
+    {
+      "path": "language/preservation-1.2/modules/LexLeanTarget/RustSemantics.lean",
+      "size": 101631,
+      "sha256": "4be743de0333df2264821d15ced344144d8c37b4a51d161b1f3d0b2df89c09b5"
+    },
+    {
+      "path": "language/preservation-1.2/modules/LexLeanTarget/RustSyntax.lean",
+      "size": 5695,
+      "sha256": "d9190acb5db02ae27819ab4af621d27756473a5b4710f53757bbdef1adc38618"
+    },
+    {
+      "path": "language/preservation-1.2/modules/LexLeanTarget/TargetSemantics.lean",
+      "size": 343104,
+      "sha256": "55206f1bafd9608b991b5181a2d2c531aca490e571143278ba05cdaa765c1cbb"
+    },
+    {
+      "path": "language/preservation-1.2/modules/LexLeanTarget/TargetSyntax.lean",
+      "size": 2780,
+      "sha256": "c0e0bb061cfcdc7e7f4434e13fc8b7298dcb701db9ea8189e012d8068e04ee0c"
+    },
+    {
+      "path": "language/production-1.2.toml",
+      "size": 21817,
+      "sha256": "18b9c4ac09c0bf2a253a1c3881686923ef67103096ead300304a51767e37b6f0"
+    },
+    {
+      "path": "language/renderer-tokens.toml",
+      "size": 10184,
+      "sha256": "1f80076d92b99e7e4a12399d7db78898e9cf4a08d923fc14b6d12ef62cdb375c"
+    },
+    {
+      "path": "language/runtime-1.2/frozen/core-decoder-1.txt",
+      "size": 12833,
+      "sha256": "9884157a8f2f10fda564210007f838cb07ef5435735fe3fa6dea7882bea89819"
+    },
+    {
+      "path": "language/runtime-1.2/frozen/portable-runtime-1.1.txt",
+      "size": 13339,
+      "sha256": "8f9ea5249e4ade19ac0a571d994a6d4837eb80505faa88d144c9f7fad465ff3d"
+    },
+    {
+      "path": "language/runtime-1.2/laws.toml",
+      "size": 4500,
+      "sha256": "58f06a069ab9647460f000bd7a4eca1ce72a0360eea94dbb6976615e53e8649e"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/entries/collections.toml",
+      "size": 322,
+      "sha256": "d64ec89cf775f67546300cbd3b6ddbdf149f1cbd3861d49d3e95c881933cdcbb"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/entries/laws.toml",
+      "size": 298,
+      "sha256": "8b79879451ef95df080f123a0d954ebfb49d2f5edf956cad997b24ded2cd9ea0"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/entries/models.toml",
+      "size": 309,
+      "sha256": "48493fa7b0a5b8c2c6b11aae14817a8f3ed6d3f3128f74755e9e8ac68932cd63"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/entries/portable.toml",
+      "size": 316,
+      "sha256": "3ad350f738f63dbcf34f801bf481db22584b583366b177db97866f58d1e075f3"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/entries/reasoning.toml",
+      "size": 315,
+      "sha256": "851b1a12eaa1580ec810580072091883d291814985afee79502d580dc2fd3f0f"
+    },
+    {
+      "path": "language/runtime-1.2/library/glossary/runtime.titles/lexicon.toml",
+      "size": 147,
+      "sha256": "e1d18c3419ca7228a7bcabc7e49520c1335ea9db261386afbca9350c8ab3af84"
+    },
+    {
+      "path": "language/runtime-1.2/library/lake-manifest.json",
+      "size": 147,
+      "sha256": "f67cd3311c5bf67463699c4629e94ee71d064e0c86c4a1c98e926bc9e51fdad8"
+    },
+    {
+      "path": "language/runtime-1.2/library/lakefile.toml",
+      "size": 43,
+      "sha256": "f09759ccb6a2507b2f9faea9086bd3b88f7258d9bcb281e696de690467d716a9"
+    },
+    {
+      "path": "language/runtime-1.2/library/lean-toolchain",
+      "size": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "language/runtime-1.2/library/lexlean.toml",
+      "size": 798,
+      "sha256": "80142aa22cd1065b37a6925a958b3ac6ed027feb655f6c26daf999d253a8e3a2"
+    },
+    {
+      "path": "language/runtime-1.2/library/src/Collections.lex.tex",
+      "size": 114265,
+      "sha256": "658d6e3b2ae2d961af16f539190675d88a7899a4b43fa9cab01796e20e1fe81a"
+    },
+    {
+      "path": "language/runtime-1.2/library/src/Laws.lex.tex",
+      "size": 380270,
+      "sha256": "10ec5300427504b8497c53598afe2ac9c4670c100ac08ca024d1d7b5779c371d"
+    },
+    {
+      "path": "language/runtime-1.2/library/src/Models.lex.tex",
+      "size": 19455,
+      "sha256": "b33bded5518e5fa384e7cfc7c4da8896c78b113f5e9af84072c9fc470766fa47"
+    },
+    {
+      "path": "language/runtime-1.2/library/src/Portable.lex.tex",
+      "size": 147675,
+      "sha256": "7a3008d0bef5848bb7ffe20640128ad4e96571454c56c930dfc88cc69654174e"
+    },
+    {
+      "path": "language/runtime-1.2/library/src/Reasoning.lex.tex",
+      "size": 151825,
+      "sha256": "b4fa565fa17be51bfc9522eb27a5b2110e679262b72ff8b1255c7f2614a58cd7"
+    },
+    {
+      "path": "language/runtime-1.2/library.toml",
+      "size": 218,
+      "sha256": "922d20f968b5f41d81cb6246bdec68afb83cf468bf9266b8773c56a1c20e8847"
+    },
+    {
+      "path": "language/rust-runtime-1.2/RuntimeProbe.lex.tex",
+      "size": 41446,
+      "sha256": "6c4c7154e63869ad6cc8c725b258c9dbe8ce5fcb89717bcc01ac9c4d6863ff0a"
+    },
+    {
+      "path": "language/rust-runtime-1.2/RuntimeStd.lex.tex",
+      "size": 110004,
+      "sha256": "2fad780990169d0037c418ecdde6d6d9664d8efd11816da7a2b2cda7df7461cf"
+    },
+    {
+      "path": "language/rust-runtime-1.2/RuntimeSupport.lex.tex",
+      "size": 53957,
+      "sha256": "284e02f9fa438d922b9efb1f6d5c0534fec4afd6bbf68973bf6f967eddbfe478"
+    },
+    {
+      "path": "language/rust-runtime-1.2/RustRuntime.lex.tex",
+      "size": 703272,
+      "sha256": "8256b064a70309b593653d034a26dbafe64f5d3270d504f5c7d3dad518b15e54"
+    },
+    {
+      "path": "language/rust-runtime-1.2/RustStd.lex.tex",
+      "size": 42435,
+      "sha256": "d5feecb66a0f4c16c89f6dcd7010c43d4ff63f3b38b9cae0dcd9a5ae24dd23f3"
+    },
+    {
+      "path": "language/semantics-1.1.toml",
+      "size": 348,
+      "sha256": "ce4a0c1c48ad7bc071f6b0771cd81172a38c0142bcd797af3f46d113485d314b"
+    },
+    {
+      "path": "language/semantics-1.2.toml",
+      "size": 625,
+      "sha256": "0b459e43b15cf3899e77442bd82a0b80bfca550bd40320ccdbfbfb14118c9a4f"
+    },
+    {
+      "path": "language/semantics.toml",
+      "size": 305,
+      "sha256": "a461bca039f71b014f9f03cff78a57fb14e7f770864e0f02caad079075af66a3"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/and.toml",
+      "size": 512,
+      "sha256": "542b68e99fb91cc04d1a16d8bfc36928373f05fa004887e7340fd43b66207e1e"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/bool.toml",
+      "size": 455,
+      "sha256": "5c392a8d7ee0c83f0c7260a7c6a30f0d42cc258f49f3f61606b2b68146c75259"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/false.toml",
+      "size": 344,
+      "sha256": "8bc74d9332c98689d61a4ee3f7e97761975b1e5729adc4d42b4c99af3331bbba"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/not.toml",
+      "size": 403,
+      "sha256": "4493b75f96de5ed6e5a0e6713552af23e90a0278e34d059a015605539755f7a9"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/or.toml",
+      "size": 507,
+      "sha256": "e568097ea1d444ba7e6e7899c51a1f27f39b6b08e6120864b870599ad713748c"
+    },
+    {
+      "path": "language/std/bool-1.1/entries/true.toml",
+      "size": 339,
+      "sha256": "f732b0e77aab838a37ae87195418fa0dba844244163f74cc7f6049be9d61758a"
+    },
+    {
+      "path": "language/std/bool-1.1/lexicon.toml",
+      "size": 124,
+      "sha256": "6dacc8e2cadf580017d572d9a487c3815f3ca816108b183e5b55aace617aeb15"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/and.toml",
+      "size": 512,
+      "sha256": "542b68e99fb91cc04d1a16d8bfc36928373f05fa004887e7340fd43b66207e1e"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/bool.toml",
+      "size": 455,
+      "sha256": "5c392a8d7ee0c83f0c7260a7c6a30f0d42cc258f49f3f61606b2b68146c75259"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/false.toml",
+      "size": 344,
+      "sha256": "8bc74d9332c98689d61a4ee3f7e97761975b1e5729adc4d42b4c99af3331bbba"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/not.toml",
+      "size": 403,
+      "sha256": "4493b75f96de5ed6e5a0e6713552af23e90a0278e34d059a015605539755f7a9"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/or.toml",
+      "size": 507,
+      "sha256": "e568097ea1d444ba7e6e7899c51a1f27f39b6b08e6120864b870599ad713748c"
+    },
+    {
+      "path": "language/std/bool-1.2/entries/true.toml",
+      "size": 339,
+      "sha256": "f732b0e77aab838a37ae87195418fa0dba844244163f74cc7f6049be9d61758a"
+    },
+    {
+      "path": "language/std/bool-1.2/lexicon.toml",
+      "size": 124,
+      "sha256": "de58de2cf18a7a5a62d8c20649139d6dfe1f7b16b3130c75f150fbac5440a71e"
+    },
+    {
+      "path": "language/std/int/entries/add.toml",
+      "size": 501,
+      "sha256": "b63c4aeec5a6a1511cd976572448082136255020ca36bcffe65e0d778814e691"
+    },
+    {
+      "path": "language/std/int/entries/ediv.toml",
+      "size": 504,
+      "sha256": "2032e5c244d96aec49c0ae195ab69ac1b20310467216c458cd713e7a559a03d1"
+    },
+    {
+      "path": "language/std/int/entries/emod.toml",
+      "size": 508,
+      "sha256": "806a5faa7ace6788a83b5857d5fd49032ee249d974b38f46c7d8bce73b82f119"
+    },
+    {
+      "path": "language/std/int/entries/int.toml",
+      "size": 886,
+      "sha256": "9c16da4aff5e4815f2a56bd64c48ef8eddc388eefc2d4b5e7006b1573272a02c"
+    },
+    {
+      "path": "language/std/int/entries/le.toml",
+      "size": 485,
+      "sha256": "ca30616981cef8b29f3fb353df6c0e341c8732ea872a4bad2be8071cc4e2c5ae"
+    },
+    {
+      "path": "language/std/int/entries/lt.toml",
+      "size": 479,
+      "sha256": "dfeb289866b05e85e2ae6e15d9b6a6b251a7f50bc820e8bfd42289c8c5da6daa"
+    },
+    {
+      "path": "language/std/int/entries/mul.toml",
+      "size": 502,
+      "sha256": "016205907a6e9bffe62bd3e241e31bac3e45bf3e2b870e99ace88c5d67509d9e"
+    },
+    {
+      "path": "language/std/int/entries/neg.toml",
+      "size": 412,
+      "sha256": "c51f1b8e58cae60b3076a0884d21f368b5cf9be539aeb54be51c2b678ab98498"
+    },
+    {
+      "path": "language/std/int/entries/sign.toml",
+      "size": 406,
+      "sha256": "aab86e7692702da7889d2a06ea6c7c5aba69fbc831f9db0f0610fe6a43271978"
+    },
+    {
+      "path": "language/std/int/entries/sub.toml",
+      "size": 504,
+      "sha256": "c23f3dc8dd1edd38bcce64959d5056e11ffc261c5c1323bbad6f50471c4ee0c2"
+    },
+    {
+      "path": "language/std/int/lexicon.toml",
+      "size": 123,
+      "sha256": "fdd3c80a33cabc0fd6463bc825588ea73af948328cc8d47f2c17d3e6652b8fb4"
+    },
+    {
+      "path": "language/std/int-1.1/entries/add.toml",
+      "size": 501,
+      "sha256": "b63c4aeec5a6a1511cd976572448082136255020ca36bcffe65e0d778814e691"
+    },
+    {
+      "path": "language/std/int-1.1/entries/ediv.toml",
+      "size": 504,
+      "sha256": "2032e5c244d96aec49c0ae195ab69ac1b20310467216c458cd713e7a559a03d1"
+    },
+    {
+      "path": "language/std/int-1.1/entries/emod.toml",
+      "size": 508,
+      "sha256": "806a5faa7ace6788a83b5857d5fd49032ee249d974b38f46c7d8bce73b82f119"
+    },
+    {
+      "path": "language/std/int-1.1/entries/int.toml",
+      "size": 886,
+      "sha256": "9c16da4aff5e4815f2a56bd64c48ef8eddc388eefc2d4b5e7006b1573272a02c"
+    },
+    {
+      "path": "language/std/int-1.1/entries/le.toml",
+      "size": 485,
+      "sha256": "ca30616981cef8b29f3fb353df6c0e341c8732ea872a4bad2be8071cc4e2c5ae"
+    },
+    {
+      "path": "language/std/int-1.1/entries/lt.toml",
+      "size": 479,
+      "sha256": "dfeb289866b05e85e2ae6e15d9b6a6b251a7f50bc820e8bfd42289c8c5da6daa"
+    },
+    {
+      "path": "language/std/int-1.1/entries/mul.toml",
+      "size": 502,
+      "sha256": "016205907a6e9bffe62bd3e241e31bac3e45bf3e2b870e99ace88c5d67509d9e"
+    },
+    {
+      "path": "language/std/int-1.1/entries/neg.toml",
+      "size": 412,
+      "sha256": "c51f1b8e58cae60b3076a0884d21f368b5cf9be539aeb54be51c2b678ab98498"
+    },
+    {
+      "path": "language/std/int-1.1/entries/sign.toml",
+      "size": 406,
+      "sha256": "aab86e7692702da7889d2a06ea6c7c5aba69fbc831f9db0f0610fe6a43271978"
+    },
+    {
+      "path": "language/std/int-1.1/entries/sub.toml",
+      "size": 504,
+      "sha256": "c23f3dc8dd1edd38bcce64959d5056e11ffc261c5c1323bbad6f50471c4ee0c2"
+    },
+    {
+      "path": "language/std/int-1.1/lexicon.toml",
+      "size": 123,
+      "sha256": "61e1c0513923a8f3798d7274b7e0bfabb785351ee041a16bdc5c948b7f322fea"
+    },
+    {
+      "path": "language/std/int-1.2/entries/add.toml",
+      "size": 501,
+      "sha256": "b63c4aeec5a6a1511cd976572448082136255020ca36bcffe65e0d778814e691"
+    },
+    {
+      "path": "language/std/int-1.2/entries/ediv.toml",
+      "size": 504,
+      "sha256": "2032e5c244d96aec49c0ae195ab69ac1b20310467216c458cd713e7a559a03d1"
+    },
+    {
+      "path": "language/std/int-1.2/entries/emod.toml",
+      "size": 508,
+      "sha256": "806a5faa7ace6788a83b5857d5fd49032ee249d974b38f46c7d8bce73b82f119"
+    },
+    {
+      "path": "language/std/int-1.2/entries/int.toml",
+      "size": 886,
+      "sha256": "9c16da4aff5e4815f2a56bd64c48ef8eddc388eefc2d4b5e7006b1573272a02c"
+    },
+    {
+      "path": "language/std/int-1.2/entries/le.toml",
+      "size": 485,
+      "sha256": "ca30616981cef8b29f3fb353df6c0e341c8732ea872a4bad2be8071cc4e2c5ae"
+    },
+    {
+      "path": "language/std/int-1.2/entries/lt.toml",
+      "size": 479,
+      "sha256": "dfeb289866b05e85e2ae6e15d9b6a6b251a7f50bc820e8bfd42289c8c5da6daa"
+    },
+    {
+      "path": "language/std/int-1.2/entries/mul.toml",
+      "size": 502,
+      "sha256": "016205907a6e9bffe62bd3e241e31bac3e45bf3e2b870e99ace88c5d67509d9e"
+    },
+    {
+      "path": "language/std/int-1.2/entries/neg.toml",
+      "size": 412,
+      "sha256": "c51f1b8e58cae60b3076a0884d21f368b5cf9be539aeb54be51c2b678ab98498"
+    },
+    {
+      "path": "language/std/int-1.2/entries/sign.toml",
+      "size": 406,
+      "sha256": "aab86e7692702da7889d2a06ea6c7c5aba69fbc831f9db0f0610fe6a43271978"
+    },
+    {
+      "path": "language/std/int-1.2/entries/sub.toml",
+      "size": 504,
+      "sha256": "c23f3dc8dd1edd38bcce64959d5056e11ffc261c5c1323bbad6f50471c4ee0c2"
+    },
+    {
+      "path": "language/std/int-1.2/lexicon.toml",
+      "size": 123,
+      "sha256": "cab21322a05a2d773e00d025aeb471bc231d523985332a01ac26ad45b7e98958"
+    },
+    {
+      "path": "language/std/nat/entries/add.toml",
+      "size": 495,
+      "sha256": "beb388942e30eaa04e7124b66492c31745335cf26beb4142985c28629de88534"
+    },
+    {
+      "path": "language/std/nat/entries/addition.toml",
+      "size": 294,
+      "sha256": "cdabf5e3a58ddf988217fedcfa87c0fae5cd9ed7ce32f8f5fa8ebd9e0ea0ecef"
+    },
+    {
+      "path": "language/std/nat/entries/div.toml",
+      "size": 497,
+      "sha256": "e83471c1818bf37bdc4a9b6799f616bf3214f523dd3b45eca4abb3d7369537fb"
+    },
+    {
+      "path": "language/std/nat/entries/ge.toml",
+      "size": 613,
+      "sha256": "6c3d736a7002f843b5405bb92d722f00e348b2d65271996b2af80ad4812bc2cf"
+    },
+    {
+      "path": "language/std/nat/entries/gt.toml",
+      "size": 605,
+      "sha256": "8585ed13e60e9df1f807b886dbcf3b3547b62b469531166dca165dd05c0a3c59"
+    },
+    {
+      "path": "language/std/nat/entries/inter.toml",
+      "size": 874,
+      "sha256": "86aea9071f0a96905a72cbde2378e158edfb1be29cc430103ce3626e58dc2165"
+    },
+    {
+      "path": "language/std/nat/entries/le.toml",
+      "size": 483,
+      "sha256": "8ea92d12cdcd2832d2131a1b64195c6bc919cbe3d009a383f61515000569cc69"
+    },
+    {
+      "path": "language/std/nat/entries/list.toml",
+      "size": 373,
+      "sha256": "c6605303695ea7049c89403ea45277298dab4331bce98da32085dadb9ec7677c"
+    },
+    {
+      "path": "language/std/nat/entries/lt.toml",
+      "size": 475,
+      "sha256": "8e8617175f9cdea4f02e7db6b18ba5dfe27e2cd8ca19861b0c71f913a88f92b3"
+    },
+    {
+      "path": "language/std/nat/entries/mem.toml",
+      "size": 519,
+      "sha256": "68941599f87a706af8876112a8c86a6cb4bb7d57a4178e8b64e833829ae0ae5d"
+    },
+    {
+      "path": "language/std/nat/entries/mul.toml",
+      "size": 495,
+      "sha256": "32720e1c23a15461559fd72d8d46518172acda7e8d7793d8d7bd0704088a6db7"
+    },
+    {
+      "path": "language/std/nat/entries/nat-list.toml",
+      "size": 543,
+      "sha256": "35c4642cfa3a1116a0c380810f4f06ed7a175002053cb2760d8c9452516456ef"
+    },
+    {
+      "path": "language/std/nat/entries/nat.toml",
+      "size": 1267,
+      "sha256": "1c215f42ec691022a02df2636e4144a00224673b8275ca362cf3b799a2695929"
+    },
+    {
+      "path": "language/std/nat/entries/ne.toml",
+      "size": 640,
+      "sha256": "ac5bab1047cd09682cd44ba4db96cdb6a3a7a5accacb73072a4c8cfec3cef72e"
+    },
+    {
+      "path": "language/std/nat/entries/not-mem.toml",
+      "size": 726,
+      "sha256": "cd8c2314e48fcb6f140c0142c2fd59939e062c2d7b758a67e5de985a1c723513"
+    },
+    {
+      "path": "language/std/nat/entries/prod.toml",
+      "size": 458,
+      "sha256": "1802ef195441fa412bb6f7f1582158b290f59282a146e6af10a1272456a14f89"
+    },
+    {
+      "path": "language/std/nat/entries/remove-all.toml",
+      "size": 617,
+      "sha256": "9a6240b57a1127066b3910b676e250d9578c90a8da4193f625e154d6e84c1f89"
+    },
+    {
+      "path": "language/std/nat/entries/ssubset.toml",
+      "size": 892,
+      "sha256": "d858a4476c32e83373ae75cb0ed7984b1bb8b0505e899b72349963a005d9ac69"
+    },
+    {
+      "path": "language/std/nat/entries/sub.toml",
+      "size": 497,
+      "sha256": "8bfb4107198150974244b0f16eb63105cafd3f9717757de141f943ea7937233a"
+    },
+    {
+      "path": "language/std/nat/entries/subseteq.toml",
+      "size": 574,
+      "sha256": "714fa10bace58da334729e330a85817a53f3a60cd2bfd194f5e604fdd9d3c8a0"
+    },
+    {
+      "path": "language/std/nat/entries/succ.toml",
+      "size": 403,
+      "sha256": "a0c364d85194d7800b60cdd020a7212e8416c80605990f3953d5770524ba1389"
+    },
+    {
+      "path": "language/std/nat/entries/union.toml",
+      "size": 613,
+      "sha256": "5da5dacedbcfb257ab954c614c9ae51cfe39f5ae46c317e32ab6f6f54159171e"
+    },
+    {
+      "path": "language/std/nat/entries/zero.toml",
+      "size": 320,
+      "sha256": "ce8c6332f457f722595eb027929d6b5650e6fc1a98151be80092e98a439ced77"
+    },
+    {
+      "path": "language/std/nat/lexicon.toml",
+      "size": 123,
+      "sha256": "fb1fe55701cbc3f73a731fe9f4b06a17dcdda064093732938074af482ba08bab"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/add.toml",
+      "size": 495,
+      "sha256": "beb388942e30eaa04e7124b66492c31745335cf26beb4142985c28629de88534"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/addition.toml",
+      "size": 294,
+      "sha256": "cdabf5e3a58ddf988217fedcfa87c0fae5cd9ed7ce32f8f5fa8ebd9e0ea0ecef"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/beq.toml",
+      "size": 505,
+      "sha256": "ebfe8b628f8fab9ad7c7868552fa3195d7f9c643387934fa393e02fcf9bf5d86"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/ble.toml",
+      "size": 479,
+      "sha256": "0dc59753024862d44b61461680dd84d8ec56a08786fb688c48e4c1d8ca06a695"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/blt.toml",
+      "size": 479,
+      "sha256": "8d441dba3a286df18066f71fd6e25054032f17f1bf5c0337e2d460eea4e67f4c"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/div.toml",
+      "size": 497,
+      "sha256": "e83471c1818bf37bdc4a9b6799f616bf3214f523dd3b45eca4abb3d7369537fb"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/ge.toml",
+      "size": 613,
+      "sha256": "6c3d736a7002f843b5405bb92d722f00e348b2d65271996b2af80ad4812bc2cf"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/gt.toml",
+      "size": 605,
+      "sha256": "8585ed13e60e9df1f807b886dbcf3b3547b62b469531166dca165dd05c0a3c59"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/inter.toml",
+      "size": 874,
+      "sha256": "86aea9071f0a96905a72cbde2378e158edfb1be29cc430103ce3626e58dc2165"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/le.toml",
+      "size": 483,
+      "sha256": "8ea92d12cdcd2832d2131a1b64195c6bc919cbe3d009a383f61515000569cc69"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/list.toml",
+      "size": 373,
+      "sha256": "c6605303695ea7049c89403ea45277298dab4331bce98da32085dadb9ec7677c"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/lt.toml",
+      "size": 475,
+      "sha256": "8e8617175f9cdea4f02e7db6b18ba5dfe27e2cd8ca19861b0c71f913a88f92b3"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/mem.toml",
+      "size": 519,
+      "sha256": "68941599f87a706af8876112a8c86a6cb4bb7d57a4178e8b64e833829ae0ae5d"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/mul.toml",
+      "size": 495,
+      "sha256": "32720e1c23a15461559fd72d8d46518172acda7e8d7793d8d7bd0704088a6db7"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/nat-list.toml",
+      "size": 543,
+      "sha256": "35c4642cfa3a1116a0c380810f4f06ed7a175002053cb2760d8c9452516456ef"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/nat.toml",
+      "size": 1267,
+      "sha256": "1c215f42ec691022a02df2636e4144a00224673b8275ca362cf3b799a2695929"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/ne.toml",
+      "size": 640,
+      "sha256": "ac5bab1047cd09682cd44ba4db96cdb6a3a7a5accacb73072a4c8cfec3cef72e"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/not-mem.toml",
+      "size": 726,
+      "sha256": "cd8c2314e48fcb6f140c0142c2fd59939e062c2d7b758a67e5de985a1c723513"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/prod.toml",
+      "size": 458,
+      "sha256": "1802ef195441fa412bb6f7f1582158b290f59282a146e6af10a1272456a14f89"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/remove-all.toml",
+      "size": 617,
+      "sha256": "9a6240b57a1127066b3910b676e250d9578c90a8da4193f625e154d6e84c1f89"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/ssubset.toml",
+      "size": 892,
+      "sha256": "d858a4476c32e83373ae75cb0ed7984b1bb8b0505e899b72349963a005d9ac69"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/sub.toml",
+      "size": 497,
+      "sha256": "8bfb4107198150974244b0f16eb63105cafd3f9717757de141f943ea7937233a"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/subseteq.toml",
+      "size": 574,
+      "sha256": "714fa10bace58da334729e330a85817a53f3a60cd2bfd194f5e604fdd9d3c8a0"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/succ.toml",
+      "size": 403,
+      "sha256": "a0c364d85194d7800b60cdd020a7212e8416c80605990f3953d5770524ba1389"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/union.toml",
+      "size": 613,
+      "sha256": "5da5dacedbcfb257ab954c614c9ae51cfe39f5ae46c317e32ab6f6f54159171e"
+    },
+    {
+      "path": "language/std/nat-1.1/entries/zero.toml",
+      "size": 320,
+      "sha256": "ce8c6332f457f722595eb027929d6b5650e6fc1a98151be80092e98a439ced77"
+    },
+    {
+      "path": "language/std/nat-1.1/lexicon.toml",
+      "size": 149,
+      "sha256": "be2cb414091d5b8697f924de516cff5ccaa6cc9265ff1f3af8b15edb2b98bda7"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/add.toml",
+      "size": 495,
+      "sha256": "beb388942e30eaa04e7124b66492c31745335cf26beb4142985c28629de88534"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/addition.toml",
+      "size": 294,
+      "sha256": "cdabf5e3a58ddf988217fedcfa87c0fae5cd9ed7ce32f8f5fa8ebd9e0ea0ecef"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/beq.toml",
+      "size": 505,
+      "sha256": "ebfe8b628f8fab9ad7c7868552fa3195d7f9c643387934fa393e02fcf9bf5d86"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/ble.toml",
+      "size": 479,
+      "sha256": "0dc59753024862d44b61461680dd84d8ec56a08786fb688c48e4c1d8ca06a695"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/blt.toml",
+      "size": 479,
+      "sha256": "8d441dba3a286df18066f71fd6e25054032f17f1bf5c0337e2d460eea4e67f4c"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/div.toml",
+      "size": 497,
+      "sha256": "e83471c1818bf37bdc4a9b6799f616bf3214f523dd3b45eca4abb3d7369537fb"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/ge.toml",
+      "size": 613,
+      "sha256": "6c3d736a7002f843b5405bb92d722f00e348b2d65271996b2af80ad4812bc2cf"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/gt.toml",
+      "size": 605,
+      "sha256": "8585ed13e60e9df1f807b886dbcf3b3547b62b469531166dca165dd05c0a3c59"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/inter.toml",
+      "size": 874,
+      "sha256": "86aea9071f0a96905a72cbde2378e158edfb1be29cc430103ce3626e58dc2165"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/le.toml",
+      "size": 483,
+      "sha256": "8ea92d12cdcd2832d2131a1b64195c6bc919cbe3d009a383f61515000569cc69"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/list.toml",
+      "size": 373,
+      "sha256": "c6605303695ea7049c89403ea45277298dab4331bce98da32085dadb9ec7677c"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/lt.toml",
+      "size": 475,
+      "sha256": "8e8617175f9cdea4f02e7db6b18ba5dfe27e2cd8ca19861b0c71f913a88f92b3"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/mem.toml",
+      "size": 519,
+      "sha256": "68941599f87a706af8876112a8c86a6cb4bb7d57a4178e8b64e833829ae0ae5d"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/mul.toml",
+      "size": 495,
+      "sha256": "32720e1c23a15461559fd72d8d46518172acda7e8d7793d8d7bd0704088a6db7"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/nat-list.toml",
+      "size": 543,
+      "sha256": "35c4642cfa3a1116a0c380810f4f06ed7a175002053cb2760d8c9452516456ef"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/nat.toml",
+      "size": 1267,
+      "sha256": "1c215f42ec691022a02df2636e4144a00224673b8275ca362cf3b799a2695929"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/ne.toml",
+      "size": 640,
+      "sha256": "ac5bab1047cd09682cd44ba4db96cdb6a3a7a5accacb73072a4c8cfec3cef72e"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/not-mem.toml",
+      "size": 726,
+      "sha256": "cd8c2314e48fcb6f140c0142c2fd59939e062c2d7b758a67e5de985a1c723513"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/prod.toml",
+      "size": 458,
+      "sha256": "1802ef195441fa412bb6f7f1582158b290f59282a146e6af10a1272456a14f89"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/remove-all.toml",
+      "size": 617,
+      "sha256": "9a6240b57a1127066b3910b676e250d9578c90a8da4193f625e154d6e84c1f89"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/ssubset.toml",
+      "size": 892,
+      "sha256": "d858a4476c32e83373ae75cb0ed7984b1bb8b0505e899b72349963a005d9ac69"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/sub.toml",
+      "size": 497,
+      "sha256": "8bfb4107198150974244b0f16eb63105cafd3f9717757de141f943ea7937233a"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/subseteq.toml",
+      "size": 574,
+      "sha256": "714fa10bace58da334729e330a85817a53f3a60cd2bfd194f5e604fdd9d3c8a0"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/succ.toml",
+      "size": 403,
+      "sha256": "a0c364d85194d7800b60cdd020a7212e8416c80605990f3953d5770524ba1389"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/union.toml",
+      "size": 613,
+      "sha256": "5da5dacedbcfb257ab954c614c9ae51cfe39f5ae46c317e32ab6f6f54159171e"
+    },
+    {
+      "path": "language/std/nat-1.2/entries/zero.toml",
+      "size": 320,
+      "sha256": "ce8c6332f457f722595eb027929d6b5650e6fc1a98151be80092e98a439ced77"
+    },
+    {
+      "path": "language/std/nat-1.2/lexicon.toml",
+      "size": 149,
+      "sha256": "6fb446b39e3c1c18a5f10cfa1f7aa2bd431837719eb0eb7489aadf452c9420a7"
+    },
+    {
+      "path": "language/text-1.2/library/glossary/text.titles/entries/textlaws.toml",
+      "size": 306,
+      "sha256": "7ed9aca6d6f4d4fc6986e2ecc01b46da4075c88956c0565b9af564d170c2f0f2"
+    },
+    {
+      "path": "language/text-1.2/library/glossary/text.titles/lexicon.toml",
+      "size": 144,
+      "sha256": "9b55ab34adb6a6788f60f11055ee9eb581ea99ca6a3b6eab3c96a62b31276c2d"
+    },
+    {
+      "path": "language/text-1.2/library/lakefile.toml",
+      "size": 40,
+      "sha256": "8ca2f3e0805fee9eff99d9182590e5dbda217036366afa8cbe54053541e5f50a"
+    },
+    {
+      "path": "language/text-1.2/library/lean-toolchain",
+      "size": 25,
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af"
+    },
+    {
+      "path": "language/text-1.2/library/lexlean.toml",
+      "size": 746,
+      "sha256": "1eb0bf047d64d493aaeb2fd32d280814f2c2b4e1cfa9f2b645d5c8ca60c67935"
+    },
+    {
+      "path": "language/text-1.2/library/src/LexLeanText.lex.tex",
+      "size": 664439,
+      "sha256": "2deccf5029c95c487e5a5459dcb5b4e1464849a2a54e5881c618e9beb6aca7a8"
+    },
+    {
+      "path": "language/text-1.2/library.toml",
+      "size": 109,
+      "sha256": "ed5305e942db115ee4c929194662c5a3230ba2bb1eeb9d7eec87ee53d2383e8c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-a1.toml",
+      "size": 335,
+      "sha256": "369658b4c5f34a53c507af250bda5f483200a4d67a17aef67d54e4d1284009c3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-bc1.toml",
+      "size": 343,
+      "sha256": "f6a5ebc6734efcc00979a12b5ab3ad65f2c73b5dc2ac9dd13085825c9a29f596"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d1.toml",
+      "size": 331,
+      "sha256": "abac4982a95eb0e5d7f70154bbea672a8fd4550ba2eb76ee2e72abd1111cd335"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d10.toml",
+      "size": 329,
+      "sha256": "a0acfc586fdc2954c05f60e0fc69f24763d9df9858f97e8e49a2a377166af881"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d11.toml",
+      "size": 332,
+      "sha256": "dbcb1fd97b39a0df92936ecf761cc1bcba0b18ee258a774e6c1feb3e7af30a8c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d12.toml",
+      "size": 332,
+      "sha256": "1cf46b23b584f1e0160996dea4b0eef5a3aeed7e91b1393e83c516b8b1273c0a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d13.toml",
+      "size": 334,
+      "sha256": "4112f8a35f3fa47c013ee57448af5b78de240b6393e55435b9bf5366194327fc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d14.toml",
+      "size": 335,
+      "sha256": "40739ee2af1ef026f290f0f7b7a28065ee8ecbbdaff2899bc075217b827d9d50"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d15.toml",
+      "size": 334,
+      "sha256": "2c84e14b9b7c0995718cd07bcded1e7b1ebc2deb92a0ea13b29a026078a98c88"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d16.toml",
+      "size": 334,
+      "sha256": "ad50ba62ee197ad8dbc6921ad182b65854dddd621fecb7b1bda1fd65a0deeadc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d17.toml",
+      "size": 336,
+      "sha256": "243fd2b88917194f9396363e9f9419818bcebad6270a405cf3dd372a73883a1d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d17a.toml",
+      "size": 341,
+      "sha256": "181a4782f59a50fb0cb9f42330885abe95f8122588f0c4f3613678b5e38d7f53"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d18.toml",
+      "size": 335,
+      "sha256": "bb7319b000a2aafb3330caa145337483525004ef2e38e6c15ea990f2e0e1df83"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d19.toml",
+      "size": 335,
+      "sha256": "cdf89ab929382bac09343baf255190a0922d5cf473bfa7f4ce270f2b684b4c9b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d19a.toml",
+      "size": 339,
+      "sha256": "51e3f689a92899ccf86ff4353c12ec39cf7b7c696fd99e1aa22c8ed88e2dfc40"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d2.toml",
+      "size": 331,
+      "sha256": "cdbc7d236688d0805cec27b36318ec47f177f266b3630184a6b6bab1e71352f1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d20.toml",
+      "size": 332,
+      "sha256": "1f675a9bfb21c10de6fd37cd5cfe3116a3e4ee3981fad518d932f549397142e6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d21.toml",
+      "size": 336,
+      "sha256": "3df136f0a14b80cb4b272f8ba7858e18b1d0076d682232255bc8e25e6c946402"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d21a.toml",
+      "size": 341,
+      "sha256": "c446f97c329ff30c1d61cdbabcc722a307398ca35c81af0674269f47289a5652"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d22.toml",
+      "size": 337,
+      "sha256": "8983d45d1e6b0fed189d6f585c48fd7101121bac772e264a30e505b665dcdbc1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d22a.toml",
+      "size": 342,
+      "sha256": "8ba751fdb7a3cf2ab54c635d492941621c9b189346519d6b10e3a6572f812af0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d23.toml",
+      "size": 341,
+      "sha256": "8285fb93a6db149af1fd6a662dd1cbf9bc28231681fc716ee7c4bad3d22da536"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d24.toml",
+      "size": 340,
+      "sha256": "a81ca70821f136c594c4561d40807b16412c9c4b3afc5b7511ab7cc8431fa5ca"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d25.toml",
+      "size": 340,
+      "sha256": "d31ef5ec680fef70fdec966430a664ba7104762e80a9a70f7bc32d2a20ba5d6f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d26.toml",
+      "size": 339,
+      "sha256": "79d9213d1beebdf50427e9efaaa6f03c6d09ee2c91eb5349fcf05f3402a10ea3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d27.toml",
+      "size": 341,
+      "sha256": "80861763a87941211aec6d01cfee22c99aa6f2cd4a3f4cef72ab21af6348d3ce"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d28.toml",
+      "size": 338,
+      "sha256": "0cdd6607f668df55e78a6776d0f8988ec0c39df3c51fd6bcba6890481d8205fc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d28a.toml",
+      "size": 343,
+      "sha256": "e16fbf98f5927570c2ab26297215ee06e0267c351b37e96e0f7b4f787f584a3d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d29.toml",
+      "size": 337,
+      "sha256": "aa40b430df5597a425fc4c452707ec1dc51933df11883d9c02f73909778a40e1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d3.toml",
+      "size": 333,
+      "sha256": "c4cb69b8cee5152438e5291565fde9699ba3ce873484ade2a09d854703383667"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d30.toml",
+      "size": 332,
+      "sha256": "ff3225e673aedbc3b6eeeab21d61e11449f6161da317f811255bb703ee789fb9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d31.toml",
+      "size": 337,
+      "sha256": "d008b276773d57b0f8284a9017a67193388fd11b42e60c05ebc046de44795472"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d32.toml",
+      "size": 337,
+      "sha256": "2064f95c78a69a2a47312ec310f285f7c979ebf0e7850fcf5dc01e1e25a95623"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d33.toml",
+      "size": 339,
+      "sha256": "fc832e4fc0be56325838667c7c2bb276c8a4a490000fc06982c721d83c40b1b8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d34.toml",
+      "size": 338,
+      "sha256": "572db7e5d17ceaa9679654a1fadd016decb7f7711856c983cf5355483bd9e922"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d35.toml",
+      "size": 338,
+      "sha256": "39334859cb2cc0f2ab7288959e52288b9a7277b607d224961b98451788c67b1f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d35a.toml",
+      "size": 343,
+      "sha256": "fc1c9ed71d39632a79ea322aaf93b8eec43353c8713bf88d08abe5c2833f2dc6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d36.toml",
+      "size": 337,
+      "sha256": "b59ba2370e1cee57ec74452b837477710218a203ddb043742d0293a9f0cbffc7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d37.toml",
+      "size": 339,
+      "sha256": "7096d5cbe70cb91034953b68826c9db1c74f186c5f5a077448e0eac60d9f8953"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d38.toml",
+      "size": 339,
+      "sha256": "6b54fa3f740bb6100342fc5cc7d50b2bd3c56ae90e1030fac9e8ed8acb7dca0b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d39.toml",
+      "size": 338,
+      "sha256": "ffc9f4c340e9e002357f38237c2a3d6540f8fd95e00082c73341dc427d2316dc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d4.toml",
+      "size": 332,
+      "sha256": "2ac3ccb3d2c96dd6fe848e61d6eeef9e836ff159712e94f2428877a2d662efab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d40.toml",
+      "size": 332,
+      "sha256": "922b7aaaf61d78747fc4178c2c3832a131192c0588296cf5e057427d922a6e99"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d41.toml",
+      "size": 336,
+      "sha256": "5be5549673be87487ca64f47ba4e0d48cf06fc4e57b45e5a3858dd059d84638f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d42.toml",
+      "size": 336,
+      "sha256": "1c8a00d0a2f348444b79ca3315512c7a3e30892a409bb45c67751300e92f0c2b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d43.toml",
+      "size": 338,
+      "sha256": "2c35cca395088d2c49f2a5fb0b4975a5c52f4e5fdcc4d502ce7c9d376e3a7dab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d44.toml",
+      "size": 337,
+      "sha256": "6d84cdd22267a820feabb82d0d3a098b03b46a8aee8bf2d81bd32288a5cda9c6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d45.toml",
+      "size": 337,
+      "sha256": "c26ba11bad9b176391272ecf6fed076eb4b189f052dc870a6cbeb08abf06e1ce"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d46.toml",
+      "size": 336,
+      "sha256": "abca4bcb884e88feb24501d5a8a04ff637e85b6b8576773df7654bc89923a706"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d46a.toml",
+      "size": 341,
+      "sha256": "f3fd1c49f7b633e57bb29b2efb3df9f67322640e38049ecb94ea6089f02dcae5"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d47.toml",
+      "size": 338,
+      "sha256": "d5fc9ef2bbab43c434c5905d9a3c132bcd6fd166bd88686498c0593c9715e2f8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d48.toml",
+      "size": 338,
+      "sha256": "c528a3a13a68177c8bf317d45f51c960fc526d4ba2132e6dec738047ac51388f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d49.toml",
+      "size": 337,
+      "sha256": "47c9336d1c6568135d3cd99b151a24ce667cbfa8f5a5be716629eb470c474a15"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d49a.toml",
+      "size": 342,
+      "sha256": "e7e15aaeeb1822ba28b1c32cc0bfe6c9f20c0428eedf61e74e12731609c3cd8b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d49b.toml",
+      "size": 342,
+      "sha256": "1fb5b3a8b4ba666d0b126b25419192b1c90614c576c270a25727c992381323e6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d5.toml",
+      "size": 332,
+      "sha256": "404fea2589b9b984361497338303038fa18a812a5db3b0286130365f4f045f96"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d50.toml",
+      "size": 332,
+      "sha256": "9628f54c4147cd364504e2cc85c6f5dd6010584f9fb8ec1d980f7e91c4b4cfa6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d51.toml",
+      "size": 336,
+      "sha256": "6e09649c1c08f5f6b837e4e30b3651629140e5b1c1c4a6bb8486c1e299922d75"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d51a.toml",
+      "size": 341,
+      "sha256": "6a2f570fc0a27fee6fe5ceb045743d4febcf1ec5f280c6b5af0290f5ad245d91"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d52.toml",
+      "size": 336,
+      "sha256": "8ae1c2f668c973437557054c80c8d4476f536bd55465b5a96f8c501066876a39"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d53.toml",
+      "size": 338,
+      "sha256": "84a02e42723d486c6428330e8ab99807c0620fcc747607e9db318eb169451368"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d54.toml",
+      "size": 337,
+      "sha256": "ce0168f2772feb2bc3fb427f5c7fdd4e483a66b108b36c4aefddad9da5269593"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d54a.toml",
+      "size": 342,
+      "sha256": "2e5a820afe53502c961fe8a21791caa57bca20b3674243d36a484cd16352986b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d55.toml",
+      "size": 337,
+      "sha256": "98694a0da848bda3e02692d3f1502c6979c1fe88f8c557adb37996abc55d8d26"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d56.toml",
+      "size": 336,
+      "sha256": "02e47508cb9c529249d7d86df86f5cb800a3ac9d613771bf35661a70ca08b052"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d57.toml",
+      "size": 338,
+      "sha256": "db5822e469f546e4dd7b5bbbea2018b36f45c773501cf3d848af2546837c73fc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d58.toml",
+      "size": 338,
+      "sha256": "2b463bdb70e087cef3196aa183da85558d9e1e67d9472ca14a276d77e53fda13"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d59.toml",
+      "size": 339,
+      "sha256": "8b3aea2aa3ea9d180fd504ac722bf99d823a7a78ad7c1d97f1f595163d3bcc50"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d6.toml",
+      "size": 331,
+      "sha256": "6ee63e8fa355453e7157a1b21a96941acfa7dbb8d9cd950c5e68d62b86c592ee"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d60.toml",
+      "size": 332,
+      "sha256": "48e77a75f6da7cfce011043a8df3b6eb0a9ca07df959e558bcca826d9cc6765d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d61.toml",
+      "size": 336,
+      "sha256": "7608d99c430f40f5d9e040980b1f2c4c26cb2f8f3d4ec3b28b3728873f3b1623"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d62.toml",
+      "size": 337,
+      "sha256": "88e06025f130a6d13e3078e63c24d31b95ad984af261a84b449539580f9dc847"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d63.toml",
+      "size": 339,
+      "sha256": "04d2318f13eb01ebcad3dd2052adc97432c09ad28026c5f8e495eadca7e3bb4c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d64.toml",
+      "size": 338,
+      "sha256": "d558cc60630cec942d046f2760b54d7934333737f384339c6c52702fbb628b9d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d65.toml",
+      "size": 338,
+      "sha256": "7c3436a6b5b106bd7c761198aef0abc77915ef0af097990e00fd40266248c462"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d66.toml",
+      "size": 337,
+      "sha256": "b6a76a8d135631ca3b12feda763817f8e716fa098180c42b0e89a56b5bc21053"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d67.toml",
+      "size": 339,
+      "sha256": "298ccd9abba6dc62ca5734c4e79f3e4b28fef351c5f26f7c348e4a5a0aaaa306"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d7.toml",
+      "size": 333,
+      "sha256": "da82ae028aea8aecbf259468e272fe387559bbd3eb1f0a9d7f2965f96a1e2a64"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d8.toml",
+      "size": 333,
+      "sha256": "87ab71a0d81c014466c4791721cca505ae1b8dfb7e107b7da8b52f4eedf79cd2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-d9.toml",
+      "size": 327,
+      "sha256": "65b68bf9263c0f683658a92f483a254cb83c628bbb55b7da32715ffa6221d7c0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-dv1.toml",
+      "size": 344,
+      "sha256": "66fc83eb151708a0d229ca51d3867fef8b20d9fb6234efd7dea7e9f221132a27"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f1.toml",
+      "size": 322,
+      "sha256": "ce9122e0512062df6c4f3fa84eaeedf3cd7a08fe169960e556db79c5a63bd76c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f12.toml",
+      "size": 328,
+      "sha256": "672638b456821e2e0aa37dbc46a7eb4ee1d1cd967df29daa1aa3e90eb847b8df"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f13.toml",
+      "size": 330,
+      "sha256": "40f2f0c1655e435dd35391c9a666c14c9272fbc38576b9530d2bc06c97977df1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f14.toml",
+      "size": 330,
+      "sha256": "9a92695382576bcc06c71be04593d6e6000f29232276c540b9d121bf933f9701"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f15.toml",
+      "size": 329,
+      "sha256": "8ff68614dd098f1111f5c2934fe6a829ad8d57ae75935b6e206070fffde2d7d6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f15a.toml",
+      "size": 334,
+      "sha256": "aac59c920da4a73f1918cc75ccb6e618c5d180481c10c8ca2bfb513bdc486f2e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f15p.toml",
+      "size": 334,
+      "sha256": "fa48d3421fe34acb258bde68c8658c3a33af0f5849b4704f13ce2fb5cc67f804"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f16.toml",
+      "size": 329,
+      "sha256": "8eed17bf645b8b751fa0d242c2bc18c124a0d066122f6e686e0df8d97132fd52"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f17.toml",
+      "size": 331,
+      "sha256": "dcfd7724f81cb9fd1f1f1fa8b79935f55335c94eede883e9561a47f7912647d3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f18.toml",
+      "size": 330,
+      "sha256": "4e12e0b92a8168e1254fbde26673a565989ab726d2b842007748776c9bbf834f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f19.toml",
+      "size": 330,
+      "sha256": "35bd94e367dba593c2d1766c422e56d99da5b8b95fd67408c408fdf52de942c9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f19a.toml",
+      "size": 335,
+      "sha256": "3b096a3161733e6a3d61308c91e5fce721b0676d9a5a799ef2a91ed8a99d4714"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f2.toml",
+      "size": 322,
+      "sha256": "11352fbec82713911b71814cf997b45fb21b2dbcef91a3e2d6223179ab522d73"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f20.toml",
+      "size": 328,
+      "sha256": "2dd69d0f0689ab23d583bc5a7fd75436341f84a6763b697241b683bde39f49f8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f21.toml",
+      "size": 332,
+      "sha256": "20f46cc5afdbff5cd810590729ff613c480ff2d41d16d10e1409dbe49ab1f421"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f22.toml",
+      "size": 332,
+      "sha256": "b8a5d3149496efb4581881cff6fa64a348eefadcf73ffd0745e696459abb628e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f3.toml",
+      "size": 324,
+      "sha256": "c3ca5b6d7bb41f96ee328a231bf1bec59ab49edf3d3c0188361579d40252d1bc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f4.toml",
+      "size": 323,
+      "sha256": "66faa4a215d886c15560d3c8916bdb455cb9a779700a0a0fc54b1fd21da5d787"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f5.toml",
+      "size": 323,
+      "sha256": "3e10cd178f8f1ba247ccef88262e8adc0377aeeeba3fb51f32994f2332298751"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f6.toml",
+      "size": 322,
+      "sha256": "6483b7d07425f90ebedbf872b95eca9c5365bcc88992ee2d974a887d0f302eb2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f6p.toml",
+      "size": 327,
+      "sha256": "8b4cdf88aaee4b4d574185eaa64e485d464228c452716617851ff301dbc36c09"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-f7.toml",
+      "size": 324,
+      "sha256": "929446370684af56e3b38bd2400cfd13b0999375255fd3c070ed66a99301b0b8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-fi1.toml",
+      "size": 349,
+      "sha256": "dd450d289a9a345b078afa3d3ab6ac862466f504704eb34aa70d5bfc7e3fab1e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-fr1.toml",
+      "size": 341,
+      "sha256": "3658548466833fa3653d6db033dd97aff032dea87c2b73e6f875f9a9462847d3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-ig1.toml",
+      "size": 346,
+      "sha256": "88f266549194e459fcc38b17b122a61e5caca8fbfbe04e63c1a512875cc3601b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-li1.toml",
+      "size": 351,
+      "sha256": "9878654c19e3909943c35bc40f69925f1a81c98d813d105bafc65a9fb08d53c8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-m1.toml",
+      "size": 342,
+      "sha256": "15bc510d906aa92b26b35daad0db0470fc41e76c35270f6e519fdf358b1d6582"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-m2.toml",
+      "size": 342,
+      "sha256": "4fea6137bde3a6dbeb86001568b64533e2c5bc3f768fe7350b069565bfc34e5f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-m3.toml",
+      "size": 344,
+      "sha256": "3c778e79d31c7e0c86aa44c8502c145baf3d923640527dce06fe630df65b461f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-m4.toml",
+      "size": 343,
+      "sha256": "0361880ff1ec5900b63f591483a25303aa7bcfa27ba63d935edddd9108862bcf"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-p1.toml",
+      "size": 322,
+      "sha256": "a1ab2a279e6808c51d9b6297e7f506a3f296c9d59dfe8acffdbf342ebe3f13f0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-p2.toml",
+      "size": 322,
+      "sha256": "44aed1b881b08dd5315a9082fd7634d697ff66b6d200470bfd98a90a567f76af"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-presentation.toml",
+      "size": 379,
+      "sha256": "314a831934157b960ba75c479d756972c4623b8c42d627eb99f7995f0d015596"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-ql1.toml",
+      "size": 340,
+      "sha256": "dd78264e76547f809b027c6d2f0420d0c21f143345a12a5b6e33e05fccdf6921"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-rc1.toml",
+      "size": 334,
+      "sha256": "08025f79ff074a9550350136839a942e953687edb24f9a4c96297899390d093f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-rh1.toml",
+      "size": 349,
+      "sha256": "fd67724b548301b3c9a167ecebb32ee7b338d006adb38f5ab54c0bad3e5918a9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-rp1.toml",
+      "size": 334,
+      "sha256": "5621ee6e2fa19a8a93e7ce26cf8e876755c46302fcf409139c86570ee84e6c82"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s1.toml",
+      "size": 322,
+      "sha256": "af1ed1d9a51208c03169f36bcd71d77c40a132527ecd7b2352e18dc09e327cb6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s10.toml",
+      "size": 325,
+      "sha256": "d8e03b54da4fac08705dbe2c1a46f30c9242a93755c069aa3296931a2177e3b2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s11.toml",
+      "size": 328,
+      "sha256": "f34fcae41e4517022717309cfb392fc7fee39a013b6f2c8d0ad7a78949ecd2c4"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s12.toml",
+      "size": 328,
+      "sha256": "d42d74c837b2a39bf63e94b35c6e88369f9c8a8e2f53070739a6eadda6b48012"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s13.toml",
+      "size": 330,
+      "sha256": "228e1246cb0874b7bee1d77b3c4f4166f92792287c67ca8148f2435b371d6488"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s14.toml",
+      "size": 330,
+      "sha256": "a1d2ba046c514eec7b1d2bd3cba4e782ebc64c29c2cbe07dd4c18026f26abb86"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s15.toml",
+      "size": 329,
+      "sha256": "b075c6685e497a5b6b86f3596be2899b24920bd09b7f67751cca5d743642f606"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s16.toml",
+      "size": 329,
+      "sha256": "b3fc78e0ecadd62383e2d0d90ca46d1eb24b937df013422b00e571abc7acf34e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s17.toml",
+      "size": 331,
+      "sha256": "7a74c01954e64c76ce9e5a7f12a87215d2e0baded305df3021c3a07f549d7f92"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s18.toml",
+      "size": 330,
+      "sha256": "780319fe32b3cb619b79d2c05eb299386b62411ace2ab3388422cec0aa182be0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s19.toml",
+      "size": 330,
+      "sha256": "e4ac3788a878c7a667d8372f7b138c4d2484fe8aff771ad4a7f9aa5515855f22"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s2.toml",
+      "size": 322,
+      "sha256": "82f4f2d8c7cad7cb6330f271a64408397db9097c98c121d9f587b5e03456c7a7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s20.toml",
+      "size": 328,
+      "sha256": "ecac2b96035e2103bbd3d16d128fd95c33d3d7da20c068a654b9a9f3ce4e456c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s21.toml",
+      "size": 332,
+      "sha256": "756db283fc178cdf8b8e4da87e474b791f48c6d6d02aed70f60c6ce5991d21f9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s22.toml",
+      "size": 332,
+      "sha256": "716c8a87d998a7aa96859524fd480e0d0e6523d13e4993592fdd2cd792b0d587"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s23.toml",
+      "size": 334,
+      "sha256": "6c937acdf0106d220d27071f0910e7508c3130f45cfef92dadbb5e99231f25db"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s24.toml",
+      "size": 333,
+      "sha256": "2c70913c35d51cd80ad342357cb6322c543cda890665fe8604ea807ea9295d6a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s25.toml",
+      "size": 333,
+      "sha256": "183137b31b652cacefef59d0771ba38938eb369f8f710bb1d54e50397f89c945"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s26.toml",
+      "size": 332,
+      "sha256": "5c531e7220e4f927e491cb0a22d649f42bb3f93746e089fed4b5d5ddd9bb6770"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s27.toml",
+      "size": 334,
+      "sha256": "a275d01ca67e2d71b5ef6e80336ca87928843c74cc8c1d851f1e35731eb0b8dc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s28.toml",
+      "size": 334,
+      "sha256": "a2bfdc287ca9e9d26fc0748c8db01011505be0eaa38d42ef8b2498f6de22224c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s29.toml",
+      "size": 333,
+      "sha256": "0f1e9addba74fe4b4bcc0eabe145f915aa84fec6ecde9a47782fc032e1d60c59"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s3.toml",
+      "size": 324,
+      "sha256": "cf244cad792e6bd88d8207d7a65a8dd8354d2db9f3f2d2a2abde62f830f6b212"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s30.toml",
+      "size": 328,
+      "sha256": "8fcbc1bf032c3d0e63af4017213ec7ab795efc669048a2c8fbfaa3dd6c98fcdb"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s31.toml",
+      "size": 332,
+      "sha256": "6de3e78a856d31dd5e3e80d598dd259d8984fccf7b756450c14fdc9d7a1ba9fc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s32.toml",
+      "size": 332,
+      "sha256": "eb2eaf60ce4d777023ba56ee142fcf4b952d8530cf4d03b18d81a0e92bde6b5f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s33.toml",
+      "size": 334,
+      "sha256": "8740da07f42672b292325181e6f885a8125e0c4b8cdbb0ce75bd20d6e0521841"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s34.toml",
+      "size": 333,
+      "sha256": "b37a6b72620ed81d20532ea032274c4686d0ecdd51223c9dc181931d298f83a5"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s35.toml",
+      "size": 333,
+      "sha256": "adcf09a9a12e2ec87756958a598532052aefe30e5e213b7e621885c2270600c0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s36.toml",
+      "size": 332,
+      "sha256": "6df153178e27d25205653bad9a61b508db986afd244ab34cb4d86385380a73cb"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s37.toml",
+      "size": 334,
+      "sha256": "212fd1e86ff31778ec7d9302a6c8b2aee6d9551eb449d0b0e30400e3f24ed0f9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s38.toml",
+      "size": 334,
+      "sha256": "7b13cfda395c1eb5ea919c3bc13993ab4cd97534b5762fd84732b8124cf72607"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s39.toml",
+      "size": 333,
+      "sha256": "ac43665156156382bc915ce9cc6806e186b9a2c174113610a6b15b65ba93ff8c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s4.toml",
+      "size": 323,
+      "sha256": "c39f40d8032f10683dfa50857092e7650125fdfac63addafd8618bab637c4df2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s40.toml",
+      "size": 327,
+      "sha256": "02b2ae7ee929905c11c2acc6fc13a7ee8d88f870645f17b8c37693b090ddcf71"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s41.toml",
+      "size": 331,
+      "sha256": "e402966cc2a408067d991d57fa9c0c039503299de6a04ce8b1c6ed8dbd99bd65"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s41a.toml",
+      "size": 336,
+      "sha256": "7b6469a9a5fdc123d1266c2911c4b6a63e041859f0d9be19feb5dafe41b7264a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s41c.toml",
+      "size": 336,
+      "sha256": "57fd62513e7902010fd232b7bd67185f0a590802a3d637d5212ec4dfa4aa7a40"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s41d.toml",
+      "size": 336,
+      "sha256": "a198eb3e1181c964380ba4aac7a4bc5161dd434090cd3b3d800b7f9c09d45fd1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s42.toml",
+      "size": 331,
+      "sha256": "b0aa3caee86aa92d2612aa30a6e69fa7dae4a2be9d409fbf70b593d52529f5c4"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s43.toml",
+      "size": 333,
+      "sha256": "320b622b5878010a6311acea8a101ae9903051174d2a3d5d92cfc2cc97c5da75"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s5.toml",
+      "size": 323,
+      "sha256": "9cadbd6e701eb2dad9e48a3513a50d16dbb8e5542794c450a640c2d8a00725c6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s6.toml",
+      "size": 322,
+      "sha256": "0773744b35824c3993f8dc59809f35d0efc57cef16f92a05cbd19eb2003c04d9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s7.toml",
+      "size": 324,
+      "sha256": "2499291de6361ee23849fabb6508dcb48091d5c139c5118e04298950e01ebe92"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s8.toml",
+      "size": 324,
+      "sha256": "31b333fa6fe89c78a411d1234df4d5caa62ed7ee0c8228d0f18c70f9186a6454"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s9.toml",
+      "size": 323,
+      "sha256": "0f257a8ebc70465fc6557545c25e96e4653fdba00901f8ddac083d3f6043be49"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-s9a.toml",
+      "size": 328,
+      "sha256": "371dd03c349fab946d1470a8a89b520bfe9378f8283176facf7b3366c8adddae"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-sd1.toml",
+      "size": 344,
+      "sha256": "a2fb850bd6666f645221bbeeadce9795d26396c2ea6afc8ea1d6b1e470ae2d8f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-support.toml",
+      "size": 476,
+      "sha256": "8085541a8cc302716e6623e9f4f01a2c9e73dab6c5782220dcc1f9dbdfd824af"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t1.toml",
+      "size": 328,
+      "sha256": "dac0d6f834d896c8ce0415a884f16029d412d63ac6fa3e10f292be4b807a2da3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t10a.toml",
+      "size": 332,
+      "sha256": "539c0d37ecd772571b72034d71604f90ef284e70706bbabb4735ce591e117aab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t10b.toml",
+      "size": 332,
+      "sha256": "43b3d7974a46df91fc745a6a2580e1f6d8ad9e5d6d24ce083d14e962885a58c3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t10c.toml",
+      "size": 332,
+      "sha256": "abf10087b00d5a970581614a79e05011323adc22e00fcb41a99eb884b7c50d8d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t11.toml",
+      "size": 330,
+      "sha256": "3667384caf4ef3a5c2ab7ea13f3397e868345f34be68f1978024bfe7c9ed9a09"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t12.toml",
+      "size": 330,
+      "sha256": "22d7e0d6604680bf2ecdcabd70574b31e2bef550357d606cb7f7a7adc42bc766"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t13.toml",
+      "size": 332,
+      "sha256": "353411cf890dd5e239f6a2764d29ba083c7926b86e36fa3c39d54705b8d4011b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t14.toml",
+      "size": 332,
+      "sha256": "847d72cd3afddfb84a17ef02b0dbe81dd3a3488b2f0ffd4d989706df639f53ca"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t15.toml",
+      "size": 331,
+      "sha256": "326f3d0c660a24dc95e2b746d9323a99091ecc9914d98fa2e682d08223f7a1fa"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t16.toml",
+      "size": 331,
+      "sha256": "eade243c29b70c26f3b918c3a691708554e1267127438e7484ebd6198796aa80"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t16x.toml",
+      "size": 336,
+      "sha256": "f31cb801e80f478446e954b07b4656d7fedde69c1681edf079df26384265f4ab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t17.toml",
+      "size": 333,
+      "sha256": "ba3bb913b9e917289920c8320bd7ecdf4cb87606976f0c33d8c158af5382f056"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t18.toml",
+      "size": 332,
+      "sha256": "5b7b0327a321371ba7ade303e2bbca887323943f01fecfbdaed45ac2e72a412e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t19.toml",
+      "size": 332,
+      "sha256": "d075957234a420b411b6392cdc589bc24a772ccc76dff3ba6789cfa4992b2995"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t2.toml",
+      "size": 328,
+      "sha256": "a87e12aa7ec6682061986a826dd034743f334aa6d9f9673a6611841dc99ab7cc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t20.toml",
+      "size": 330,
+      "sha256": "c308fb4cd0d429829bf95a0345daf74fd554c3b28a9fd8c5c0f47d51f3fb9a2a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t20a.toml",
+      "size": 335,
+      "sha256": "26778690631a48b250fa6ac06918ad9cff912fd23da35e0e6de76262bb53ca6c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t21.toml",
+      "size": 334,
+      "sha256": "c36cccde672245e85d7b61100ce4f572d2f9a7c155d6cc447d65cfaa705fa66e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t22.toml",
+      "size": 334,
+      "sha256": "e5f093574088d46c1983684e5cb417663b3c30c1ae881101b343a46883b5b6e5"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t22a.toml",
+      "size": 340,
+      "sha256": "e12f16c19dd0c38b3ae10200d4dea90d0fa716c64257bb7aa64085968fd92089"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t23.toml",
+      "size": 337,
+      "sha256": "238ae29aa7b5c231fa287cf4afb6d3fee32726de68be690f9a265b8b1d77f2f7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t24.toml",
+      "size": 336,
+      "sha256": "289eee9122f7d8cb374e123dd52a3280db640f75c3589f5e6904ac843bd9ad6e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t25.toml",
+      "size": 336,
+      "sha256": "db2b088cc2f610894fcbbd7676aaeebe6432fa2e9ba3be27ab00fbc0931d8067"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t25x.toml",
+      "size": 341,
+      "sha256": "d47e1161c94de35f268b3edc03fe6b3bf4a693508f8003e0af432cb9410f96e0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t26.toml",
+      "size": 335,
+      "sha256": "7b1a0a6ce20999e6b93d1470339cd72b36950b6325d42a20e25201909ef66b10"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t26a.toml",
+      "size": 340,
+      "sha256": "a3de84ef43bdd9e7c7c917dd27b3bdeab582112568a16c6cbdb055763ff298a9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t26b.toml",
+      "size": 340,
+      "sha256": "1a3c2fa75b14ae8970881ba1a8f7a8496dee23eb82b4259b96539b95bcc402bb"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t26x.toml",
+      "size": 340,
+      "sha256": "5cff923dd66e0132684867a8f2b5b9fb36528f9a4affdd479101e14ec83bfb22"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t27.toml",
+      "size": 337,
+      "sha256": "5fe2050709bf2565f92fc1bbd79086b4679a0405e47b972ec0f3ab9996d8f09d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t28.toml",
+      "size": 335,
+      "sha256": "f8869c730ab4ec738d848c00476ceb7892703be667e5e5948ac8080054d57854"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t29.toml",
+      "size": 336,
+      "sha256": "8e6d9f3c2f00b7ec14869573138d92c348ba90465de5698ea2bf216b0c6ad4e6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t3.toml",
+      "size": 330,
+      "sha256": "307df9f6a824ec67dea0010680be7aba38478b2f909829ccb1efc7c5078d968e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t30.toml",
+      "size": 334,
+      "sha256": "5bc2b8a60b6dec6abca7847bd5dafab94dd7fe99e68cc057935c1a7ca3399fea"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t31.toml",
+      "size": 335,
+      "sha256": "c33db74b15b744c7b057b09d9afe472aa5f200705c4d3109d5ec204d6f28f5e9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t32.toml",
+      "size": 335,
+      "sha256": "087361073bb359bdef98203fa58f96fac9b9391c1c9ab1e0d8cfadbb2dde71d6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t33.toml",
+      "size": 338,
+      "sha256": "f9682725fa5564519e58adfcc6320c32be0b4dcecda2c235cc1821a4fe3b41b2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t34.toml",
+      "size": 337,
+      "sha256": "92bb5c0d45fd713765cd390c44f2ac48f4aa035bd9815c5e07cb6b77db700d6c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t35.toml",
+      "size": 337,
+      "sha256": "93aa6695ab92dc7a5268f61f52be5920b24d521473fba08dccdbc249c1dbad34"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t36.toml",
+      "size": 336,
+      "sha256": "ee3cb7ea71aad2137e8027e49be5691e7d1ab90cfac7da769ca7df7ea1a1b801"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t37.toml",
+      "size": 338,
+      "sha256": "b12f7f6535b17441c4398d29855cb589aac4d85fa41f50d8568051cc2d1c449e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t38.toml",
+      "size": 338,
+      "sha256": "cad9af4bb278f3e80651a081632aa1e15c70114563c9546c1522f2d4e1bfb1a8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t39.toml",
+      "size": 336,
+      "sha256": "ac2f704186218ebebeecf49dd87e5dfc947c9b3a5b456c11bb3ca88386dad200"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t39p.toml",
+      "size": 339,
+      "sha256": "7a61a0b0b252e5bc3269e0be16a2bdc0e5717de48bd45439887607f2f230b83a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t4.toml",
+      "size": 329,
+      "sha256": "54f4bdb5f4e3715a425fb69a4622d68194888f1cf7a2dd9a1eb9a2c674ee0824"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t40.toml",
+      "size": 331,
+      "sha256": "4d2c2888fa4cb20bfe777ec375fb13551d6bad512975c12d9f1afdbdc4d024ab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t41.toml",
+      "size": 335,
+      "sha256": "0485cbd647f32082eb72c510f2450bd66986bc54864403bbe86c452cb4c04f27"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t42.toml",
+      "size": 335,
+      "sha256": "73d91c22713bf9e003ecf4a6cf5fc0019b0bcf694bcca78e0d69787c53ffb9c0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t43.toml",
+      "size": 337,
+      "sha256": "76068ab624d0a310c18dede8ffef25193d730763f6548fc11594f8206721ed7e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t44.toml",
+      "size": 336,
+      "sha256": "53240ae537c6a61fbf548612e93c2df5bdb957b5b1ce0c5f707a02e5f0ff5bf2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t45.toml",
+      "size": 336,
+      "sha256": "8410d3448af72388a6f64db2498342ff5bdbdc801b5b6e39455462394b809b70"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t46.toml",
+      "size": 335,
+      "sha256": "081bccf1ab23ce48d22ca91ada5e0b91615a176db91375186f60be329f71f393"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t47.toml",
+      "size": 337,
+      "sha256": "675e65edfcf81e620f004e4b089300941c488be6b00053d1ac74fbabbf8e3735"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t49.toml",
+      "size": 335,
+      "sha256": "4b45ce300c089da5411d689240ec8d96fd582e750606a879d438f51d0704eb16"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t5.toml",
+      "size": 324,
+      "sha256": "a965edd1a086f86813042fd60eac588dfed71c8c440d3e96b99f2be4b3c3e4e4"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t50.toml",
+      "size": 330,
+      "sha256": "a6f1cb1f6423bb2dcc6d707d4a1cdb1c8776f668293fee575038124ea4c28b53"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t51.toml",
+      "size": 334,
+      "sha256": "9eb6983aaee5f6481557630226657edb4d33e6ad8dbbab0fde631e93e0ff8f38"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t52.toml",
+      "size": 334,
+      "sha256": "8b2c870cddac122057b6159f35d3e102a8e2ea59e18a9566732b32ff85d0d813"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t53.toml",
+      "size": 336,
+      "sha256": "d59d6496f0270302ab9797e8cfb8e338de381178d50e7835431847ba0ba3c69d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t54.toml",
+      "size": 335,
+      "sha256": "e43f0fc47e6b04033c74610262cddcedc31314112b4bd178cfeab467e61c206f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t55.toml",
+      "size": 335,
+      "sha256": "5fcee1f995c2c208340f788bae9b69080c2aadaab76715af0312ca99a03973e0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t56.toml",
+      "size": 334,
+      "sha256": "476f941bb1d26c7d6279db865d4e4ee90f68d965de687927a74ad218d24d756f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t57a.toml",
+      "size": 338,
+      "sha256": "297c430276b502206e4c3a5aed0dcdf458e0459f0a5577bb653c67a88eb7ad62"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t57b.toml",
+      "size": 338,
+      "sha256": "22ce77939eeb7c22ae4cb5d32918b45f1726b31e7f9aac9a93bc673d627a9b17"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t57c.toml",
+      "size": 338,
+      "sha256": "9c1ca0c71043da795c6b08d9474ada0b7121af446d6083f96459241f1344617a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t58.toml",
+      "size": 335,
+      "sha256": "64dce92497c182aff66bf82fa0b4f34a2bb202c14a7b85a2d37af755280aaa43"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t58x.toml",
+      "size": 339,
+      "sha256": "3b6958ebc65713063f0d4296a2393183e6c64601c273dbd95c56888e6084e6de"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t59.toml",
+      "size": 333,
+      "sha256": "e133c64b10d3eb28e99572b3bf938281aca7edce00089b206e929890a4e9e7ca"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t59a.toml",
+      "size": 338,
+      "sha256": "685b061ea416d092c793315eee1ba6c76cd4806dfd836f26c77e952888fcceab"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t59p.toml",
+      "size": 338,
+      "sha256": "5bea0d0bcc6f104ed6e3d5bac152e9861f44e4f2f8bbbc2be7f65c9fc86a04c3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t59p0.toml",
+      "size": 346,
+      "sha256": "dc59ed43da48a9edc86f90038965873f4df1ef12ab6bbe6531fc1bb7eb7524bb"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t6.toml",
+      "size": 323,
+      "sha256": "143efe212c650ac08f1e706aeadf280275ee9e428a834b65aec24c953a741853"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t60.toml",
+      "size": 330,
+      "sha256": "a97eb7e0139aae31b3e0547c84d4abd3e8e4fac94723544b8f67775ff8af096c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t61.toml",
+      "size": 333,
+      "sha256": "cc2c8c72e6ae6c975f457ffbbdca415206925b88dee8b0cfca52367b62b7c1cf"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t61a.toml",
+      "size": 338,
+      "sha256": "d3fb227ffef205aa05c9374b4c2ee5fb87f036c206fcc631d5675941f43fc69d"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t62.toml",
+      "size": 333,
+      "sha256": "5114feb08f14d844980c2c949a947e5add7b44cb77eb31bb3976979d110e31e7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t63.toml",
+      "size": 337,
+      "sha256": "dd8c6286566d945259901b2e824312e37d70f190d1a96a35b39689542ed2ec8a"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t63a.toml",
+      "size": 342,
+      "sha256": "4e13498554d35fecdc176346a41ad9362fa70beb6e1551471b5a4fed1d5990bf"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t64.toml",
+      "size": 336,
+      "sha256": "70086b81ace357bd576b01b244f1879ce3f1e579d8dae028f3f04778a79306c2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t65.toml",
+      "size": 334,
+      "sha256": "46bd1527ca013b2537e9e0f737b3156af085a7dfa51933550093523c8c474507"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t66.toml",
+      "size": 333,
+      "sha256": "f2707cdbeb3ce05235e8c931abb6d748e1073499823fabc632a38c26b8b0722b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t67.toml",
+      "size": 335,
+      "sha256": "02cff0942109329bc377d8b2e8344958383fd071616dad60871ddc013cfa92d4"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t68.toml",
+      "size": 335,
+      "sha256": "db6ed86577dc29cc0cb2a8e7021837269f808945d38d34ced5bee9b3bc5cd3c7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t69.toml",
+      "size": 334,
+      "sha256": "888f15a81b4f0f7582ec6a50fac90c255cc725b1fc2fc1a0f75c57a0f48898b0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t7.toml",
+      "size": 325,
+      "sha256": "66a82dfe7b9decdce4bc957776eab67a78e67426bc20df2be03908eefe40f25f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t70.toml",
+      "size": 331,
+      "sha256": "66fca55345d4c24daf77f09aebde34e055a26887fd32d1b195f1b3153f349e52"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t71.toml",
+      "size": 335,
+      "sha256": "c8aa0c6ebc5634acb05c4959d1de436f3e192df6bec77cd69750f65789e4c346"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t72.toml",
+      "size": 335,
+      "sha256": "ae7c79c5efbf99fb69d2f5348bcbcf4fdfebc3b74e224d5d055daef94ba9b8eb"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t73.toml",
+      "size": 337,
+      "sha256": "9f26a3dc152238b5ad87eab683cc2012bf7636a5263adb457ea19d0650ed2317"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t74.toml",
+      "size": 336,
+      "sha256": "3a643f4e10ae8a8265ac4995872321d55b9b5b7ff64d63008466af8e73393a53"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t75.toml",
+      "size": 336,
+      "sha256": "69a131b04bdf4954554cde864fb84f146773d23bd3228dec67d8317063a3f5b0"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t76.toml",
+      "size": 335,
+      "sha256": "21b4884a17beefe298f6c318300fe04b3833d621fd5db309d5ed69ad644e5ca1"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t76a.toml",
+      "size": 341,
+      "sha256": "32d8640643c4d35dea5d32fbfdc121727ed648ffcb80e53a03a5ff00faa13710"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t77.toml",
+      "size": 337,
+      "sha256": "e20f600143c7113f7089f22c570fb999278367bc90d7b42ec7f0d7b396460bf8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t77a.toml",
+      "size": 342,
+      "sha256": "8f66ec459d8320e124bba72615df71f1842ea590563954c6d767acf4541b8412"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t78.toml",
+      "size": 337,
+      "sha256": "e86fffb9ae2b82c371d7daed266a777a38c1bf5537358f251759df9e6168aa42"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t79.toml",
+      "size": 337,
+      "sha256": "156c914f661f227beb905daee50d264b78bfa5d9574429b1ac06d43d9384a902"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t8.toml",
+      "size": 325,
+      "sha256": "4797df687005bbd9f1d00d3df856101d930a1c9aadba47005f2c27f601b27fac"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t80.toml",
+      "size": 331,
+      "sha256": "c1c3270d8af40021e4c94865efc04a660903b4fa007a0e0a4ba6d0d0edeb8420"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t80a.toml",
+      "size": 335,
+      "sha256": "46e43bdd3da17b57fe1200a013837a2cf3072875a5815dfa1a9c543130e0e56b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t80p.toml",
+      "size": 335,
+      "sha256": "48c58913da0080a4928904b61b5fb9efb515e921c0f48366c31b5204a6d291b9"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t81.toml",
+      "size": 334,
+      "sha256": "14233ea4296ba370444d121ad7a689a741ce43d086ee252298a003a353536603"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t82.toml",
+      "size": 334,
+      "sha256": "4f5cc0a9d34c2d5d4fdcd30ac0a800c99e6cd2a949a66349ca98653d0c62d37e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t83.toml",
+      "size": 336,
+      "sha256": "a45d43223aef1f31ec9bd1dc063ee111f040be9775dbd0cd81fe203229899b64"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t84.toml",
+      "size": 333,
+      "sha256": "1f026726fba3f295e0869c28d9bfa90587fbb51cc3d5f19b376b2a8a97d5b570"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t85.toml",
+      "size": 333,
+      "sha256": "1e8f1b373c7b157abe13a91c9f7c1911bb8d41d4ee88e0236a243c6ac521515c"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t9.toml",
+      "size": 324,
+      "sha256": "daf0f4d51ca98a621f8b0b6a89740c1ad659d6444c97a057cbaf1b5b2710d242"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-t9a.toml",
+      "size": 329,
+      "sha256": "cf74f22ea8c1287f278c70c19fa3ee172b55a4dae9e4d55d66c44ace505e1c94"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-ti1.toml",
+      "size": 347,
+      "sha256": "fd36c70cf3323412c511ce766e5665797264a705d2e8154fe0071ccb54e7f2c3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v65a.toml",
+      "size": 343,
+      "sha256": "07ddf5763f6781c0f6e60adc8a67d8d69c26aebde60288a47f62ad040805d2f6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v65b.toml",
+      "size": 343,
+      "sha256": "654e9bb5750ca23db7e070da034d340562adfd44947578516c9622ad6f54a611"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v65c.toml",
+      "size": 344,
+      "sha256": "6e54cb33a177d63b797b8cb8c81f1a9765d99d4b53006a293b5ee7df4d839aa2"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v66a.toml",
+      "size": 342,
+      "sha256": "77a611a9eb80b2a2f859bb517999a1cff8716f09a7ef1ce52104bf59cc6c8982"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v66b.toml",
+      "size": 342,
+      "sha256": "2e9d536aa11c8d29d55bf7ea2674818740deefc2c02b7b323c53dc6fa3e7cac3"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v66c.toml",
+      "size": 342,
+      "sha256": "7d0268b6722297b78d18c6a5e65016e5d85f6caf692a321684a29d32b009b17b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v67.toml",
+      "size": 339,
+      "sha256": "28602189b9c9ca6a9ef0098f5c6b7d77e79d61f79f6d3c0ec832e5c2db6be4c8"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v68a.toml",
+      "size": 344,
+      "sha256": "8818775054ee4f6c96decefb4b99624d33f6468d7ddd8bceee8da480973945c6"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v68b.toml",
+      "size": 344,
+      "sha256": "9bf6242e20b9696aba3b6537d6fb2f5924789d4df8cd66a01cef7f2b828446ec"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v69.toml",
+      "size": 339,
+      "sha256": "a2304f63eafb28fe62a33895eed339487e6d8a88f66fc6f7617c66a9d508168e"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v70.toml",
+      "size": 336,
+      "sha256": "16fe8021c1dbb6a3b63dd9e9b56f53d4b36ce75323c2818d129ec3a94373d0a7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v71.toml",
+      "size": 340,
+      "sha256": "0014e80fe685a3b1b747422ce2632c128c6d52013022997a094c249e9a70062f"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v72.toml",
+      "size": 340,
+      "sha256": "a5985edbd45b35844695da2a64688fd04b2823ec7386d8f905734f2f0ceaa11b"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v73.toml",
+      "size": 342,
+      "sha256": "04d29958920e736127b09719be35917f7877c15e80f9b61559428f113dce3a71"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v74.toml",
+      "size": 341,
+      "sha256": "b30760339ed816f15f560a8efc00dd91b24cdaf998ef5df428421a3d1ad2c7fc"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v75.toml",
+      "size": 341,
+      "sha256": "5464d2b1658e6dcc27dd5f5a22f34dff4f985cd3734f8f85ea606349d1b4dfd7"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v76.toml",
+      "size": 339,
+      "sha256": "156f09b979367ece5c1f2775d634ce368464a563cf2541330fc3b145a292e9ae"
+    },
+    {
+      "path": "language/uor/atlas/entries/atlas-v77.toml",
+      "size": 341,
+      "sha256": "4d3e542d52a979d6639ae8475a867a1a1b0795dccb2e2cd85a3d15bbd9b0f362"
+    },
+    {
+      "path": "language/uor/atlas/lexicon.toml",
+      "size": 175,
+      "sha256": "49d0f41e154d0754384f2e766dc3a0bef72b4ee960f73fe4acfec247bcab73a2"
+    },
+    {
+      "path": "language/uor/atlas-registers.toml",
+      "size": 4087,
+      "sha256": "247498d24221f3a3cd3d2310a64d8c75d49910ba8d864b64085f301814c6426b"
+    },
+    {
+      "path": "lexlean-0.4.0.crate",
+      "size": 5260039,
+      "sha256": "f2d579289052493d2c68274b10015d2cce544a78fbb876d73062184f09fb0a18"
+    },
+    {
+      "path": "model/errors.toml",
+      "size": 20145,
+      "sha256": "c7a1973958fd48606be368d7edce688727cbf99018bf72a9988e7843fa49b52b"
+    },
+    {
+      "path": "schemas/attestation-v2.schema.json",
+      "size": 5931,
+      "sha256": "c742dce32bd3550677b0fde03c9267062155bf44d59f3cc7d4a3d3e60d57036a"
+    },
+    {
+      "path": "schemas/attestation.schema.json",
+      "size": 5406,
+      "sha256": "0c2fe45b7840c7617cbed5015b2dc72e066fe902216c82331841838961537efd"
+    },
+    {
+      "path": "schemas/build-manifest-v2.schema.json",
+      "size": 2026,
+      "sha256": "4cb720bab7c4683721025d0a522f8d2dca39858bbb8699f8bbdb380cbe30e168"
+    },
+    {
+      "path": "schemas/build-manifest.schema.json",
+      "size": 1949,
+      "sha256": "4b417f6e05c99f3c954a38270fd612b1b68cc6e0574efaa99a607c92e77bd53a"
+    },
+    {
+      "path": "schemas/compiler-input.schema.json",
+      "size": 10033,
+      "sha256": "e999ea755efe38896bc5fbad9a57412efed4806628ecf0f09e24b7c00dd44c80"
+    },
+    {
+      "path": "schemas/core-module-v2.schema.json",
+      "size": 14573,
+      "sha256": "53c665b81b640f2c5f9544a3fe309f5a0f45b3ae7b15a56de66f41d1ef2ce533"
+    },
+    {
+      "path": "schemas/core-module.schema.json",
+      "size": 6065,
+      "sha256": "0afde7f7b43153e39daa40923ff963b43bbcbb942e0aef912ffc7190faffd391"
+    },
+    {
+      "path": "schemas/coverage.schema.json",
+      "size": 5747,
+      "sha256": "ca476f5d399ca89842f60b7b8a2bb34833a8954ef0e9bfd4e41af430dd04f63a"
+    },
+    {
+      "path": "schemas/diagnostic.schema.json",
+      "size": 3059,
+      "sha256": "ff7246d248774f92a4a8b2de3cf388453f2797beb49e65370716b4f5a33091e3"
+    },
+    {
+      "path": "schemas/entry.schema.json",
+      "size": 3306,
+      "sha256": "1a02a21f75692a9bc4fa7fee99bb7dc381f23f2d0753eeb2a60e1b3438f1a64a"
+    },
+    {
+      "path": "schemas/gnaf-certificate-fixture.schema.json",
+      "size": 8630,
+      "sha256": "076a0fd15355e160bca0a13b5108a7968eb1ac6013f32a49a5537d51fa234550"
+    },
+    {
+      "path": "schemas/gnaf-certificate.schema.json",
+      "size": 4820,
+      "sha256": "2cbdf3555102d3e8ae000db8fe191d445e3797731b366fc949875674efd07fb4"
+    },
+    {
+      "path": "schemas/gnaf-fixture.schema.json",
+      "size": 17392,
+      "sha256": "ea0cbf5563cfec241c1122f31d3d1754a66ad602854f5ffe19e9e7c82dfe6a6a"
+    },
+    {
+      "path": "schemas/gnaf-request.schema.json",
+      "size": 15617,
+      "sha256": "8090928bcbcfb6cf7d52537c8e08a40250dc054ca71649edd5dfcc889739e3d9"
+    },
+    {
+      "path": "schemas/lexicon-v2.schema.json",
+      "size": 605,
+      "sha256": "c9b43149225802710bc5e1f1a8d4aa26e6dd189f0727dd96c90dcdac2567e308"
+    },
+    {
+      "path": "schemas/lexicon.schema.json",
+      "size": 582,
+      "sha256": "209f21885e7bff875f230236062c5d3bbee0993d18d79b1d2697a372ac460627"
+    },
+    {
+      "path": "schemas/lock-1.1.schema.json",
+      "size": 2186,
+      "sha256": "2a0c40f7ca51473bcfb9fed8f3fae1ad81200f65a2af461e9a4005e24c6ad73a"
+    },
+    {
+      "path": "schemas/lock-v2.schema.json",
+      "size": 2758,
+      "sha256": "df06fc327ec032289d839aa0281bb0a926b505a4ef4a4c05ebfa09e2764e03ce"
+    },
+    {
+      "path": "schemas/lock.schema.json",
+      "size": 2165,
+      "sha256": "6be5957132b88c16ed394cdfe07c2d548b278d48b70f7dc7342b370315b549b1"
+    },
+    {
+      "path": "schemas/preservation.schema.json",
+      "size": 2585,
+      "sha256": "0031e9dad7a8ae9a0816ca8f2182fc0fff1c483199fc4455211b2463155738b8"
+    },
+    {
+      "path": "schemas/production-eligibility.schema.json",
+      "size": 3868,
+      "sha256": "b828a0d815cb8bab758d7df644c8d7f66bfff6fab93f59777a8b2b7942ee19e7"
+    },
+    {
+      "path": "schemas/project-v2.schema.json",
+      "size": 3851,
+      "sha256": "320dd8822d2be1b510997e7801f8fc513ee0ed6c42c332f47963c569075c047a"
+    },
+    {
+      "path": "schemas/project.schema.json",
+      "size": 3246,
+      "sha256": "4dd3a774b1db4b5fa2ba1598f557b8265092f5d9f29debd4407183a4d1a57287"
+    },
+    {
+      "path": "schemas/rust-package.schema.json",
+      "size": 3234,
+      "sha256": "cb3df68a1f795ae521c6bcc42952e9f48251c2e70d38eaea3de37ea602c38002"
+    },
+    {
+      "path": "schemas/rust-provenance.schema.json",
+      "size": 3440,
+      "sha256": "1eb31efcf60282aafbf0068017f6a9d8707654938a10efeaab3a3986d3fce8ac"
+    },
+    {
+      "path": "schemas/semantic-module-v2.schema.json",
+      "size": 37804,
+      "sha256": "8af664541c58d5a06703910ba8fa593442fec9abceed65eec18892ffe90bc87d"
+    },
+    {
+      "path": "schemas/semantic-module.schema.json",
+      "size": 15133,
+      "sha256": "c653bb06c97a90473c189d8ea52d4d3eb480f1138a578d8bcf1c29028cb2deaf"
+    },
+    {
+      "path": "schemas/semantic-snapshot-v2.schema.json",
+      "size": 86278,
+      "sha256": "ae933469d5037b4fceafa5b0e484b65be908b21f38242d02e3b353fc2301ef61"
+    },
+    {
+      "path": "schemas/semantic-snapshot.schema.json",
+      "size": 19211,
+      "sha256": "14db723aa4bff29da76bbe7b11586cdd277cfdd05efed7318b5fc89c8d9bb6dd"
+    },
+    {
+      "path": "schemas/source-map.schema.json",
+      "size": 2280,
+      "sha256": "ea329f611b5338c53fffee1987bc66cd2a58c380dd55e5c88458759ab582716f"
+    },
+    {
+      "path": "schemas/target-fixture.schema.json",
+      "size": 12079,
+      "sha256": "35e41b4cbde81c1e8824d85da8d1a0e85cb4481fb961405f1fe907f478b66729"
+    },
+    {
+      "path": "schemas/target-program.schema.json",
+      "size": 11339,
+      "sha256": "bd5f90e0dad070ddadbe4e3793709ae3ff61bb87dbeb7026fb1a92d555bf571e"
+    },
+    {
+      "path": "src/api/migrate/tests.rs",
+      "size": 8568,
+      "sha256": "4acde26765e31948e3aa2e55235e9b3edfc4c265b0b7f88dc72d1ba84129cc8b"
+    },
+    {
+      "path": "src/api/migrate.rs",
+      "size": 20515,
+      "sha256": "8f4055c02fa44939f3b107e67dfc3c20bf022b18078757955a3132202f4d06ac"
+    },
+    {
+      "path": "src/api/production.rs",
+      "size": 87744,
+      "sha256": "c7a0f3c96813bb87a81c27e673c323b5f81a1338cc807181f17bbf226c2a4000"
+    },
+    {
+      "path": "src/api.rs",
+      "size": 60054,
+      "sha256": "68577d9a52bef8ca7ac093c09fa224176020009b31bd681715bd4d5710adf651"
+    },
+    {
+      "path": "src/artifact/canonical_json.rs",
+      "size": 8470,
+      "sha256": "2b5426fd12238c21a95e617c6dd6ed11de341c3b707fb5000c7aa27240c1b6b6"
+    },
+    {
+      "path": "src/artifact/content_id.rs",
+      "size": 7056,
+      "sha256": "30b9bbd0cce10c6dd0acca20289c656612d387eb2c285f2d079df53c33a12136"
+    },
+    {
+      "path": "src/artifact/manifest.rs",
+      "size": 4810,
+      "sha256": "b5e86fc1c219de1a22c4df43ec4933f04b2766408d94d7373e6ee02a928d5e1a"
+    },
+    {
+      "path": "src/artifact/mod.rs",
+      "size": 746,
+      "sha256": "9d49ea2467ef31a7d3764a9368af8ff513ce1bc0b4477490a2a0ae85bae89257"
+    },
+    {
+      "path": "src/artifact/snapshot.rs",
+      "size": 21447,
+      "sha256": "274991f3fd525ca0b66c7dbb6f552a1135916adfe54a993539d20147b5aca98a"
+    },
+    {
+      "path": "src/artifact/source_map.rs",
+      "size": 9489,
+      "sha256": "488f421f45599fc2427ebcf45c8ad35e93863cbaa160f9d28eb1b2835f8fcaa6"
+    },
+    {
+      "path": "src/backend/core.rs",
+      "size": 64621,
+      "sha256": "c88931d594a1e3ecf3533a468484b299e8b3bd90f364b6e614a35fb4df1859c9"
+    },
+    {
+      "path": "src/backend/core_v2.rs",
+      "size": 40764,
+      "sha256": "3b03b93fb1f45c9a61898f3d271d3e0a9c5f87e90a472c170aa2b2320a9ef72d"
+    },
+    {
+      "path": "src/backend/latex.rs",
+      "size": 99566,
+      "sha256": "16e57ebb61d79e476a50afd37a1897266e98e2385cb43f3bdf5314d9e39a846d"
+    },
+    {
+      "path": "src/backend/lean.rs",
+      "size": 99382,
+      "sha256": "910b72a4ffedab1378031fdb42837aa25a9c14d328f7094261b9b8490e830a44"
+    },
+    {
+      "path": "src/backend/lean_tokens.rs",
+      "size": 12690,
+      "sha256": "7bdeef35bc6140279ea680a2912513d9d240ae41ec763cd91064ef8c7d5d9f6c"
+    },
+    {
+      "path": "src/backend/mod.rs",
+      "size": 7255,
+      "sha256": "121386551944af4d4532a48f9fa075730da825edf85e77d74302d2b94feb0fbe"
+    },
+    {
+      "path": "src/backend/pdf.rs",
+      "size": 11973,
+      "sha256": "2c34105381ae27af81438be8d10af8c6b570430ba952ce70b9fd52f270b5ba9f"
+    },
+    {
+      "path": "src/backend/runtime.rs",
+      "size": 13903,
+      "sha256": "2e75cd37c0838f82e81843da362dc27d14d41942243dd390bc4145f6363ddcd9"
+    },
+    {
+      "path": "src/backend/semantic/reasoning.rs",
+      "size": 35373,
+      "sha256": "7eeda1b6619c62535a3dcc17e58ec39014bafa2067efb4dd1430eb4250970ed2"
+    },
+    {
+      "path": "src/backend/semantic.rs",
+      "size": 138841,
+      "sha256": "a9ccea5880bf9eeebaf9f9b0a79e03fbee1e653beccbbfce479687fc2ad623f6"
+    },
+    {
+      "path": "src/backend/tooling.rs",
+      "size": 27731,
+      "sha256": "006faea1b59721c676f819876641a6648bc146f256dd61c513f091d14cfb2014"
+    },
+    {
+      "path": "src/calculus/check.rs",
+      "size": 32169,
+      "sha256": "5778ccfa0d90348fa4a4baadd07ac0705d25c7e883bab3c7bdc5ec5027bfff98"
+    },
+    {
+      "path": "src/calculus/interp.rs",
+      "size": 29243,
+      "sha256": "6d7f7988bba579e60301b121ec02780fdb41a937ee4fa106a7cf7a276114ee6d"
+    },
+    {
+      "path": "src/calculus/library.rs",
+      "size": 44753,
+      "sha256": "bceacbd7308d2f2a18d586224896a5f8032651fdcb84f26feb1a83edc2fe7ee0"
+    },
+    {
+      "path": "src/calculus/mod.rs",
+      "size": 17910,
+      "sha256": "0a966e336afae10af5029cfdb39bbbe06386a89a36b15d8374eb4fcc17fc88cd"
+    },
+    {
+      "path": "src/calculus/realization.rs",
+      "size": 48031,
+      "sha256": "feb6c80d36781041339a0c8073bb70547f30490ffef7be079a6c64136a191a14"
+    },
+    {
+      "path": "src/calculus/rust/ast.rs",
+      "size": 51666,
+      "sha256": "060cd06c69a516b061f7ad9bf784bb6f7037699f969d81c95ebdcf073b996d0d"
+    },
+    {
+      "path": "src/calculus/rust/lower.rs",
+      "size": 89392,
+      "sha256": "ec9923d70cb0b87bbe36b7b5101a364b82e7bf6b9e2933d47f02ba7f1c0ca745"
+    },
+    {
+      "path": "src/calculus/rust/mod.rs",
+      "size": 9358,
+      "sha256": "e2c14aa8cbcba13f276508011760dfe392a031bd3dedd9ccbd10ae610fa49152"
+    },
+    {
+      "path": "src/calculus/rust/moves.rs",
+      "size": 8081,
+      "sha256": "935805797cdfd9c4ccba354e47a6d690156ce9ee1a1c9c8ca676a1a020359ca0"
+    },
+    {
+      "path": "src/calculus/rust/package.rs",
+      "size": 24888,
+      "sha256": "ec0b30fa849ef069dd583ff08aa9ed7c4e16fc84faa2d2d32c640e5b77559ba9"
+    },
+    {
+      "path": "src/calculus/rust/rt.rs",
+      "size": 28409,
+      "sha256": "8d67e47694b51f4e454d42b64d42de6377ae2ac72e6e18da4e22e2f9c1b9bda0"
+    },
+    {
+      "path": "src/calculus/rust/rt_decode.rs",
+      "size": 20000,
+      "sha256": "77c3e332aea8542a8b8ea0721ba85510164c52de15edcb3550df20b48340db00"
+    },
+    {
+      "path": "src/calculus/rust/rt_validate.rs",
+      "size": 51896,
+      "sha256": "2c36264ae05987081b1ddaa5ba1d3f0da1821bbb96101eed7063fd3708d3c371"
+    },
+    {
+      "path": "src/calculus/rust/runtime.rs",
+      "size": 20470,
+      "sha256": "bc087b24daa8ed7b02bd633764fc9d819634445d3a094589756cb47109165e2b"
+    },
+    {
+      "path": "src/calculus/rust/scaffold.rs",
+      "size": 32169,
+      "sha256": "63e5ca408b65eeb1b47e5b86370cac259277063b24a30b20706fbbc310805282"
+    },
+    {
+      "path": "src/calculus/rust/source.rs",
+      "size": 38171,
+      "sha256": "94af83545cc783aadde29e756785e4ff0d58ab8099a15067e5ccb47d326af52b"
+    },
+    {
+      "path": "src/calculus/rust/tail.rs",
+      "size": 13767,
+      "sha256": "a96c14386dab251cf9df739162f61cf781c4346d145a03c6152a4ded6e629ad0"
+    },
+    {
+      "path": "src/calculus/rust/validate.rs",
+      "size": 51594,
+      "sha256": "7b101f4b9245e159a0ae725506fb6f44e4ae4efc781f2bc68c3e4c0341961916"
+    },
+    {
+      "path": "src/calculus/rust_library.rs",
+      "size": 24850,
+      "sha256": "a7bef74ada427f9648cbfa36cf5f1490d2a1490fa66a3c435dc11b97c822da63"
+    },
+    {
+      "path": "src/calculus/term.rs",
+      "size": 14257,
+      "sha256": "fcd3ff0fa3d5445fc813705c397e4125d691dda74ea54a383e24269a81a563e0"
+    },
+    {
+      "path": "src/cli.rs",
+      "size": 39071,
+      "sha256": "cc2af29a9e7edb6681f1d4c4c99290361dae1eba0c3acd5d2971a719192f3143"
+    },
+    {
+      "path": "src/config.rs",
+      "size": 46761,
+      "sha256": "e0f3c653d65bac40227f0c8e995ac7248ecbcfda7239aa2ef7b67c4251fb434b"
+    },
+    {
+      "path": "src/diagnostic.rs",
+      "size": 11948,
+      "sha256": "78a5cb2de191bd82ba2629180ab6ae16ef7fa999918ee0e3e6e36f6727ad278e"
+    },
+    {
+      "path": "src/elaborate/definitions.rs",
+      "size": 42582,
+      "sha256": "d79d98bc8ed9e5d4a455a0093601bf3004d31f9d6f0e86787c9e145e648339c7"
+    },
+    {
+      "path": "src/elaborate/delta.rs",
+      "size": 21405,
+      "sha256": "5d6b1ec5c1eb631695734148d967f154cb9c937497ce9113b888f03b42a4b47e"
+    },
+    {
+      "path": "src/elaborate/expressions.rs",
+      "size": 92090,
+      "sha256": "901939f56b89027a9e6812419dfc24a1dcbfbb00fcc26903904941b15a2a0e59"
+    },
+    {
+      "path": "src/elaborate/mod.rs",
+      "size": 34617,
+      "sha256": "89a8fb55ebeb486ef41fa058dcb0f7caf2c1dce73454d091e3c53a5d58b6b144"
+    },
+    {
+      "path": "src/elaborate/proofs.rs",
+      "size": 65697,
+      "sha256": "ade713e6a5d0586806d45b029eb1474f5068bf6c8d9fe827ae3de5c71419e210"
+    },
+    {
+      "path": "src/elaborate/resolve.rs",
+      "size": 2839,
+      "sha256": "a406d767826dd833c92810a8547dfb99b54756a25a9fd131a3297130e7ed8eb9"
+    },
+    {
+      "path": "src/error.rs",
+      "size": 5550,
+      "sha256": "6a04b9a307edba5e010d6d833e48dbefdde60479913df63e03f95462126b3744"
+    },
+    {
+      "path": "src/fmt.rs",
+      "size": 48073,
+      "sha256": "c174318cc13334ac96ae690585426d4fe97a2dc09369ec9500ee1921ff05e794"
+    },
+    {
+      "path": "src/gnaf/certification.rs",
+      "size": 53544,
+      "sha256": "87b9284c5ce885520d3804ff2671bba409b8a98eee6879fe7c28895193d9033b"
+    },
+    {
+      "path": "src/gnaf.rs",
+      "size": 62964,
+      "sha256": "cb7d93abb080e261d2877d390276f53feb0e047dfd6fdf80b35dab3506d29318"
+    },
+    {
+      "path": "src/grammar/chart.rs",
+      "size": 8727,
+      "sha256": "a33617b93a7af7f0ea2cdc223a2e0eb9afadcbd13bcc22c6235f4ec1952aa16d"
+    },
+    {
+      "path": "src/grammar/math.rs",
+      "size": 26578,
+      "sha256": "58ddc98e19537c86ff0b6ae49d65bdcd2b610648b7e8bac096dbd6b52133e5ae"
+    },
+    {
+      "path": "src/grammar/mod.rs",
+      "size": 214,
+      "sha256": "f828c33e019ddf10822be6f862a734e4e296a4cf36799513e42f67ee339d95bb"
+    },
+    {
+      "path": "src/grammar/proof.rs",
+      "size": 10447,
+      "sha256": "9d666476613c98379b4bd5e8afa03a58fe5f42c8bcf0afc6dae48f066da11ff9"
+    },
+    {
+      "path": "src/grammar/proposition.rs",
+      "size": 43232,
+      "sha256": "9fd5914a54fca87bd1ae6202178ee8fa2b82209df939f34a2ea67082c25edd96"
+    },
+    {
+      "path": "src/grammar/structural.rs",
+      "size": 44639,
+      "sha256": "23e7efaadde3021edb82f4ae2ad91548681817e723d8f64bd06adcc30ff07bd5"
+    },
+    {
+      "path": "src/ir/core.rs",
+      "size": 65620,
+      "sha256": "a099836bb513a7b728179653c83076d4d207995b907c7e448fed3734929fa370"
+    },
+    {
+      "path": "src/ir/declaration.rs",
+      "size": 5887,
+      "sha256": "6fc008377652abbcce4662b37f19b7133d5049a2014032cb99fbff8d326ecaa7"
+    },
+    {
+      "path": "src/ir/document.rs",
+      "size": 11140,
+      "sha256": "df7019ae8139673247300a8ff969bb31b89d5f0798f640bf28da8817a55cbead"
+    },
+    {
+      "path": "src/ir/mod.rs",
+      "size": 321,
+      "sha256": "9fb96c2bb42441732b35f31b8a4b95bea6eed52353e0dda90e7bf5edac2dff14"
+    },
+    {
+      "path": "src/ir/proof.rs",
+      "size": 11026,
+      "sha256": "c95127bd812592f89edb2ba557a7469ec1a659b4303448636fb9083c717f7af4"
+    },
+    {
+      "path": "src/ir/semantic/language_model.rs",
+      "size": 55813,
+      "sha256": "f4324d8709e7850b33def411c831f8959eb429eb23f17ba9097cdf64e00d75ab"
+    },
+    {
+      "path": "src/ir/semantic/laws.rs",
+      "size": 4083,
+      "sha256": "d293bbc9ba97a632c712878759926928801d65bf2ebc3fa70c3bdbb002c430e6"
+    },
+    {
+      "path": "src/ir/semantic/model.rs",
+      "size": 205380,
+      "sha256": "ff2a8ed8dcb2f43003dcc0d08834f8dd05bb2b4da51c18be375c54ee6d10ac53"
+    },
+    {
+      "path": "src/ir/semantic/reasoning.rs",
+      "size": 221634,
+      "sha256": "90c85f2c5d35d937446b634a7deaaa1e940f92aa9b999c28109511b0ca0f0b6c"
+    },
+    {
+      "path": "src/ir/semantic/widen.rs",
+      "size": 28953,
+      "sha256": "2fed7c5e1d49dd676c58a9c40d5120edb7e674dcd1d082aa4cc6873ee2837f5d"
+    },
+    {
+      "path": "src/ir/semantic.rs",
+      "size": 384422,
+      "sha256": "c5309614b5693bed5e5f4c75aa28bcb5c98e88443b0e8095d00605e5a7edef21"
+    },
+    {
+      "path": "src/ir/term.rs",
+      "size": 20296,
+      "sha256": "14bfde1e3bab9310ad7dee0e69fdc4ddc46b17fc99f861544697a53265e97e02"
+    },
+    {
+      "path": "src/ir/tooling.rs",
+      "size": 27602,
+      "sha256": "37c5ae73d0e66d286a42ee8e1bf8809cad8350df5e541a50658d09028fcc17c1"
+    },
+    {
+      "path": "src/ir/tooling_check.rs",
+      "size": 81634,
+      "sha256": "c620014dde16cce3ca8b91d8ec9a552bc6a74c18ff4bae863155ca9ab2099996"
+    },
+    {
+      "path": "src/lexicon/entry.rs",
+      "size": 59130,
+      "sha256": "b6b7c7487b2dd49cbb435f3ec169ab2d783c315da0d4a477d84659157fca95b2"
+    },
+    {
+      "path": "src/lexicon/import_reachability.rs",
+      "size": 2936,
+      "sha256": "0286b24b3b4b501a8e38459fddf0cf182c75c24950e5395d77d1cbfa8663852d"
+    },
+    {
+      "path": "src/lexicon/lre.rs",
+      "size": 18015,
+      "sha256": "c94ab5e08a28781f88fabbf0fd89a6e86dace6ab80f5a5402cdf489c1f97c9d9"
+    },
+    {
+      "path": "src/lexicon/lse.rs",
+      "size": 70736,
+      "sha256": "654eb682915bd876932f3ee979f0fda35cf50318d0709cb1866d0fa343503b4f"
+    },
+    {
+      "path": "src/lexicon/mod.rs",
+      "size": 17570,
+      "sha256": "f99e70bd5c6f14afb8394441e15294d42e115bc706e3b952af3589639da740df"
+    },
+    {
+      "path": "src/lexicon/package.rs",
+      "size": 15673,
+      "sha256": "3a30b41ba9cbb87cf929e13dfd705fa853129c8b01d4c4478993f79ff2b5e72b"
+    },
+    {
+      "path": "src/lexicon/resolve.rs",
+      "size": 43348,
+      "sha256": "ce8f4ef3f120c1e443f5b350f50e7b7adddeb582cf53aea1b1dc9a49b0c08cfd"
+    },
+    {
+      "path": "src/lib.rs",
+      "size": 13063,
+      "sha256": "f34795b572cfed05803a5c75184d7ed538c8b255ca89a435a9a9c2fad3722930"
+    },
+    {
+      "path": "src/link.rs",
+      "size": 92765,
+      "sha256": "d12b7dc54b5282daa65395f9df62aca2e7b6d134c10a0f96055689852cedbc26"
+    },
+    {
+      "path": "src/lock.rs",
+      "size": 54086,
+      "sha256": "c37bd64be701b38f56bfb624468567968040e5ea978fd557c6490cb1e821a9d9"
+    },
+    {
+      "path": "src/main.rs",
+      "size": 323,
+      "sha256": "37376eed69780fdea8b1a3d96822615f8a907e1e67801ceb47dc219e6a6df2d1"
+    },
+    {
+      "path": "src/production/certificate/data.rs",
+      "size": 93923,
+      "sha256": "2d7aff0d0e6cd7d3787c9e3099503442f1f59e8899fab0879237b5cbe4912f5f"
+    },
+    {
+      "path": "src/production/certificate/data_a/boundary.rs",
+      "size": 106061,
+      "sha256": "705ccc6de950645f38d0eb82af34841ac7757cdd2076a2ee73c9f77c70f4c561"
+    },
+    {
+      "path": "src/production/certificate/data_a/calls.rs",
+      "size": 29046,
+      "sha256": "95c41fe0c5bc4df7b7ca4a825c58e85c8bd1b7e2327dae6f594c24f5e6899aba"
+    },
+    {
+      "path": "src/production/certificate/data_a/clauses.rs",
+      "size": 36473,
+      "sha256": "4a9cf4b7c91769d44a1be304bf3d6e3ab5e105663e1d42da85c8af0302584f7d"
+    },
+    {
+      "path": "src/production/certificate/data_a/encoders.rs",
+      "size": 18123,
+      "sha256": "4e11c2b27160eb31785a7a9d2ad7a30512f625367f8dfe028d8aa6992d432c69"
+    },
+    {
+      "path": "src/production/certificate/data_a/lean.rs",
+      "size": 33748,
+      "sha256": "e318e11e620adb200fc19b44f21c3b086fd116497d43174dbc450101c24d0c92"
+    },
+    {
+      "path": "src/production/certificate/data_a/matching.rs",
+      "size": 29909,
+      "sha256": "81474d74e4fde65b44f59e7ed2315423ea3e23a7ea04c5a3e6066ea1118f469e"
+    },
+    {
+      "path": "src/production/certificate/data_a/prims.rs",
+      "size": 17217,
+      "sha256": "f6dae550f98918479b80a0c9037cc13718b5c37890ac0a2258a2c17722c65216"
+    },
+    {
+      "path": "src/production/certificate/data_a/prove.rs",
+      "size": 56827,
+      "sha256": "7c047a828cb53de49327f33097fc96f3f0e35a596a294d1179b0a8e7577e6d23"
+    },
+    {
+      "path": "src/production/certificate/data_a/recplan.rs",
+      "size": 17075,
+      "sha256": "e601d0d538a8f12806098925e1c6b116110bae37676013cf317837cbe6fdbd90"
+    },
+    {
+      "path": "src/production/certificate/data_a/rows.rs",
+      "size": 24148,
+      "sha256": "028fcd4c3834087fd6594835f785aa9a5aa45e960c748b9665fe4bfb36bfc94a"
+    },
+    {
+      "path": "src/production/certificate/data_a/src.rs",
+      "size": 62293,
+      "sha256": "c7f445365d9927c2841330f89a32a2145565dc528b5a9e76fb9e6a13a34d7000"
+    },
+    {
+      "path": "src/production/certificate/data_a/structural.rs",
+      "size": 42798,
+      "sha256": "a195b7b440e59081ccf647ab219c64b6ae36bbbe4af039c12b03ca7be8a126aa"
+    },
+    {
+      "path": "src/production/certificate/data_a/templates.rs",
+      "size": 40350,
+      "sha256": "17d598b17832b6d105a47e4cb7c5073825b89ac105a219cf88f39397918cffa3"
+    },
+    {
+      "path": "src/production/certificate/data_a/wf.rs",
+      "size": 23965,
+      "sha256": "bf213f02f355fe137324f1195b1e8e229ea7e15a960fd4963109f82e88f00aae"
+    },
+    {
+      "path": "src/production/certificate/data_a.rs",
+      "size": 27325,
+      "sha256": "3da66c70187b4e641f89d3b0e82fbfd2cb829a5a46dd8b3b57ce024c93c912ef"
+    },
+    {
+      "path": "src/production/certificate/data_b/align.rs",
+      "size": 98310,
+      "sha256": "6889818cc9f3485bcf0ff042c10dd278d397a74e2c555e99c7281e11ed3f17e9"
+    },
+    {
+      "path": "src/production/certificate/data_b/loopform.rs",
+      "size": 27029,
+      "sha256": "b2f7769638b360fe2d89fc558c1442e1a917d2e4541cc1aa3ba071e2aa8ca6f0"
+    },
+    {
+      "path": "src/production/certificate/data_b/syntax.rs",
+      "size": 28150,
+      "sha256": "4aaab55f295df17faad87a4b03e3abf2e7df36d612364d7c048d91fe84e578a1"
+    },
+    {
+      "path": "src/production/certificate/data_b.rs",
+      "size": 37772,
+      "sha256": "afaef8483f55494cb80f68ac1f1955e23ece561c38eb129f2d7676887cce48be"
+    },
+    {
+      "path": "src/production/certificate.rs",
+      "size": 118336,
+      "sha256": "ec87797c4739c8dfd46a883fa0c0237d80a59a9c81eab06a2735c915cd8bb805"
+    },
+    {
+      "path": "src/production/eligibility.rs",
+      "size": 130220,
+      "sha256": "34e2b1ee7632dc37042fa7db83b0b8ef1cc3910753cd9c4c87c2615801b5406e"
+    },
+    {
+      "path": "src/production/kernel/ext.rs",
+      "size": 43788,
+      "sha256": "09689bb2e53e61c1066877b72780b23a7aa8a77513a4caaa16530d5a1b347b4b"
+    },
+    {
+      "path": "src/production/kernel.rs",
+      "size": 26709,
+      "sha256": "b746fe02ca1d212ee95ab82b639b1171de5e42001396cb393de2eac47d960996"
+    },
+    {
+      "path": "src/production/lcnf.rs",
+      "size": 60880,
+      "sha256": "99b2b61cb9e9dab1f35155050a58d89cd7ac7adf266b92b4442127ed842723e3"
+    },
+    {
+      "path": "src/production/lower.rs",
+      "size": 142539,
+      "sha256": "77797c36131a43012983effd7190b3670a88b4813915a16705aef1dce7423738"
+    },
+    {
+      "path": "src/production/mod.rs",
+      "size": 21655,
+      "sha256": "0aea8925cf9b188075bd98ed85db43791e151ba82b924aec0685e1a3ed124c2e"
+    },
+    {
+      "path": "src/production/preserve.rs",
+      "size": 85159,
+      "sha256": "061f2a7be9e6047f5c6c871eb7bda95ab41197dd4197a7ed7eb16ed9efc67452"
+    },
+    {
+      "path": "src/production/rust_cert.rs",
+      "size": 2825,
+      "sha256": "f064e7c3f84ecd58e05e5fe08f85164f5b97a7d7428e7e7730293ba4648e4e04"
+    },
+    {
+      "path": "src/production/source.rs",
+      "size": 36129,
+      "sha256": "b369c93864eaf8acdcb19967dbbb691ecda83f15ce6b411ef1553d594ef45096"
+    },
+    {
+      "path": "src/project.rs",
+      "size": 29444,
+      "sha256": "63ac21a250c2cf8c59cfa079df6d2fa7f3b849b589cfff33ab0c2e3227968d5e"
+    },
+    {
+      "path": "src/sdk.rs",
+      "size": 17350,
+      "sha256": "c9b9aaf3cd9c703c8b104ac2e186505f1c163242bc263a542eeb6687c5c7caa3"
+    },
+    {
+      "path": "src/source/atom.rs",
+      "size": 2380,
+      "sha256": "5cd3fa23bdc2d217f1a9f1dc057fd909fe0d0c5d4ff904e69403417339e9c758"
+    },
+    {
+      "path": "src/source/coverage.rs",
+      "size": 7776,
+      "sha256": "696d97539c77e1051010ccb935db73b6a7822a46be0dd87b21c26359a559f2e1"
+    },
+    {
+      "path": "src/source/mod.rs",
+      "size": 161,
+      "sha256": "4eb05c9be3c00b031fe8e8e080dba120309b9d58022bbbe0960531fee1514a5c"
+    },
+    {
+      "path": "src/source/normalize.rs",
+      "size": 10414,
+      "sha256": "6f266fc29d66d97acfde977e9be130190760e0215f42c570203c19b4ebf819ad"
+    },
+    {
+      "path": "src/source/scan.rs",
+      "size": 21078,
+      "sha256": "6793815d77489067f7ef39653ae3790bb3ecd677e3eb273bc7565c24926e317b"
+    },
+    {
+      "path": "src/source_package.rs",
+      "size": 29163,
+      "sha256": "247a5ef20c600449bf964b2b44d2624df0897ceccd4b1f05067687204c5fdb32"
+    },
+    {
+      "path": "src/surface/core.rs",
+      "size": 74064,
+      "sha256": "50cce501221b30ab184dd55a57cc864771a0718217b22366aa946ef2aa956d41"
+    },
+    {
+      "path": "src/surface/doc.rs",
+      "size": 6254,
+      "sha256": "b77f070653ac120cb54ab2638e07052399f66aa8d0a2ebbbdf99ff0d3175f032"
+    },
+    {
+      "path": "src/surface/generic.rs",
+      "size": 14825,
+      "sha256": "15d8491efd4c4b682aaed07a277fe166edbdb22aaef436c900a565c73161ef21"
+    },
+    {
+      "path": "src/surface/identity.rs",
+      "size": 3417,
+      "sha256": "2d6dbeea46c337b275dc62fa9cf8cdd85cba2a70810649f508702e652fb5689b"
+    },
+    {
+      "path": "src/surface/lex.rs",
+      "size": 8363,
+      "sha256": "69bf6d1cca384591c79734c63a09fb45859bac39e8ba90b96a5910d00ed3eafe"
+    },
+    {
+      "path": "src/surface/mod.rs",
+      "size": 1692,
+      "sha256": "e0dc92c83e028970c4c0143d2d8c47215b6966772c75ed86411123781d96713a"
+    },
+    {
+      "path": "src/surface/module.rs",
+      "size": 7697,
+      "sha256": "4f4751c34e32fd548fa7867e2a920ae46b11ed15636e7ffb8122a7c73d9ea2a8"
+    },
+    {
+      "path": "src/surface/semantic.rs",
+      "size": 83566,
+      "sha256": "9697b07bfde666f3a5ebc32bb854b016e0c625bb892c95440745b033fd053890"
+    },
+    {
+      "path": "src/surface/tooling.rs",
+      "size": 6016,
+      "sha256": "eb9efcf128e3712f006a37524b96929be61f40dadbd23207bd9da4cb73eac8da"
+    },
+    {
+      "path": "src/text_laws.rs",
+      "size": 18301,
+      "sha256": "0c6a2d142d0cd8c8736932a322c6386e45f4b99b49bbd715d26a28100d5f8a9b"
+    },
+    {
+      "path": "src/verify/axiom.rs",
+      "size": 8830,
+      "sha256": "d07cd054f7b150a9719f8148fd025316292f9d7f80b82c2111c5f622749a9b97"
+    },
+    {
+      "path": "src/verify/child.rs",
+      "size": 37710,
+      "sha256": "e2ce4bbdb757f62feb0c2ccc64ea650a4c31fd461ccae0e0755127b8b375357f"
+    },
+    {
+      "path": "src/verify/leanchecker.rs",
+      "size": 2563,
+      "sha256": "1d071fda8d69d3c1ff74a80af5488073319f92ecb68c290d6e50f2bbfe69229e"
+    },
+    {
+      "path": "src/verify/lifeline.rs",
+      "size": 26260,
+      "sha256": "b3869b5329ffb4ec9eb2206d7ca0a659972a4fdddd44ad37b6eb1a434fee30af"
+    },
+    {
+      "path": "src/verify/mod.rs",
+      "size": 135384,
+      "sha256": "cd449884d81a3c8dda03334d95f8abf817b30c30f01f03bcc256dfe5aa8dd0be"
+    },
+    {
+      "path": "src/verify/operational.rs",
+      "size": 19807,
+      "sha256": "7ab365512d4c86b83f71bcffcc1277c8b7f3b352e4683468b7ceb8001db5a0d0"
+    },
+    {
+      "path": "src/verify/partition.rs",
+      "size": 24359,
+      "sha256": "1032b2c8383c7f2a280d9f7a0ca57999afa62936b0d0120d7c7cf93bd6c21d76"
+    },
+    {
+      "path": "src/verify/pool.rs",
+      "size": 30732,
+      "sha256": "234d6a3c6eb3a664eeb116fb50963d8dd8ca92c8f454421e6e6b5995299052f1"
+    },
+    {
+      "path": "src/verify/source_audit.rs",
+      "size": 15354,
+      "sha256": "246bfb5258b7e8efdcb7fc2f57441dc0db768f9cfcf8a3db1b01313a69b185b5"
+    },
+    {
+      "path": "src/verify/telemetry.rs",
+      "size": 17669,
+      "sha256": "139b50fc0d09d437f7638c57aeaa958b1caa60eaa3c79a1fc7e099ace3ff5f09"
+    },
+    {
+      "path": "src/verify/toolchain.rs",
+      "size": 8091,
+      "sha256": "dca6913b0d27f62dc1441b31846eabf280eb005ea5377762b72422960750b402"
+    },
+    {
+      "path": "src/verify/workspace.rs",
+      "size": 5944,
+      "sha256": "fc882aaab5e8f1609162ccdf4f6d068844b68c9f45ec0a40add633761f214b85"
+    },
+    {
+      "path": "tests/embedded.rs",
+      "size": 4355,
+      "sha256": "04da6364d800f8364f3a3f9f245149fc2e12dce9f3169fb19d032f31291a1cd9"
+    },
+    {
+      "path": "tests/end_children.rs",
+      "size": 36780,
+      "sha256": "b5ca5b94f5498cab3f14a2f72592652af23d2f1fe3803b78df90c7d0774e05a3"
+    },
+    {
+      "path": "tests/golden/axiom-parser/accepted-wrapped.txt",
+      "size": 484,
+      "sha256": "8e0950e81db01c04e074ee87e94c3a6f4851db9d2bfdf2327a8676122754f29c"
+    },
+    {
+      "path": "tests/golden/axiom-parser/accepted.txt",
+      "size": 563,
+      "sha256": "ec2a572fd337ce917da1a62cc8dd71231a4ce2404e0beda968e551db8109119c"
+    },
+    {
+      "path": "tests/golden/axiom-parser/rejected.txt",
+      "size": 906,
+      "sha256": "38f0f56317df9c4285555363b53a5d52c3a1690aea550341e46d83730c8085e0"
+    },
+    {
+      "path": "tests/golden/canonical-json/values.txt",
+      "size": 276,
+      "sha256": "a6b7c94cb979ee0b786f92c658eca0d89161ffbb4ae38c66e5a24c4695872796"
+    },
+    {
+      "path": "tests/interrupt.rs",
+      "size": 10065,
+      "sha256": "425125eb642bfcc1e3d2968ca7f103732edf9984bb214d31342ecf23c3fd1f62"
+    },
+    {
+      "path": "tests/property.proptest-regressions",
+      "size": 393,
+      "sha256": "d2e1d6ae3ac2de5c827096a7794cf7a56401922e4ba5a242a3ebaa0848b55852"
+    },
+    {
+      "path": "tests/property.rs",
+      "size": 25807,
+      "sha256": "0c2c820c80dc9b8667caffd91749488e7460819169a81e2fa79c79083f45827c"
+    },
+    {
+      "path": "tests/stop_without_kill.rs",
+      "size": 2956,
+      "sha256": "37b4b1cf77956a89783a858012b4a252917b485d1c93114bbd9296aefd41a2ea"
+    },
+    {
+      "path": "tests/support/mod.rs",
+      "size": 2780,
+      "sha256": "4db60ff256af59c240fd1428d6bf3f2b6408910c6e454248be4b51f143fbf10d"
+    },
+    {
+      "path": "tests/unit.rs",
+      "size": 16419,
+      "sha256": "8d73c2c5ba22ce21098df9a39798396af525d2056f667eba28febc6e448f70f8"
+    }
+  ]
+}
