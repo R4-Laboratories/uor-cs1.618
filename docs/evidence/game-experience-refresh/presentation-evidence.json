@@ -1,0 +1,47 @@
+{
+  "componentCommit": "38ff4a7bff5adf06715b42cdd7d99e0ccc7cc0b5",
+  "rendering": "Real Chromium SwiftShader scene with fixed snapshots; no physical-GPU performance claim",
+  "objective": "Real keyboard/WebSocket input and progress; late-progress/expiry outcome fixtures, exact timing covered separately by real-engine unit tests",
+  "files": {
+    "after-bomb-near.png": {
+      "bytes": 375871,
+      "sha256": "e18dda7689c0133d150dfbc1a6828e046358428f0f79e2a6bf7a11b15e9eb647"
+    },
+    "after-defuse.png": {
+      "bytes": 401762,
+      "sha256": "402f32877f307e9290f8b55456b4c2f9083c56277bad43829839ae1f38d8c01d"
+    },
+    "after-m4.png": {
+      "bytes": 367247,
+      "sha256": "0449170c0b58545254abb7b11c397940bd1cdc1704abfd24d583fa94d9530b7b"
+    },
+    "after-site.png": {
+      "bytes": 409741,
+      "sha256": "d48aecc8466b8126f96ef3c49538127b71122908741c0da748ce83c66e53b59e"
+    },
+    "audio-results.json": {
+      "bytes": 7024,
+      "sha256": "b1623f9245439245d19b6ef95b6cb76003cde4c3cb7732e7c69f04beace9b06d"
+    },
+    "baseline.json": {
+      "bytes": 1407,
+      "sha256": "c37973aa361c372d61897068112a161f09ac9a5c4bbe64417e2dad62555e7879"
+    },
+    "before-m4.png": {
+      "bytes": 368050,
+      "sha256": "3f110c139fe4a8fadc41e682b0d5d4d860b0bfe39755da1e12fd309ee9c444fb"
+    },
+    "before-site.png": {
+      "bytes": 407980,
+      "sha256": "526db125215e0d2eae9f2cf2d29f17da3c441b677f878d4f26f1995b097eade3"
+    },
+    "browser-results.json": {
+      "bytes": 1025,
+      "sha256": "bf8ce6dd9af9a5b92d12f8cf6cd451dbb2d29c6ab6fa1e09ae59383ece243b28"
+    },
+    "objective-browser-results.json": {
+      "bytes": 889,
+      "sha256": "050de50f2844186d290786b86d661bb11dc789923c315bcbd60fd43408ff6c28"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "result": {
+    "stable": true,
+    "terminalHidden": true,
+    "geometries": 54,
+    "after": 54,
+    "textures": 20,
+    "afterTextures": 20,
+    "low": 0.7,
+    "killfeed": "Bomb blast —  Operator",
+    "hidden": false
+  },
+  "objective": {
+    "text": "\n   ADEVICE ACTIVEDEFUSING17s\n   \n   KIT · 5s DEFUSE3.0s LEFT\n   LOCAL MARGIN · EXCLUDES TRAVEL+14.0s\n  ",
+    "stableTexture": true,
+    "sameSecondTexture": true,
+    "changedTexture": true
+  },
+  "cover": {
+    "text": "\n   ADEVICE ACTIVETEAMMATE DEFUSING16s\n   \n   COVER THEM\n   LOCAL MARGIN · EXCLUDES TRAVEL+13.0s\n  ",
+    "marginHidden": true,
+    "progressHidden": true
+  },
+  "narrow": {
+    "fits": true,
+    "clearOfRadar": true
+  },
+  "feedback": {
+    "rest": -0.10615384615384615,
+    "reload": 0.44
+  },
+  "switchFeedback": -0.3353846153846154,
+  "mobile": {
+    "fits": true,
+    "label": "rgb(156, 174, 172)"
+  },
+  "errors": [],
+  "renderer": "Chromium SwiftShader; real scene render, fixed snapshot fixtures, no hidden override"
+}

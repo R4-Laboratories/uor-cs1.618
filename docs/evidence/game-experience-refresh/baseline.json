@@ -1,0 +1,36 @@
+{
+  "source": "c22cc515258804d1a9b782e8e0c33f2f64ffa76a",
+  "unit": {
+    "tests": 133,
+    "pass": 133,
+    "fail": 0
+  },
+  "rendering": "Chromium SwiftShader, real fixed-snapshot WorldView; no hidden override; not a physical-GPU benchmark",
+  "screenshots": {
+    "artifacts/presentation/before-kestrel.png": {
+      "bytes": 369365,
+      "sha256": "7cfd7ea50969e3671f8eed6bc8867d986a0b940395919986c409545c5cdbdeb9"
+    },
+    "artifacts/presentation/before-m4.png": {
+      "bytes": 368050,
+      "sha256": "3f110c139fe4a8fadc41e682b0d5d4d860b0bfe39755da1e12fd309ee9c444fb"
+    },
+    "artifacts/presentation/before-scout.png": {
+      "bytes": 371461,
+      "sha256": "cd4418250e129235be004603e26dfa4517af4a4fb71ddf16ef72892a8a033bfc"
+    },
+    "artifacts/presentation/before-sidearm.png": {
+      "bytes": 387648,
+      "sha256": "c342203cf6aa332a9d47a71c7083415cde844692d40ad06762c3b3236652a5c1"
+    },
+    "artifacts/presentation/before-site.png": {
+      "bytes": 407980,
+      "sha256": "526db125215e0d2eae9f2cf2d29f17da3c441b677f878d4f26f1995b097eade3"
+    },
+    "artifacts/presentation/before-smg.png": {
+      "bytes": 367986,
+      "sha256": "8dba6636f125923c5407aedc95c50d6d5cab8dbb4e468c38bdb862c997cb53b3"
+    }
+  },
+  "note": "Initial local tracking ref was stale; presentation/audio paths match published main7889e83. Published main is merged before bot changes/final verification."
+}
