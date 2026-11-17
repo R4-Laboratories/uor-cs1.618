@@ -1,5 +1,7 @@
 # B1 full validation: supported source/installed-SDK split
 
+Correction from actual run44002718718: the source wrapper must not globally export `CARGO_BUILD_JOBS`. The original run did so and failed au-07; this corrected recipe preserves that failure and the owner guard. The game workflow correction remains queued for the final reviewed source refresh.
+
 Read-only inspection of upstream `2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec`; no gate or Docker pull was run. Freeze the final reviewed upstream revision before executing this recipe. The ongoing exact-d6 focused job `43986399997` covers three ho-11 acquisitions, retained readers and authority controls only; it is not full upstream acceptance.
 
 ## Smallest complete supported set
@@ -26,7 +28,7 @@ Required acquisition before offline gates:
 - Full Git history including bootstrap source tree `f378fd3a8dc5711cb4b22cec9ee2f874353628c3` (`fetch-depth: 0`, or independently supplied verified Git objects). A shallow B1 bundle lacking that tree is insufficient. Run `bash scripts/bootstrap-verify.sh --check-source` and require its availability message.
 - Existing `bash scripts/fetch.sh` prepares locked workspace/LexLean/oracle Cargo inputs, RustSec data, immutable Zot/BuildKit images and the prior 0.2.0 archive. Its archive SHA must be `f3dd999f5618db154fa06222a06f9de95d86e1dbf683954426ea91c974cbe24c`. If using transported caches instead, retain their real identities and satisfy those same checks; `cargo deny --frozen` must have its genuine advisory database. No fake advisory scan or policy relaxation.
 - The exact d6 image must already be present in the same daemon used by the gates, together with required locked oracle/fixture images. Native Docker, buildx/buildkit, owned local registries and local-container connectivity are exercised by the gates; ordinary `--network=none` without that infrastructure is insufficient. The OCI tests may build their explicitly synthetic transport fixtures; they do not build/promote an SDK when d6 is supplied.
-- Use a fresh source environment without inherited `CARGO_PROFILE_*`, `RUSTFLAGS`, `CARGO_ENCODED_RUSTFLAGS`, compiler wrappers, `NODE_OPTIONS`, or shell injection variables. Private compiler owners reject unowned overrides. Do not globally carry the local diagnostic `CARGO_PROFILE_DEV_DEBUG=0`/`CARGO_PROFILE_TEST_DEBUG=0` into VV. `CARGO_BUILD_JOBS=2` and offline Cargo are supported by the existing installed runner; each owner retains its own profile/resource settings.
+- Use a fresh source environment without inherited `CARGO_PROFILE_*`, `RUSTFLAGS`, `CARGO_ENCODED_RUSTFLAGS`, compiler wrappers, `NODE_OPTIONS`, or shell injection variables. Private compiler owners reject unowned overrides. Do not globally carry the local diagnostic `CARGO_PROFILE_DEV_DEBUG=0`/`CARGO_PROFILE_TEST_DEBUG=0` into VV. Do not globally export `CARGO_BUILD_JOBS`: actual run44002718718 confirmed that the OSCAL owner refuses inherited `CARGO_BUILD_*` settings. Its independently owned internal Cargo settings remain unchanged. Offline Cargo is retained; each owner controls its own build environment.
 - Use `umask 022`. Keep real `/dev/shm` tmpfs at positive capacity <=1 GiB (e.g. `--shm-size=1g`); original seed tests explicitly use it and reject an unbounded/wrong filesystem. Keep general build targets on disk. The installed full-VV harness uses a **5 GiB `/tmp` tmpfs**, whereas dedicated exporter construction must use a separate tmpfs <=1 GiB; do not assume the focused job's 1 GiB general `/tmp` can hold source-bootstrap compilation. The existing source-devcontainer filesystem layout is the normative source baseline. Browser processes require writable HOME/cache and all three engines.
 
 Run each matrix value in its own clean source checkout/container/job, with the same commit and acquired inputs. Do not run different VV parts concurrently in one checkout: each can build/retain significant owned artifacts. These are the existing public commands (the prefix is the supported oracle/resource environment):
@@ -35,7 +37,7 @@ Run each matrix value in its own clean source checkout/container/job, with the s
 set -euo pipefail
 umask 022
 export PRISMPM_TEST_SDK_IMAGE=ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
-export CARGO_BUILD_JOBS=2 CARGO_NET_OFFLINE=true
+export CARGO_NET_OFFLINE=true
 bash scripts/bootstrap-verify.sh --check-source
 # One of these eight per isolated job; require all eight overall:
 just vv-part source
