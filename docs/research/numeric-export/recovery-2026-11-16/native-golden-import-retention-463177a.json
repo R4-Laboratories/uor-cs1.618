@@ -1,0 +1,14 @@
+{
+  "schema": "cs1618/native-import-retention/1",
+  "source_commit": "463177a0971d95e112e10ed5da39c8cbaf0a4c96",
+  "source_tree": "0990e900cf1cb5bb4a481bba781a86cc3fcf0999",
+  "files": 71,
+  "original_bytes": 73095383,
+  "index_sha256": "3691c86f86f169b7462d0ca37af44360e7290d3d0780cc1007e173063ad41e43",
+  "archive": {
+    "path": "native-golden-import-463177a.tar.gz",
+    "bytes": 6498675,
+    "sha256": "9abef86ce0357af81ab3b93757ec3efc3d50bc4e6c08a7e242b872f4c4355b46"
+  },
+  "scope": "exact native import evidence; independent SpecCompliance PASS and Quality APPROVE; SDK/fullVV and numeric admission pending"
+}
