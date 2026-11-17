@@ -1,0 +1,1212 @@
+diff --git a/scripts/conditional-capture-bootstrap.py b/scripts/conditional-capture-bootstrap.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..f81aed06e3c6cf6df58c58a78f811ff4d843ce8f
+--- /dev/null
++++ b/scripts/conditional-capture-bootstrap.py
+@@ -0,0 +1,158 @@
++"""Fixed same-PID candidate bootstrap, supplied only as inspected python -c bytes.
++
++No arbitrary path/module/command interface. Actual admission requires the pinned
++SDK interpreter and UID/GID. Component helpers can be tested without claiming
++that their host execution qualifies this bootstrap in the SDK.
++"""
++import hashlib
++import json
++import os
++from pathlib import Path
++import re
++import select
++import shutil
++import stat
++import sys
++import time
++
++MAX_BOOTSTRAP = 32768
++MAX_MODULE = 1048576
++MAX_JSON = 33554432
++UTILITY = "conditional-capture-sdk.py"
++ENTRY = "conditional-capture-candidate.py"
++UTILITY_SHA256 = "ca09b9de3bf57c3e2dc16e11d4d1a527b9b2f1f271566bb7a87846d0a24f8e9a"
++
++
++def require(ok, message):
++    if not ok:
++        raise RuntimeError(message)
++
++
++def parse_invocation(original, current):
++    require(type(original) is list and len(original) == 12 and original[:4] ==
++            ["/usr/bin/python3", "-I", "-B", "-c"], "exact Python orig_argv required")
++    require(current == ["-c"] + original[5:], "exact Python argv required")
++    code = original[4].encode("utf-8", "strict")
++    require(0 < len(code) <= MAX_BOOTSTRAP, "bootstrap byte bound")
++    mode, seconds, descriptor, utility_size, utility_hash, entry_size, entry_hash = original[5:]
++    require(mode in ("stage-v1", "execute-v1"), "closed bootstrap mode")
++    require(re.fullmatch(r"[1-9][0-9]{0,3}", seconds) and int(seconds) <= 1980,
++            "bounded bootstrap seconds")
++    require(re.fullmatch(r"[0-9a-f]{64}", descriptor), "bootstrap descriptor digest")
++    capsules = []
++    for size, value in ((utility_size, utility_hash), (entry_size, entry_hash)):
++        require(re.fullmatch(r"[1-9][0-9]{0,6}", size) and int(size) <= MAX_MODULE
++                and re.fullmatch(r"[0-9a-f]{64}", value), "bounded bootstrap capsule")
++        capsules.append({"bytes": int(size), "sha256": value})
++    require(utility_hash == UTILITY_SHA256, "fixed bootstrap utility digest")
++    return {"mode": mode, "seconds": int(seconds), "descriptor_sha256": descriptor,
++            "bootstrap": code, "capsules": capsules}
++
++
++class CapsuleReader:
++    def __init__(self, stream, deadline):
++        self.fd, self.deadline = stream.fileno(), deadline
++
++    def exact(self, length):
++        require(type(length) is int and 0 < length <= MAX_MODULE, "capsule byte bound")
++        result = bytearray()
++        while len(result) < length:
++            left = self.deadline - time.monotonic()
++            require(left > 0 and select.select([self.fd], [], [], left)[0], "bootstrap channel deadline")
++            part = os.read(self.fd, min(65536, length - len(result)))
++            require(part, "bootstrap channel closed early")
++            result.extend(part)
++        return bytes(result)
++
++
++def identity(info):
++    return (info.st_dev, info.st_ino, info.st_mode, info.st_nlink, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
++
++
++def checked_file(path, record):
++    before = os.lstat(path)
++    require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_size == record["bytes"]
++            and 0 < before.st_size <= MAX_MODULE, "closed capsule file")
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
++    with os.fdopen(fd, "rb") as stream:
++        require(identity(os.fstat(stream.fileno())) == identity(before), "capsule changed before admission")
++        body = stream.read(MAX_MODULE + 1)
++        require(identity(os.fstat(stream.fileno())) == identity(before) and identity(os.lstat(path)) == identity(before),
++                "capsule changed during admission")
++    require(len(body) == record["bytes"] and hashlib.sha256(body).hexdigest() == record["sha256"],
++            "capsule digest mismatch")
++    return body
++
++
++def admit_capsules(reader, destination, capsules):
++    """Component primitive; main supplies only fixed /workspace/authority."""
++    require(len(capsules) == 2 and capsules[0]["sha256"] == UTILITY_SHA256, "fixed capsule order")
++    require(destination.is_absolute() and destination.parent.resolve() == destination.parent,
++            "unaliased capsule destination")
++    require(not os.path.lexists(destination), "occupied capsule destination")
++    destination.mkdir(mode=0o700)
++    bodies = []
++    for name, record in zip((UTILITY, ENTRY), capsules):
++        require(set(record) == {"bytes", "sha256"} and type(record["bytes"]) is int
++                and 0 < record["bytes"] <= MAX_MODULE and isinstance(record["sha256"], str)
++                and re.fullmatch(r"[0-9a-f]{64}", record["sha256"]), "closed capsule measurement")
++        body = reader.exact(record["bytes"])
++        require(hashlib.sha256(body).hexdigest() == record["sha256"], "capsule digest mismatch")
++        fd = os.open(destination / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
++        with os.fdopen(fd, "wb") as output:
++            output.write(body)
++            output.flush()
++            os.fchmod(output.fileno(), 0o400)
++        require(checked_file(destination / name, record) == body, "capsule readback mismatch")
++        bodies.append(body)
++    return bodies
++
++
++def main():
++    started = time.monotonic()
++    context = parse_invocation(sys.orig_argv, sys.argv)
++    context["deadline"] = started + context.pop("seconds")
++    require(sys.version_info[:3] == (3, 12, 3), "bootstrap requires Python 3.12.3")
++    require(os.getuid() == 1000 and os.getgid() == 1000, "bootstrap requires UID/GID1000")
++    if context["mode"] == "stage-v1":
++        root = Path("/workspace")
++        require(root.resolve() == root and stat.S_ISDIR(os.lstat(root).st_mode)
++                and os.lstat(root).st_uid == 1000 and not os.listdir(root), "fresh owned stage volume")
++        require(shutil.disk_usage(root).free >= 10 * 1024**3, "stage requires 10 GiB actual free space")
++        bodies = admit_capsules(CapsuleReader(sys.stdin.buffer, context["deadline"]),
++                                root / "authority", context["capsules"])
++    else:
++        root = Path("/candidate-input")
++        require(root.resolve() == root and stat.S_ISDIR(os.lstat(root).st_mode)
++                and os.statvfs(root).f_flag & os.ST_RDONLY, "read-only candidate input required")
++        authority = root / "authority"
++        require(authority.resolve() == authority and stat.S_ISDIR(os.lstat(authority).st_mode)
++                and set(os.listdir(authority)) == {UTILITY, ENTRY}, "closed mounted authority")
++        bodies = [checked_file(authority / name, record)
++                  for name, record in zip((UTILITY, ENTRY), context["capsules"])]
++    # The wire cannot select a namespace, filename, entry point or expression.
++    namespace = {"__name__": "candidate_capture_authenticated", "__file__": str(root / "authority" / ENTRY)}
++    exec(compile(bodies[1], namespace["__file__"], "exec"), namespace)
++    if context["mode"] == "stage-v1":
++        namespace["stage"](context)
++    else:
++        body = namespace["legacy"].read_regular(root / namespace["DESCRIPTOR_NAME"], MAX_JSON)
++        descriptor = namespace["validate_descriptor"](json.loads(body))
++        require(namespace["encoded"](descriptor) == body and hashlib.sha256(body).hexdigest() ==
++                context["descriptor_sha256"], "mounted descriptor mismatch")
++        authority = {r["path"]: r for r in descriptor["authority"]}
++        require(authority["scripts/conditional-capture-bootstrap.py"]["sha256"] ==
++                hashlib.sha256(context["bootstrap"]).hexdigest(), "actual bootstrap bytes mismatch")
++        for record, name in zip(context["capsules"], (UTILITY, ENTRY)):
++            require(record == {key: authority["scripts/" + name][key] for key in ("bytes", "sha256")},
++                    "mounted capsule descriptor mismatch")
++        namespace["verify_materialized"](root, descriptor, context["deadline"])
++        namespace["guest"](context)
++
++
++if __name__ == "__main__":
++    try:
++        main()
++    except Exception as error:
++        print("candidate bootstrap failed: " + str(error), file=sys.stderr)
++        sys.exit(1)
+diff --git a/scripts/conditional-capture-candidate.py b/scripts/conditional-capture-candidate.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..69c5643fee217b2bcb33526a29f3adfdbc874aa4
+--- /dev/null
++++ b/scripts/conditional-capture-candidate.py
+@@ -0,0 +1,505 @@
++"""Closed candidate-source-v1 transport components; never SDK acceptance.
++
++Parent orchestration and guest execution are deliberately unavailable until the
++separate actor-lifecycle implementation is reviewed. Stage admission describes
++only complete measured input bytes and EOF, never application acceptance.
++"""
++import hashlib
++import importlib.util
++import os
++from pathlib import Path, PurePosixPath
++import re
++import stat
++import sys
++import time
++
++UTILITY_NAME = "conditional-capture-sdk.py"
++UTILITY_SHA256 = "ca09b9de3bf57c3e2dc16e11d4d1a527b9b2f1f271566bb7a87846d0a24f8e9a"
++ENTRY_NAME = "conditional-capture-candidate.py"
++BOOTSTRAP_NAME = "conditional-capture-bootstrap.py"
++MAX_MODULE = 1024 * 1024
++MAX_BOOTSTRAP = 32 * 1024
++
++
++def _identity(info):
++    return (info.st_dev, info.st_ino, info.st_mode, info.st_nlink, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
++
++
++def _utility():
++    # No ambient source search, pyc execution or unauthenticated loader reread.
++    path = Path(__file__).absolute().with_name(UTILITY_NAME)
++    if path.resolve() != path:
++        raise RuntimeError("utility path must be exact and unaliased")
++    before = os.lstat(path)
++    if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1 or before.st_size > MAX_MODULE:
++        raise RuntimeError("bounded singly linked utility required")
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
++    with os.fdopen(fd, "rb") as stream:
++        if _identity(os.fstat(stream.fileno())) != _identity(before):
++            raise RuntimeError("utility changed before admission")
++        body = stream.read(MAX_MODULE + 1)
++        if _identity(os.fstat(stream.fileno())) != _identity(before) or _identity(os.lstat(path)) != _identity(before):
++            raise RuntimeError("utility changed during admission")
++    if hashlib.sha256(body).hexdigest() != UTILITY_SHA256:
++        raise RuntimeError("utility digest mismatch")
++    spec = importlib.util.spec_from_file_location("candidate_capture_utility", path)
++    module = importlib.util.module_from_spec(spec)
++    exec(compile(body, str(path), "exec"), module.__dict__)
++    return module
++
++
++legacy = _utility()
++require, encoded, sha, Reader = legacy.require, legacy.encoded, legacy.sha, legacy.Reader
++SOURCE_PLAN_SCHEMA = "prismpm/conditional-candidate-source-plan/1"
++INPUT_SCHEMA = "prismpm/conditional-candidate-capture-input/1"
++RESPONSE_SCHEMA = "prismpm/conditional-candidate-capture-response/1"
++STAGE_SCHEMA = "prismpm/conditional-candidate-stage-admission/1"
++ROUTE = "candidate-source-v1"
++SDK_IMAGE = "ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c"
++AUTHORITY = tuple("scripts/" + name for name in (
++    BOOTSTRAP_NAME, "conditional-capture-candidate-command.mjs", ENTRY_NAME,
++    UTILITY_NAME, "sdk-command-owner.mjs", "sdk-command-owner.py"))
++FIXTURES = ("examples/Calculator/src", "stdlib/src/Foundation", "stdlib/src/Production")
++DESCRIPTOR_NAME = "candidate-input.json"
++MANIFEST_NAME = "candidate-transfer-manifest.json"
++
++
++def tick(deadline):
++    require(time.monotonic() < deadline, "candidate input deadline")
++
++
++def scalar(value):
++    require(isinstance(value, str) and not any(0xD800 <= ord(c) <= 0xDFFF for c in value),
++            "Unicode scalar path required")
++    return value
++
++
++def ordered(rows):
++    return sorted(rows, key=lambda record: scalar(record["path"]).encode("utf-8"))
++
++
++def validate_rows(rows, *, ancestors=True):
++    legacy.validate_rows(rows)
++    for record in rows:
++        scalar(record["path"])
++        if record["kind"] == "link":
++            scalar(record["target"])
++    require(rows == ordered(rows), "UTF-8 ordered inventory required")
++    kinds = {record["path"]: record["kind"] for record in rows}
++    for record in rows:
++        paths = [record["path"]]
++        if record["kind"] == "link":
++            target = os.path.normpath(str(PurePosixPath(record["path"]).parent / record["target"]))
++            paths.append(target)
++        for path in paths:
++            for parent in PurePosixPath(path).parents:
++                if str(parent) != ".":
++                    require(kinds.get(str(parent)) == "directory" or
++                            (not ancestors and str(parent) not in kinds),
++                            "undeclared or alias inventory parent")
++    return rows
++
++
++def union_rows(source, fixtures):
++    validate_rows(source)
++    validate_rows(fixtures, ancestors=False)
++    merged = {record["path"]: record for record in source}
++    for record in fixtures:
++        require(record["path"] not in merged or merged[record["path"]] == record,
++                "source/fixture conflict")
++        merged[record["path"]] = record
++    union = validate_rows(ordered(list(merged.values())))
++    selected = [record for record in union if any(record["path"] == root or
++                record["path"].startswith(root + "/") for root in FIXTURES)]
++    require(selected == fixtures and all(any(record == {"path": root, "kind": "directory"}
++                for record in fixtures) for root in FIXTURES), "complete fixture closure required")
++    require(all(record["kind"] != "link" for record in fixtures), "fixture aliases forbidden")
++    return union
++
++
++def digest(value):
++    return sha(encoded(value))
++
++
++def valid_digest(value):
++    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
++
++
++def validate_source_plan(value):
++    keys = {"schema", "route", "source_root", "source_selection", "source", "fixture_inputs",
++            "source_sha256", "fixture_inputs_sha256", "union", "union_sha256", "authority",
++            "executable_bytes", "executable_sha256", "listing_sha256", "test_count",
++            "remaining_seconds", "sdk_image"}
++    require(type(value) is dict and set(value) == keys, "closed candidate input descriptor")
++    require(value["schema"] == SOURCE_PLAN_SCHEMA and value["route"] == ROUTE, "candidate input version")
++    require(value["source_selection"] in ("tracked", "private"), "closed source selection")
++    scalar(value["source_root"])
++    legacy.alias_root(value["source_root"])
++    if value["source_selection"] == "private":
++        require(re.fullmatch(r"/tmp/prismpm-publication-capture-[A-Za-z0-9_-]{6,64}/source",
++                             value["source_root"]), "closed private source owner")
++    require(value["source_root"] != "/workspace/conditional-capture", "compiled root overlaps work")
++    union = union_rows(value["source"], value["fixture_inputs"])
++    require(value["union"] == union and value["source_sha256"] == digest(value["source"])
++            and value["fixture_inputs_sha256"] == digest(value["fixture_inputs"])
++            and value["union_sha256"] == digest(union), "candidate inventory digest/union mismatch")
++    source = {r["path"]: r for r in value["source"]}
++    require(all(name in source and source[name]["kind"] == "file" for name in AUTHORITY),
++            "complete source authority required")
++    require(value["authority"] == [source[name] for name in AUTHORITY], "closed source authority")
++    require(source["scripts/" + UTILITY_NAME]["sha256"] == UTILITY_SHA256,
++            "original utility digest required")
++    for name, maximum in ((BOOTSTRAP_NAME, MAX_BOOTSTRAP), (ENTRY_NAME, MAX_MODULE),
++                          (UTILITY_NAME, MAX_MODULE)):
++        require(0 < source["scripts/" + name]["bytes"] <= maximum, "bootstrap capsule byte bound")
++    require(type(value["executable_bytes"]) is int and 4 <= value["executable_bytes"] <= legacy.MAX_ELF
++            and valid_digest(value["executable_sha256"]) and valid_digest(value["listing_sha256"]),
++            "closed exact ELF measurement")
++    require(type(value["test_count"]) is int and 1 <= value["test_count"] <= 100000,
++            "closed actual test count")
++    require(type(value["remaining_seconds"]) is int and 0 < value["remaining_seconds"] <=
++            legacy.DEADLINE_SECONDS - legacy.RETIREMENT_RESERVE_SECONDS, "bounded remaining seconds")
++    require(value["sdk_image"] == SDK_IMAGE, "unchanged SDK distribution required")
++    require(len(encoded(value)) <= legacy.MAX_JSON, "candidate descriptor byte bound")
++    return value
++
++
++def measure_inputs(source: Path, executable: Path, remaining_seconds: int) -> dict:
++    require(type(remaining_seconds) is int and 0 < remaining_seconds <= 1980, "bounded measurement seconds")
++    deadline = time.monotonic() + remaining_seconds
++    executable_before = legacy.identity(os.lstat(executable))
++    source = Path(source)
++    require(source.is_absolute() and source.resolve(strict=True) == source, "unaliased source root required")
++    legacy.alias_root(str(source))
++    rows = validate_rows(ordered(legacy.source_rows(source)))
++    fixtures = validate_rows(ordered(legacy.fixture_rows(source)), ancestors=False)
++    union = union_rows(rows, fixtures)
++    tick(deadline)
++    body = measure_regular(executable, legacy.MAX_ELF, deadline, elf=True)
++    authority = {r["path"]: r for r in rows}
++    require(all(name in authority for name in AUTHORITY), "complete source authority required")
++    for name in (ENTRY_NAME, BOOTSTRAP_NAME):
++        actual = legacy.read_regular(Path(__file__).with_name(name), MAX_MODULE)
++        require(authority["scripts/" + name]["sha256"] == sha(actual), "current source authority mismatch")
++    value = {"schema": SOURCE_PLAN_SCHEMA, "route": ROUTE, "source_root": str(source),
++             "source_selection": "tracked" if os.path.lexists(source / ".git") else "private",
++             "source": rows, "fixture_inputs": fixtures, "source_sha256": digest(rows),
++             "fixture_inputs_sha256": digest(fixtures), "union": union, "union_sha256": digest(union),
++             "authority": [authority[name] for name in AUTHORITY],
++             "executable_bytes": body["bytes"], "executable_sha256": body["sha256"],
++             "listing_sha256": legacy.listing(executable), "test_count": legacy.test_count(executable),
++             "remaining_seconds": remaining_seconds, "sdk_image": SDK_IMAGE}
++    require(legacy.identity(os.lstat(executable)) == executable_before, "ELF changed during measurement")
++    tick(deadline)
++    return validate_source_plan(value)
++
++
++def validate_runtime(value):
++    require(type(value) is dict and set(value) == {"sdk_image", "config_digest", "os", "architecture",
++            "inventory_sha256", "image_authority"}, "closed observed SDK runtime")
++    require(value["sdk_image"] == SDK_IMAGE and value["os"] == "linux"
++            and value["architecture"] in ("amd64", "arm64")
++            and isinstance(value["config_digest"], str)
++            and re.fullmatch(r"sha256:[0-9a-f]{64}", value["config_digest"])
++            and valid_digest(value["inventory_sha256"]), "actual SDK identity shape")
++    records = value["image_authority"]
++    require(type(records) is list and len(records) == 2, "closed image authority")
++    for record, name in zip(records, (UTILITY_NAME, "conditional-capture-command.mjs")):
++        require(type(record) is dict and set(record) == {"path", "bytes", "sha256"}
++                and record["path"] == str(legacy.SDK_ROOT / "scripts" / name)
++                and type(record["bytes"]) is int and 0 < record["bytes"] <= legacy.MAX_FILE
++                and valid_digest(record["sha256"]), "measured image authority shape")
++    return value
++
++
++def bind_runtime(source_plan, runtime_observation):
++    validate_source_plan(source_plan)
++    validate_runtime(runtime_observation)
++    # Canonical roundtrip takes an independent immutable-by-custody snapshot.
++    value = legacy.json.loads(encoded(source_plan))
++    value["schema"] = INPUT_SCHEMA
++    value["runtime"] = legacy.json.loads(encoded(runtime_observation))
++    return validate_descriptor(value)
++
++
++def validate_descriptor(value):
++    require(type(value) is dict and value.get("schema") == INPUT_SCHEMA and "runtime" in value,
++            "runtime-bound candidate descriptor required")
++    plan = {key: item for key, item in value.items() if key != "runtime"}
++    plan["schema"] = SOURCE_PLAN_SCHEMA
++    validate_source_plan(plan)
++    validate_runtime(value["runtime"])
++    require(len(encoded(value)) <= legacy.MAX_JSON, "candidate descriptor byte bound")
++    return value
++
++
++def transfer_manifest(descriptor):
++    return [{"path": "candidate-source/" + r["path"], "bytes": r["bytes"], "sha256": r["sha256"]}
++            for r in descriptor["union"] if r["kind"] == "file"] + [
++            {"path": "current-test-elf", "bytes": descriptor["executable_bytes"],
++             "sha256": descriptor["executable_sha256"]}]
++
++
++def completion_marker(descriptor):
++    return {"kind": "inputs-complete", "descriptor_sha256": digest(descriptor),
++            "transfer_manifest_sha256": digest(transfer_manifest(descriptor))}
++
++
++def measure_regular(path, limit, deadline, *, elf=False):
++    """Streaming bounded readback; compare original no-follow metadata identity."""
++    tick(deadline)
++    before = os.lstat(path)
++    require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and 0 <= before.st_size <= limit,
++            "bounded singly linked readback file")
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
++    actual = hashlib.sha256()
++    with os.fdopen(fd, "rb") as stream:
++        require(legacy.identity(os.fstat(stream.fileno())) == legacy.identity(before), "readback file replaced")
++        remaining, first = before.st_size, True
++        while remaining:
++            tick(deadline)
++            part = stream.read(min(remaining, legacy.MIB))
++            require(part, "short readback file")
++            if first and elf:
++                require(part.startswith(b"\x7fELF"), "exact readback ELF required")
++            first = False
++            actual.update(part)
++            remaining -= len(part)
++        require(not elf or not first, "nonempty readback ELF required")
++        require(stream.read(1) == b"" and legacy.identity(os.fstat(stream.fileno())) == legacy.identity(before)
++                and legacy.identity(os.lstat(path)) == legacy.identity(before), "readback file changed")
++    return {"bytes": before.st_size, "sha256": actual.hexdigest()}
++
++
++def complete_tree(root, deadline):
++    """Complete readback: no legacy source/cache exclusions, no symlink descent."""
++    rows, total = [], 0
++    def visit(name):
++        nonlocal total
++        tick(deadline)
++        require(len(rows) < 100000, "candidate readback count bound")
++        info = os.lstat(root / name)
++        if stat.S_ISREG(info.st_mode):
++            total += info.st_size
++            require(total <= legacy.MAX_TREE, "candidate readback byte bound")
++        record = ({"path": name, "kind": "file", "executable": bool(info.st_mode & 0o100),
++                   **measure_regular(root / name, legacy.MAX_FILE, deadline)}
++                  if stat.S_ISREG(info.st_mode) else legacy.row(root, name))
++        rows.append(record)
++        if record["kind"] == "directory":
++            for child in sorted(os.listdir(root / name), key=lambda text: scalar(text).encode("utf-8")):
++                visit(name + "/" + child)
++    for name in sorted(os.listdir(root), key=lambda text: scalar(text).encode("utf-8")):
++        visit(name)
++    return validate_rows(ordered(rows))
++
++
++def _exclusive(path, body, mode=0o400):
++    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
++    with os.fdopen(fd, "wb") as output:
++        output.write(body)
++        output.flush()
++        os.fchmod(output.fileno(), mode)
++
++
++def _receive(reader, path, length, expected, mode, deadline, *, elf=False):
++    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
++    actual = hashlib.sha256()
++    first = True
++    with os.fdopen(fd, "wb") as output:
++        remaining = length
++        while remaining:
++            tick(deadline)
++            part = reader.exact(min(legacy.MIB, remaining))
++            if first and elf:
++                require(part.startswith(b"\x7fELF"), "received exact ELF required")
++            first = False
++            output.write(part)
++            actual.update(part)
++            remaining -= len(part)
++        require(actual.hexdigest() == expected, "received body digest mismatch")
++        output.flush()
++        require(os.fstat(output.fileno()).st_nlink == 1, "received hardlink refused")
++        os.fchmod(output.fileno(), mode)
++
++
++def _capsules(destination, descriptor):
++    authority = {r["path"]: r for r in descriptor["authority"]}
++    root = destination / "authority"
++    require(root.resolve() == root and stat.S_ISDIR(os.lstat(root).st_mode), "exact authority directory")
++    require(set(os.listdir(root)) == {UTILITY_NAME, ENTRY_NAME}, "closed authority capsule files")
++    for name in (UTILITY_NAME, ENTRY_NAME):
++        body = legacy.read_regular(root / name, MAX_MODULE)
++        record = authority["scripts/" + name]
++        require(len(body) == record["bytes"] and sha(body) == record["sha256"], "authority capsule mismatch")
++
++
++def verify_materialized(destination, descriptor, deadline):
++    validate_descriptor(descriptor)
++    tick(deadline)
++    require(destination.resolve() == destination and stat.S_ISDIR(os.lstat(destination).st_mode),
++            "exact materialized root")
++    require(stat.S_IMODE(os.lstat(destination).st_mode) == 0o500, "normalized input directory")
++    require(set(os.listdir(destination)) == {"authority", "candidate-source", "current-test-elf",
++            DESCRIPTOR_NAME, MANIFEST_NAME}, "closed materialized root")
++    root = destination / "candidate-source"
++    require(stat.S_ISDIR(os.lstat(root).st_mode) and root.resolve() == root, "exact candidate source root")
++    require(complete_tree(root, deadline) == descriptor["union"], "complete source readback mismatch")
++    require(ordered(legacy.fixture_rows(root)) == descriptor["fixture_inputs"], "fixture readback mismatch")
++    for record in [{"path": "", "kind": "directory"}] + descriptor["union"]:
++        if record["kind"] != "link":
++            mode = 0o500 if record["kind"] == "directory" or record.get("executable") else 0o400
++            require(stat.S_IMODE(os.lstat(root / record["path"]).st_mode) == mode, "normalized source mode")
++    _capsules(destination, descriptor)
++    for name in (UTILITY_NAME, ENTRY_NAME):
++        require(stat.S_IMODE(os.lstat(destination / "authority" / name).st_mode) == 0o400,
++                "normalized authority mode")
++    require(stat.S_IMODE(os.lstat(destination / "authority").st_mode) == 0o500,
++            "normalized authority directory")
++    body = measure_regular(destination / "current-test-elf", legacy.MAX_ELF, deadline, elf=True)
++    require(body == {"bytes": descriptor["executable_bytes"], "sha256": descriptor["executable_sha256"]}
++            and stat.S_IMODE(os.lstat(destination / "current-test-elf").st_mode)
++            == 0o500, "exact ELF readback mismatch")
++    for name, value in ((DESCRIPTOR_NAME, descriptor), (MANIFEST_NAME, transfer_manifest(descriptor))):
++        require(legacy.read_regular(destination / name, legacy.MAX_JSON) == encoded(value)
++                and stat.S_IMODE(os.lstat(destination / name).st_mode) == 0o400, "canonical input metadata")
++    tick(deadline)
++    return {"schema": STAGE_SCHEMA, "route": ROUTE, "descriptor_sha256": digest(descriptor),
++            "source_sha256": descriptor["source_sha256"], "union_sha256": descriptor["union_sha256"],
++            "fixture_inputs_sha256": descriptor["fixture_inputs_sha256"],
++            "transfer_manifest_sha256": digest(transfer_manifest(descriptor)),
++            "authority": descriptor["authority"], "executable_sha256": descriptor["executable_sha256"]}
++
++
++def _materialize(reader, destination, descriptor, deadline, *, bootstrapped=False):
++    validate_descriptor(descriptor)
++    tick(deadline)
++    reader.deadline = min(reader.deadline, deadline)
++    require(destination.is_absolute() and destination.parent.resolve() == destination.parent,
++            "unaliased destination parent required")
++    if bootstrapped:
++        require(destination == Path("/workspace") and set(os.listdir(destination)) == {"authority"},
++                "occupied stage destination")
++        _capsules(destination, descriptor)
++    else:
++        require(not os.path.lexists(destination), "occupied destination")
++        destination.mkdir(mode=0o700)
++    root = destination / "candidate-source"
++    root.mkdir(mode=0o700)
++    for record in descriptor["union"]:
++        tick(deadline)
++        path = root / record["path"]
++        if record["kind"] == "directory":
++            path.mkdir(mode=0o700)
++        elif record["kind"] == "file":
++            _receive(reader, path, record["bytes"], record["sha256"],
++                     0o400, deadline)
++    for record in descriptor["union"]:
++        if record["kind"] == "link":
++            os.symlink(record["target"], root / record["path"])
++    _receive(reader, destination / "current-test-elf", descriptor["executable_bytes"],
++             descriptor["executable_sha256"], 0o400, deadline, elf=True)
++    require(reader.line() == completion_marker(descriptor), "descriptor-bound completion marker required")
++    reader.exhausted()  # No admission until actual EOF; deadline still shared.
++    if not bootstrapped:
++        (destination / "authority").mkdir(mode=0o700)
++        for name in (UTILITY_NAME, ENTRY_NAME):
++            _exclusive(destination / "authority" / name, legacy.read_regular(root / "scripts" / name, MAX_MODULE))
++    for name, value in ((DESCRIPTOR_NAME, descriptor), (MANIFEST_NAME, transfer_manifest(descriptor))):
++        _exclusive(destination / name, encoded(value))
++    for record in reversed(descriptor["union"]):
++        if record["kind"] == "file":
++            (root / record["path"]).chmod(0o500 if record["executable"] else 0o400)
++        elif record["kind"] == "directory":
++            (root / record["path"]).chmod(0o500)
++    root.chmod(0o500)
++    (destination / "current-test-elf").chmod(0o500)
++    (destination / "authority").chmod(0o500)
++    destination.chmod(0o500)
++    result = verify_materialized(destination, descriptor, deadline)
++    result["input_eof_observed"] = True
++    return result
++
++
++def materialize_inputs(reader, destination: Path, descriptor: dict, deadline: float) -> dict:
++    """Receive bodies after the descriptor line into a new destination."""
++    return _materialize(reader, destination, descriptor, deadline)
++
++
++def input_identities(source, executable, descriptor):
++    """Outer owner holds this snapshot across every subsequent send/recheck."""
++    return {"source_root": legacy.identity(os.lstat(source)),
++            "source": {r["path"]: legacy.identity(os.lstat(source / r["path"])) for r in descriptor["union"]},
++            "executable": legacy.identity(os.lstat(executable))}
++
++
++def write_inputs(stream, source, executable, descriptor, deadline, identities):
++    """Bounded sender; immutable identity snapshot belongs to the outer owner."""
++    validate_descriptor(descriptor)
++    require(str(source) == descriptor["source_root"] and source.resolve() == source, "exact sender source root")
++    require(input_identities(source, executable, descriptor) == identities, "input metadata changed before transfer")
++    require(ordered(legacy.source_rows(source)) == descriptor["source"]
++            and ordered(legacy.fixture_rows(source)) == descriptor["fixture_inputs"], "source changed before transfer")
++    legacy.write_bounded(stream, encoded(descriptor), deadline)
++    for record in transfer_manifest(descriptor):
++        path = source / record["path"][len("candidate-source/"):] if record["path"].startswith("candidate-source/") else executable
++        before = os.lstat(path)
++        require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_size == record["bytes"],
++                "bounded singly linked sender input")
++        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
++        actual = hashlib.sha256()
++        with os.fdopen(fd, "rb") as body:
++            require(legacy.identity(os.fstat(body.fileno())) == legacy.identity(before), "sender input replaced")
++            remaining = record["bytes"]
++            while remaining:
++                tick(deadline)
++                part = body.read(min(legacy.MIB, remaining))
++                require(part, "sender input shortened")
++                actual.update(part)
++                legacy.write_bounded(stream, part, deadline)
++                remaining -= len(part)
++            require(body.read(1) == b"" and actual.hexdigest() == record["sha256"]
++                    and legacy.identity(os.fstat(body.fileno())) == legacy.identity(before)
++                    and legacy.identity(os.lstat(path)) == legacy.identity(before), "sender input changed")
++    require(input_identities(source, executable, descriptor) == identities
++            and ordered(legacy.source_rows(source)) == descriptor["source"]
++            and ordered(legacy.fixture_rows(source)) == descriptor["fixture_inputs"], "input changed during transfer")
++    legacy.write_bounded(stream, encoded(completion_marker(descriptor)), deadline)
++    # The caller closes the stream. It must not interpret a written marker as EOF.
++
++
++def stage(context):
++    require(set(context) == {"mode", "deadline", "descriptor_sha256", "bootstrap", "capsules"}
++            and context["mode"] == "stage-v1", "closed bootstrap stage entry")
++    reader = Reader(sys.stdin.buffer, context["deadline"])
++    descriptor = validate_descriptor(reader.line())
++    context["deadline"] = min(context["deadline"], time.monotonic() + descriptor["remaining_seconds"])
++    require(digest(descriptor) == context["descriptor_sha256"], "bootstrap descriptor mismatch")
++    authority = {r["path"]: r for r in descriptor["authority"]}
++    require(authority["scripts/" + BOOTSTRAP_NAME]["sha256"] == sha(context["bootstrap"])
++            and authority["scripts/" + BOOTSTRAP_NAME]["bytes"] == len(context["bootstrap"]),
++            "actual bootstrap bytes mismatch")
++    for record, name in zip(context["capsules"], (UTILITY_NAME, ENTRY_NAME)):
++        require(record == {key: authority["scripts/" + name][key] for key in ("bytes", "sha256")},
++                "bootstrap capsule descriptor mismatch")
++    result = _materialize(reader, Path("/workspace"), descriptor, context["deadline"], bootstrapped=True)
++    legacy.write_bounded(sys.stdout.buffer, encoded(result), context["deadline"])
++
++
++def guest(context):
++    raise RuntimeError("candidate guest lifecycle is not implemented; no SDK execution admitted")
++
++
++def parent(source, executable):
++    raise RuntimeError("candidate parent lifecycle is not implemented; no Docker operation admitted")
++
++
++if __name__ == "__main__":
++    try:
++        if len(sys.argv) == 4 and sys.argv[1] == "parent":
++            parent(Path(sys.argv[2]), Path(sys.argv[3]))
++        else:
++            raise RuntimeError("closed candidate entry; stage/guest require authenticated bootstrap")
++    except Exception as error:
++        print("candidate capture failed: " + str(error), file=sys.stderr)
++        sys.exit(1)
+diff --git a/scripts/conditional-capture-candidate.test.py b/scripts/conditional-capture-candidate.test.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..5f3655afa64b66090aaffec951d4b8aa1e1ece70
+--- /dev/null
++++ b/scripts/conditional-capture-candidate.test.py
+@@ -0,0 +1,531 @@
++"""Actual file, fragmented-pipe and child controls; NOT SDK qualification."""
++import copy
++import importlib.util
++import io
++import json
++import os
++from pathlib import Path
++import shutil
++import signal
++import stat
++import subprocess
++import sys
++import tarfile
++import tempfile
++import threading
++import time
++import unittest
++
++HERE = Path(__file__).resolve().parent
++
++
++def load(name, path):
++    spec = importlib.util.spec_from_file_location(name, path)
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    return module
++
++
++candidate = load("candidate", HERE / "conditional-capture-candidate.py")
++bootstrap = load("bootstrap", HERE / "conditional-capture-bootstrap.py")
++legacy = candidate.legacy
++
++
++class ProtocolControls(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.native = tempfile.TemporaryDirectory(prefix="candidate-protocol-native-")
++        source = Path(cls.native.name) / "probe.c"
++        # A native transport/listing probe, never the actual library capture ELF.
++        source.write_text('#include <stdio.h>\nint main(void) { puts("' + legacy.TEST + ': test"); return 0; }\n')
++        cls.executable = Path(cls.native.name) / "probe"
++        result = subprocess.run(["/usr/bin/cc", str(source), "-o", str(cls.executable)], capture_output=True)
++        if result.returncode:
++            raise RuntimeError(result.stderr.decode())
++
++    @classmethod
++    def tearDownClass(cls):
++        cls.native.cleanup()
++
++    def setUp(self):
++        self.owner = tempfile.TemporaryDirectory(prefix="prismpm-publication-capture-")
++        self.addCleanup(self.cleanup)
++        self.root = Path(self.owner.name)
++        self.source = self.root / "source"
++        self.source.mkdir()
++        for path in candidate.FIXTURES:
++            (self.source / path).mkdir(parents=True, exist_ok=True)
++            (self.source / path / "model.lex.tex").write_bytes(b"measured fixture\n")
++        (self.source / "scripts").mkdir()
++        for name in candidate.AUTHORITY:
++            actual = HERE / Path(name).name
++            (self.source / name).write_bytes(actual.read_bytes() if actual.exists() else
++                                           b"// Future Task2 launcher fixture; never executed.\n")
++        (self.source / "crates/exporter").mkdir(parents=True)
++        (self.source / "crates/exporter/source.rs").write_bytes(b"changed candidate exporter\n")
++        archive_body = b"bounded archive member\0" * 8192
++        with tarfile.open(self.source / "archive.tar", "w") as archive:
++            member = tarfile.TarInfo("candidate/exporter-source.rs")
++            member.size = len(archive_body)
++            archive.addfile(member, io.BytesIO(archive_body))
++        (self.source / "data").write_bytes(b"nonexecutable\0\xff\n")
++        (self.source / "tool").write_bytes(b"#!/bin/false\n")
++        (self.source / "tool").chmod(0o700)
++        (self.source / "empty").mkdir()
++        (self.source / "empty/up-data").symlink_to("../data")
++        (self.source / "\ue000").write_bytes(b"BMP")
++        (self.source / "\U00010000").write_bytes(b"non-BMP")
++        (self.source / "data-alias").symlink_to("data")
++        (self.source / "directory-alias").symlink_to("empty")
++        self.plan = candidate.measure_inputs(self.source, self.executable, 90)
++        # Structural runtime fixture only. No Docker observation or SDK success.
++        self.runtime = {"sdk_image": candidate.SDK_IMAGE, "config_digest": "sha256:" + "1" * 64,
++                        "os": "linux", "architecture": "amd64", "inventory_sha256": "2" * 64,
++                        "image_authority": [{"path": str(legacy.SDK_ROOT / "scripts" / name),
++                            "bytes": len((HERE / name).read_bytes()), "sha256": legacy.sha((HERE / name).read_bytes())}
++                            for name in (candidate.UTILITY_NAME, "conditional-capture-command.mjs")]}
++        self.descriptor = candidate.bind_runtime(self.plan, self.runtime)
++        self.destination = self.root / "received"
++
++    def cleanup(self):
++        for root, directories, files in os.walk(self.owner.name):
++            os.chmod(root, 0o700)
++            for name in files:
++                if not os.path.islink(Path(root) / name):
++                    os.chmod(Path(root) / name, 0o600)
++        self.owner.cleanup()
++
++    def payload(self, descriptor=None):
++        value = descriptor or self.descriptor
++        return b"".join((self.source / row["path"]).read_bytes() for row in value["union"]
++                        if row["kind"] == "file") + self.executable.read_bytes() + candidate.encoded(candidate.completion_marker(value))
++
++    def materialize(self, payload=None, descriptor=None, destination=None, timeout=5):
++        with tempfile.TemporaryFile() as stream:
++            stream.write(self.payload() if payload is None else payload)
++            stream.seek(0)
++            deadline = time.monotonic() + timeout
++            return candidate.materialize_inputs(candidate.Reader(stream, deadline), destination or self.destination,
++                                                descriptor or self.descriptor, deadline)
++
++    def test_canonical_unicode_vector(self):
++        rows = [{"kind": "directory", "path": "\ue000"}, {"kind": "directory", "path": "\U00010000"}]
++        self.assertEqual(candidate.encoded(rows), b'[{"kind":"directory","path":"\\ue000"},{"kind":"directory","path":"\\ud800\\udc00"}]\n')
++        self.assertEqual(candidate.validate_rows(rows), rows)
++        self.assertEqual(candidate.digest(rows), "cf49b0434bd524f4577489c108f8362dde4b0f2c25f1f2259b2c2abe2adee327")
++        with self.assertRaises(RuntimeError):
++            candidate.validate_rows(list(reversed(rows)))  # UTF-16 sort would reverse these.
++
++    def test_private_file_complete_readback_and_modes(self):
++        result = self.materialize()
++        self.assertTrue(result["input_eof_observed"])
++        self.assertNotIn("complete_application_accepted", result)
++        self.assertEqual(candidate.complete_tree(self.destination / "candidate-source", time.monotonic() + 5), self.descriptor["union"])
++        for row in self.descriptor["union"]:
++            original, actual = self.source / row["path"], self.destination / "candidate-source" / row["path"]
++            if row["kind"] == "file":
++                self.assertEqual(actual.read_bytes(), original.read_bytes())
++                self.assertEqual(actual.stat().st_nlink, 1)
++                self.assertEqual(stat.S_IMODE(actual.stat().st_mode), 0o500 if row["executable"] else 0o400)
++            elif row["kind"] == "link":
++                self.assertEqual(os.readlink(actual), os.readlink(original))
++            else:
++                self.assertTrue(actual.is_dir())
++        self.assertEqual(self.descriptor["source"], self.descriptor["union"])
++        with tarfile.open(self.destination / "candidate-source/archive.tar") as archive:
++            self.assertEqual(archive.extractfile("candidate/exporter-source.rs").read(),
++                             b"bounded archive member\0" * 8192)
++
++    def test_tracked_source_preserves_untracked_fixture_union_and_top_level_target(self):
++        subprocess.run(["/usr/bin/git", "init", "-q", str(self.source)], check=True, capture_output=True)
++        (self.source / "empty/tracked").write_bytes(b"tracked alias target directory")
++        (self.source / "target").mkdir()
++        (self.source / "target/tracked-data").write_bytes(b"must survive complete readback")
++        subprocess.run(["/usr/bin/git", "-C", str(self.source), "add", "-A"], check=True, capture_output=True)
++        extra = "examples/Calculator/src/private-extra.lex.tex"
++        (self.source / extra).write_bytes(b"additional real recursively consumed fixture")
++        plan = candidate.measure_inputs(self.source, self.executable, 90)
++        descriptor = candidate.bind_runtime(plan, self.runtime)
++        self.assertEqual(plan["source_selection"], "tracked")
++        self.assertNotIn(extra, [r["path"] for r in plan["source"]])
++        self.assertIn(extra, [r["path"] for r in plan["union"]])
++        self.materialize(self.payload(descriptor), descriptor)
++        self.assertEqual((self.destination / "candidate-source" / extra).read_bytes(), (self.source / extra).read_bytes())
++        self.assertEqual(candidate.complete_tree(self.destination / "candidate-source", time.monotonic() + 5), descriptor["union"])
++
++    def test_real_fragmented_pipe_and_sender(self):
++        wire = self.root / "wire"
++        with wire.open("wb", buffering=0) as stream:
++            identities = candidate.input_identities(self.source, self.executable, self.descriptor)
++            candidate.write_inputs(stream, self.source, self.executable, self.descriptor, time.monotonic() + 5, identities)
++        self.assertEqual(wire.read_bytes(), candidate.encoded(self.descriptor) + self.payload())
++        read_fd, write_fd = os.pipe()
++        errors = []
++        def send():
++            try:
++                with os.fdopen(write_fd, "wb", buffering=0) as stream:
++                    body = wire.read_bytes()
++                    widths = (1, 7, 31, 4093, 65536)
++                    index = step = 0
++                    while index < len(body):
++                        amount = widths[step % len(widths)]
++                        stream.write(body[index:index + amount])
++                        index += amount
++                        step += 1
++            except BaseException as error:
++                errors.append(error)
++        thread = threading.Thread(target=send)
++        thread.start()
++        with os.fdopen(read_fd, "rb", buffering=0) as stream:
++            deadline = time.monotonic() + 5
++            reader = candidate.Reader(stream, deadline)
++            descriptor = reader.line()
++            result = candidate.materialize_inputs(reader, self.destination, descriptor, deadline)
++        thread.join(timeout=5)
++        self.assertFalse(thread.is_alive())
++        self.assertEqual(errors, [])
++        self.assertTrue(result["input_eof_observed"])
++
++    def test_closed_source_plan_requires_actual_runtime_binding(self):
++        with self.assertRaisesRegex(RuntimeError, "runtime-bound"):
++            self.materialize(descriptor=self.plan)
++        for change in ({}, {**self.runtime, "extra": True}, {**self.runtime, "config_digest": None},
++                       {**self.runtime, "sdk_image": "unmeasured"}, {**self.runtime, "architecture": "unknown"}):
++            with self.subTest(runtime=change):
++                with self.assertRaises(RuntimeError):
++                    candidate.bind_runtime(self.plan, change)
++        self.runtime["image_authority"][0]["sha256"] = "f" * 64
++        self.assertNotEqual(self.descriptor["runtime"], self.runtime)
++
++    def test_descriptor_duplicate_unsorted_missing_extra_and_closed_fields(self):
++        for mutation in ("duplicate", "unsorted", "missing", "extra", "field", "digest", "authority", "unknown"):
++            value = copy.deepcopy(self.descriptor)
++            if mutation == "duplicate":
++                value["source"].append(value["source"][0])
++            elif mutation == "unsorted":
++                value["source"].reverse()
++            elif mutation == "missing":
++                value["union"].pop()
++            elif mutation == "extra":
++                value["union"].append({"kind": "directory", "path": "zz-extra"})
++            elif mutation == "field":
++                value["union"][0]["extra"] = True
++            elif mutation == "digest":
++                value["union_sha256"] = "0" * 64
++            elif mutation == "authority":
++                value["authority"].pop()
++            else:
++                value["unknown"] = True
++            with self.subTest(mutation=mutation), self.assertRaises(RuntimeError):
++                candidate.validate_descriptor(value)
++        self.assertFalse(self.destination.exists())
++
++    def test_fixture_conflict_missing_and_extra(self):
++        for kind in ("conflict", "missing", "extra"):
++            fixtures = copy.deepcopy(self.descriptor["fixture_inputs"])
++            if kind == "conflict":
++                next(r for r in fixtures if r["kind"] == "file")["sha256"] = "0" * 64
++            elif kind == "missing":
++                fixtures.pop()
++            else:
++                fixtures.append({"path": "unrelated", "kind": "directory"})
++                fixtures = candidate.ordered(fixtures)
++            with self.subTest(kind=kind), self.assertRaises(RuntimeError):
++                candidate.union_rows(self.descriptor["source"], fixtures)
++
++    def test_paths_ancestors_and_direct_aliases(self):
++        for name in ("/absolute", "back\\slash", "control\n", "../escape", "a/../b", "a//b", "a/./b", "\ud800", ".git/config"):
++            with self.subTest(path=repr(name)), self.assertRaises(RuntimeError):
++                candidate.validate_rows([{"path": name, "kind": "directory"}])
++        for rows in ([{"path": "a/b", "kind": "directory"}],
++                     [{"path": "a", "kind": "link", "target": "b"}, {"path": "b", "kind": "link", "target": "c"}, {"path": "c", "kind": "directory"}],
++                     [{"path": "a", "kind": "link", "target": "../outside"}],
++                     [{"path": "a", "kind": "link", "target": "b"}, {"path": "a/member", "kind": "directory"}, {"path": "b", "kind": "directory"}],
++                     [{"path": "a", "kind": "link", "target": "b/member"}, {"path": "b", "kind": "link", "target": "c"}, {"path": "b/member", "kind": "directory"}, {"path": "c", "kind": "directory"}]):
++            with self.subTest(rows=rows), self.assertRaises(RuntimeError):
++                candidate.validate_rows(rows)
++
++    def test_real_hardlink_special_and_escaping_chained_sources(self):
++        path = self.source / "bad"
++        for kind in ("hardlink", "fifo", "absolute", "chained", "escaping"):
++            if kind == "hardlink":
++                os.link(self.source / "data", path)
++            elif kind == "fifo":
++                os.mkfifo(path)
++            else:
++                path.symlink_to({"absolute": "/etc/passwd", "chained": "data-alias", "escaping": "../outside"}[kind])
++                (self.root / "outside").write_bytes(b"outside")
++            try:
++                with self.subTest(kind=kind), self.assertRaises((RuntimeError, FileNotFoundError)):
++                    candidate.measure_inputs(self.source, self.executable, 90)
++            finally:
++                path.unlink()
++
++    def test_byte_count_and_json_boundaries(self):
++        row = {"path": "a", "kind": "file", "bytes": legacy.MAX_FILE, "sha256": "0" * 64, "executable": False}
++        self.assertEqual(candidate.validate_rows([row]), [row])
++        candidate.validate_rows([row, {**row, "path": "b"}])  # Exact 512 MiB union.
++        for rows in ([{**row, "bytes": legacy.MAX_FILE + 1}], [row, {**row, "path": "b"}, {**row, "path": "c", "bytes": 1}],
++                     [{**row, "bytes": True}]):
++            with self.assertRaises(RuntimeError):
++                candidate.validate_rows(rows)
++        rows = [{"path": f"d{index:06d}", "kind": "directory"} for index in range(100000)]
++        candidate.validate_rows(rows)
++        with self.assertRaises(RuntimeError):
++            candidate.validate_rows(rows + [{"path": "overflow", "kind": "directory"}])
++        for field, value in (("executable_bytes", legacy.MAX_ELF + 1), ("test_count", 100001),
++                             ("remaining_seconds", 1981), ("remaining_seconds", True)):
++            descriptor = copy.deepcopy(self.descriptor)
++            descriptor[field] = value
++            with self.assertRaises(RuntimeError):
++                candidate.validate_descriptor(descriptor)
++        with tempfile.TemporaryFile() as stream:
++            stream.write(b" " * legacy.MAX_JSON + b"\n")
++            stream.seek(0)
++            with self.assertRaises(RuntimeError):
++                candidate.Reader(stream, time.monotonic() + 5).line()
++
++    def test_noncanonical_json(self):
++        canonical = candidate.encoded(self.descriptor)
++        for body in (json.dumps(self.descriptor).encode() + b"\n", b" " + canonical, canonical[:-1] + b"\r\n",
++                     b'{"z":0,"z":0}\n', b'{"s":"\xee\x80\x80"}\n'):
++            with tempfile.TemporaryFile() as stream:
++                stream.write(body)
++                stream.seek(0)
++                with self.assertRaises(RuntimeError):
++                    candidate.Reader(stream, time.monotonic() + 5).line()
++
++    def test_short_corrupt_extra_marker_and_trailing_bodies(self):
++        payload = self.payload()
++        marker = candidate.encoded(candidate.completion_marker(self.descriptor))
++        cases = {"short": payload[:23], "corrupt": b"X" + payload[1:],
++                 "extra-body": payload[:-len(marker)] + b"x" + marker,
++                 "wrong-marker": payload[:-len(marker)] + b'{}\n',
++                 "duplicate-marker": payload + marker, "trailing": payload + b"x"}
++        for name, body in cases.items():
++            destination = self.root / ("bad-" + name)
++            with self.subTest(name=name), self.assertRaises((RuntimeError, ValueError)):
++                self.materialize(body, destination=destination)
++            self.assertFalse((destination / candidate.DESCRIPTOR_NAME).exists())
++
++    def test_eof_negative_never_admits_stage(self):
++        read_fd, write_fd = os.pipe()
++        ready = threading.Event()
++        def send():
++            with os.fdopen(write_fd, "wb", buffering=0) as stream:
++                stream.write(self.payload())
++                ready.wait(2)  # Deliberately keep actual writer alive after marker.
++        thread = threading.Thread(target=send)
++        thread.start()
++        try:
++            with os.fdopen(read_fd, "rb", buffering=0) as stream:
++                deadline = time.monotonic() + 0.2
++                with self.assertRaisesRegex(RuntimeError, "retirement deadline"):
++                    candidate.materialize_inputs(candidate.Reader(stream, deadline), self.destination, self.descriptor, deadline)
++            self.assertFalse((self.destination / candidate.DESCRIPTOR_NAME).exists())
++            self.assertEqual(stat.S_IMODE((self.destination / "current-test-elf").stat().st_mode), 0o400)
++            self.assertEqual(stat.S_IMODE((self.destination / "candidate-source/tool").stat().st_mode), 0o400)
++        finally:
++            ready.set()
++            thread.join(timeout=3)
++
++    def test_occupied_destination_and_expired_deadline(self):
++        self.destination.mkdir()
++        (self.destination / "owned").write_bytes(b"retain")
++        with self.assertRaisesRegex(RuntimeError, "occupied"):
++            self.materialize()
++        self.assertEqual((self.destination / "owned").read_bytes(), b"retain")
++        with self.assertRaisesRegex(RuntimeError, "deadline"):
++            self.materialize(destination=self.root / "expired", timeout=-1)
++        self.assertFalse((self.root / "expired").exists())
++
++    def test_readback_extra_fixture_mode_and_authority_mutation(self):
++        for mutation in ("fixture", "extra", "mode", "authority", "elf", "alias"):
++            destination = self.root / mutation
++            self.materialize(destination=destination)
++            path = destination / "candidate-source/data"
++            if mutation == "fixture":
++                parent = destination / "candidate-source/examples/Calculator/src"
++                parent.chmod(0o700)
++                (parent / "extra").write_bytes(b"unmeasured")
++            elif mutation == "extra":
++                destination.chmod(0o700)
++                (destination / "extra").write_bytes(b"extra")
++            elif mutation == "mode":
++                path.chmod(0o500)
++            elif mutation == "authority":
++                path = destination / "authority" / candidate.ENTRY_NAME
++                path.chmod(0o600)
++                path.write_bytes(b"substituted")
++            elif mutation == "elf":
++                path = destination / "current-test-elf"
++                path.chmod(0o700)
++                path.write_bytes(b"\x7fELFchanged")
++            else:
++                parent = destination / "candidate-source"
++                parent.chmod(0o700)
++                (parent / "data-alias").unlink()
++                (parent / "data-alias").symlink_to("tool")
++            with self.subTest(mutation=mutation), self.assertRaises(RuntimeError):
++                candidate.verify_materialized(destination, self.descriptor, time.monotonic() + 5)
++
++    def test_sender_persistent_and_write_restore_mutations(self):
++        for restore in (False, True):
++            identities = candidate.input_identities(self.source, self.executable, self.descriptor)
++            path = self.source / "data"
++            original = path.read_bytes()
++            path.write_bytes(b"changed")
++            if restore:
++                path.write_bytes(original)
++            with tempfile.TemporaryFile() as stream, self.assertRaisesRegex(RuntimeError, "metadata changed"):
++                candidate.write_inputs(stream, self.source, self.executable, self.descriptor, time.monotonic() + 5, identities)
++            path.write_bytes(original)
++
++    def test_child_interruption_no_stage_success(self):
++        descriptor = self.root / "descriptor.json"
++        descriptor.write_bytes(candidate.encoded(self.descriptor))
++        child = subprocess.Popen(["/usr/bin/python3", "-I", "-B", str(Path(__file__).resolve()),
++                                  "--materialize-child", str(descriptor), str(self.destination)],
++                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++        try:
++            child.stdin.write(b"partial")
++            child.stdin.flush()
++            # Wait for an actual materializer-created root, bounded independently.
++            deadline = time.monotonic() + 3
++            while not self.destination.exists() and time.monotonic() < deadline:
++                time.sleep(0.005)
++            self.assertTrue(self.destination.exists())
++            child.send_signal(signal.SIGTERM)
++            stdout, stderr = child.communicate(timeout=3)
++            self.assertEqual(child.returncode, -signal.SIGTERM)
++            self.assertNotIn(b"input_eof_observed", stdout)
++            self.assertFalse((self.destination / candidate.DESCRIPTOR_NAME).exists())
++        finally:
++            if child.poll() is None:
++                child.kill()
++                child.communicate()
++
++    def capsule_records(self):
++        return [{"bytes": len((HERE / name).read_bytes()), "sha256": candidate.sha((HERE / name).read_bytes())}
++                for name in (candidate.UTILITY_NAME, candidate.ENTRY_NAME)]
++
++    def bootstrap_arguments(self, code=None):
++        code = (HERE / candidate.BOOTSTRAP_NAME).read_text() if code is None else code
++        records = self.capsule_records()
++        return ["/usr/bin/python3", "-I", "-B", "-c", code, "stage-v1", "90", candidate.digest(self.descriptor)] + [
++                value for row in records for value in (str(row["bytes"]), row["sha256"])]
++
++    def test_actual_bootstrap_child_argument_and_pin_guards(self):
++        arguments = self.bootstrap_arguments()
++        cases = [(arguments, b"requires Python 3.12.3"), (arguments[:-1], b"orig_argv"),
++                 ([*arguments[:5], "arbitrary", *arguments[6:]], b"closed bootstrap mode"),
++                 ([*arguments[:6], "1981", *arguments[7:]], b"bounded bootstrap seconds"),
++                 ([*arguments[:8], "1048577", *arguments[9:]], b"bounded bootstrap capsule"),
++                 ([*arguments[:9], "0" * 64, *arguments[10:]], b"fixed bootstrap utility digest")]
++        for argv, message in cases:
++            result = subprocess.run(argv, input=b"", capture_output=True, timeout=5)
++            with self.subTest(guard=message):
++                self.assertNotEqual(result.returncode, 0)
++                self.assertIn(message, result.stderr)
++                self.assertEqual(result.stdout, b"")
++        parsed = bootstrap.parse_invocation(arguments, ["-c"] + arguments[5:])
++        self.assertEqual(parsed["bootstrap"], (HERE / candidate.BOOTSTRAP_NAME).read_bytes())
++        for args in (["python3"] + arguments[1:], [arguments[0], "-B", "-I"] + arguments[3:]):
++            with self.assertRaises(RuntimeError):
++                bootstrap.parse_invocation(args, ["-c"] + args[5:])
++        with self.assertRaises(RuntimeError):
++            bootstrap.parse_invocation(self.bootstrap_arguments("x" * 32769), ["-c"] + arguments[5:])
++
++    def test_actual_child_capsule_digest_length_closure_limits(self):
++        records = self.capsule_records()
++        utility = (HERE / candidate.UTILITY_NAME).read_bytes()
++        entry = (HERE / candidate.ENTRY_NAME).read_bytes()
++        # Executes the component helper in real children, not bootstrap main;
++        # this deliberately does not bypass or claim its SDK runtime pin.
++        command = ('import importlib.util,json,sys,time; from pathlib import Path; '
++                   's=importlib.util.spec_from_file_location("b",sys.argv[1]); '
++                   'b=importlib.util.module_from_spec(s);s.loader.exec_module(b); '
++                   'b.admit_capsules(b.CapsuleReader(sys.stdin.buffer,time.monotonic()+2),'
++                   'Path(sys.argv[2]),json.loads(sys.argv[3])); print("CAPSULE_COMPONENT_ONLY")')
++        cases = [("valid", records, utility + entry, None),
++                 ("utility", records, b"x" + utility[1:] + entry, b"capsule digest mismatch"),
++                 ("entry", records, utility + b"x" + entry[1:], b"capsule digest mismatch"),
++                 ("short", records, utility + entry[:-1], b"closed early"),
++                 ("length", [records[0], {**records[1], "bytes": records[1]["bytes"] + 1}], utility + entry + b"x", b"digest mismatch"),
++                 ("digest", [records[0], {**records[1], "sha256": "0" * 64}], utility + entry, b"digest mismatch"),
++                 ("bound", [records[0], {**records[1], "bytes": 1048577}], utility, b"closed capsule measurement")]
++        for name, rows, body, message in cases:
++            result = subprocess.run(["/usr/bin/python3", "-I", "-B", "-c", command,
++                                     str(HERE / candidate.BOOTSTRAP_NAME), str(self.root / ("capsule-" + name)),
++                                     json.dumps(rows)], input=body, capture_output=True, timeout=5)
++            with self.subTest(name=name):
++                if message is None:
++                    self.assertEqual(result.returncode, 0, result.stderr)
++                    self.assertEqual(result.stdout, b"CAPSULE_COMPONENT_ONLY\n")
++                else:
++                    self.assertNotEqual(result.returncode, 0)
++                    self.assertIn(message, result.stderr)
++                    self.assertEqual(result.stdout, b"")
++
++    def test_substituted_bootstrap_bytes_join_before_stage(self):
++        context = {"mode": "stage-v1", "descriptor_sha256": candidate.digest(self.descriptor),
++                   "bootstrap": (HERE / candidate.BOOTSTRAP_NAME).read_text() + "\n# substituted\n",
++                   "capsules": self.capsule_records()}
++        command = ('import importlib.util,json,sys,time; '
++                   's=importlib.util.spec_from_file_location("c",sys.argv[1]); '
++                   'c=importlib.util.module_from_spec(s);s.loader.exec_module(c); '
++                   'ctx=json.loads(sys.argv[2]);ctx["bootstrap"]=ctx["bootstrap"].encode();'
++                   'ctx["deadline"]=time.monotonic()+3;c.stage(ctx)')
++        result = subprocess.run(["/usr/bin/python3", "-I", "-B", "-c", command,
++                                 str(HERE / candidate.ENTRY_NAME), json.dumps(context)],
++                                input=candidate.encoded(self.descriptor), capture_output=True, timeout=5)
++        self.assertNotEqual(result.returncode, 0)
++        self.assertIn(b"actual bootstrap bytes mismatch", result.stderr)
++        self.assertEqual(result.stdout, b"")
++
++    def test_actual_child_authenticates_exact_utility_path(self):
++        directory = self.root / "replaced-authority"
++        directory.mkdir()
++        entry = directory / candidate.ENTRY_NAME
++        entry.write_bytes((HERE / candidate.ENTRY_NAME).read_bytes())
++        utility = directory / candidate.UTILITY_NAME
++        utility.write_bytes(b"raise AssertionError('must never execute')\n")
++        result = subprocess.run(["/usr/bin/python3", "-I", "-B", str(entry), "parent", "x", "y"],
++                                capture_output=True, timeout=5)
++        self.assertNotEqual(result.returncode, 0)
++        self.assertIn(b"utility digest mismatch", result.stderr)
++        self.assertNotIn(b"AssertionError", result.stderr)
++        utility.unlink()
++        utility.symlink_to(HERE / candidate.UTILITY_NAME)
++        result = subprocess.run(["/usr/bin/python3", "-I", "-B", str(entry), "parent", "x", "y"],
++                                capture_output=True, timeout=5)
++        self.assertNotEqual(result.returncode, 0)
++        self.assertIn(b"exact and unaliased", result.stderr)
++
++    def test_actual_sparse_member_size_refusal(self):
++        path = self.source / "oversize"
++        with path.open("wb") as stream:
++            stream.truncate(legacy.MAX_FILE + 1)
++        with self.assertRaisesRegex(RuntimeError, "bounded singly linked regular"):
++            candidate.measure_inputs(self.source, self.executable, 90)
++
++    def test_parent_guest_and_direct_stage_refuse_unimplemented_lifecycle(self):
++        for args, message in ((["parent", str(self.source), str(self.executable)], b"lifecycle is not implemented"),
++                              (["stage"], b"authenticated bootstrap"), (["guest"], b"authenticated bootstrap")):
++            result = subprocess.run(["/usr/bin/python3", "-I", "-B", str(HERE / candidate.ENTRY_NAME)] + args,
++                                    capture_output=True, timeout=5)
++            self.assertNotEqual(result.returncode, 0)
++            self.assertIn(message, result.stderr)
++            self.assertEqual(result.stdout, b"")
++        with self.assertRaisesRegex(RuntimeError, "guest lifecycle is not implemented"):
++            candidate.guest({})
++
++
++if __name__ == "__main__":
++    if len(sys.argv) == 4 and sys.argv[1] == "--materialize-child":
++        descriptor = json.loads(Path(sys.argv[2]).read_bytes())
++        deadline = time.monotonic() + 10
++        result = candidate.materialize_inputs(candidate.Reader(sys.stdin.buffer, deadline), Path(sys.argv[3]), descriptor, deadline)
++        sys.stdout.buffer.write(candidate.encoded(result))
++    else:
++        unittest.main(verbosity=2)

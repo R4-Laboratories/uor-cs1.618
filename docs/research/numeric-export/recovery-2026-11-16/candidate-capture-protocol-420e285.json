@@ -1,0 +1,16 @@
+{
+  "schema": "cs1618/candidate-capture-component/1",
+  "base": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "revision": "420e285a49490935add42b61747466a174b8b926",
+  "tree": "e5e04dffc2946a934ec0930f219b473ea9ee89e1",
+  "archive": "candidate-capture-protocol-420e285.tar.gz",
+  "archive_bytes": 18125,
+  "archive_sha256": "1f72f723d4e2950daa12798afe41e176eb0a9af89205dd66f122340d5151d737",
+  "indexed_files": 33,
+  "archive_members": 34,
+  "patch": "candidate-capture-protocol-420e285.patch",
+  "patch_bytes": 67424,
+  "patch_sha256": "9d13b4ad875a89f6514a40faefb3753ff5d948ba781aba8bc14fdd16b55d45b2",
+  "scope": "23 host protocol controls and 30 unchanged legacy controls; actual original test ELF listing, not actual SDK bootstrap or complete capture. Independent component review pending.",
+  "production_admission": false
+}
