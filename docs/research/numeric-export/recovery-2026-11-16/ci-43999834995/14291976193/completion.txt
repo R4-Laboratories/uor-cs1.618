@@ -1,0 +1,1 @@
+Actual dual-authority acquisition and retained-file replay completed; not SDK release or product qualification.

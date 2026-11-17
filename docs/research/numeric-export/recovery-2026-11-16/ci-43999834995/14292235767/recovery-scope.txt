@@ -1,0 +1,2 @@
+historical artifact recovery only; no SDK rerun or receipt rewrite
+API digest is required to match the recorded original. Pinned download-artifact performs its own download digest check, whose mismatch is a warning. The action extracts the ZIP and does not expose original ZIP bytes here; no independent ZIP SHA256 verification is claimed. The original artifact remains retained.

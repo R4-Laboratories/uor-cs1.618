@@ -1,0 +1,47 @@
+[
+  {
+    "id": 14291976193,
+    "sha256": "1df6783e97a1a9477b791959dd778b094e9d8bc39f8ae13bfcd5793e3688dcd3",
+    "bytes": 7371,
+    "files": [
+      "runner-image.txt",
+      "gates--authority-controls.log",
+      "archive.log",
+      "environment.txt",
+      "original-files.sha256",
+      "docker-storage-driver.txt",
+      "verifier.sha256",
+      "build.log",
+      "small-logs-status.json",
+      "completion.txt",
+      "runner-exit-code.txt",
+      "candidate.json",
+      "final-identities.log",
+      "gates--retained-reader.log",
+      "game-commit.txt",
+      "disk-before.txt"
+    ]
+  },
+  {
+    "id": 14292235767,
+    "sha256": "099a82748d45dd7882abc759c5c307ae82d7815002392e8d1ca83c4516b397ad",
+    "bytes": 263812,
+    "files": [
+      "retention-status.json",
+      "archive.log",
+      "retained-reader-basics.tar.gz",
+      "recovery-scope.txt",
+      "small-logs-status.json",
+      "reader-input-manifest.json",
+      "recovery-metadata.json"
+    ]
+  },
+  {
+    "id": 14291098413,
+    "sha256": "817ebb0f1d3748f7947183017fdb2563e1a4bfeea18cc86d81e6aae54b85c717",
+    "bytes": 534049,
+    "files": [
+      "retained-reader-inputs.tar.gz"
+    ]
+  }
+]

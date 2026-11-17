@@ -1,0 +1,15 @@
+2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec
+Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)
+Lake version 5.0.0-src+f054605 (Lean version 4.32.1)
+rustc 1.97.1 (8bab26f4f 2026-07-14)
+binary: rustc
+commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+commit-date: 2026-07-14
+host: x86_64-unknown-linux-gnu
+release: 1.97.1
+LLVM version: 22.1.6
+cargo 1.97.1 (c980f4866 2026-06-30)
+v22.23.2
+tmpfs 4096 262144
+tmpfs 4096 262144
+65536

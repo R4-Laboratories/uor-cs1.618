@@ -1,0 +1,18 @@
+{
+  "validated_api_metadata": true,
+  "expected_run": 43986399997,
+  "expected_artifact": 14288310173,
+  "expected_head": "022c11363fd3a1b1c6871991f32ab02994515a7e",
+  "expected_name": "prismpm-backport-43986399997",
+  "expected_digest": "sha256:20100b809e5b0994703f681dc1c4cf751dda4f50e1d784ec8d65a7ac792a0fa9",
+  "scope": "historical artifact recovery only; no SDK rerun or receipt rewrite",
+  "repository": "R4-Laboratories/uor-cs1.618",
+  "source_run_id": 43986399997,
+  "source_head_sha": "022c11363fd3a1b1c6871991f32ab02994515a7e",
+  "source_artifact_id": 14288310173,
+  "source_artifact_name": "prismpm-backport-43986399997",
+  "source_artifact_size": 1336947756,
+  "source_artifact_api_digest": "sha256:20100b809e5b0994703f681dc1c4cf751dda4f50e1d784ec8d65a7ac792a0fa9",
+  "run_conclusion": "failure",
+  "digest_verification_limit": "API digest is required to match the recorded original. Pinned download-artifact performs its own download digest check, whose mismatch is a warning. The action extracts the ZIP and does not expose original ZIP bytes here; no independent ZIP SHA256 verification is claimed. The original artifact remains retained."
+}
