@@ -11,7 +11,7 @@ index 5089482eb1407073b7692a29a79a34a810cb8aed..202e27451f57c24861f17197c3f74c82
  ## security
  
 diff --git a/SPEC.md b/SPEC.md
-index 006db88bc049126aa1cf5f0013376e4dcf3b6832..75fc3129b64d3e7a8dbd0d03bc82c24f1eb993de 100644
+index 006db88bc049126aa1cf5f0013376e4dcf3b6832..fbe4a8f54d1637647ce700b8931d801c54124da5 100644
 --- a/SPEC.md
 +++ b/SPEC.md
 @@ -767,6 +767,7 @@ The CLI grammar is:
@@ -22,7 +22,7 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..75fc3129b64d3e7a8dbd0d03bc82c24f
          <check|build|verify|clean>
  ```
  
-@@ -1845,6 +1846,59 @@ Late failure may retain a destination; unverified parents or destinations are
+@@ -1845,9 +1846,63 @@ Late failure may retain a destination; unverified parents or destinations are
  never deleted or adopted as successful construction. Source admission applies
  its own 4,096-entry/16-MiB limits before enumeration and reading.
  
@@ -80,9 +80,15 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..75fc3129b64d3e7a8dbd0d03bc82c24f
 +these diagnostic controls alone do not establish exact-SDK integration acceptance.
 +
  Each actual `lake exe prod-export` invocation records a closed
- `prismpm/exporter-execution/1` child executable measurement and
- `prismpm/exporter-acquisition/1` cold/seed provenance.
-@@ -4004,3 +4058,4 @@ Every row below is normative, has the honesty level registered in `model/ids.tom
+-`prismpm/exporter-execution/1` child executable measurement and
+-`prismpm/exporter-acquisition/1` cold/seed provenance.
++`prismpm/exporter-execution/1` child executable measurement. Released authority
++records `prismpm/exporter-acquisition/1` cold/seed provenance; the explicit
++candidate records the closed `/2` source-backport provenance described above.
+ Executable byte, mode and file-identity checks run after failed invocations too.
+ The complete exporter package is captured before and after execution. Source
+ members must still equal the pinned archive; only the private `.lake` build tree
+@@ -4004,3 +4059,4 @@ Every row below is normative, has the honesty level registered in `model/ids.tom
  | `TM-04` | `template-ci` | Least-privilege jobs build once and pass the exact digest through protected signing, publication, deployment, and verification boundaries. | §17 |
  | `TM-05` | `template-ci` | Template checks are read-only and explicit updates produce reviewable downstream patches or pull requests without hidden branch mutation. | §17 |
  | `TM-06` | `template-ci` | All in-scope UOR and Prism repositories use the common SDK bootstrap while preserving their repository-specific acceptance gates. | §17 |
@@ -2145,10 +2151,10 @@ index de408d1a6e30c9d113a44f48e980502000a25087..ad9bb3cfc5c976bb480dc54cc33a6ff6
 +statement = "Explicit closed compiler-source selection preserves released SDK defaults and binds diagnostic backport acquisition, retained custody and source-free release evidence without seed or SDK release qualification."
 diff --git a/scripts/construct-exporter-backport.py b/scripts/construct-exporter-backport.py
 new file mode 100644
-index 0000000000000000000000000000000000000000..fd0d4d2890acb9e7d4d0017e4eaed9b80b45adb1
+index 0000000000000000000000000000000000000000..1670776a6bfaf86d7e5b21f4740a59a2f2082870
 --- /dev/null
 +++ b/scripts/construct-exporter-backport.py
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,88 @@
 +#!/usr/bin/env python3
 +"""Reproduce the closed diagnostic Lean authority from an already restored Git tree."""
 +import hashlib
@@ -2164,12 +2170,21 @@ index 0000000000000000000000000000000000000000..fd0d4d2890acb9e7d4d0017e4eaed9b8
 +ROOT = Path(__file__).resolve().parent.parent
 +
 +
++def require(condition, message):
++    # These are authority gates, not debugging assertions: -O must retain them.
++    if not condition:
++        raise ValueError(message)
++
++
 +def construct(repo):
 +    def git(*args):
 +        return subprocess.check_output(['git', '-C', str(repo), *args])
-+    assert git('rev-parse', 'HEAD').decode().strip() == REVISION
-+    assert git('rev-parse', 'HEAD^{tree}').decode().strip() == TREE
-+    assert not git('status', '--porcelain', '--untracked-files=all').strip()
++    require(git('rev-parse', 'HEAD').decode().strip() == REVISION,
++            'compiler revision differs from the pinned authority')
++    require(git('rev-parse', 'HEAD^{tree}').decode().strip() == TREE,
++            'compiler tree differs from the pinned authority')
++    require(not git('status', '--porcelain', '--untracked-files=all').strip(),
++            'compiler checkout is not clean')
 +    rows = []
 +    output = io.BytesIO()
 +    with tarfile.open(fileobj=output, mode='w', format=tarfile.USTAR_FORMAT) as archive:
@@ -2179,11 +2194,14 @@ index 0000000000000000000000000000000000000000..fd0d4d2890acb9e7d4d0017e4eaed9b8
 +            metadata, raw_path = raw.split(b'\t')
 +            mode, kind, oid = metadata.decode().split()
 +            path = raw_path.decode()
-+            assert kind == 'blob' and mode in ('100644', '100755')
++            require(kind == 'blob' and mode in ('100644', '100755'),
++                    f'unsupported compiler member kind or mode: {path}')
 +            name = path.removeprefix('lean/')
-+            assert not any(part.startswith('.') for part in Path(name).parts)
++            require(path.startswith('lean/') and not any(part.startswith('.') for part in Path(name).parts),
++                    f'unsupported compiler member path: {path}')
 +            data = git('cat-file', 'blob', oid)
-+            assert (repo / path).read_bytes() == data
++            require((repo / path).read_bytes() == data,
++                    f'compiler member differs from Git: {path}')
 +            header = tarfile.TarInfo(name)
 +            header.mode = int(mode, 8) & 0o777
 +            header.size = len(data)
@@ -2193,10 +2211,12 @@ index 0000000000000000000000000000000000000000..fd0d4d2890acb9e7d4d0017e4eaed9b8
 +    # Independent member-byte/mode equality, including exact membership.
 +    with tarfile.open(fileobj=io.BytesIO(data)) as archive:
 +        members = archive.getmembers()
-+        assert len(members) == len(rows)
++        require(len(members) == len(rows), 'archive membership differs from Git')
 +        for member, row in zip(members, rows):
-+            assert member.isfile() and member.name == row['path'] and member.mode == row['mode']
-+            assert archive.extractfile(member).read() == git('show', 'HEAD:lean/' + member.name)
++            require(member.isfile() and member.name == row['path'] and member.mode == row['mode'],
++                    'archive member kind, path or mode differs from Git')
++            require(archive.extractfile(member).read() == git('show', 'HEAD:lean/' + member.name),
++                    f'archive member bytes differ from Git: {member.name}')
 +    descriptor = {
 +        'schema': 'prismpm/exporter-source/1', 'id': 'numeric-task2c', 'diagnostic_only': True,
 +        'upstream_repository': 'https://github.com/afflom/lean4-prod',
@@ -2223,6 +2243,67 @@ index 0000000000000000000000000000000000000000..fd0d4d2890acb9e7d4d0017e4eaed9b8
 +
 +if __name__ == '__main__':
 +    construct(Path(sys.argv[1]).resolve())
+diff --git a/scripts/construct-exporter-backport.test.mjs b/scripts/construct-exporter-backport.test.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..8ff5eaf8683bbe81a31d60b27c5c0f8e7fe7ab1b
+--- /dev/null
++++ b/scripts/construct-exporter-backport.test.mjs
+@@ -0,0 +1,55 @@
++import assert from 'node:assert/strict';
++import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
++import { tmpdir } from 'node:os';
++import { join } from 'node:path';
++import { spawnSync } from 'node:child_process';
++import { fileURLToPath } from 'node:url';
++import test from 'node:test';
++
++const root = fileURLToPath(new URL('../', import.meta.url));
++const artifactPath = 'vendor/lean4-prod/backports/numeric-task2c';
++
++for (const optimization of ['flag', 'environment']) {
++  test(`optimized constructor refuses a wrong revision without writing artifacts (${optimization})`, () => {
++    const work = mkdtempSync(join(tmpdir(), 'exporter-construction-'));
++    try {
++      const repo = join(work, 'source');
++      mkdirSync(join(repo, 'lean'), { recursive: true });
++      writeFileSync(join(repo, 'lean', 'Wrong.lean'), 'def wrongRevision := true\n');
++      for (const args of [
++        ['init', '--quiet'], ['add', 'lean'],
++        ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
++          '-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', 'Wrong compiler revision'],
++      ]) {
++        const result = spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8', timeout: 10000 });
++        assert.equal(result.status, 0, result.stderr);
++      }
++      mkdirSync(join(work, 'scripts'));
++      const script = join(work, 'scripts', 'construct-exporter-backport.py');
++      copyFileSync(join(root, 'scripts', 'construct-exporter-backport.py'), script);
++      const destination = join(work, artifactPath);
++      mkdirSync(destination, { recursive: true });
++      const before = new Map();
++      for (const name of ['lean.tar', 'descriptor.json']) {
++        const bytes = readFileSync(join(root, artifactPath, name));
++        before.set(name, bytes);
++        writeFileSync(join(destination, name), bytes);
++      }
++      const result = spawnSync('python3', [
++        ...(optimization === 'flag' ? ['-O'] : []), script, repo,
++      ], {
++        encoding: 'utf8', timeout: 10000,
++        env: { ...process.env, PYTHONOPTIMIZE: optimization === 'environment' ? '1' : '' },
++      });
++      assert.equal(result.error, undefined);
++      assert.equal(result.signal, null);
++      assert.notEqual(result.status, 0, 'wrong source must fail under optimized Python');
++      assert.match(result.stderr, /compiler revision differs/);
++      for (const [name, bytes] of before) {
++        assert.deepEqual(readFileSync(join(destination, name)), bytes, `${name} changed on refusal`);
++      }
++    } finally {
++      rmSync(work, { recursive: true, force: true });
++    }
++  });
++}
 diff --git a/tests/fixtures/exporter-backport/README.md b/tests/fixtures/exporter-backport/README.md
 new file mode 100644
 index 0000000000000000000000000000000000000000..d7fc5c1cc84e2f8e277e146e93553f56b3f84253
@@ -3973,3 +4054,15 @@ UIRwrja1McU2%JOUmx93m2aFYm&;S4c
 literal 0
 HcmV?d00001
 
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index aca09c5e5c53075d546ebc73a79caf271ae0c506..9b56c2d7704734ab0e955def982b8fcaa83559a1 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -303,6 +303,7 @@ fn audit_all(root: &Path) -> Result<(), Fail> {
+             "scripts/library-sdk-check.test.mjs",
+             "scripts/library-sdk-check-shell.test.mjs",
+             "scripts/installed-exporter-concurrency.test.mjs",
++            "scripts/construct-exporter-backport.test.mjs",
+             "sdk/migration-qualification.test.mjs",
+             "sdk/npm/prism-code/test/archive.test.mjs",
+             "sdk/npm/prism-code/test/blake3.test.mjs",
