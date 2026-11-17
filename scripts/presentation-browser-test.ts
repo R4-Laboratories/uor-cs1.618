@@ -36,9 +36,30 @@ try{
   await page.screenshot({path:`${out}/after-bomb-near.png`});
 
   const cover=await page.evaluate(()=>{const f=(window as any).fixture;f.snapshot.bomb.defuser='teammate';f.draw();return {text:document.getElementById('bomb-card')!.textContent,marginHidden:document.getElementById('bomb-margin-row')!.classList.contains('hidden'),progressHidden:document.getElementById('objective')!.classList.contains('hidden')};});assert.match(cover.text!,/TEAMMATE DEFUSING/);assert(cover.marginHidden);assert(cover.progressHidden);
-  await page.setViewportSize({width:390,height:844});
-  const narrow=await page.evaluate(()=>{const f=(window as any).fixture;f.draw();const r=document.getElementById('bomb-card')!.getBoundingClientRect(),radar=document.querySelector('.radar-wrap')!.getBoundingClientRect();return {fits:r.left>=0&&r.right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth,clearOfRadar:r.top>=radar.bottom};});assert(narrow.fits);assert(narrow.clearOfRadar);
-  await page.screenshot({path:`${out}/after-mobile-objective.png`});await page.setViewportSize({width:1100,height:760});
+  const responsive=[];
+  for(const viewport of [{width:390,height:844},{width:390,height:667},{width:667,height:375}]){
+   await page.setViewportSize(viewport);
+   await page.waitForFunction(size=>{const canvas=(window as any).fixture.world.canvas;return canvas.width===size.width&&canvas.height===size.height;},viewport);
+   for(const mode of ['defusing','cover'] as const){
+    const layout=await page.evaluate<any>(`(()=>{const mode=${JSON.stringify(mode)};
+     const f=window.fixture;f.snapshot.bomb.defuser=mode==='defusing'?'p':'teammate';f.draw();
+     const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom};};
+     const card=rect('#bomb-card'),radar=rect('.radar-wrap'),crosshair=rect('#crosshair'),progress=rect('#objective'),clock=rect('.round-bar'),session=rect('.session-info');
+     // Protect a 72×64 pixel aiming area, beyond just the crosshair's painted pixels.
+     const aim={left:crosshair.left-23,right:crosshair.right+23,top:crosshair.top-19,bottom:crosshair.bottom+19};
+     const separate=(a,b)=>a.right+6<=b.left||a.left>=b.right+6||a.bottom+6<=b.top||a.top>=b.bottom+6;
+     const keys=['#bomb-site','#bomb-directive','#bomb-fuse','#bomb-requirement',...(mode==='defusing'?['#bomb-status','#bomb-margin-row>span','#bomb-margin']:[])];
+     const readable=keys.every(selector=>{const el=document.querySelector(selector),r=rect(selector);return r.left>=card.left&&r.right<=card.right&&r.top>=card.top&&r.bottom<=card.bottom&&el.scrollWidth<=el.clientWidth;});
+     return {mode,card,radar,aim,progress,readable,fits:card.left>=0&&card.right<=innerWidth&&card.top>=0&&card.bottom<=innerHeight&&document.documentElement.scrollWidth<=innerWidth,clearOfRadar:separate(card,radar),clearOfClock:separate(card,clock),clearOfSession:separate(card,session),clearOfAim:separate(card,aim),clearOfProgress:mode!=='defusing'||separate(card,progress),progressVisible:!document.getElementById('objective').classList.contains('hidden')};
+    })()`);
+    responsive.push({viewport,...layout});
+    const label=`${viewport.width}x${viewport.height} ${mode}`;
+    assert(layout.fits,`${label}: card stays in viewport`);assert(layout.clearOfRadar,`${label}: card clears radar`);assert(layout.clearOfClock,`${label}: card clears scores`);assert(layout.clearOfSession,`${label}: card clears session label`);assert(layout.clearOfAim,`${label}: card clears aiming area`);assert(layout.clearOfProgress,`${label}: card clears hold-E panel`);assert(layout.readable,`${label}: key information remains inside card`);assert.equal(layout.progressVisible,mode==='defusing',`${label}: active interaction stays visible`);
+    await page.screenshot({path:`${out}/after-objective-${viewport.width}x${viewport.height}-${mode}.png`});
+    if(viewport.height===844&&mode==='cover')await page.screenshot({path:`${out}/after-mobile-objective.png`});
+   }
+  }
+  const narrow=responsive[1];await page.setViewportSize({width:1100,height:760});
   await page.evaluate(()=>{const f=(window as any).fixture;f.snapshot.self.action='';f.snapshot.self.progress=0;f.draw();});
   const result=await page.evaluate(()=>{const f=(window as any).fixture,w=f.world,s=f.snapshot;const before=w.bomb.rotation.y;f.draw();const stable=before===w.bomb.rotation.y;s.bomb.terminal='defused';f.draw();const terminalHidden=!w.bomb.visible&&document.getElementById('bomb-card')!.classList.contains('hidden');s.bomb=null;f.draw();w.setQuality('low');const low=w.renderer.getPixelRatio();f.draw();s.self.weapon='m4';f.draw();const geometries=w.renderer.info.memory.geometries,textures=w.renderer.info.memory.textures;for(let i=0;i<12;i++){s.self.weapon=i%2?'m4':'scout';f.draw();}const after=w.renderer.info.memory.geometries,afterTextures=w.renderer.info.memory.textures;f.ui.event({id:1,type:'kill',target:'p',text:'Device blast'},s);f.ui.update(s,s.self,0,null);return {stable,terminalHidden,geometries,after,textures,afterTextures,low,killfeed:document.getElementById('kill-feed')!.textContent,hidden:document.hidden};});
   assert(result.stable);assert(result.terminalHidden);assert(!result.hidden);assert.equal(result.after,result.geometries);assert.equal(result.afterTextures,result.textures);assert.match(result.killfeed!,/Bomb blast/);assert.doesNotMatch(result.killfeed!,/Operator.*Operator/);
@@ -51,7 +72,7 @@ try{
   await page.goto(url);await page.waitForFunction(()=>(window as any).cs1618);await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>{document.documentElement.style.setProperty('--dim','#000');document.documentElement.style.setProperty('--mint','#000');return {fits:document.documentElement.scrollWidth<=innerWidth,label:getComputedStyle(document.querySelector('label')!).color};});assert(mobile.fits);assert.equal(mobile.label,'rgb(156, 174, 172)');await page.screenshot({path:`${out}/after-mobile-lobby.png`});
 
-  await writeFile(`${out}/browser-results.json`,JSON.stringify({result,objective,cover,narrow,feedback,switchFeedback,mobile,errors,renderer:'Chromium SwiftShader; real scene render, fixed snapshot fixtures, no hidden override'},null,2));
+  await writeFile(`${out}/browser-results.json`,JSON.stringify({result,objective,cover,narrow,responsive,feedback,switchFeedback,mobile,errors,renderer:'Chromium SwiftShader; real scene render, fixed snapshot fixtures, no hidden override'},null,2));
  }
  assert.deepEqual(errors,[]);console.log(`Presentation ${prefix}: rendered screenshots captured; zero page errors.`);
 }finally{await browser.close();await server.close();}
