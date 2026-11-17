@@ -283,51 +283,14 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-17T16:57:39.782Z",
-    "base": "96d9f3987789acbe938aaeef6ecc9794054eaea6",
+    "at": "2026-11-17T17:08:12.991Z",
+    "base": "145fdaf928b339ad66071c9cee298c3cec8428f9",
     "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
-    "previous": "96604025ed79b93e984d40e7355f81046afa75455ac12234f12b8b348566bb35",
+    "previous": "07fb110f656d9df56914a26645f196ebde8ae0e51b331f7657f1611516ce50fa",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "navigation-6",
-        "family": "navigation",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "11d4530247711838187ce07dd20bf8a5c54ab292630598989b8e0c7b81940db0",
-        "baselineWork": 2651,
-        "candidateWork": 9349,
-        "fidelity": true,
-        "bounds": true,
-        "samples": 480,
-        "comparisons": null,
-        "reference": {
-          "pairs": 101926,
-          "elapsed": 30.13588299999992,
-          "nodes": 452,
-          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-          "samples": 480
-        },
-        "before": {
-          "pairs": 2651,
-          "elapsed": 16.859934000000067,
-          "nodes": 452,
-          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-          "samples": 480
-        },
-        "after": {
-          "pairs": 9349,
-          "elapsed": 19.798467999999957,
-          "nodes": 452,
-          "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-          "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-          "samples": 480
-        }
-      },
-      {
-        "candidate": "tactics-synth-1",
+        "candidate": "tactics-synth-3",
         "family": "tactics",
         "author": "seeded-synthesis",
         "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
@@ -377,136 +340,120 @@
             "Device defused"
           ]
         }
+      },
+      {
+        "candidate": "art-synth-0",
+        "family": "art",
+        "author": "seeded-synthesis",
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "configHash": "8ce34c30efda21ef348b2646816c4a18363bf027e6a437ff65da79a8177d4b12",
+        "baselineWork": 0.23252706850815388,
+        "candidateWork": 0.2579400132439428,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 0.009770869076797386,
+            "changed": 0.02904296875
+          },
+          {
+            "mean": 0.010268550857843138,
+            "changed": 0.0278046875
+          },
+          {
+            "mean": 0.016552129289215685,
+            "changed": 0.0417734375
+          },
+          {
+            "mean": 0.017413628472222224,
+            "changed": 0.04105859375
+          }
+        ],
+        "reference": {
+          "protectedEqual": true,
+          "separation": 0.6615373610938612,
+          "evidence": "artifacts/evolution/art/art-synth-0-*.png"
+        },
+        "before": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 11.900942897165983,
+              "coverage": 0.17115428055116333
+            },
+            {
+              "site": "B",
+              "contrast": 11.900942897165983,
+              "coverage": 0.1658459453354416
+            }
+          ],
+          "frames": [
+            {
+              "calls": 219,
+              "triangles": 5404,
+              "frameMs": 4.699999999953434
+            },
+            {
+              "calls": 219,
+              "triangles": 5416,
+              "frameMs": 2.6000000000349246
+            },
+            {
+              "calls": 46,
+              "triangles": 1676,
+              "frameMs": 0.40000000002328306
+            },
+            {
+              "calls": 36,
+              "triangles": 1412,
+              "frameMs": 0.6000000000349246
+            }
+          ]
+        },
+        "after": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.145723264040305,
+              "coverage": 0.19733453806189294
+            },
+            {
+              "site": "B",
+              "contrast": 12.145723264040305,
+              "coverage": 0.1938784730065507
+            }
+          ],
+          "frames": [
+            {
+              "calls": 219,
+              "triangles": 5404,
+              "frameMs": 2.099999999976717
+            },
+            {
+              "calls": 219,
+              "triangles": 5416,
+              "frameMs": 4.2999999999883585
+            },
+            {
+              "calls": 46,
+              "triangles": 1676,
+              "frameMs": 0.7000000000116415
+            },
+            {
+              "calls": 36,
+              "triangles": 1412,
+              "frameMs": 0.7999999999883585
+            }
+          ]
+        }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "07fb110f656d9df56914a26645f196ebde8ae0e51b331f7657f1611516ce50fa"
+    "hash": "57538ed88e0036a0189aa07e35b891f021452846361df58069178f7b4677a80f"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 4,
-      "author": {
-        "status": "unavailable",
-        "reason": "invalid-response-or-network"
-      },
-      "at": "2026-11-16T04:50:39.417Z",
-      "base": "fcf0e21c6a6c18cba051e605e4749160a03b7709",
-      "context": "6afe9f7adc8132b3824d435a1f0354bce59207cdb6c5ed0a2e5301ded1ed61ae",
-      "previous": "92d2d9dabf89dc5c7a5d9ed645c084a3e4118ae38ecb90f36109921159d20bc0",
-      "result": "admitted",
-      "proposals": [
-        {
-          "candidate": "art-synth-0",
-          "family": "art",
-          "author": "seeded-synthesis",
-          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-          "configHash": "b431b5b976ff32821bd953f429cfec5c60abc13bb67123ee605c5b8feb65e52f",
-          "baselineWork": 1,
-          "candidateWork": 0.2777466925906902,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 0.043524484272875814,
-              "changed": 0.1059921875
-            },
-            {
-              "mean": 0.04454237132352941,
-              "changed": 0.1059921875
-            },
-            {
-              "mean": 0.07639601205065359,
-              "changed": 0.17869140625
-            },
-            {
-              "mean": 0.0779006280637255,
-              "changed": 0.17869140625
-            }
-          ],
-          "reference": {
-            "protectedEqual": true,
-            "separation": 0.6362254127708514,
-            "evidence": "artifacts/evolution/art/art-synth-0-*.png"
-          },
-          "before": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 1.5741341761978036,
-                "coverage": 0
-              },
-              {
-                "site": "B",
-                "contrast": 1.5741341761978036,
-                "coverage": 0
-              }
-            ],
-            "frames": [
-              {
-                "calls": 118,
-                "triangles": 3530,
-                "frameMs": 3.099999999976717
-              },
-              {
-                "calls": 119,
-                "triangles": 3590,
-                "frameMs": 2.1000000000058208
-              },
-              {
-                "calls": 42,
-                "triangles": 1402,
-                "frameMs": 0.7999999999883585
-              },
-              {
-                "calls": 33,
-                "triangles": 1210,
-                "frameMs": 0.39999999999417923
-              }
-            ]
-          },
-          "after": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 12.834688787207531,
-                "coverage": 0.22096227693697765
-              },
-              {
-                "site": "B",
-                "contrast": 12.834688787207531,
-                "coverage": 0.21870341088773435
-              }
-            ],
-            "frames": [
-              {
-                "calls": 121,
-                "triangles": 3536,
-                "frameMs": 1
-              },
-              {
-                "calls": 122,
-                "triangles": 3596,
-                "frameMs": 1.1999999999825377
-              },
-              {
-                "calls": 43,
-                "triangles": 1404,
-                "frameMs": 0.6999999999825377
-              },
-              {
-                "calls": 34,
-                "triangles": 1212,
-                "frameMs": 0.6999999999825377
-              }
-            ]
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "4d8987423556ff82eb0f9defce5208963758b1e8a95f90f70da6e6f273597acf"
-    },
     {
       "generation": 4,
       "author": {
@@ -9574,6 +9521,178 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "07fb110f656d9df56914a26645f196ebde8ae0e51b331f7657f1611516ce50fa"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T17:08:12.991Z",
+      "base": "145fdaf928b339ad66071c9cee298c3cec8428f9",
+      "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
+      "previous": "07fb110f656d9df56914a26645f196ebde8ae0e51b331f7657f1611516ce50fa",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-3",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        },
+        {
+          "candidate": "art-synth-0",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "8ce34c30efda21ef348b2646816c4a18363bf027e6a437ff65da79a8177d4b12",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.2579400132439428,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.009770869076797386,
+              "changed": 0.02904296875
+            },
+            {
+              "mean": 0.010268550857843138,
+              "changed": 0.0278046875
+            },
+            {
+              "mean": 0.016552129289215685,
+              "changed": 0.0417734375
+            },
+            {
+              "mean": 0.017413628472222224,
+              "changed": 0.04105859375
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6615373610938612,
+            "evidence": "artifacts/evolution/art/art-synth-0-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 219,
+                "triangles": 5404,
+                "frameMs": 4.699999999953434
+              },
+              {
+                "calls": 219,
+                "triangles": 5416,
+                "frameMs": 2.6000000000349246
+              },
+              {
+                "calls": 46,
+                "triangles": 1676,
+                "frameMs": 0.40000000002328306
+              },
+              {
+                "calls": 36,
+                "triangles": 1412,
+                "frameMs": 0.6000000000349246
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.145723264040305,
+                "coverage": 0.19733453806189294
+              },
+              {
+                "site": "B",
+                "contrast": 12.145723264040305,
+                "coverage": 0.1938784730065507
+              }
+            ],
+            "frames": [
+              {
+                "calls": 219,
+                "triangles": 5404,
+                "frameMs": 2.099999999976717
+              },
+              {
+                "calls": 219,
+                "triangles": 5416,
+                "frameMs": 4.2999999999883585
+              },
+              {
+                "calls": 46,
+                "triangles": 1676,
+                "frameMs": 0.7000000000116415
+              },
+              {
+                "calls": 36,
+                "triangles": 1412,
+                "frameMs": 0.7999999999883585
+              }
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "57538ed88e0036a0189aa07e35b891f021452846361df58069178f7b4677a80f"
     }
   ]
 }
