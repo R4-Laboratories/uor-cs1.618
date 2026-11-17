@@ -1,0 +1,295 @@
+diff --git a/tests/publication-context-linkage/capture-owner.mjs b/tests/publication-context-linkage/capture-owner.mjs
+index b6ff24af..fd08d3e2 100644
+--- a/tests/publication-context-linkage/capture-owner.mjs
++++ b/tests/publication-context-linkage/capture-owner.mjs
+@@ -11,7 +11,7 @@ import {repository, run, sha} from './compile.mjs';
+ import {executeWasm} from './execute.mjs';
+ import {verifyCaptureOracle} from './capture-oracle.mjs';
+ import {verifyCandidateTransport, verifyCandidateDiagnostics} from './candidate-transport.mjs';
+-import {createCaptureLocator, runRetainedControls} from './capture-retained-controls.mjs';
++import {createCaptureLocator, runRetainedControls, validateLinkageLocation} from './capture-retained-controls.mjs';
+ 
+ const excluded = new Set(['.git', 'target', '.lexlean', '.prism']);
+ const completeOwners = new WeakSet();
+@@ -258,6 +258,7 @@ export async function verifyCapturedFactory(t) {
+ export async function verifyCapturedPublicationLinkage(t, build) {
+   assert.ok(build && typeof build.unchanged === 'function', 'fresh still-owned component build required');
+   build.unchanged();
++  validateLinkageLocation({sourceRoot:repository, work:build.work});
+   const capture = await verifyCapturedFactory(t);
+   let execution;
+   await prerequisite(t, 'actual capture agrees in generated native/no_std, context and admission Wasm', () => {
+@@ -265,8 +266,10 @@ export async function verifyCapturedPublicationLinkage(t, build) {
+     try {execution = replay(build, capture.oracle);}
+     finally {capture.verify(); build.unchanged();}
+   });
++  validateLinkageLocation({sourceRoot:repository, work:build.work});
+   const evidence = {schema:'prismpm/private-publication-capture-owner/1', completeApplicationAccepted:false,
+-    factory:capture.receipt, execution, compiler:build.compilerTools, ir:build.generation.ir_sha256};
++    factory:capture.receipt, execution, compiler:build.compilerTools, ir:build.generation.ir_sha256,
++    linkage:{work:build.work, receipt:'publication-linkage-evidence.json'}};
+   const receipt = join(capture.work, 'capture-owner-evidence.json');
+   writeFileSync(receipt, JSON.stringify(evidence) + '\n', {flag:'wx', mode:0o444});
+   const result = Object.freeze({path:receipt, sha256:sha(readFileSync(receipt))}); completeOwners.add(result);
+diff --git a/tests/publication-context-linkage/capture-retained-controls.mjs b/tests/publication-context-linkage/capture-retained-controls.mjs
+index 2ebd6ed1..e5a9b1fc 100644
+--- a/tests/publication-context-linkage/capture-retained-controls.mjs
++++ b/tests/publication-context-linkage/capture-retained-controls.mjs
+@@ -227,3 +227,60 @@ export function createCaptureLocator({sourceRoot, work}) {
+   const held = regular(path, 4096); assert.deepEqual(held.bytes, bytes);
+   validateLocator(JSON.parse(held.bytes), sourceRoot, name + '.json'); return path;
+ }
++
++// A separate fixed grammar/registry keeps historical capture records unchanged.
++// These records discover diagnostic work only; they never admit execution or success.
++const LINKAGE_WORK = /^prismpm-publication-linkage-[A-Za-z0-9_-]{6,64}$/;
++function linkageLocation(sourceRoot, work, create) {
++  directory(sourceRoot); directory(work, 0o700);
++  const name = basename(work); assert.match(name, LINKAGE_WORK); assert.equal(work, '/tmp/' + name);
++  const target = join(sourceRoot, 'target');
++  if (create && !lstatSync(target, {throwIfNoEntry:false})) mkdirSync(target, {mode:0o700});
++  directory(target);
++  const registry = join(target, 'conditional-publication-linkage-locators');
++  if (create && !lstatSync(registry, {throwIfNoEntry:false})) mkdirSync(registry, {mode:0o700});
++  directory(registry, 0o700);
++  const owner = regular(fileURLToPath(new URL('./compile.mjs', import.meta.url)), 1048576);
++  return {name, registry, path:join(registry, name + '.json'), ownerSha256:sha(owner.bytes)};
++}
++function validateLinkageLocator(value, sourceRoot, filename, ownerSha256) {
++  closed(value, 'schema complete accepted work_basename work_path source_root owner_module_sha256', 'private linkage locator');
++  assert.equal(value.schema, 'prismpm/private-publication-linkage-locator/1');
++  assert.equal(value.complete, false); assert.equal(value.accepted, false);
++  assert.match(value.work_basename, LINKAGE_WORK); assert.equal(filename, value.work_basename + '.json');
++  assert.equal(value.work_path, '/tmp/' + value.work_basename); assert.equal(value.source_root, sourceRoot);
++  assert.equal(value.owner_module_sha256, ownerSha256, 'actual linkage owner module');
++  directory(value.work_path, 0o700);
++}
++function linkageRegistry(location, sourceRoot, addedBytes = 0) {
++  let count = addedBytes ? 1 : 0, total = addedBytes; const entries = opendirSync(location.registry);
++  try {
++    for (let entry; (entry = entries.readSync()) !== null;) {
++      assert.ok(++count <= 256, 'linkage locator registry count bound');
++      assert.ok(entry.isFile() && entry.name.endsWith('.json') && LINKAGE_WORK.test(entry.name.slice(0, -5)), 'closed linkage locator registry member');
++      const held = regular(join(location.registry, entry.name), 4096);
++      assert.ok([0o400, 0o444].includes(held.stat.mode & 0o7777), 'immutable linkage locator record mode');
++      total += held.bytes.length; assert.ok(total <= 1048576, 'linkage locator registry byte bound');
++      validateLinkageLocator(JSON.parse(held.bytes), sourceRoot, entry.name, location.ownerSha256);
++    }
++  } finally {entries.closeSync();}
++  directory(location.registry, 0o700);
++}
++export function createLinkageLocator({sourceRoot, work}) {
++  const location = linkageLocation(sourceRoot, work, true), {name, path, ownerSha256} = location;
++  assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined, 'unoccupied per-work linkage locator required');
++  const value = {schema:'prismpm/private-publication-linkage-locator/1', complete:false, accepted:false,
++    work_basename:name, work_path:work, source_root:sourceRoot, owner_module_sha256:ownerSha256};
++  validateLinkageLocator(value, sourceRoot, name + '.json', ownerSha256);
++  const bytes = canonicalTransport(value); assert.ok(bytes.length <= 4096, 'bounded linkage locator');
++  linkageRegistry(location, sourceRoot, bytes.length); exclusive(path, bytes, 0o400);
++  const held = regular(path, 4096); assert.deepEqual(held.bytes, bytes);
++  validateLinkageLocator(JSON.parse(held.bytes), sourceRoot, name + '.json', ownerSha256); return path;
++}
++export function validateLinkageLocation({sourceRoot, work}) {
++  const location = linkageLocation(sourceRoot, work, false);
++  linkageRegistry(location, sourceRoot);
++  const held = regular(location.path, 4096);
++  assert.ok([0o400, 0o444].includes(held.stat.mode & 0o7777), 'immutable linkage locator record mode');
++  validateLinkageLocator(JSON.parse(held.bytes), sourceRoot, location.name + '.json', location.ownerSha256);
++}
+diff --git a/tests/publication-context-linkage/capture-retained-controls.test.mjs b/tests/publication-context-linkage/capture-retained-controls.test.mjs
+index 25acd1fe..4e90ab8c 100644
+--- a/tests/publication-context-linkage/capture-retained-controls.test.mjs
++++ b/tests/publication-context-linkage/capture-retained-controls.test.mjs
+@@ -211,3 +211,172 @@ test('component actual factory body records discovery before its first failing p
+   assert.equal(existsSync(join(work, 'candidate-retained-controls.json')), false);
+   assert.equal(existsSync(join(work, 'capture-factory-evidence.json')), false);
+ });
++
++// New bridge tests catch loss of early discovery, cross-kind locator admission,
++// and a reverse reference detached from the actual held generated build.
++function linkageFixture(t) {
++  const sourceRoot = temporary(t, '/tmp/prismpm-locator-component-');
++  return {sourceRoot, work:temporary(t, '/tmp/prismpm-publication-linkage-'),
++    registry:join(sourceRoot, 'target/conditional-publication-linkage-locators')};
++}
++async function linkageHelpers() {
++  const helpers = await import('./capture-retained-controls.mjs');
++  assert.equal(typeof helpers.createLinkageLocator, 'function', 'fixed linkage discovery helper exists');
++  assert.equal(typeof helpers.validateLinkageLocation, 'function', 'fixed linkage location validator exists');
++  return helpers;
++}
++test('component linkage locators bind repeated real work to the actual compiler module', async t => {
++  const {createLinkageLocator, validateLinkageLocation} = await linkageHelpers();
++  const f = linkageFixture(t), first = createLinkageLocator(f), bytes = readFileSync(first);
++  assert.deepEqual(JSON.parse(bytes), {schema:'prismpm/private-publication-linkage-locator/1',
++    complete:false, accepted:false, work_basename:basename(f.work), work_path:f.work,
++    source_root:f.sourceRoot, owner_module_sha256:sha(readFileSync(new URL('./compile.mjs', import.meta.url)))});
++  assert.equal(lstatSync(first).mode & 0o7777, 0o400);
++  assert.equal(lstatSync(f.registry).mode & 0o7777, 0o700);
++  validateLinkageLocation(f);
++  const second = {...f, work:temporary(t, '/tmp/prismpm-publication-linkage-')};
++  assert.notEqual(createLinkageLocator(second), first); validateLinkageLocation(second);
++  assert.deepEqual(readFileSync(first), bytes); assert.equal(readdirSync(f.registry).length, 2);
++  assert.throws(() => createLinkageLocator(f), /occupied/);
++  assert.throws(() => validateLinkageLocation({...f, work:temporary(t, '/tmp/prismpm-publication-linkage-')}), /ENOENT/);
++});
++
++test('component linkage locators refuse wrong bindings and capture registry confusion', async t => {
++  const {createLinkageLocator, validateLinkageLocation} = await linkageHelpers();
++  for (const kind of ['schema', 'source', 'path', 'owner', 'basename', 'extra', 'complete', 'accepted',
++    'capture-record-in-linkage', 'linkage-record-in-capture', 'capture-prefix', 'wrong-registry']) {
++    const f = linkageFixture(t), path = createLinkageLocator(f), value = JSON.parse(readFileSync(path));
++    const next = {...f, work:temporary(t, '/tmp/prismpm-publication-linkage-')};
++    if (kind === 'linkage-record-in-capture') {
++      const capture = {...f, work:temporary(t)}, capturePath = createCaptureLocator(capture);
++      chmodSync(capturePath, 0o600); writeFileSync(capturePath, canonicalTransport(value)); chmodSync(capturePath, 0o400);
++      assert.throws(() => createCaptureLocator({...f, work:temporary(t)})); continue;
++    }
++    if (kind === 'capture-prefix') {
++      const capture = {...f, work:temporary(t)}; createCaptureLocator(capture);
++      assert.throws(() => createLinkageLocator(capture)); assert.throws(() => validateLinkageLocation(capture)); continue;
++    }
++    if (kind === 'wrong-registry') {
++      renameSync(f.registry, f.registry + '-wrong');
++      assert.throws(() => validateLinkageLocation(f), /ENOENT/); continue;
++    }
++    if (kind === 'schema') value.schema = 'prismpm/private-publication-capture-locator/1';
++    if (kind === 'source') value.source_root = temporary(t, '/tmp/prismpm-locator-component-');
++    if (kind === 'path') value.work_path = next.work;
++    if (kind === 'owner') value.owner_module_sha256 = sha(readFileSync(new URL('./capture-owner.mjs', import.meta.url)));
++    if (kind === 'basename') value.work_basename = basename(next.work);
++    if (kind === 'extra') value.extra = true;
++    if (kind === 'complete') value.complete = true;
++    if (kind === 'accepted') value.accepted = true;
++    let replacement = canonicalTransport(value);
++    if (kind === 'capture-record-in-linkage') replacement = readFileSync(createCaptureLocator({...f, work:temporary(t)}));
++    chmodSync(path, 0o600); writeFileSync(path, replacement); chmodSync(path, 0o400);
++    assert.throws(() => validateLinkageLocation(f), undefined, kind);
++    assert.throws(() => createLinkageLocator(next), undefined, kind);
++  }
++});
++
++test('component linkage locators refuse aliases, unsafe files, permissions and ownership', async t => {
++  const {createLinkageLocator, validateLinkageLocation} = await linkageHelpers();
++  for (const kind of ['root-alias', 'work-alias', 'target-alias', 'registry-alias', 'record-alias',
++    'record-hardlink', 'registry-mode', 'work-mode', 'root-mode', 'record-mode', 'wrong-owner',
++    'malformed-name', 'malformed-json', 'oversize']) {
++    const f = linkageFixture(t), first = createLinkageLocator(f);
++    if (kind.endsWith('-alias') && kind !== 'record-alias') {
++      const path = {root:f.sourceRoot, work:f.work, target:join(f.sourceRoot, 'target'), registry:f.registry}[kind.split('-')[0]];
++      renameSync(path, path + '.real'); symlinkSync(path + '.real', path);
++      t.after(() => rmSync(path + '.real', {recursive:true, force:true}));
++    } else if (kind === 'record-alias') {renameSync(first, first + '.real'); symlinkSync(first + '.real', first);}
++    else if (kind === 'record-hardlink') linkSync(first, join(f.sourceRoot, 'linked-record'));
++    else if (kind === 'wrong-owner') {
++      if (process.getuid() === 0) chownSync(first, 1, lstatSync(first).gid);
++      else {assert.notEqual(lstatSync('/tmp').uid, process.getuid()); f.sourceRoot = '/tmp';}
++    } else if (kind.endsWith('-mode')) chmodSync({registry:f.registry, work:f.work, root:f.sourceRoot, record:first}[kind.split('-')[0]], 0o777);
++    else if (kind === 'malformed-name') put(join(f.registry, 'unexpected'), '{}');
++    else {chmodSync(first, 0o600); writeFileSync(first, kind === 'oversize' ? ' '.repeat(4097) : '{'); chmodSync(first, 0o400);}
++    assert.throws(() => validateLinkageLocation(f), undefined, kind);
++    assert.throws(() => createLinkageLocator({...f, work:kind === 'work-alias' || kind === 'work-mode' ? f.work : temporary(t, '/tmp/prismpm-publication-linkage-')}), undefined, kind);
++  }
++});
++
++test('component linkage registry bounds allow 256 records and refuse the next admission', async t => {
++  const {createLinkageLocator, validateLinkageLocation} = await linkageHelpers();
++  const f = linkageFixture(t), first = createLinkageLocator(f), value = JSON.parse(readFileSync(first));
++  for (let index = 1; index < 256; index++) {
++    const work = temporary(t, '/tmp/prismpm-publication-linkage-');
++    put(join(f.registry, basename(work) + '.json'), canonicalTransport({...value, work_path:work, work_basename:basename(work)}));
++  }
++  validateLinkageLocation(f);
++  assert.throws(() => createLinkageLocator({...f, work:temporary(t, '/tmp/prismpm-publication-linkage-')}), /registry.*bound/);
++  assert.equal(readdirSync(f.registry).length, 256);
++});
++
++function exactFunction(url, start, end, dependencies) {
++  const text = readFileSync(url, 'utf8'), offset = text.indexOf(start);
++  assert.ok(offset >= 0); const stop = end ? text.indexOf(end, offset) : text.length;
++  assert.ok(stop > offset);
++  return Function(...Object.keys(dependencies), 'return (' + text.slice(offset, stop).replace(/^export /, '') + ');')(...Object.values(dependencies));
++}
++test('component actual prepareStage discovers work before early project failure and launches no child', async t => {
++  // No branded compiler is invented: these explicit dependencies execute only
++  // the real prepareStage prefix, before any project or compiler execution.
++  const helpers = await import('./capture-retained-controls.mjs');
++  for (const blocked of [false, true]) {
++    const sourceRoot = temporary(t, '/tmp/prismpm-locator-component-'); let work, reads = 0, children = 0;
++    const dependencies = {assert, join, tmpdir, repository:sourceRoot, draft:sourceRoot, modules:['Fixture'],
++      process:{env:{}, stderr:{write:() => {}}}, mutationNames:[], assertFrozenInputs:() => {},
++      boundCompiler:() => ({runDriver:() => {children++; assert.fail('no compiler child');}}),
++      mkdtempSync:prefix => {work = mkdtempSync(prefix); t.after(() => rmSync(work, {recursive:true, force:true})); return work;},
++      createLinkageLocator:helpers.createLinkageLocator, modulePath:name => name,
++      capturedInput:() => {
++        reads++; const registry = join(sourceRoot, 'target/conditional-publication-linkage-locators');
++        assert.ok(existsSync(registry), 'early linkage locator must precede source/project reads');
++        const names = readdirSync(registry); assert.equal(names.length, 1);
++        const locator = JSON.parse(readFileSync(join(registry, names[0])));
++        assert.equal(locator.work_path, work); assert.equal(locator.complete, false);
++        assert.deepEqual(readdirSync(work), []); throw new Error('planted early project refusal');
++      }, run:() => {children++; assert.fail('no child');}};
++    if (blocked) put(join(sourceRoot, 'target/conditional-publication-linkage-locators/unexpected'), '{}');
++    const prepare = exactFunction(new URL('./compile.mjs', import.meta.url), 'function prepareStage(', null, dependencies);
++    assert.throws(() => prepare({}, null, null, {}), blocked ? /locator registry member/ : /planted early project refusal/);
++    assert.equal(reads, blocked ? 0 : 1); assert.equal(children, 0);
++    assert.equal(existsSync(join(work, 'publication-linkage-evidence.json')), false);
++  }
++});
++
++test('component actual owner writes the held linkage reverse reference before a later forward receipt', async t => {
++  const helpers = await import('./capture-retained-controls.mjs');
++  for (const kind of ['valid', 'missing', 'wrong-root', 'wrong-owner', 'changed-during-replay']) {
++    const f = linkageFixture(t), captureWork = temporary(t); let checks = 0, factoryCalls = 0;
++    if (kind !== 'missing' && helpers.createLinkageLocator) {
++      const path = helpers.createLinkageLocator(f);
++      if (kind === 'wrong-owner') {const value = JSON.parse(readFileSync(path)); value.owner_module_sha256 = '0'.repeat(64);
++        chmodSync(path, 0o600); writeFileSync(path, canonicalTransport(value)); chmodSync(path, 0o400);}
++    }
++    const build = {work:kind === 'wrong-root' ? temporary(t, '/tmp/prismpm-publication-linkage-') : f.work,
++      unchanged:() => {checks++;}, compilerTools:{component_only:true}, generation:{ir_sha256:'a'.repeat(64)}};
++    const capture = {work:captureWork, verify:() => {}, receipt:{path:join(captureWork, 'capture-factory-evidence.json'), sha256:'b'.repeat(64)}, oracle:{}};
++    const dependencies = {assert, join, writeFileSync, readFileSync, sha, repository:f.sourceRoot,
++      validateLinkageLocation:helpers.validateLinkageLocation, completeOwners:new WeakSet(),
++      verifyCapturedFactory:async () => {factoryCalls++; return capture;}, prerequisite:async (_t, _name, fn) => fn(),
++      replay:() => {
++        if (kind === 'changed-during-replay') rmSync(join(f.registry, basename(f.work) + '.json'));
++        return {component_only:true};
++      }};
++    const verify = exactFunction(new URL('./capture-owner.mjs', import.meta.url), 'export async function verifyCapturedPublicationLinkage(', null, dependencies);
++    if (kind !== 'valid') {
++      await assert.rejects(verify({diagnostic:() => {}}, build));
++      assert.equal(existsSync(join(captureWork, 'capture-owner-evidence.json')), false);
++      assert.equal(factoryCalls, kind === 'changed-during-replay' ? 1 : 0); continue;
++    }
++    const result = await verify({diagnostic:() => {}}, build), bytes = readFileSync(result.path), owner = JSON.parse(bytes);
++    assert.deepEqual(owner.linkage, {work:f.work, receipt:'publication-linkage-evidence.json'});
++    assert.equal(result.sha256, sha(bytes)); assert.ok(checks >= 3);
++    const forwardPath = join(owner.linkage.work, owner.linkage.receipt);
++    assert.equal(existsSync(forwardPath), false, 'reverse reference claims no future receipt hash or completion');
++    put(forwardPath, JSON.stringify({component_only:true, actualCapture:result, compiler:build.compilerTools, ir:build.generation.ir_sha256}));
++    const forward = JSON.parse(readFileSync(forwardPath));
++    assert.equal(forward.actualCapture.path, result.path); assert.equal(forward.actualCapture.sha256, sha(readFileSync(result.path)));
++    assert.deepEqual(readFileSync(result.path), bytes, 'later forward receipt never rewrites capture-owner bytes');
++  }
++});
+diff --git a/tests/publication-context-linkage/compile.mjs b/tests/publication-context-linkage/compile.mjs
+index 003b3c73..40aa19f6 100644
+--- a/tests/publication-context-linkage/compile.mjs
++++ b/tests/publication-context-linkage/compile.mjs
+@@ -11,6 +11,7 @@ import {localModuleInputs} from '../browser-view/local-module-inputs.mjs';
+ import {captureGeneratedPackage} from '../browser-view/generated-package.mjs';
+ import {captureGeneratedWasm} from '../browser-view/generated-wasm.mjs';
+ import {mutateSources, mutationNames} from './mutations.mjs';
++import {createLinkageLocator} from './capture-retained-controls.mjs';
+ export {run, sha};
+ export const draft = dirname(fileURLToPath(import.meta.url));
+ export const repository = resolve(draft, '../..');
+@@ -137,6 +138,7 @@ function prepareStage(compilerOwner, mutation, baseline, inputs) {
+   for (const key of Object.keys(process.env)) assert.ok(!key.startsWith('PRISMPM_PUBLICATION_LINKAGE_'), 'publication linkage acceptance refuses bypass ' + key);
+   assertFrozenInputs(inputs);
+   const work = mkdtempSync(join(tmpdir(), 'prismpm-publication-linkage-'));
++  createLinkageLocator({sourceRoot:repository, work});
+   const sourcePath = name => join(name === 'Fixture' ? draft : join(repository, 'stdlib'), 'src', ...name.split('.')) + '.lex.tex';
+   const sources = new Map(modules.map(name => [name, capturedInput(modulePath(name), inputs)]));
+   const originals = new Map(sources);

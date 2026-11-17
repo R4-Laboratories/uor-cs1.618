@@ -1,0 +1,1 @@
+{"schema":"cs1618/local-artifact-inventory-check/1","run_id":44060585070,"lane":"amd64","files_checked":490,"errors":[],"extra":[],"missing":[],"scope":"local byte and membership verification only; independent review and ARM64 pending"}
