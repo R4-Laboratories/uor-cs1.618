@@ -1,0 +1,37 @@
+{
+  "schema": "cs1618/disposable-extraction-retirement/1",
+  "reason": "both native artifact reviews and exact six-file import review passed; compressed originals and indexes verified against committed26bc359 before disposal",
+  "records": [
+    {
+      "removed_extraction": "artifacts/numeric-native/ci-44060585070/amd64/evidence",
+      "durable_zip": "docs/research/numeric-export/recovery-2026-11-16/ci-44060585070/evidence-amd64-14319337290.zip",
+      "zip_sha256": "0c3790436072fd71a1fa62de34a5698105fcb93a934ba31eda29e3544257cfba",
+      "files": 26,
+      "bytes": 268928
+    },
+    {
+      "removed_extraction": "artifacts/numeric-native/ci-44060585070/amd64/owner",
+      "durable_zip": "docs/research/numeric-export/recovery-2026-11-16/ci-44060585070/owner-amd64-14319083097.zip",
+      "zip_sha256": "218e21171b401da49a53eaea154e8f794627f545ff6f2656105c99f40cc07aad",
+      "files": 465,
+      "bytes": 85640564
+    },
+    {
+      "removed_extraction": "artifacts/numeric-native/ci-44060585070/arm64/evidence",
+      "durable_zip": "docs/research/numeric-export/recovery-2026-11-16/ci-44060585070/evidence-arm64-14319474912.zip",
+      "zip_sha256": "11fee283a7113a9754057506dddbc007b2420d8af067781b68b9ae0018fb587f",
+      "files": 26,
+      "bytes": 367068
+    },
+    {
+      "removed_extraction": "artifacts/numeric-native/ci-44060585070/arm64/owner",
+      "durable_zip": "docs/research/numeric-export/recovery-2026-11-16/ci-44060585070/owner-arm64-14321141148.zip",
+      "zip_sha256": "0b98536a29d13bc924421b3ef5b38b0f9293ca306dd387e2e93958ecde8263a8",
+      "files": 465,
+      "bytes": 85391210
+    }
+  ],
+  "free_before": 9261826048,
+  "free_after": 9436237824,
+  "scope": "only disposable extracted duplicates removed; original ZIPs, inventories, reports and imported source retained"
+}
