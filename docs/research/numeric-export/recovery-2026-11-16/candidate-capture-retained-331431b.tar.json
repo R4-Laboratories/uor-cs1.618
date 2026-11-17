@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/recovery-evidence-archive/1",
+  "source_revision": "331431bc6c2b71ca06d5e145d9e6a825f6218053",
+  "scope": "Task4a source/component controls, independent review pending; no SDK qualification",
+  "archive": "candidate-capture-retained-331431b.tar.gz",
+  "bytes": 654334,
+  "sha256": "8d408d3928bca5db87c0226261e56e44a0af901152e6de41be479b200b82172d",
+  "index_sha256": "ae25d03a835225f392fd412bdeb41a5abdf5ab681486f489fb6aab47699ca21d",
+  "entries": 75
+}

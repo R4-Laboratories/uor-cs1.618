@@ -1,0 +1,516 @@
+diff --git a/tests/publication-context-linkage/capture-owner.mjs b/tests/publication-context-linkage/capture-owner.mjs
+index 300dde99..b6ff24af 100644
+--- a/tests/publication-context-linkage/capture-owner.mjs
++++ b/tests/publication-context-linkage/capture-owner.mjs
+@@ -11,6 +11,7 @@ import {repository, run, sha} from './compile.mjs';
+ import {executeWasm} from './execute.mjs';
+ import {verifyCaptureOracle} from './capture-oracle.mjs';
+ import {verifyCandidateTransport, verifyCandidateDiagnostics} from './candidate-transport.mjs';
++import {createCaptureLocator, runRetainedControls} from './capture-retained-controls.mjs';
+ 
+ const excluded = new Set(['.git', 'target', '.lexlean', '.prism']);
+ const completeOwners = new WeakSet();
+@@ -159,6 +160,7 @@ export async function verifyCapturedFactory(t) {
+   const work = mkdtempSync(join(tmpdir(), 'prismpm-publication-capture-'));
+   let source, executable, oracle, transport, diagnosticEvidence, finished = false;
+   try {
++    createCaptureLocator({sourceRoot:repository, work});
+     await prerequisite(t, 'fresh complete source-built capture executable has private custody', () => {
+       source = stageSource(work); executable = captureExecutable(work, source);
+       const path = executable.path, original = readFileSync(path);
+@@ -229,22 +231,19 @@ export async function verifyCapturedFactory(t) {
+       }
+     });
+     const retained = sourceInventory(output, captureInventoryRole);
+-    const verify = () => {executable.verify(); source.verify();
++    let retainedControls;
++    const verify = () => {retainedControls?.verify(); executable.verify(); source.verify();
+       assert.deepEqual(sourceInventory(output, captureInventoryRole), retained, 'complete retained actual capture tree');
+       assert.deepEqual(verifyCaptureOracle(output, executable.evidence.private.sha256, source.root), oracle);
+       assert.deepEqual(verifyTransport(), transport);};
+     verify();
+-    for (const name of ['.git', 'target', '.lexlean', '.prism']) {
+-      const path = join(output, name); assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined);
+-      try {
+-        writeFileSync(path, 'unmodeled captured root input', {flag:'wx'});
+-        assert.throws(verify, /complete retained actual capture tree/);
+-      } finally {unlinkSync(path);}
+-      verify();
+-    }
++    retainedControls = runRetainedControls({work, sourceRoot:source.root, captureRoot:output,
++      verify, verifyTransport, originalTransport:transport, executableSha256:executable.evidence.private.sha256});
++    verify();
+     const evidence = {schema:'prismpm/private-publication-capture-factory/1', completeApplicationAccepted:false,
+       source:Object.fromEntries(source.records), executable:executable.evidence,
+-      actualCapture:oracle.evidence, candidateTransport:transport, separateDiagnostics:diagnosticEvidence, retainedTree:Object.fromEntries(retained),
++      actualCapture:oracle.evidence, candidateTransport:transport, separateDiagnostics:diagnosticEvidence,
++      retainedControls:retainedControls.reference, retainedTree:Object.fromEntries(retained),
+       reconstructibleCacheOnly:['producer-source/target']};
+     const receipt = join(work, 'capture-factory-evidence.json');
+     writeFileSync(receipt, JSON.stringify(evidence) + '\n', {flag:'wx', mode:0o444});
+diff --git a/tests/publication-context-linkage/capture-retained-controls.mjs b/tests/publication-context-linkage/capture-retained-controls.mjs
+new file mode 100644
+index 00000000..2ebd6ed1
+--- /dev/null
++++ b/tests/publication-context-linkage/capture-retained-controls.mjs
+@@ -0,0 +1,229 @@
++// Private owner plumbing. Component dependency tests confer no capture/ELF authority.
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import {closeSync, constants, fchmodSync, fstatSync, ftruncateSync, lstatSync, mkdirSync,
++  openSync, opendirSync, readSync, realpathSync, renameSync, unlinkSync, writeFileSync} from 'node:fs';
++import {basename, dirname, join, resolve} from 'node:path';
++import {fileURLToPath} from 'node:url';
++import {canonicalTransport} from './candidate-transport.mjs';
++
++const sha = bytes => createHash('sha256').update(bytes).digest('hex');
++const ENVELOPE = 'candidate-transport-evidence.json', SIDECAR = 'candidate-retained-controls.json';
++const AUTHORITY = ['conditional-capture-bootstrap.py', 'conditional-capture-candidate-command.mjs',
++  'conditional-capture-candidate.py', 'conditional-capture-sdk.py', 'sdk-command-owner.mjs', 'sdk-command-owner.py'];
++const ROWS = [
++  ['source-byte', 'source/crates/prismpm/src/exporter/source.rs', 'refused'],
++  ...AUTHORITY.map(name => ['authority-byte:' + name, 'source/scripts/' + name, 'refused']),
++  ...['envelope-missing', 'envelope-altered', 'retirement-incomplete'].map(id => [id, 'capture/' + ENVELOPE, 'refused']),
++  ...['observed-config-coherent', 'observed-retirement-coherent'].map(id => [id, 'capture/' + ENVELOPE, 'observed-shape-accepted']),
++  ...['.git', 'target', '.lexlean', '.prism'].map(name => ['added:' + name, 'capture/' + name, 'not-invoked']),
++];
++const hash = value => assert.match(value, /^[0-9a-f]{64}$/);
++function closed(value, keys, label) {
++  assert.ok(value && typeof value === 'object' && !Array.isArray(value), label);
++  assert.deepEqual(Object.keys(value).sort(), keys.split(' ').sort(), 'closed ' + label);
++}
++function noAliases(path) {
++  assert.equal(resolve(path), path, 'absolute canonical retained path');
++  for (let part = path; ; part = dirname(part)) {
++    assert.ok(!lstatSync(part).isSymbolicLink(), 'no aliased retained path');
++    if (part === dirname(part)) break;
++  }
++  assert.equal(realpathSync(path), path, 'no aliased retained path');
++}
++function directory(path, mode) {
++  noAliases(path); const stat = lstatSync(path);
++  assert.ok(stat.isDirectory() && stat.uid === process.getuid(), 'owned retained directory');
++  assert.equal(stat.mode & 0o7022, 0, 'safe retained directory mode');
++  if (mode !== undefined) assert.equal(stat.mode & 0o7777, mode, 'private retained directory mode');
++}
++function sameIdentity(before, after, label) {
++  for (const key of ['dev', 'ino', 'uid', 'gid', 'nlink']) assert.equal(after[key], before[key], label + ' ' + key);
++}
++function regular(path, maximum) {
++  noAliases(path);
++  const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
++  try {
++    const stat = fstatSync(fd);
++    assert.ok(stat.isFile() && stat.nlink === 1 && stat.uid === process.getuid()
++      && stat.size <= maximum, 'bounded owned singly linked retained file');
++    const bytes = Buffer.alloc(stat.size);
++    for (let offset = 0; offset < bytes.length;) {
++      const count = readSync(fd, bytes, offset, Math.min(65536, bytes.length - offset), null);
++      assert.ok(count > 0, 'retained file not shortened during read'); offset += count;
++    }
++    assert.equal(readSync(fd, Buffer.alloc(1), 0, 1, null), 0, 'retained file not grown during read');
++    const after = fstatSync(fd);
++    sameIdentity(stat, after, 'stable retained read');
++    for (const key of ['mode', 'size', 'mtimeMs', 'ctimeMs']) assert.equal(after[key], stat[key], 'stable retained read ' + key);
++    sameIdentity(stat, lstatSync(path), 'stable retained path');
++    assert.equal(bytes.length, stat.size); return {path, stat, bytes};
++  } finally {closeSync(fd);}
++}
++function exclusive(path, bytes, mode = 0o444) {
++  const fd = openSync(path, constants.O_WRONLY | constants.O_CREAT | constants.O_EXCL | constants.O_NOFOLLOW, mode);
++  try {writeFileSync(fd, bytes); fchmodSync(fd, mode);} finally {closeSync(fd);}
++}
++function replaceBytes(held, bytes) {
++  const fd = openSync(held.path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
++  try {sameIdentity(held.stat, fstatSync(fd), 'retained mutation identity'); fchmodSync(fd, (held.stat.mode & 0o7777) | 0o200);}
++  finally {closeSync(fd);}
++  const writable = openSync(held.path, constants.O_WRONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
++  try {
++    sameIdentity(held.stat, fstatSync(writable), 'retained mutation identity');
++    writeFileSync(writable, bytes); ftruncateSync(writable, bytes.length);
++    fchmodSync(writable, held.stat.mode & 0o7777);
++  } finally {closeSync(writable);}
++}
++function restored(held, maximum) {
++  const current = regular(held.path, maximum);
++  sameIdentity(held.stat, current.stat, 'retained restoration identity');
++  assert.equal(current.stat.mode, held.stat.mode, 'retained restoration mode');
++  assert.deepEqual(current.bytes, held.bytes, 'retained restoration bytes');
++}
++
++export function validateRetainedControlRecord(value) {
++  closed(value, 'schema scope complete_application_accepted status source_sha256 envelope_sha256 executable_sha256 controls', 'retained control record');
++  assert.equal(value.schema, 'prismpm/candidate-retained-controls/1');
++  assert.equal(value.scope, 'actual-held-capture-mutations-only');
++  assert.equal(value.complete_application_accepted, false); assert.equal(value.status, 'completed');
++  for (const key of ['source_sha256', 'envelope_sha256', 'executable_sha256']) hash(value[key]);
++  assert.ok(Array.isArray(value.controls)); assert.equal(value.controls.length, ROWS.length, 'complete retained control inventory');
++  value.controls.forEach((row, index) => {
++    closed(row, 'id target reader_result held_owner_refused restored', 'retained control row');
++    assert.deepEqual([row.id, row.target, row.reader_result], ROWS[index], 'exact ordered retained control');
++    assert.equal(row.held_owner_refused, true); assert.equal(row.restored, true);
++  });
++}
++
++// Only capture-owner supplies these dependencies in the actual factory. No factory
++// callback, environment selector or serialized compiler owner is introduced.
++export function runRetainedControls({work, sourceRoot, captureRoot, verify, verifyTransport, originalTransport, executableSha256}) {
++  assert.equal(sourceRoot, join(work, 'source')); assert.equal(captureRoot, join(work, 'capture'));
++  directory(work, 0o700); directory(sourceRoot); directory(captureRoot);
++  const originalResult = structuredClone(originalTransport);
++  function positive() {verify(); assert.deepEqual(verifyTransport(), originalResult, 'original held transport result');}
++  positive();
++  const original = regular(join(captureRoot, ENVELOPE), 32 * 1048576), envelope = JSON.parse(original.bytes);
++  hash(envelope.descriptor.source_sha256); hash(executableSha256);
++  assert.equal(envelope.descriptor.executable_sha256, executableSha256);
++  const heldSources = ROWS.slice(0, 7).map(([, path]) => regular(join(work, path), 256 * 1048576));
++  const controls = [];
++  function control(index, mutate, restore, checkRestored, readerCheck) {
++    positive();
++    const [id, target, reader_result] = ROWS[index];
++    try {
++      mutate();
++      if (reader_result === 'refused') assert.throws(verifyTransport, readerCheck, id + ' direct reader rejection');
++      else if (reader_result === 'observed-shape-accepted') verifyTransport();
++      assert.throws(verify, index < 7 ? /complete private capture source remained frozen/ : /complete retained actual capture tree/,
++        id + ' held owner rejection');
++    } finally {restore(); checkRestored(); positive();}
++    // Appended only after both checks and successful restoration, never planned rows.
++    controls.push({id, target, reader_result, held_owner_refused:true, restored:true});
++  }
++  heldSources.forEach((held, index) => {
++    assert.ok(held.bytes.length > 0); const changed = Buffer.from(held.bytes); changed[0] ^= 1;
++    control(index, () => replaceBytes(held, changed), () => replaceBytes(held, held.bytes),
++      () => restored(held, 256 * 1048576), /independently owned source bytes and complete membership/);
++  });
++  const backup = join(work, 'candidate-transport-evidence.missing-control');
++  assert.equal(lstatSync(backup, {throwIfNoEntry:false}), undefined, 'unoccupied missing-envelope backup required');
++  let moved = false, reservation;
++  control(7, () => {
++    exclusive(backup, Buffer.alloc(0)); reservation = regular(backup, 0);
++    restored(original, 32 * 1048576); sameIdentity(reservation.stat, lstatSync(backup), 'exclusive missing-envelope backup');
++    renameSync(original.path, backup); moved = true;
++  }, () => {
++    if (moved) {
++      assert.equal(lstatSync(original.path, {throwIfNoEntry:false}), undefined, 'missing envelope path remained absent');
++      sameIdentity(original.stat, lstatSync(backup), 'missing envelope original inode'); renameSync(backup, original.path);
++    } else if (reservation) {sameIdentity(reservation.stat, lstatSync(backup), 'exclusive backup'); unlinkSync(backup);}
++  }, () => restored(original, 32 * 1048576), error => error.code === 'ENOENT' && error.path === original.path);
++  const rewrites = [
++    value => {value.route = 'unknown-retained-control-route';},
++    value => {value.retirement.attachment_eof_observed = false;},
++    value => {
++      const before = value.descriptor.runtime.config_digest;
++      value.descriptor.runtime.config_digest = 'sha256:' + (before === 'sha256:' + '0'.repeat(64) ? '1' : '0').repeat(64);
++      value.stage_admission.descriptor_sha256 = sha(canonicalTransport(value.descriptor));
++    },
++    value => {
++      const ids = new Set(value.retirement.actors.map(row => row.id));
++      const next = ['0', '1', '2', '3'].map(char => char.repeat(64)).find(id => !ids.has(id));
++      assert.ok(next); value.retirement.actors[0].id = next;
++    },
++  ];
++  rewrites.forEach((rewrite, offset) => {
++    const value = JSON.parse(original.bytes); rewrite(value);
++    const check = offset === 0
++      ? error => error.code === 'ERR_ASSERTION' && error.actual === 'unknown-retained-control-route' && error.expected === 'candidate-source-v1'
++      : error => error.code === 'ERR_ASSERTION' && error.actual === false && error.expected === true;
++    control(8 + offset, () => replaceBytes(original, canonicalTransport(value)), () => replaceBytes(original, original.bytes),
++      () => restored(original, 32 * 1048576), check);
++  });
++  for (let index = 12; index < ROWS.length; index++) {
++    const path = join(work, ROWS[index][1]); assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined);
++    let added = false;
++    control(index, () => {writeFileSync(path, 'unmodeled captured root input', {flag:'wx'}); added = true;},
++      () => {if (added) unlinkSync(path);}, () => assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined));
++  }
++  positive();
++  const record = {schema:'prismpm/candidate-retained-controls/1', scope:'actual-held-capture-mutations-only',
++    complete_application_accepted:false, status:'completed', source_sha256:envelope.descriptor.source_sha256,
++    envelope_sha256:sha(original.bytes), executable_sha256:executableSha256, controls};
++  validateRetainedControlRecord(record); const bytes = canonicalTransport(record); assert.ok(bytes.length <= 65536);
++  const path = join(work, SIDECAR); exclusive(path, bytes);
++  const held = regular(path, 65536), digest = sha(bytes);
++  const verifyRecord = () => {
++    const current = regular(path, 65536);
++    sameIdentity(held.stat, current.stat, 'retained control record identity');
++    assert.equal(current.stat.mode, held.stat.mode, 'retained control record mode');
++    assert.deepEqual(current.bytes, bytes, 'retained control record exact bytes');
++    assert.equal(sha(current.bytes), digest, 'retained control record hash');
++    validateRetainedControlRecord(JSON.parse(current.bytes));
++  };
++  verifyRecord(); positive();
++  return Object.freeze({reference:Object.freeze({path:SIDECAR, bytes:bytes.length, sha256:digest}), verify:verifyRecord});
++}
++
++const WORK = /^prismpm-publication-capture-[A-Za-z0-9_-]{6,64}$/;
++function validateLocator(value, sourceRoot, filename) {
++  closed(value, 'schema complete accepted work_basename work_path source_root owner_module_sha256', 'private capture locator');
++  assert.equal(value.schema, 'prismpm/private-publication-capture-locator/1');
++  assert.equal(value.complete, false); assert.equal(value.accepted, false);
++  assert.match(value.work_basename, WORK); assert.equal(filename, value.work_basename + '.json');
++  assert.equal(value.work_path, '/tmp/' + value.work_basename); assert.equal(value.source_root, sourceRoot);
++  hash(value.owner_module_sha256); directory(value.work_path, 0o700);
++}
++export function createCaptureLocator({sourceRoot, work}) {
++  directory(sourceRoot); directory(work, 0o700);
++  const name = basename(work); assert.match(name, WORK); assert.equal(work, '/tmp/' + name);
++  const target = join(sourceRoot, 'target');
++  if (!lstatSync(target, {throwIfNoEntry:false})) mkdirSync(target, {mode:0o700});
++  directory(target);
++  const registry = join(target, 'conditional-publication-capture-locators');
++  if (!lstatSync(registry, {throwIfNoEntry:false})) mkdirSync(registry, {mode:0o700});
++  directory(registry, 0o700);
++  const path = join(registry, name + '.json');
++  assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined, 'unoccupied per-work locator required');
++  const owner = regular(fileURLToPath(new URL('./capture-owner.mjs', import.meta.url)), 1048576);
++  const value = {schema:'prismpm/private-publication-capture-locator/1', complete:false, accepted:false,
++    work_basename:name, work_path:work, source_root:sourceRoot, owner_module_sha256:sha(owner.bytes)};
++  validateLocator(value, sourceRoot, name + '.json');
++  const bytes = canonicalTransport(value); assert.ok(bytes.length <= 4096, 'bounded locator');
++  let count = 0, total = bytes.length; const entries = opendirSync(registry);
++  try {
++    for (let entry; (entry = entries.readSync()) !== null;) {
++      assert.ok(++count < 256, 'capture locator registry count bound');
++      assert.ok(entry.isFile() && entry.name.endsWith('.json') && WORK.test(entry.name.slice(0, -5)), 'closed locator registry member');
++      const held = regular(join(registry, entry.name), 4096);
++      assert.ok([0o400, 0o444].includes(held.stat.mode & 0o7777), 'immutable locator record mode');
++      total += held.bytes.length; assert.ok(total <= 1048576, 'capture locator registry byte bound');
++      validateLocator(JSON.parse(held.bytes), sourceRoot, entry.name);
++    }
++  } finally {entries.closeSync();}
++  directory(registry, 0o700); exclusive(path, bytes, 0o400);
++  const held = regular(path, 4096); assert.deepEqual(held.bytes, bytes);
++  validateLocator(JSON.parse(held.bytes), sourceRoot, name + '.json'); return path;
++}
+diff --git a/tests/publication-context-linkage/capture-retained-controls.test.mjs b/tests/publication-context-linkage/capture-retained-controls.test.mjs
+new file mode 100644
+index 00000000..25acd1fe
+--- /dev/null
++++ b/tests/publication-context-linkage/capture-retained-controls.test.mjs
+@@ -0,0 +1,213 @@
++// Component filesystem/control evidence only: no SDK, real capture or ELF admission.
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import {chmodSync, chownSync, existsSync, linkSync, lstatSync, mkdirSync, mkdtempSync, readFileSync,
++  readdirSync, renameSync, rmSync, symlinkSync, writeFileSync} from 'node:fs';
++import {basename, dirname, join} from 'node:path';
++import {tmpdir} from 'node:os';
++import test from 'node:test';
++import {canonicalTransport} from './candidate-transport.mjs';
++import {createCaptureLocator, runRetainedControls, validateRetainedControlRecord} from './capture-retained-controls.mjs';
++
++const sha = bytes => createHash('sha256').update(bytes).digest('hex');
++const authority = ['conditional-capture-bootstrap.py', 'conditional-capture-candidate-command.mjs',
++  'conditional-capture-candidate.py', 'conditional-capture-sdk.py', 'sdk-command-owner.mjs', 'sdk-command-owner.py'];
++const ids = ['source-byte', ...authority.map(name => 'authority-byte:' + name), 'envelope-missing',
++  'envelope-altered', 'retirement-incomplete', 'observed-config-coherent', 'observed-retirement-coherent',
++  'added:.git', 'added:target', 'added:.lexlean', 'added:.prism'];
++function temporary(t, prefix = '/tmp/prismpm-publication-capture-') {
++  const path = mkdtempSync(prefix); t.after(() => rmSync(path, {recursive:true, force:true})); return path;
++}
++function put(path, bytes, mode = 0o400) {
++  mkdirSync(dirname(path), {recursive:true, mode:0o700}); writeFileSync(path, bytes, {mode});
++}
++function component(t) {
++  const work = temporary(t), sourceRoot = join(work, 'source'), captureRoot = join(work, 'capture');
++  mkdirSync(sourceRoot); mkdirSync(captureRoot);
++  const originals = new Map();
++  for (const path of ['crates/prismpm/src/exporter/source.rs', ...authority.map(name => 'scripts/' + name)]) {
++    const file = join(sourceRoot, path), bytes = Buffer.from('component data: ' + path + '\n');
++    put(file, bytes); originals.set(file, bytes);
++  }
++  const envelopePath = join(captureRoot, 'candidate-transport-evidence.json');
++  const envelope = {route:'candidate-source-v1', descriptor:{source_sha256:'a'.repeat(64),
++    executable_sha256:'b'.repeat(64), runtime:{config_digest:'sha256:' + 'c'.repeat(64)}},
++  retirement:{attachment_eof_observed:true, actors:[{id:'1'.repeat(64)}, {id:'2'.repeat(64)}, {id:'3'.repeat(64)}]},
++  stage_admission:{descriptor_sha256:''}};
++  envelope.stage_admission.descriptor_sha256 = sha(canonicalTransport(envelope.descriptor));
++  const originalEnvelope = canonicalTransport(envelope); put(envelopePath, originalEnvelope, 0o444);
++  // Deliberately component dependencies: compare real files; never claim the actual transport reader or branded ELF.
++  function sourceCheck(label) {for (const [path, bytes] of originals) assert.deepEqual(readFileSync(path), bytes, label);}
++  function verifyTransport() {
++    const value = JSON.parse(readFileSync(envelopePath));
++    sourceCheck('independently owned source bytes and complete membership');
++    assert.equal(value.route, 'candidate-source-v1');
++    assert.equal(value.retirement.attachment_eof_observed, true);
++    assert.equal(value.stage_admission.descriptor_sha256, sha(canonicalTransport(value.descriptor)));
++    return {component_only:true, config:value.descriptor.runtime.config_digest, actors:value.retirement.actors};
++  }
++  function verify() {
++    sourceCheck('complete private capture source remained frozen');
++    assert.deepEqual(readdirSync(captureRoot), ['candidate-transport-evidence.json'], 'complete retained actual capture tree');
++    assert.deepEqual(readFileSync(envelopePath), originalEnvelope, 'complete retained actual capture tree');
++    assert.deepEqual(verifyTransport(), originalTransport);
++  }
++  const originalTransport = verifyTransport();
++  return {work, sourceRoot, captureRoot, verify, verifyTransport, originalTransport, executableSha256:'b'.repeat(64),
++    envelopePath, originalEnvelope, originals};
++}
++
++test('component controls retain exactly sixteen restored observations and hold the written sidecar', t => {
++  const f = component(t), inode = lstatSync(f.envelopePath).ino;
++  const result = runRetainedControls(f), record = JSON.parse(readFileSync(join(f.work, result.reference.path)));
++  assert.deepEqual(record.controls.map(row => row.id), ids);
++  assert.deepEqual(record.controls.map(row => row.reader_result),
++    [...Array(10).fill('refused'), ...Array(2).fill('observed-shape-accepted'), ...Array(4).fill('not-invoked')]);
++  assert.ok(record.controls.every(row => row.held_owner_refused && row.restored));
++  assert.equal(record.source_sha256, 'a'.repeat(64)); assert.equal(record.envelope_sha256, sha(f.originalEnvelope));
++  assert.equal(record.executable_sha256, 'b'.repeat(64)); assert.equal(record.complete_application_accepted, false);
++  assert.equal(lstatSync(f.envelopePath).ino, inode); f.verify(); result.verify();
++  assert.equal(result.reference.bytes, readFileSync(join(f.work, result.reference.path)).length);
++  const sidecar = join(f.work, result.reference.path), bytes = readFileSync(sidecar);
++  chmodSync(sidecar, 0o600); writeFileSync(sidecar, Buffer.from(bytes).fill(32, 0, 1));
++  assert.throws(result.verify, /retained control/);
++  writeFileSync(sidecar, bytes); chmodSync(sidecar, 0o444); result.verify();
++  renameSync(sidecar, sidecar + '.original'); put(sidecar, bytes, 0o444);
++  assert.throws(result.verify, /retained control/);
++});
++
++test('component completed records refuse omitted, reordered, invented and unsuccessful rows', t => {
++  const f = component(t), result = runRetainedControls(f);
++  const original = JSON.parse(readFileSync(join(f.work, result.reference.path)));
++  validateRetainedControlRecord(original);
++  for (const change of [r => r.controls.pop(), r => r.controls.reverse(), r => delete r.controls,
++    r => r.controls.push(r.controls[0]), r => r.controls[0].restored = false,
++    r => r.controls[0].held_owner_refused = false, r => r.controls[0].reader_result = 'not-invoked',
++    r => r.controls[10].reader_result = 'refused', r => r.controls[0].target = '../outside',
++    r => r.complete_application_accepted = true, r => r.extra = true, r => r.controls[0].extra = true]) {
++    const changed = structuredClone(original); change(changed); assert.throws(() => validateRetainedControlRecord(changed));
++  }
++});
++
++test('component runner refuses swallowed checks and unexpected reader errors, restoring before failure', t => {
++  for (const kind of ['reader-swallowed', 'owner-swallowed', 'wrong-error']) {
++    const f = component(t), {verify, verifyTransport} = f;
++    if (kind === 'reader-swallowed') f.verifyTransport = () => {try {return verifyTransport();} catch {return f.originalTransport;}};
++    if (kind === 'owner-swallowed') f.verify = () => {try {verify();} catch {}};
++    if (kind === 'wrong-error') f.verifyTransport = () => {
++      try {return verifyTransport();} catch {throw new Error('unrelated component failure');}
++    };
++    assert.throws(() => runRetainedControls(f)); verify();
++    assert.equal(existsSync(join(f.work, 'candidate-retained-controls.json')), false);
++  }
++});
++
++test('component runner refuses rewritten held hashes and a failed inode restoration', t => {
++  for (const kind of ['rewritten-held-result', 'replaced-inode']) {
++    const f = component(t), reader = f.verifyTransport; let changed = false;
++    f.verifyTransport = () => {
++      try {return reader();} catch (error) {
++        if (!changed) {
++          changed = true;
++          if (kind === 'rewritten-held-result') f.originalTransport.config = 'rewritten';
++          else {
++            const path = [...f.originals.keys()][0]; renameSync(path, path + '.original');
++            put(path, readFileSync(path + '.original'));
++          }
++        }
++        throw error;
++      }
++    };
++    assert.throws(() => runRetainedControls(f)); assert.equal(changed, true);
++    assert.equal(existsSync(join(f.work, 'candidate-retained-controls.json')), false);
++  }
++});
++
++test('component missing-envelope backup refuses occupied paths without destroying either file', t => {
++  const f = component(t), backup = join(f.work, 'candidate-transport-evidence.missing-control'); put(backup, 'occupied');
++  assert.throws(() => runRetainedControls(f), /occupied/); f.verify();
++  assert.equal(readFileSync(backup, 'utf8'), 'occupied');
++  assert.equal(existsSync(join(f.work, 'candidate-retained-controls.json')), false);
++});
++
++function locatorFixture(t) {
++  const sourceRoot = temporary(t, '/tmp/prismpm-locator-component-'), work = temporary(t);
++  return {sourceRoot, work, registry:join(sourceRoot, 'target/conditional-publication-capture-locators')};
++}
++test('component locators preserve two independent invocations and remain after early failure', t => {
++  const f = locatorFixture(t), first = createCaptureLocator(f);
++  const bytes = readFileSync(first), value = JSON.parse(bytes);
++  assert.equal(value.complete, false); assert.equal(value.accepted, false);
++  assert.equal(value.work_path, f.work); assert.equal(value.work_basename, basename(f.work));
++  assert.equal(value.source_root, f.sourceRoot);
++  assert.equal(value.owner_module_sha256, sha(readFileSync(new URL('./capture-owner.mjs', import.meta.url))));
++  const second = createCaptureLocator({...f, work:temporary(t)});
++  assert.notEqual(first, second); assert.deepEqual(readFileSync(first), bytes);
++  assert.equal(readdirSync(f.registry).length, 2); assert.equal(lstatSync(f.registry).mode & 0o777, 0o700);
++  assert.throws(() => createCaptureLocator(f), /occupied/);
++  assert.throws(() => {createCaptureLocator({...f, work:temporary(t)}); throw new Error('early component build failure');}, /early component/);
++  assert.equal(readdirSync(f.registry).length, 3);
++});
++
++test('component locators refuse aliases, unexpected members, unsafe modes and foreign ownership', t => {
++  for (const kind of ['root-alias', 'work-alias', 'target-alias', 'registry-alias', 'record-alias',
++    'record-hardlink', 'registry-mode', 'work-mode', 'root-mode', 'record-mode', 'wrong-owner', 'malformed-name',
++    'malformed-json', 'extra-field', 'oversize']) {
++    const f = locatorFixture(t), first = createCaptureLocator(f), next = {...f, work:temporary(t)};
++    if (kind.endsWith('-alias') && kind !== 'record-alias') {
++      const key = kind.split('-')[0], path = {root:f.sourceRoot, work:next.work, target:join(f.sourceRoot, 'target'), registry:f.registry}[key];
++      renameSync(path, path + '.real'); symlinkSync(path + '.real', path);
++      t.after(() => rmSync(path + '.real', {recursive:true, force:true}));
++    } else if (kind === 'record-alias') {renameSync(first, first + '.real'); symlinkSync(first + '.real', first);}
++    else if (kind === 'record-hardlink') {
++      // A second name is still unexpected even when both refer to the same regular file.
++      linkSync(first, join(f.sourceRoot, 'linked-record'));
++    } else if (kind === 'wrong-owner') {
++      if (process.getuid() === 0) chownSync(first, 1, lstatSync(first).gid);
++      else {assert.notEqual(lstatSync('/tmp').uid, process.getuid()); next.sourceRoot = '/tmp';}
++    } else if (kind.endsWith('-mode')) {
++      chmodSync({registry:f.registry, work:next.work, root:f.sourceRoot, record:first}[kind.split('-')[0]], 0o777);
++    } else if (kind === 'malformed-name') put(join(f.registry, 'unexpected'), '{}');
++    else {chmodSync(first, 0o600); const value = JSON.parse(readFileSync(first)); value.extra = true;
++      writeFileSync(first, kind === 'oversize' ? ' '.repeat(4097) : kind === 'malformed-json' ? '{' : JSON.stringify(value)); chmodSync(first, 0o444);}
++    assert.throws(() => createCaptureLocator(next), undefined, kind);
++  }
++});
++
++test('component registry admits at most 256 bounded records and validates every previous record', t => {
++  const f = locatorFixture(t), first = createCaptureLocator(f), value = JSON.parse(readFileSync(first));
++  for (let index = 1; index < 256; index++) {
++    const work = temporary(t); const row = {...value, work_path:work, work_basename:basename(work)};
++    put(join(f.registry, basename(work) + '.json'), JSON.stringify(row) + '\n', 0o444);
++  }
++  assert.throws(() => createCaptureLocator({...f, work:temporary(t)}), /registry.*bound/);
++  assert.equal(readdirSync(f.registry).length, 256);
++});
++
++// Execute the unchanged owning function body with only pre-capture dependencies.
++// The deliberately failing prerequisite never invokes source staging or any actor.
++test('component actual factory body records discovery before its first failing prerequisite', async t => {
++  const sourceRoot = temporary(t, '/tmp/prismpm-locator-component-');
++  const text = readFileSync(new URL('./capture-owner.mjs', import.meta.url), 'utf8');
++  const start = text.indexOf('export async function verifyCapturedFactory(t) {');
++  const end = text.indexOf('\nexport async function verifyCapturedPublicationLinkage', start);
++  assert.ok(start >= 0 && end > start);
++  let reached = 0, work; const diagnostics = [];
++  const dependencies = {mkdtempSync, tmpdir, join, createCaptureLocator, repository:sourceRoot,
++    process:{stderr:{write:value => diagnostics.push(value)}},
++    prerequisite:async () => {
++      reached++;
++      const registry = join(sourceRoot, 'target/conditional-publication-capture-locators');
++      const names = readdirSync(registry); assert.equal(names.length, 1);
++      const locator = JSON.parse(readFileSync(join(registry, names[0]))); work = locator.work_path;
++      t.after(() => rmSync(work, {recursive:true, force:true}));
++      assert.equal(locator.complete, false); assert.deepEqual(readdirSync(work), []);
++      throw new Error('component first prerequisite refusal');
++    }, stageSource:() => assert.fail('no component actor allowed')};
++  const factory = Function(...Object.keys(dependencies), 'return (' + text.slice(start, end).replace(/^export /, '') + ');')(...Object.values(dependencies));
++  await assert.rejects(factory({}), /component first prerequisite refusal/);
++  assert.equal(reached, 1); assert.equal(existsSync(work), true);
++  assert.ok(diagnostics.join('').includes('Retained incomplete actual capture owner '));
++  assert.equal(existsSync(join(work, 'candidate-retained-controls.json')), false);
++  assert.equal(existsSync(join(work, 'capture-factory-evidence.json')), false);
++});
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index 645b54aa..31d29084 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -354,6 +354,7 @@ fn audit_all(root: &Path) -> Result<(), Fail> {
+             "scripts/compiler-phase-observation.test.mjs",
+             "scripts/compiler-phase-transport.test.mjs",
+             "tests/publication-context-linkage/candidate-transport.test.mjs",
++            "tests/publication-context-linkage/capture-retained-controls.test.mjs",
+             "tests/browser-view/compiler-artifact.test.mjs",
+             "tests/browser-view/generated-package.test.mjs",
+             "tests/browser-view/file-custody.test.mjs",
