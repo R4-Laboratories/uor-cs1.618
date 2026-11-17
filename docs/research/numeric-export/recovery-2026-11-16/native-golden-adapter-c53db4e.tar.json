@@ -1,0 +1,11 @@
+{
+  "schema": "cs1618/recovery-evidence-archive/1",
+  "game_revision": "c53db4e4b91a2c6577be6e331dc3fe1372650826",
+  "source_revision": "881df278923ff271fc179703e55ea91c45f2394d",
+  "scope": "Game adapter component/restoration controls, independent review pending; no hosted native execution",
+  "archive": "native-golden-adapter-c53db4e.tar.gz",
+  "bytes": 3899,
+  "sha256": "de998cc79518600ac38466831dc064f873dd8cf193b31dae28748e9e892e3996",
+  "index_sha256": "29e0034f0be3d1241b19d1eff00cd43d399b98d1bd0fb854f7a4720c74a1817c",
+  "entries": 13
+}
