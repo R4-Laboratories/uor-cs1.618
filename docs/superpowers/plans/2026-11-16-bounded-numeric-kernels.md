@@ -64,6 +64,8 @@ Actual fixtures show primitive success but failures for generic conversion dicti
 - [ ] Adapt internal exponent/comparison/loop representation to supported bounded source forms, preserving raw APIs, all IEEE policies, and explicit failures. Re-export/replay all four roots and the full corpus after source changes.
 - [ ] Validate actual canonical extraction/code generation, retain proof/custody evidence, and independently review. Upstream PRs remain deferred; no canonical admission claim from raw-export success alone.
 
+NEXP013 source-capture dependency is specified in `../specs/2026-11-16-candidate-source-capture-design.md` and decomposed in `2026-11-16-candidate-source-capture.md`. Execute it after the frontend identity/harness repair; its controls do not replace this task’s source/SDK/golden/corpus gates.
+
 ### Task 2b: Isolated bitwise multiplier comparison
 
 User-requested follow-up: assess replacing word multiplication with bitwise operations. XOR/popcount alone computes different arithmetic; an exact shift/add limb product is the candidate.
