@@ -19,3 +19,12 @@ Explicitly permit only the reader's existing bounded listing invocation of the u
 - **Early locator:** The current owner allocates work at line159, stages/builds at line163, and publishes typed factory evidence only at lines249–253; failure currently offers prose at255. The early typed locator therefore addresses a real discovery gap. The fixed registry under repository root `target` is Git-ignored and excluded from current source inventory, so records do not pollute staged source closure. Exclusive work-basename filenames support repeated invocations; fixed schema, owned no-follow ancestry, per-file bounds and admission accounting can enforce the256-record/1MiB registry cap. It remains discovery-only and must never replace the branded ELF, held source map or completion checks. No caller path override or `/tmp` scan is needed.
 
 Apart from the listing-only exception above, no concrete count, closure, sidecar circularity or locator integration contradiction was found. Implementation review must still verify the promised restoration-failure handling, exact ordered record schema, post-write custody, registry bounds/ownership and failure-locator controls. No actual16-control record or SDK/application success is established by this design review.
+
+
+## Scoped correction disposition — 2026-11-17
+
+**Listing-only conflict: ADDRESSED. Readiness: READY for Task4a implementation.**
+
+Read the corrected “Live custody and exact mutations” paragraph at line11 in both the formal adopted `docs/superpowers/specs/2026-11-16-candidate-capture-qualification-design.md` and the SDD `task-4-design.md`; those paragraphs are identical. They now permit only the unchanged reader's existing bounded listing invocation of the unchanged independently owned ELF while envelope observations are mutated. Compilation, selected test-body execution, altered-authority execution, helper/SDK launch and new capture actors remain prohibited. Private source/authority mutations must refuse before listing, and actual owner controls cannot bypass or mock it.
+
+This resolves the sole design contradiction identified above. The remaining targeted readiness conclusions stand. No broader review, tests, source changes or Task4b qualification were performed or implied.

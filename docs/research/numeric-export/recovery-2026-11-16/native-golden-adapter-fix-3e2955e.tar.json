@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/recovery-evidence-archive/1",
+  "game_revision": "3e2955eceff5893db2824ce00c23e8dc9949746a",
+  "scope": "Native adapter fix1 component evidence; scoped review pending, no hosted qualification",
+  "archive": "native-golden-adapter-fix-3e2955e.tar.gz",
+  "bytes": 4037,
+  "sha256": "e67ae4205767e11e26c5cd4ebe6b3252b6bcc3fb8cd6ed0db98eee2bbd5f43b7",
+  "index_sha256": "03321f8bc57469248d7da908e1ab95d58e6318c2dd1e242c94b0be09da4b329d",
+  "entries": 6
+}
