@@ -197,7 +197,7 @@
       "repo": "lean4-prod / PrismPM / uor-cs1.618",
       "function": "Canonical bounded numeric export and conversion normalization",
       "summary": "Game-owned raw mul32/mul64/div32/div64 pass 44,648 native/Wasm vectors. The consumed-dictionary erasure defect is repaired and source-stage accepted; governed compiler acquisition, bounded shared-source adaptation and canonical game-root admission remain pending.",
-      "reproduction": "Reviewed source2a13f94 passes exact pinned-SDK CI43978245009: all31 gates, early and prepared-environment focused native/import-free Wasm O0/O2, four consumed-dependency refusals and unchanged AddOverflow replay. Original SDK/tool/lock hashes match. Dual-authority acquisition and canonical game roots remain pending. PrismPM candidate2a31ad07 preserves Released default and explicit numeric-task2c authority; scoped static review passes, Actual run43986399997 failed host evidence writes after printing the three-project retained-reader completion marker; final container status remains unrecovered. All four packed roots extract and generate Rust locally, but native compilation refuses missing numeric types and tuple fields; see NEXP-010/011. Local full validate failed and is not accepted.",
+      "reproduction": "Reviewed source2a13f94 passes exact pinned-SDK CI43978245009: all31 gates, early and prepared-environment focused native/import-free Wasm O0/O2, four consumed-dependency refusals and unchanged AddOverflow replay. Original SDK/tool/lock hashes match. Dual-authority acquisition and canonical game roots remain pending. PrismPM candidate2a31ad07 preserves Released default and explicit numeric-task2c authority; scoped static review passes, Actual run43986399997 failed host evidence writes after printing the three-project retained-reader completion marker; final container status remains unrecovered. All four packed roots extract and generate Rust locally, but native compilation refuses missing numeric types and tuple fields; see NEXP-010/011. Local full validate failed and is not accepted. Recovery43999834995 independently confirms historical amd64 acquisition/readers with runner0, reader1pass, authority10pass and unchanged identities; original workflow stays failed. Typed453dc1bd source compiles all canonical roots and passes44648 native/import-freeWasm vectors in component diagnostics. Expanded raw/helper verification, full source VV and governed canonical packaging remain pending.",
       "acceptance_criteria": [
         "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
         "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
@@ -218,7 +218,9 @@
         "recovery-2026-11-16/backport-authority-fix-review-2a31ad0.md",
         "recovery-2026-11-16/backport-harness-fix-review-78b1ecc.md",
         "recovery-2026-11-16/ci-43986399997-review.md",
-        "recovery-2026-11-16/canonical-type-recon.md"
+        "recovery-2026-11-16/canonical-type-recon.md",
+        "recovery-2026-11-16/backport-recovered-evidence-review.md",
+        "recovery-2026-11-16/canonical-typed-453dc1bd.json"
       ],
       "dependencies": [
         "NEXP-002",
