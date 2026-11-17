@@ -2,6 +2,8 @@
 import importlib.util
 import hashlib
 import json
+import os
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
@@ -214,6 +216,44 @@ class RetentionTests(unittest.TestCase):
         self.assertEqual(run.call_count, 3)
         self.assertEqual(json.loads((self.diagnostics / "golden-write.json").read_bytes())["exit_code"], 37)
         self.assertFalse((self.diagnostics / "golden-check.json").exists())
+
+
+class SnapshotTests(unittest.TestCase):
+    def test_shared_and_canonical_sources_use_same_separate_capture(self):
+        snapshot = OWNER.candidate_metadata()
+        reader = json.loads(PATH.with_name('canonical').joinpath('reader-source.json').read_text())
+        self.assertEqual((snapshot['candidate'],snapshot['tree']), (OWNER.REVISION,OWNER.TREE))
+        self.assertEqual((reader['revision'],reader['tree']), (OWNER.REVISION,OWNER.TREE))
+        repo = PATH.parents[2]
+        canonical = (repo / '.github/workflows/numeric-canonical-packages.yml').read_text()
+        self.assertIn('restore-prismpm-candidate.py game/scripts/numeric/prismpm-preparation-candidate prismpm', canonical)
+        historical = json.loads(PATH.with_name('prismpm-candidate').joinpath('manifest.json').read_text())
+        self.assertEqual(historical['candidate'], '2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec')
+
+    @unittest.skipUnless(os.environ.get('PRISMPM_TEST_SOURCE'), 'full-history source required for immutable transport controls')
+    def test_actual_restore_bootstrap_and_transport_identity_tampering(self):
+        restore_spec = importlib.util.spec_from_file_location('restore_preparation', PATH.with_name('restore-prismpm-candidate.py'))
+        restore = importlib.util.module_from_spec(restore_spec); restore_spec.loader.exec_module(restore)
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);source=root/'source';snapshot=root/'snapshot'
+            subprocess.run(['git','clone','--shared','--no-checkout',os.environ['PRISMPM_TEST_SOURCE'],str(source)],check=True,capture_output=True)
+            subprocess.run(['git','-C',str(source),'checkout','--detach',restore.BASE],check=True,capture_output=True)
+            shutil.copytree(PATH.with_name('prismpm-preparation-candidate'),snapshot)
+            original=(snapshot/'manifest.json').read_bytes();metadata=json.loads(original)
+            for field in ('candidate','tree','source','base'):
+                with self.subTest(field=field):
+                    changed={**metadata,field:'f'*40};(snapshot/'manifest.json').write_text(json.dumps(changed))
+                    with self.assertRaises(ValueError):restore.restore(snapshot,source)
+                    (snapshot/'manifest.json').write_bytes(original)
+            for name in ('candidate.bundle','candidate.patch'):
+                with self.subTest(name=name):
+                    target=snapshot/name;raw=target.read_bytes();target.write_bytes(raw+b'tamper')
+                    with self.assertRaisesRegex(ValueError,'digest mismatch'):restore.restore(snapshot,source)
+                    target.write_bytes(raw)
+            OWNER.prepare(source,snapshot,root/'evidence')
+            OWNER.verify(source,clean=True)
+            self.assertIn(b'available', (root/'evidence/bootstrap-availability.txt').read_bytes())
+            self.assertEqual(subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD']).decode().strip(),OWNER.REVISION)
 
 
 if __name__ == "__main__":

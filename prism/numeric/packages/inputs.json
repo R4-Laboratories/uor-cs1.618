@@ -1,6 +1,6 @@
 {
   "schema": "cs1618/numeric-package-inputs/1",
-  "verifier_revision": "2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec",
+  "verifier_revision": "e1c32a64fd2a99b438341267e9d005e559ae2506",
   "fixture": "tests/fixtures/library/native-library/project",
   "fixture_files": {
     "lexlean.toml": "f607411e91a907dc75d005d75a1011e92762093c7a78a6e06da3fd572ed180a1",

@@ -9,6 +9,11 @@ finish() {
   local status=$? custody=0
   trap - EXIT ERR
   sha256sum -c "$root/original-files.sha256" > "$root/final-identities.log" 2>&1 || custody=$?
+  {
+    test "$(git rev-parse HEAD)" = e1c32a64fd2a99b438341267e9d005e559ae2506 &&
+    test "$(git rev-parse HEAD^{tree})" = 429f6a4e309b9dd52aed254efea60e701f006ab3 &&
+    test -z "$(git status --porcelain --untracked-files=all)"
+  } >> "$root/final-identities.log" 2>&1 || custody=$?
   if test -f "$root/verifier.sha256"; then sha256sum -c "$root/verifier.sha256" >> "$root/final-identities.log" 2>&1 || custody=$?; fi
   printf '%s\n' "$status" > "$root/runner-command-exit-code.txt"
   printf '%s\n' "$custody" > "$root/custody-exit-code.txt"
@@ -21,12 +26,15 @@ test "$(cat "$root/host-permissions.txt")" = host-write-ok
 printf '%s\n' container-write-ok > "$root/container-permissions.txt"
 if test "${1:-}" = --permissions-only; then exit 0; fi
 cd /work/prismpm-b1
-test "$(git rev-parse HEAD)" = 2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec
+test "$(git rev-parse HEAD)" = e1c32a64fd2a99b438341267e9d005e559ae2506
+test "$(git rev-parse HEAD^{tree})" = 429f6a4e309b9dd52aed254efea60e701f006ab3
 test -z "$(git status --porcelain --untracked-files=all)"
 sha256sum Cargo.lock vendor/lean4-prod/lean.tar vendor/lean4-prod/backports/numeric-task2c/{lean.tar,descriptor.json} \
   /opt/prismpm/share/inventory.json /opt/prismpm/share/exporter-seed/manifest.json \
   "$(command -v prismpm)" "$(command -v lexlean)" "$(elan which lean)" \
   "$(rustup which rustc)" "$(rustup which cargo)" "$(command -v node)" \
+  "$(command -v lean)" "$(command -v lake)" "$(command -v elan)" \
+  scripts/library-frontend-reader.mjs model/library-frontend-runtime.json \
   /game/prism/prismpm.lock > "$root/original-files.sha256"
 trap finish EXIT
 trap 'printf "ERROR stage=%s line=%s exit=%s\n" "$stage" "$LINENO" "$?" >&2' ERR
@@ -40,6 +48,9 @@ trap 'printf "ERROR stage=%s line=%s exit=%s\n" "$stage" "$LINENO" "$?" >&2' ERR
   stat -f -c '%T %S %b' /tmp /dev/shm
   ulimit -s
 } > "$root/environment.txt"
+python3 "$helper" capture-tools "$root"
+sha256sum "$root/native-tools.json" "$root/reader-source/"{frontend-reader.mjs,reader-source.json,packages.py} \
+  "$root/reader-source/scripts/library-frontend-reader.mjs" "$root/reader-source/model/library-frontend-runtime.json" >> "$root/original-files.sha256"
 stage=build-verifier
 CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 \
   cargo build --locked --offline -p prismpm --bin prismpm > "$root/verifier-build.log" 2>&1
@@ -52,7 +63,7 @@ mkdir "$root/operations"
 # Explicit pending records survive any early failure.
 for op in mul32 mul64 div32 div64; do
   mkdir "$root/operations/$op"
-  for phase in prepare build verify select; do printf '%s\n' not-run > "$root/operations/$op/$phase.status"; done
+  for phase in prepare build verify select controls; do printf '%s\n' not-run > "$root/operations/$op/$phase.status"; done
 done
 failed=0
 for op in mul32 mul64 div32 div64; do
@@ -79,6 +90,10 @@ for op in mul32 mul64 div32 div64; do
   stage="select-$op"
   if python3 "$helper" select "$project" "$ev" > "$ev/select.log" 2>&1; then code=0; else code=$?; fi
   printf '%s\n' "$code" > "$ev/select.status"
+  if test "$code" -ne 0; then failed=1; continue; fi
+  stage="controls-$op"
+  if python3 "$helper" controls "$project" "$ev" > "$ev/controls.log" 2>&1; then code=0; else code=$?; fi
+  printf '%s\n' "$code" > "$ev/controls.status"
   if test "$code" -ne 0; then failed=1; fi
   cmp /game/prism/prismpm.lock "$project/prismpm.lock"
   sha256sum -c "$root/verifier.sha256"

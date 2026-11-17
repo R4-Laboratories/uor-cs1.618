@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/numeric-canonical-packages.yml'
       - 'scripts/numeric/canonical/**'
+      - 'scripts/numeric/prismpm-preparation-candidate/**'
+      - 'scripts/numeric/restore-prismpm-candidate.py'
       - 'prism/numeric/packages/**'
   workflow_dispatch:
 permissions:
@@ -31,9 +33,10 @@ jobs:
           set -euo pipefail
           umask 022
           mkdir -m 755 evidence
-          python3 game/scripts/numeric/restore-prismpm-candidate.py game/scripts/numeric/prismpm-candidate prismpm > evidence/candidate.json
+          python3 game/scripts/numeric/restore-prismpm-candidate.py game/scripts/numeric/prismpm-preparation-candidate prismpm > evidence/candidate.json
           printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
           df -h > evidence/disk-before.txt
+          test "$(df --output=avail -B1 . | tail -1)" -ge 8589934592
           docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
           sudo chown -R 1000:1000 prismpm
           sudo chgrp 1000 evidence
@@ -73,7 +76,7 @@ jobs:
           set -euo pipefail
           mkdir -p evidence/retained
           df -h > evidence/disk-after.txt
-          python3 game/scripts/numeric/canonical/packages.py retain evidence evidence/retained
+          PRISMPM_READER_SOURCE="$GITHUB_WORKSPACE/prismpm" python3 game/scripts/numeric/canonical/packages.py retain evidence evidence/retained
       - name: Upload bounded complete or explicitly incomplete reader archive
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

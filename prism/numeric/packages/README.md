@@ -11,14 +11,14 @@ python3 scripts/numeric/canonical/packages.py stage /absolute/pinned-prismpm /ab
 ```
 
 The source fixture is `tests/fixtures/library/native-library/project` at
-`2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec`; `inputs.json` binds every copied
+`e1c32a64fd2a99b438341267e9d005e559ae2506`; `inputs.json` binds every copied
 fixture file and original kernel file. Each descriptor names one raw arithmetic
 export plus one zero-argument Boolean acceptance export. Eleven representative
 oracle cases match `Option.some` and refuse `Option.none`; these checks are finite
 and separate from the external 44,648-vector corpus.
 
 The hosted workflow `.github/workflows/numeric-canonical-packages.yml` restores
-the reviewed PrismPM snapshot and builds its verifier once inside unchanged d6.
+the separate reviewed frontend preparation snapshot and builds its verifier once inside unchanged d6.
 It uses the original SDK entrypoint, inventory and PATH as UID1000, prepares
 normal source locks and canonical formatting, freezes each source/config/lock
 file set, then invokes the absolute rebuilt verifier with the closed
@@ -38,15 +38,30 @@ project-directory glob or Lake/Cargo cache tree is uploaded.
 Run host controls with:
 
 ```sh
-PRISMPM_SOURCE=/absolute/pinned-prismpm python3 scripts/numeric/canonical/test_packages.py -v
+PRISMPM_SOURCE=/absolute/pinned-prismpm PRISMPM_READER_SOURCE=/absolute/pinned-prismpm python3 scripts/numeric/canonical/test_packages.py -v
 ```
 
-These are host harness refusals using synthetic receipts, not actual Prism
-bundle-reader controls. Actual unchanged-SDK package verification, newly emitted
-artifact replay, independent actual source/root/archive/child/output custody
-controls, and full applicable upstream validation remain required before
-production admission. See
-`docs/research/numeric-export/canonical-packaging-report.md` for measured and
-pending evidence. Native libraries carry no application/Holo/browser/rendering
-qualification. Task3 owns persistent render integration; Text/1 remains later
-comparison-only work.
+The current selector requires library verification `/3`, library owner `/2`,
+frontend `/1` and stable source plan `/1`. Module count/order comes from the
+complete source-bound frontend plan, including Bounds and pinned runtime
+closure. Both original owner phases, the top-level replay window, actual tool
+measurements, source-backport pins, declaration policies, complete artifact
+bytes and std/no_std results are bound before selection. The separately invoked
+source-owned frontend reader and runtime registry are pinned and retained;
+`library-sdk-check.checkAccepted` is fixture-specific and is not used here.
+
+Host tests use synthetic receipts and distinguish game harness refusals from
+source-owned frontend-reader refusals. With the source variables set, they run
+the actual pinned frontend reader; they do not execute SDK proof verification.
+The prepared `controls` command runs only after a selected real CLI bundle,
+clones that bundle for 15 reader/custody mutations, records the refusal owner,
+and rechecks the untouched original. Those controls remain pending against new
+actual SDK outputs until the controller launches the hosted workflow.
+
+Actual unchanged-SDK package verification, newly emitted artifact replay,
+independent producer authority, and full applicable upstream source/golden
+validation remain required before admission. See
+`docs/research/numeric-export/canonical-packaging-report.md` for historical
+measured and pending evidence. Native libraries carry no application/Holo/
+browser/rendering qualification. Task3 owns persistent render integration;
+Text/1 remains later comparison-only work.
