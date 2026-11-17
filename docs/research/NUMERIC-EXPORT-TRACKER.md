@@ -103,7 +103,7 @@ experiment did not justify a runtime import.
 
 The typed source checkpoint `453dc1bd` now passes all four canonical extraction/codegen/native and import-free Wasm paths, with all44,648 oracle cases passing and native output identical to the frozen corpus. [Retained component evidence](numeric-export/recovery-2026-11-16/canonical-typed-453dc1bd.json) records its scope: expanded helper/source verification has since passed and been reviewed; governed canonical packaging remains required, and NEXP-010/011 generic compiler defects stay open.
 
-Full upstream source validation is running as [44002718718](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44002718718), using all eight unchanged partitions and their original assembler. A green focused SDK job or local arithmetic suite does not replace that result. The next implementation packages each actual root using PrismPM native-library contracts; no new numeric guest or Pages release is enabled yet.
+Full upstream source validation ran as [44002718718](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44002718718), using all eight unchanged partitions and their original assembler. All eight partition jobs have completed: four passed and four failed; complete source acceptance is blocked. A green focused SDK job or local arithmetic suite does not replace that result. The next implementation packages each actual root using PrismPM native-library contracts; no new numeric guest or Pages release is enabled yet.
 
 
 ### Current blocking results

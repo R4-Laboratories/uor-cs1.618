@@ -1,0 +1,22 @@
+{
+  "run_id": 44002718718,
+  "source_revision": "2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec",
+  "part": "dk-3",
+  "conclusion": "success",
+  "artifacts": [
+    {
+      "artifact_id": 14302557055,
+      "name": "backport-source-diagnostics-dk-3-44002718718-1",
+      "bytes": 90725,
+      "sha256": "88643c52ec807b549c96942e9ed5c781479709398ed0c0a34ac43a380ef959ec",
+      "api_digest_verified": true
+    },
+    {
+      "artifact_id": 14301848538,
+      "name": "backport-source-part-dk-3",
+      "bytes": 246,
+      "sha256": "0daca7d8b12d8c05dd3238d946e3127b9f620f6a9856b2a0db7e43b49d5c572d",
+      "api_digest_verified": true
+    }
+  ]
+}

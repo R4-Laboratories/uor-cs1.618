@@ -1,4 +1,4 @@
-# Full source VV: retained gates failure
+# Full source VV: retained partition results
 
 Run https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44002718718, game commit 8a7c185fbc03b377cf03edc329e4a1095ad2863c, exact PrismPM candidate 2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec.
 
@@ -17,3 +17,5 @@ The dk-0-1 partition also completed successfully for original candidate2a31. Par
 The dk-2 partition completed successfully for original candidate2a31. Original part artifact14299830587 (246 bytes, SHA-256 f80fa38fa15d9f10cbe652675b53f62d874a0c3038ee75e51732b21ca7fd9b61) and diagnostics artifact14299900468 (61,573 bytes, SHA-256 16d3fbc174e7968f9fe4da34f6b83084316bceb510671cd26e367a5c57cea677) are retained after independent API digest checks. dk-3 and ho-oc were still running; all failed partitions remain failed, with no cross-revision acceptance.
 
 The ho-oc partition failed:28 of30 conformance cases passed. HO-08 reports the known stale emitter register (actualc8213ced...); OC-10 reached conditional SDK capture and failed because `/opt/prismpm/share/conformance-root/crates/prismpm/src/exporter/source.rs` is absent. The latter source/SDK capture compatibility issue is under separate read-only diagnosis; it is not waived or treated as an arithmetic failure. Original artifact14300420956 (93,273 bytes, SHA-256 64324b5446750d5f88a1a23fa6491a47198a0c10f53ce255a503c7bbf69274c1) is retained unchanged after independent API digest verification. Full172,268-byte gate log is untruncated and gate exit1. Only dk-3 remained running.
+
+The final dk-3 partition completed successfully for original candidate2a31: all nine cases passed, source stayed clean at tree3d483863, and the original same-source part record reports passed. Part artifact14301848538 (246 bytes, SHA-256 0daca7d8b12d8c05dd3238d946e3127b9f620f6a9856b2a0db7e43b49d5c572d) and diagnostics artifact14302557055 (90,725 bytes, SHA-256 88643c52ec807b549c96942e9ed5c781479709398ed0c0a34ac43a380ef959ec) are retained after independent API digest checks. All eight partition jobs are now complete: st-sy, dk-0-1, dk-2 and dk-3 passed; source, gates, conformance and ho-oc failed. No complete same-source acceptance or later-source qualification follows. The historical status paragraphs above retain the observations made at their respective checkpoints.
