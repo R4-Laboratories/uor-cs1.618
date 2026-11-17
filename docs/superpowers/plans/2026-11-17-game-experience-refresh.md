@@ -1,6 +1,6 @@
 # Game Experience Refresh Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Ship visible objective, weapon, sound and bot improvements to the playable Pages game.
 
@@ -31,12 +31,12 @@
 
 **Interfaces:** Existing Snapshot/Motion and GameAudio.update remain compatible. Add a typed pure presentation helper in objective-hud for planted state/fuse fraction/defuse duration/margin; UI consumes it. WorldView consumes snapshot fuse only. AudioEvent may add local `plant-progress` and `defuse-progress` types without network changes.
 
-- [ ] Add meaningful failing tests for kit/no-kit margin; own active progress vs another defuser; expired/terminal/freeze/dead states; interaction pulse cancellation and restart. Choose exact UI copy clearly stating that margin excludes travel.
-- [ ] Implement the compact card, progress styling and responsive layout. Keep hold-E progress, context hint and result flow.
-- [ ] Enhance site paint/signage and physical bomb display. Update canvas texture only when its displayed second/state changes. Improve weapon material separation with original restrained accents; manage any new texture ownership. Never change physics/map collision.
-- [ ] Implement distinct bounded planting/defusing pulse profiles and update gating; retain existing voice cap and bomb warnings. Extend offline audio checks to both cues.
-- [ ] Run focused unit tests, TypeScript/build, real presentation browser screenshots and offline audio checks. Extend rendered fixture assertions for card state and display, narrow viewport fit and switching resources. Preserve before screenshots.
-- [ ] Self-review and commit explicit owned files. Write implementation report with commands, outcomes and evidence paths. No push; parent coordinates release.
+- [x] Add meaningful failing tests for kit/no-kit margin; own active progress vs another defuser; expired/terminal/freeze/dead states; interaction pulse cancellation and restart. Choose exact UI copy clearly stating that margin excludes travel.
+- [x] Implement the compact card, progress styling and responsive layout. Keep hold-E progress, context hint and result flow.
+- [x] Enhance site paint/signage and physical bomb display. Update canvas texture only when its displayed second/state changes. Improve weapon material separation with original restrained accents; manage any new texture ownership. Never change physics/map collision.
+- [x] Implement distinct bounded planting/defusing pulse profiles and update gating; retain existing voice cap and bomb warnings. Extend offline audio checks to both cues.
+- [x] Run focused unit tests, TypeScript/build, real presentation browser screenshots and offline audio checks. Extend rendered fixture assertions for card state and display, narrow viewport fit and switching resources. Preserve before screenshots.
+- [x] Self-review and commit explicit owned files. Write implementation report with commands, outcomes and evidence paths. No push; parent coordinates release.
 
 ### Task 2: Bot sight and objective approach
 
