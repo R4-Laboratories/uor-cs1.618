@@ -1298,26 +1298,40 @@ new file mode 100644
 diff --git a/src/api.rs b/src/api.rs
 --- a/src/api.rs
 +++ b/src/api.rs
-@@ -254,6 +254,12 @@
+@@ -254,6 +254,20 @@
      project: &Project,
      checked: &CheckedProject,
  ) -> Result<RenderedBuild, LexLeanError> {
 +    render_build_started(project, checked, std::time::Instant::now())
 +}
 +
-+fn render_build_started(project: &Project, checked: &CheckedProject, started: std::time::Instant) -> Result<RenderedBuild, LexLeanError> {
-+    let mut constructive_stage = crate::backend::constructive_nat::Stage::new(started, project.config.limits.child_timeout_ms, project.config.limits.max_total_source_bytes);
++fn render_build_started(
++    project: &Project,
++    checked: &CheckedProject,
++    started: std::time::Instant,
++) -> Result<RenderedBuild, LexLeanError> {
++    let mut constructive_stage = crate::backend::constructive_nat::Stage::new(
++        started,
++        project.config.limits.child_timeout_ms,
++        project.config.limits.max_total_source_bytes,
++    );
 +    let mut constructive_rows = Vec::new();
      let mut modules = Vec::new();
      let mut files: Vec<(String, Vec<u8>)> = Vec::new();
      let mut outputs: Vec<FileRow> = Vec::new();
-@@ -267,13 +273,19 @@
+@@ -267,13 +281,25 @@
      );
      let mut report_total: u64 = 0;
      for (name, checked_module) in &checked.modules {
 -        let lean_emitter = crate::backend::lean::render_module(
 +        let constructive_plan = match &checked_module.document.semantic {
-+            Some(module) => crate::backend::constructive_nat::plan(&checked_module.document.lean_module, &checked_module.document.source_sha256.to_hex(), module, &mut constructive_stage).map_err(LexLeanError::from_diagnostic)?,
++            Some(module) => crate::backend::constructive_nat::plan(
++                &checked_module.document.lean_module,
++                &checked_module.document.source_sha256.to_hex(),
++                module,
++                &mut constructive_stage,
++            )
++            .map_err(LexLeanError::from_diagnostic)?,
 +            None => Default::default(),
 +        };
 +        let lean_emitter = crate::backend::lean::render_module_planned(
@@ -1332,24 +1346,50 @@ diff --git a/src/api.rs b/src/api.rs
          let tex_emitter = crate::backend::latex::render_module(checked_module, &checked.closure)
              .map_err(LexLeanError::from_diagnostic)?;
          let lean_module = checked_module.document.lean_module.clone();
-@@ -491,6 +503,16 @@
+@@ -491,6 +517,42 @@
              byte_length: package.total_bytes,
              sha256: package.tree_sha256,
          });
 +    }
 +
 +    if project.config.language == "1.2" {
-+        let bytes = crate::backend::constructive_nat::artifact(constructive_rows, checked.source_id.to_hex(), checked.semantic_id.to_hex(), &mut constructive_stage).map_err(LexLeanError::from_diagnostic)?;
-+        report_total = report_total.checked_add(bytes.len() as u64).ok_or_else(|| LexLeanError::from_diagnostic(Diagnostic::new(code!("LLS8002"), "certificate output length overflow")))?;
++        let certificate_allowance = crate::backend::constructive_nat::project_allowance(
++            project.config.limits.max_total_source_bytes,
++            report_total,
++        )
++        .map_err(LexLeanError::from_diagnostic)?;
++        let bytes = crate::backend::constructive_nat::artifact(
++            constructive_rows,
++            checked.source_id.to_hex(),
++            checked.semantic_id.to_hex(),
++            certificate_allowance,
++            &mut constructive_stage,
++        )
++        .map_err(LexLeanError::from_diagnostic)?;
++        report_total = report_total
++            .checked_add(bytes.len() as u64)
++            .ok_or_else(|| {
++                LexLeanError::from_diagnostic(Diagnostic::new(
++                    code!("LLS8002"),
++                    "certificate output length overflow",
++                ))
++            })?;
 +        if report_total > project.config.limits.max_total_source_bytes {
-+            return Err(LexLeanError::from_diagnostic(Diagnostic::new(code!("LLS8002"), "constructive certificate exceeds cumulative output budget")));
++            return Err(LexLeanError::from_diagnostic(Diagnostic::new(
++                code!("LLS8002"),
++                "constructive certificate exceeds cumulative output budget",
++            )));
 +        }
-+        outputs.push(file_row("constructive-nat-certificate", "proofs/constructive-nat.json", &bytes));
++        outputs.push(file_row(
++            "constructive-nat-certificate",
++            "proofs/constructive-nat.json",
++            &bytes,
++        ));
 +        files.push(("proofs/constructive-nat.json".to_owned(), bytes));
      }
  
      let this_build_id = build_id(checked.source_id, checked.semantic_id);
-@@ -971,8 +993,9 @@
+@@ -971,8 +1033,9 @@
          &self,
          request: &BuildRequest,
      ) -> Result<ProjectResultSet<BuiltUnit>, LexLeanError> {
@@ -1360,7 +1400,7 @@ diff --git a/src/api.rs b/src/api.rs
          publish_build(&self.project, &rendered)?;
          Ok(ProjectResultSet {
              source_id: checked.source_id,
-@@ -1021,8 +1044,9 @@
+@@ -1021,8 +1084,9 @@
          // downstream reads the environment for them again.
          let operational = crate::verify::operational::Operational::from_environment()
              .map_err(LexLeanError::from_diagnostic)?;
@@ -1915,12 +1955,12 @@ diff --git a/src/backend/constructive_nat/emit.rs b/src/backend/constructive_nat
 new file mode 100644
 --- /dev/null
 +++ b/src/backend/constructive_nat/emit.rs
-@@ -0,0 +1,242 @@
+@@ -0,0 +1,252 @@
 +//! Axiom-free Init proof terms. Only checker-created values enter this module.
 +use super::{certificate::*, check::Checked, Stage};
 +use std::fmt::{self, Write};
 +
-+struct Text(String);
++struct Text(String, usize);
 +impl Text {
 +    fn append(&mut self, s: &str) -> Result<(), String> {
 +        if self
@@ -1928,11 +1968,13 @@ new file mode 100644
 +            .len()
 +            .checked_add(s.len())
 +            .ok_or("proof size overflow")?
-+            > PROOF_BYTES
++            > self.1
 +        {
 +            return Err("emitted proof byte cap".into());
 +        }
 +        self.0.push_str(s);
++        #[cfg(test)]
++        super::observe_output("proof", self.0.len());
 +        Ok(())
 +    }
 +}
@@ -2027,7 +2069,7 @@ new file mode 100644
 +        binders: &input.binders,
 +        id,
 +    };
-+    let mut out = Text(String::new());
++    let mut out = Text(String::new(), PROOF_BYTES.min(stage.remaining()));
 +    let mut render = || -> fmt::Result {
 +        if !input.hypotheses.is_empty() {
 +            out.write_str("  intro")?;
@@ -2048,37 +2090,43 @@ new file mode 100644
 +            )?;
 +            match &node.op {
 +                Op::Hyp { index } => write!(out, "__cnh{index}")?,
-+                Op::ReflLe { term } => write!(out, "Nat.le_refl {}", t(*term))?,
-+                Op::ReflEq { term } => write!(out, "Eq.refl {}", t(*term))?,
-+                Op::LiteralLe { .. } => out.write_str("of_decide_eq_true (Eq.refl true)")?,
-+                Op::WeakenLt { input } => write!(out, "Nat.le_of_lt __cnp{input}")?,
++                Op::ReflLe { term } => write!(out, "_root_.Nat.le_refl {}", t(*term))?,
++                Op::ReflEq { term } => write!(out, "_root_.Eq.refl {}", t(*term))?,
++                Op::LiteralLe { .. } => {
++                    out.write_str("_root_.of_decide_eq_true (_root_.Eq.refl _root_.Bool.true)")?
++                }
++                Op::WeakenLt { input } => write!(out, "_root_.Nat.le_of_lt __cnp{input}")?,
 +                Op::TransLe { left, right } => {
-+                    write!(out, "Nat.le_trans __cnp{left} __cnp{right}")?
++                    write!(out, "_root_.Nat.le_trans __cnp{left} __cnp{right}")?
 +                }
 +                Op::AddLe { left, right } => {
-+                    write!(out, "Nat.add_le_add __cnp{left} __cnp{right}")?
++                    write!(out, "_root_.Nat.add_le_add __cnp{left} __cnp{right}")?
 +                }
 +                Op::AddLtLe { left, right } => {
 +                    let a = c.nodes[*left].conclusion;
 +                    let b = c.nodes[*right].conclusion;
-+                    write!(out, "Nat.lt_of_lt_of_le (Nat.add_lt_add_right __cnp{left} {}) (Nat.add_le_add (Nat.le_refl {}) __cnp{right})", t(b.left), t(a.right))?;
++                    write!(out, "_root_.Nat.lt_of_lt_of_le (_root_.Nat.add_lt_add_right __cnp{left} {}) (_root_.Nat.add_le_add (_root_.Nat.le_refl {}) __cnp{right})", t(b.left), t(a.right))?;
 +                }
-+                Op::EqSymm { input } => write!(out, "Eq.symm __cnp{input}")?,
-+                Op::EqTrans { left, right } => write!(out, "Eq.trans __cnp{left} __cnp{right}")?,
++                Op::EqSymm { input } => write!(out, "_root_.Eq.symm __cnp{input}")?,
++                Op::EqTrans { left, right } => {
++                    write!(out, "_root_.Eq.trans __cnp{left} __cnp{right}")?
++                }
 +                Op::NormalizeEq { step } => match *step {
 +                    Normalization::Assoc { a, b, c } => {
-+                        write!(out, "Nat.add_assoc {} {} {}", t(a), t(b), t(c))?
++                        write!(out, "_root_.Nat.add_assoc {} {} {}", t(a), t(b), t(c))?
 +                    }
-+                    Normalization::Comm { a, b } => write!(out, "Nat.add_comm {} {}", t(a), t(b))?,
-+                    Normalization::ZeroLeft { a } => write!(out, "Nat.zero_add {}", t(a))?,
-+                    Normalization::ZeroRight { a } => write!(out, "Nat.add_zero {}", t(a))?,
++                    Normalization::Comm { a, b } => {
++                        write!(out, "_root_.Nat.add_comm {} {}", t(a), t(b))?
++                    }
++                    Normalization::ZeroLeft { a } => write!(out, "_root_.Nat.zero_add {}", t(a))?,
++                    Normalization::ZeroRight { a } => write!(out, "_root_.Nat.add_zero {}", t(a))?,
 +                    Normalization::LiteralAdd { .. } => {
-+                        write!(out, "Eq.refl {}", t(node.conclusion.right))?
++                        write!(out, "_root_.Eq.refl {}", t(node.conclusion.right))?
 +                    }
 +                    Normalization::CongrAdd { left, right } => {
 +                        let a = c.nodes[left].conclusion;
 +                        let b = c.nodes[right].conclusion;
-+                        write!(out, "Eq.trans (congrArg (fun __cnz : Nat => __cnz + {}) __cnp{left}) (congrArg (fun __cnz : Nat => {} + __cnz) __cnp{right})", t(b.left), t(a.right))?;
++                        write!(out, "_root_.Eq.trans (_root_.congrArg (fun __cnz : _root_.Nat => __cnz + {}) __cnp{left}) (_root_.congrArg (fun __cnz : _root_.Nat => {} + __cnz) __cnp{right})", t(b.left), t(a.right))?;
 +                    }
 +                },
 +                Op::RewriteSide {
@@ -2087,14 +2135,16 @@ new file mode 100644
 +                    side,
 +                } => {
 +                    let a = c.nodes[*input].conclusion;
-+                    out.write_str("Eq.mp (congrArg (fun __cnz : Nat => ")?;
++                    out.write_str("_root_.Eq.mp (_root_.congrArg (fun __cnz : _root_.Nat => ")?;
 +                    match side {
 +                        Side::Left => write!(out, "__cnz {} {}", relation(a.relation), t(a.right))?,
 +                        Side::Right => write!(out, "{} {} __cnz", t(a.left), relation(a.relation))?,
 +                    }
 +                    write!(out, ") __cnp{equality}) __cnp{input}")?;
 +                }
-+                Op::CancelLt { input } => write!(out, "Nat.lt_of_add_lt_add_right __cnp{input}")?,
++                Op::CancelLt { input } => {
++                    write!(out, "_root_.Nat.lt_of_add_lt_add_right __cnp{input}")?
++                }
 +            }
 +            out.write_char('\n')?;
 +        }
@@ -2110,7 +2160,7 @@ new file mode 100644
 +    use super::*;
 +    #[test]
 +    fn proof_expansion_checks_before_growth() {
-+        let mut out = Text(String::new());
++        let mut out = Text(String::new(), PROOF_BYTES);
 +        out.append(&"x".repeat(PROOF_BYTES)).unwrap();
 +        assert_eq!(out.0.len(), PROOF_BYTES);
 +        assert!(out.append("x").is_err());
@@ -2128,7 +2178,7 @@ new file mode 100644
 +                normal: Form::literal(Nat(0)),
 +            });
 +        }
-+        let mut exact = Text(String::new());
++        let mut exact = Text(String::new(), PROOF_BYTES);
 +        write!(
 +            exact,
 +            "{}",
@@ -2144,7 +2194,7 @@ new file mode 100644
 +            term: Term::Add { left: 12, right: 0 },
 +            normal: Form::literal(Nat(0)),
 +        });
-+        let mut above = Text(String::new());
++        let mut above = Text(String::new(), PROOF_BYTES);
 +        assert!(write!(
 +            above,
 +            "{}",
@@ -2162,7 +2212,7 @@ diff --git a/src/backend/constructive_nat/mod.rs b/src/backend/constructive_nat/
 new file mode 100644
 --- /dev/null
 +++ b/src/backend/constructive_nat/mod.rs
-@@ -0,0 +1,328 @@
+@@ -0,0 +1,433 @@
 +//! Closed constructive Nat component, selected only for empty-policy 1.2 arithmetic.
 +mod certificate;
 +mod check;
@@ -2203,6 +2253,9 @@ new file mode 100644
 +        } else {
 +            Ok(())
 +        }
++    }
++    fn remaining(&self) -> usize {
++        self.max_bytes - self.used
 +    }
 +    fn charge(&mut self, n: usize) -> Result<(), String> {
 +        self.tick()?;
@@ -2307,42 +2360,122 @@ new file mode 100644
 +}
 +// Serialize through the original restricted canonical JSON without changing its
 +// i64 integer contract. Nat128 values have their separate canonical string type.
-+fn canonical<T: Serialize>(value: &T, limit: usize) -> Result<Vec<u8>, String> {
-+    struct Writer {
-+        bytes: Vec<u8>,
-+        limit: usize,
-+    }
-+    impl std::io::Write for Writer {
-+        fn write(&mut self, b: &[u8]) -> std::io::Result<usize> {
-+            if self
-+                .bytes
-+                .len()
-+                .checked_add(b.len())
-+                .is_none_or(|n| n > self.limit)
-+            {
-+                return Err(std::io::Error::other(
-+                    "certificate serialization byte limit",
-+                ));
-+            }
-+            self.bytes.extend_from_slice(b);
-+            Ok(b.len())
-+        }
-+        fn flush(&mut self) -> std::io::Result<()> {
-+            Ok(())
-+        }
-+    }
-+    let mut w = Writer {
-+        bytes: Vec::new(),
-+        limit,
-+    };
-+    serde_json::to_writer(&mut w, value).map_err(|e| e.to_string())?;
-+    let json = crate::artifact::canonical_json::Json::parse(&w.bytes)?;
-+    let result = json.to_file_bytes();
-+    if result.len() > limit {
-+        return Err("canonical certificate byte limit".into());
-+    }
-+    Ok(result)
++#[cfg(test)]
++thread_local! {
++    static OUTPUT_OBSERVATIONS: std::cell::RefCell<Option<Vec<(&'static str, usize)>>> = const { std::cell::RefCell::new(None) };
 +}
++#[cfg(test)]
++fn observe_output(kind: &'static str, len: usize) {
++    OUTPUT_OBSERVATIONS.with_borrow_mut(|events| {
++        if let Some(events) = events {
++            events.push((kind, len));
++        }
++    });
++}
++#[derive(Debug)]
++enum CanonicalFailure {
++    Budget,
++    Invalid(String),
++}
++impl From<CanonicalFailure> for String {
++    fn from(failure: CanonicalFailure) -> Self {
++        match failure {
++            CanonicalFailure::Budget => "canonical certificate byte limit".into(),
++            CanonicalFailure::Invalid(reason) => reason,
++        }
++    }
++}
++struct ByteWriter {
++    bytes: Vec<u8>,
++    limit: usize,
++    exhausted: bool,
++}
++impl std::io::Write for ByteWriter {
++    fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
++        if self
++            .bytes
++            .len()
++            .checked_add(bytes.len())
++            .is_none_or(|n| n > self.limit)
++        {
++            self.exhausted = true;
++            return Err(std::io::Error::other(
++                "certificate serialization byte limit",
++            ));
++        }
++        self.bytes.extend_from_slice(bytes);
++        #[cfg(test)]
++        observe_output("canonical", self.bytes.len());
++        Ok(bytes.len())
++    }
++    fn flush(&mut self) -> std::io::Result<()> {
++        Ok(())
++    }
++}
++// Serialize the original restricted Json value directly into a bounded writer.
++// Its BTreeMap supplies the exact canonical key order; serde_json emits the same
++// minimal UTF-8/string escapes and i64 representation as the original Json writer.
++// No unbounded canonical String/file Vec is constructed before checking its size.
++struct CanonicalJson<'a>(&'a crate::artifact::canonical_json::Json);
++impl Serialize for CanonicalJson<'_> {
++    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
++        use crate::artifact::canonical_json::Json;
++        use serde::ser::{SerializeMap, SerializeSeq};
++        match self.0 {
++            Json::Bool(value) => serializer.serialize_bool(*value),
++            Json::Int(value) => serializer.serialize_i64(*value),
++            Json::Str(value) => serializer.serialize_str(value),
++            Json::Arr(items) => {
++                let mut seq = serializer.serialize_seq(Some(items.len()))?;
++                for item in items {
++                    seq.serialize_element(&CanonicalJson(item))?;
++                }
++                seq.end()
++            }
++            Json::Obj(items) => {
++                let mut map = serializer.serialize_map(Some(items.len()))?;
++                for (key, value) in items {
++                    map.serialize_entry(key, &CanonicalJson(value))?;
++                }
++                map.end()
++            }
++        }
++    }
++}
++fn canonical<T: Serialize>(value: &T, limit: usize) -> Result<Vec<u8>, CanonicalFailure> {
++    use std::io::Write;
++    // Reserve the file LF before even the first serialization pass.
++    let body_limit = limit.checked_sub(1).ok_or(CanonicalFailure::Budget)?;
++    let mut writer = ByteWriter {
++        bytes: Vec::new(),
++        limit: body_limit,
++        exhausted: false,
++    };
++    serde_json::to_writer(&mut writer, value).map_err(|error| {
++        if writer.exhausted {
++            CanonicalFailure::Budget
++        } else {
++            CanonicalFailure::Invalid(error.to_string())
++        }
++    })?;
++    let json = crate::artifact::canonical_json::Json::parse(&writer.bytes)
++        .map_err(CanonicalFailure::Invalid)?;
++    // Reuse the allocation while keeping both passes bounded before each append.
++    writer.bytes.clear();
++    serde_json::to_writer(&mut writer, &CanonicalJson(&json)).map_err(|error| {
++        if writer.exhausted {
++            CanonicalFailure::Budget
++        } else {
++            CanonicalFailure::Invalid(error.to_string())
++        }
++    })?;
++    writer.limit = limit;
++    writer
++        .write_all(b"\n")
++        .map_err(|_| CanonicalFailure::Budget)?;
++    Ok(writer.bytes)
++}
++
 +fn compile_checked(
 +    parameters: &[SemanticParameter],
 +    statement: &SemanticTerm,
@@ -2351,7 +2484,7 @@ new file mode 100644
 +    stage.tick()?;
 +    let input = input(parameters, statement)?;
 +    let certificate = synthesize::synthesize(&input, stage)?;
-+    let remaining = stage.max_bytes - stage.used;
++    let remaining = stage.remaining();
 +    let bytes = canonical(&certificate, remaining)?;
 +    stage.charge(bytes.len())?;
 +    let decoded: Certificate = serde_json::from_slice(&bytes).map_err(|e| e.to_string())?;
@@ -2450,10 +2583,23 @@ new file mode 100644
 +    }
 +    Ok(plan)
 +}
++pub(crate) fn project_allowance(max_bytes: u64, report_total: u64) -> Result<usize, Diagnostic> {
++    let remaining = max_bytes
++        .checked_sub(report_total)
++        .ok_or_else(project_budget_diagnostic)?;
++    Ok(usize::try_from(remaining).unwrap_or(usize::MAX))
++}
++fn project_budget_diagnostic() -> Diagnostic {
++    Diagnostic::new(
++        code!("LLS8002"),
++        "constructive certificate exceeds cumulative output budget",
++    )
++}
 +pub(crate) fn artifact(
 +    rows: Vec<Row>,
 +    source_id: String,
 +    semantic_id: String,
++    project_remaining: usize,
 +    stage: &mut Stage,
 +) -> Result<Vec<u8>, Diagnostic> {
 +    let artifact = Artifact {
@@ -2465,7 +2611,16 @@ new file mode 100644
 +        semantic_id,
 +        rows,
 +    };
-+    let bytes = canonical(&artifact, stage.max_bytes - stage.used).map_err(diagnostic)?;
++    let stage_remaining = stage.remaining();
++    let bytes =
++        canonical(&artifact, stage_remaining.min(project_remaining)).map_err(|failure| {
++            match failure {
++                CanonicalFailure::Budget if project_remaining <= stage_remaining => {
++                    project_budget_diagnostic()
++                }
++                other => diagnostic(other.into()),
++            }
++        })?;
 +    // Decode the complete fixed artifact and require exact row membership/identity
 +    // before publication, then check every decoded DAG against original input.
 +    verify_artifact(&bytes, &artifact, stage).map_err(diagnostic)?;
@@ -2996,7 +3151,7 @@ diff --git a/src/backend/constructive_nat/tests.rs b/src/backend/constructive_na
 new file mode 100644
 --- /dev/null
 +++ b/src/backend/constructive_nat/tests.rs
-@@ -0,0 +1,421 @@
+@@ -0,0 +1,599 @@
 +use super::*;
 +use crate::ir::semantic::SemanticType;
 +fn v(n: &str) -> SemanticTerm {
@@ -3417,6 +3572,184 @@ new file mode 100644
 +    let mut bad = expected.clone();
 +    bad.source_id = "3".repeat(64);
 +    assert!(verify_artifact(&canonical(&bad, 1_000_000).unwrap(), &expected, &stage()).is_err());
++}
++
++#[test]
++fn fix1_legal_binders_cannot_capture_init_proof_constants() {
++    let proof = compile(
++        &params(&["of_decide_eq_true"]),
++        &imp(
++            le(v("of_decide_eq_true"), n(3)),
++            le(v("of_decide_eq_true"), n(4)),
++        ),
++    )
++    .unwrap();
++    assert!(proof.contains("_root_.of_decide_eq_true"), "{proof}");
++    let proof = compile(
++        &params(&["congrArg", "y", "result"]),
++        &imp(
++            lt(v("congrArg"), v("y")),
++            imp(
++                eq(add(v("y"), v("result")), add(v("congrArg"), v("congrArg"))),
++                lt(v("result"), v("y")),
++            ),
++        ),
++    )
++    .unwrap();
++    assert!(proof.contains("_root_.congrArg"), "{proof}");
++}
++
++#[test]
++fn fix1_certificate_fits_but_proof_writer_has_no_remaining_allowance() {
++    let ps = params(&["x"]);
++    let s = imp(le(v("x"), n(3)), le(v("x"), n(4)));
++    let (input, c) = cert(&ps, &s);
++    let bytes = canonical(&c, 1_000_000).unwrap();
++    let mut budget = Stage::new(Instant::now(), 300_000, bytes.len() as u64);
++    budget.charge(bytes.len()).unwrap();
++    let checked = check::check(&input, &c, &budget).unwrap();
++    assert!(
++        emit::emit(&checked, &budget).is_err(),
++        "proof producer must refuse before rendering with zero remaining bytes"
++    );
++    assert_eq!(budget.used, bytes.len());
++}
++
++#[test]
++fn fix1_canonical_reserves_lf_before_body_serialization() {
++    struct Observe<'a>(&'a std::cell::Cell<bool>);
++    impl Serialize for Observe<'_> {
++        fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
++            let result = serializer.serialize_str("x");
++            self.0.set(result.is_ok());
++            result
++        }
++    }
++    let body_completed = std::cell::Cell::new(false);
++    assert!(canonical(&Observe(&body_completed), 3).is_err());
++    assert!(
++        !body_completed.get(),
++        "the three-byte body must not complete when the LF would exceed the allowance"
++    );
++    assert_eq!(canonical(&Observe(&body_completed), 4).unwrap(), b"\"x\"\n");
++    assert!(body_completed.get());
++}
++
++fn observed<T>(action: impl FnOnce() -> T) -> (T, Vec<(&'static str, usize)>) {
++    OUTPUT_OBSERVATIONS.with_borrow_mut(|events| *events = Some(Vec::new()));
++    let result = action();
++    let events = OUTPUT_OBSERVATIONS.with_borrow_mut(|events| events.take().unwrap());
++    (result, events)
++}
++
++#[test]
++fn fix1_partial_proof_allowance_is_checked_before_each_append() {
++    let ps = params(&["x"]);
++    let s = imp(le(v("x"), n(3)), le(v("x"), n(4)));
++    let (input, c) = cert(&ps, &s);
++    let bytes = canonical(&c, 1_000_000).unwrap();
++    let checked_stage = stage();
++    let checked = check::check(&input, &c, &checked_stage).unwrap();
++    let complete = emit::emit(&checked, &checked_stage).unwrap();
++    for remaining in [0, 7, complete.len() - 1, complete.len()] {
++        let mut budget = Stage::new(Instant::now(), 300_000, (bytes.len() + remaining) as u64);
++        budget.charge(bytes.len()).unwrap();
++        let (result, events) = observed(|| emit::emit(&checked, &budget));
++        assert!(events
++            .iter()
++            .all(|(kind, len)| *kind == "proof" && *len <= remaining));
++        if remaining == 0 {
++            assert!(events.is_empty());
++        }
++        if remaining == complete.len() {
++            assert_eq!(result.unwrap(), complete);
++        } else {
++            assert!(result.is_err());
++        }
++        assert_eq!(
++            budget.used,
++            bytes.len(),
++            "producer cannot reset/charge unrelated stage bytes"
++        );
++    }
++    let mut exact = Stage::new(
++        Instant::now(),
++        300_000,
++        (bytes.len() + complete.len()) as u64,
++    );
++    compile_checked(&ps, &s, &mut exact).unwrap();
++    assert_eq!(exact.remaining(), 0);
++    let mut short = Stage::new(Instant::now(), 300_000, bytes.len() as u64);
++    let (result, events) = observed(|| compile_checked(&ps, &s, &mut short));
++    assert!(result.is_err());
++    assert!(!events.iter().any(|(kind, _)| *kind == "proof"));
++}
++
++#[test]
++fn fix1_existing_reports_bound_artifact_writer_before_growth() {
++    let make = |remaining, budget: &mut Stage| {
++        artifact(
++            Vec::new(),
++            "1".repeat(64),
++            "2".repeat(64),
++            remaining,
++            budget,
++        )
++    };
++    let bytes = make(1_000_000, &mut stage()).unwrap();
++    let reports = 23;
++    for delta in [0, 1] {
++        let allowance =
++            project_allowance((reports + bytes.len() - delta) as u64, reports as u64).unwrap();
++        let mut budget = stage();
++        let (result, events) = observed(|| make(allowance, &mut budget));
++        assert!(events
++            .iter()
++            .all(|(kind, len)| *kind == "canonical" && *len <= allowance));
++        if delta == 0 {
++            assert_eq!(result.unwrap(), bytes);
++            assert_eq!(budget.used, bytes.len());
++        } else {
++            assert_eq!(result.unwrap_err().code.as_str(), "LLS8002");
++            assert!(
++                events.iter().all(|(_, len)| *len < allowance),
++                "body must leave room for LF before every append"
++            );
++            assert_eq!(budget.used, 0);
++        }
++    }
++    let (result, events) = observed(|| project_allowance(22, reports as u64));
++    assert_eq!(result.unwrap_err().code.as_str(), "LLS8002");
++    assert!(events.is_empty());
++    let mut exhausted = Stage::new(Instant::now(), 300_000, 0);
++    let (result, events) = observed(|| make(1_000_000, &mut exhausted));
++    assert_eq!(result.unwrap_err().code.as_str(), "LLB6008");
++    assert!(events.is_empty());
++}
++
++#[test]
++fn fix1_bounded_canonical_writer_matches_original_bytes() {
++    let controls: String = (0..32).map(char::from).collect();
++    let value = serde_json::json!({"z": [true, false, -9223372036854775808i64, 9223372036854775807i64], "a": [controls, "é café\\\""], "empty": {}});
++    let original =
++        crate::artifact::canonical_json::Json::parse(&serde_json::to_vec(&value).unwrap())
++            .unwrap()
++            .to_file_bytes();
++    let (result, events) = observed(|| canonical(&value, original.len()));
++    assert_eq!(result.unwrap(), original);
++    assert!(events.iter().all(|(_, len)| *len <= original.len()));
++    let (result, events) = observed(|| canonical(&value, 0));
++    assert!(matches!(result, Err(CanonicalFailure::Budget)));
++    assert!(events.is_empty());
++    let mut writer = ByteWriter {
++        bytes: Vec::new(),
++        limit: 3,
++        exhausted: false,
++    };
++    use std::io::Write;
++    writer.write_all(b"abc").unwrap();
++    assert!(writer.write_all(b"d").is_err());
++    assert_eq!(writer.bytes, b"abc");
 +}
 diff --git a/src/backend/lean.rs b/src/backend/lean.rs
 --- a/src/backend/lean.rs

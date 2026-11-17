@@ -1,10 +1,10 @@
 {
   "kind": "local-unadmitted-component",
   "task": "constructive-nat-backport/1",
-  "review_status": "pending-independent-review",
+  "review_status": "fix-round-1-pending-independent-review",
   "development_source_commit": "463177a0971d95e112e10ed5da39c8cbaf0a4c96",
   "development_source_tree": "0990e900cf1cb5bb4a481bba781a86cc3fcf0999",
-  "game_packaging_diff_base": "5e066e55e9d4ee2fc0090b848d00761414525aec",
+  "game_packaging_diff_base": "ba3fdb476dd8d4d5da8846cddcd8518ba022f0b6",
   "package": {
     "name": "lexlean-constructive-diagnostic",
     "version": "0.4.0-constructive.1",
@@ -66,33 +66,39 @@
     "schema_path": "schemas/constructive-nat-certificate.schema.json",
     "observed_rows": 14,
     "sha256": "3d014b17c42141482faae7eafce8181381098588f6f69d1cfc39242c5ae1efbe",
-    "manifest_sha256": "8879452cbf5b539622a9ed85c1b097425daca882594779639ed95d7067f7954e"
+    "manifest_sha256": "5291e3a8d521849e75bd6fccc271b7931aa852e73fec010094e7f9347d5a5cd6",
+    "additional_hygiene_rows": 6
   },
   "validation": {
-    "constructive_tests_passed": 14,
+    "constructive_tests_passed": 20,
     "existing_focused_tests_passed": 7,
     "actual_candidate_integration_tests_passed": 2,
-    "selected_declarations_with_Lean_kernel_replay_and_empty_axioms": 14,
-    "shared_proof_validation_seconds": 7.8706943380020675,
+    "selected_declarations_with_Lean_kernel_replay_and_empty_axioms": 20,
+    "shared_proof_validation_seconds": 23.644802315997367,
     "compatibility_receipt": "compatibility-final-v5-result.json",
-    "all_failures_retained": true,
-    "independent_review": false
+    "independent_review": false,
+    "fix1_receipt": "fix1-proof-validation-result.json",
+    "historical_original_14_proof_receipt": "full-direct-validation-result.json",
+    "all_failure_logs_retained": true,
+    "failed_rustc_temporary_object_payloads_retained": false,
+    "temporary_cleanup_receipt": "fix1-codegen-postretry.json",
+    "test_ELF_format_provenance": "fix1-rustfmt-corrected.json and fix1-test-format-only.patch; pre-format ELF replay; production bytes and test tokens unchanged"
   },
   "retained_candidate_cli": {
     "path": "/workspace/diagnostic-tools/lexlean-target/release/lexlean-constructive-diagnostic",
-    "sha256": "809655b1688dfb6847c86159fcd6a2bee7de98a7f93e0e016dcf559a5cd31f89",
-    "bytes": 60574240,
+    "sha256": "b34b111b19e4bb35eaaff28abd2600fa48ede3c5c1e15cfa899f13bb1fc1fcd3",
+    "bytes": 60569368,
     "retained": true
   },
   "retained_candidate_integration_elf": {
     "path": "/workspace/diagnostic-tools/lexlean-target/release/deps/unit-b7fb18457d3f2e09",
-    "sha256": "5d97add957eb83bce2b47f6fe4ed0cfdaa9990036045b3dcd12d5254031373ad",
-    "bytes": 3017272
+    "bytes": 3003896,
+    "sha256": "491eea382414c3d7a73d3020f2f0114923e5a3b400863473d999b0459e3e946d"
   },
   "original_artifact_identity_receipt": "original-artifacts-current.json",
   "resources": {
-    "aggregate_growth_bytes": 495243279,
-    "disk_free_bytes": 8987410432,
+    "aggregate_growth_bytes": 498470442,
+    "disk_free_bytes": 8979021824,
     "growth_ceiling_bytes": 536870912,
     "disk_floor_bytes": 8589934592,
     "scoped_640MiB_build_exception": "closed; actual final build below512MiB"
@@ -100,32 +106,41 @@
   "payload_custody": "Indexed local component evidence; parent archive/review separate. No embedded full package/binaries/caches.",
   "files": {
     "README.md": {
-      "bytes": 3617,
-      "sha256": "fac3fc21bd32d04f94f91878ce71bd0007f91f5f1d91128181677a39dd823382"
+      "bytes": 4178,
+      "sha256": "3f7a95247db90491b8f780929856a6a8616ce0a8b0de032f149a45581e514f77"
     },
     "candidate-package-inventory.json": {
-      "bytes": 211470,
-      "sha256": "1f11d66d93fad86f8e5859e4af0c308c50e0808e0709b5c391c0fc61a07b5118"
+      "bytes": 211668,
+      "sha256": "543b2058fde3cf826e5f3f350ed067bf01c88dc3fb7ec60eb53cecb14c220faa"
     },
     "evidence-index.json": {
-      "bytes": 126187,
-      "sha256": "2eb77a0003defc7e71755e4d0acb70d3a6db2b20f61e3dd07ae6748ca36d7b9a"
+      "bytes": 174207,
+      "sha256": "e1be398932c7abc40c13df98360cdc16f31f28b9fb661e2e389612e8700cf119"
     },
     "lexlean-constructive-task1.patch": {
-      "bytes": 217244,
-      "sha256": "703b7e1563cd994c276ccc728be03d55d35e21e367246339de64b286adc85324"
+      "bytes": 229269,
+      "sha256": "5eff40ec79430cfe57e9dc8da676f4388c7a3a28e6486991e83ae77bba5c3aee"
     },
     "pristine-package-inventory.json": {
       "bytes": 182881,
       "sha256": "4d1cd87ed4bb301fc827cb2f5815ceb42b27e4bb660509c049aaa0040cbb2bbc"
     },
     "task-1-report.md": {
-      "bytes": 14682,
-      "sha256": "aeba84382c2acd44d074d1ad5bd0f2b73c6f588eb86f40f7a5bbb465fb59dc64"
+      "bytes": 23731,
+      "sha256": "e5078f27ec5e618c9ca47e10434de35fd156ce1baaeec8eb8119962c1eeb55dc"
     },
     "tool-identities.json": {
       "bytes": 1083,
       "sha256": "3f23849b6386099697aea280bdf33034bb21bcdbfd4e9f493645d7b254937dcc"
     }
-  }
+  },
+  "fix_round": 1,
+  "fix_scope": [
+    "src/api.rs",
+    "src/backend/constructive_nat/emit.rs",
+    "src/backend/constructive_nat/mod.rs",
+    "src/backend/constructive_nat/tests.rs"
+  ],
+  "scoped_fix_patch_sha256": "4f115e24040b0ac165b32c0ded2afd4ce4b148ff44a00f58d88d63f172015bc6",
+  "review_base_commit": "c36b9e830b2819e1a45d80751c33f70f2a5f8b3c"
 }

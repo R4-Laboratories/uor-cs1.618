@@ -5501,9 +5501,9 @@
     },
     {
       "path": "src/api.rs",
-      "bytes": 61928,
+      "bytes": 62613,
       "mode": "0o664",
-      "sha256": "8c873d3ff46d6bfbff8cb173c267d3523f7b916c9e9b3216e0c2ffecf2b73604"
+      "sha256": "5f630dd8773e7abec4e009b7c38aaa6f3d6d36be89b7ea1cea1aad0c973df487"
     },
     {
       "path": "src/artifact/canonical_json.rs",
@@ -5555,15 +5555,15 @@
     },
     {
       "path": "src/backend/constructive_nat/emit.rs",
-      "bytes": 9501,
+      "bytes": 10018,
       "mode": "0o600",
-      "sha256": "0b6de4496b3429fe4cb6b582ced9f0377d1405b743cee7b1165a45e02d7f58f1"
+      "sha256": "99effc15d03f2b1c820ca8766b46cdd0b355143eedbf082406a914d519c2b12c"
     },
     {
       "path": "src/backend/constructive_nat/mod.rs",
-      "bytes": 10836,
+      "bytes": 14660,
       "mode": "0o600",
-      "sha256": "428b80d37fb751d60327e661a7544fa9b9882b607ad35b334669dd610265e293"
+      "sha256": "7d6e58d18f09753a882727c15203fc9f21a1e560918e89f2f93b54baa644a937"
     },
     {
       "path": "src/backend/constructive_nat/synthesize.rs",
@@ -5573,9 +5573,9 @@
     },
     {
       "path": "src/backend/constructive_nat/tests.rs",
-      "bytes": 13678,
+      "bytes": 20343,
       "mode": "0o600",
-      "sha256": "92e0d62c5745dae95b92f1effcdd71d6ccc973e30b472eb75b89f491904e20d3"
+      "sha256": "4a99f6518a8401f1303130c60f02add5a866ce1d0c7fa1d3797d95fbfb09f4bb"
     },
     {
       "path": "src/backend/core.rs",
@@ -6502,7 +6502,14 @@
     "language/preservation-1.2/modules/LexLeanTarget/TargetSyntax.lean": "c0e0bb061cfcdc7e7f4434e13fc8b7298dcb701db9ea8189e012d8068e04ee0c"
   },
   "candidate_cli_retained": true,
-  "candidate_cli_sha256": "809655b1688dfb6847c86159fcd6a2bee7de98a7f93e0e016dcf559a5cd31f89",
+  "candidate_cli_sha256": "b34b111b19e4bb35eaaff28abd2600fa48ede3c5c1e15cfa899f13bb1fc1fcd3",
   "candidate_integration_elf_retained": true,
-  "candidate_libtest_elf_retained": false
+  "candidate_libtest_elf_retained": false,
+  "fix_round": 1,
+  "fix_changed_paths": [
+    "src/api.rs",
+    "src/backend/constructive_nat/emit.rs",
+    "src/backend/constructive_nat/mod.rs",
+    "src/backend/constructive_nat/tests.rs"
+  ]
 }
