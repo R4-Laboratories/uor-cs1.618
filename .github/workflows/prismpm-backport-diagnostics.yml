@@ -1,0 +1,82 @@
+name: PrismPM backport diagnostics
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-backport-diagnostics.yml'
+      - 'scripts/numeric/prismpm-candidate/manifest.json'
+      - 'scripts/numeric/prismpm-candidate/candidate.bundle'
+      - 'scripts/numeric/prismpm-candidate/candidate.patch'
+      - 'scripts/numeric/restore-prismpm-candidate.py'
+      - 'scripts/numeric/check-prismpm-backport.sh'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acquisition:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          path: prismpm
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Restore the explicit diagnostic verifier source
+        run: |
+          set -euo pipefail
+          mkdir -m 755 evidence
+          python3 game/scripts/numeric/restore-prismpm-candidate.py \
+            game/scripts/numeric/prismpm-candidate prismpm > evidence/candidate.json
+          printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
+          df -h > evidence/disk-before.txt
+          docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
+          printf '%s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}" > evidence/runner-image.txt
+          sudo chown -R 1000:1000 prismpm evidence
+      - name: Pull the unchanged pinned SDK
+        run: |
+          set -euo pipefail
+          docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+      - name: Exercise both authorities with the same new verifier
+        run: |
+          set -euo pipefail
+          if docker run --rm --platform linux/amd64 --user 1000:1000 \
+            --tmpfs /tmp:rw,exec,nosuid,nodev,size=1g,mode=1777 --shm-size=1g \
+            -v "$GITHUB_WORKSPACE/prismpm:/work/prismpm-b1" \
+            -v "$GITHUB_WORKSPACE/game:/game:ro" \
+            -v "$GITHUB_WORKSPACE/evidence:/evidence" \
+            -w /work/prismpm-b1 \
+            ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c \
+            bash /game/scripts/numeric/check-prismpm-backport.sh 2>&1 | tee evidence/run.log; then
+            run_status=("${PIPESTATUS[@]}")
+          else
+            run_status=("${PIPESTATUS[@]}")
+          fi
+          printf '%s\n' "${run_status[0]}" > evidence/container-exit-code.txt
+          printf '%s\n' "${run_status[1]}" > evidence/log-capture-exit-code.txt
+          if test "${run_status[0]}" -ne 0; then exit "${run_status[0]}"; fi
+          exit "${run_status[1]}"
+      - name: Retain generated file changes
+        if: always()
+        run: |
+          mkdir -p evidence
+          if test -d prismpm/.git; then
+            git -c safe.directory="$GITHUB_WORKSPACE/prismpm" -C prismpm diff --binary > evidence/generated-changes.patch
+          fi
+          df -h > evidence/disk-after.txt
+      - name: Retain diagnostics even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prismpm-backport-${{ github.run_id }}
+          path: evidence/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

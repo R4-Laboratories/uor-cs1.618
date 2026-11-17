@@ -1,0 +1,9 @@
+{
+  "schema": "cs1618/prismpm-diagnostic/1",
+  "source": "https://github.com/UOR-Foundation/prismpm",
+  "base": "3666dc0f9da56fcf066d96ec01cd9e14ec9a2974",
+  "candidate": "e837d723826e3e55c45febba2900e85e29caa578",
+  "tree": "dfa5009eaaa571e46a8648a6ae197d6b3e7e5063",
+  "bundle_sha256": "d092e9fd51d03b541d72c8918bdf556acfabb001a3c1a37c7d17a4c88475b004",
+  "patch_sha256": "0271846583bbe900498f0500f15ff0443b77fe125c1935e3798d355b8eb3ba2f"
+}
