@@ -1,0 +1,33 @@
+{
+  "schema": "cs1618/retained-host-access-component/1",
+  "game_commit": "5e066e55e9d4ee2fc0090b848d00761414525aec",
+  "review_at_retention": "changes_required: R4-1 privileged public fixture leaves incorrectly private; production policy otherwise aligned",
+  "SDK_qualification": "not_run",
+  "local_tests": {
+    "passed": 68,
+    "skipped_privileged": 2
+  },
+  "evidence_index_sha256": "cc156bba63eb7ef56c13d2de004ae08db003aa45ab7c0ad04c01d2ba5f336894",
+  "entries": [
+    {
+      "path": "candidate-capture-host-access-5e066e5.tar.gz",
+      "bytes": 36499,
+      "sha256": "01849566f270ed2982474ff9ba158a49fa6743fe81aaf98a0d56d09ae6d56f19"
+    },
+    {
+      "path": "candidate-capture-qualification-report-5e066e5.md",
+      "bytes": 59271,
+      "sha256": "deb6e0264e3a59bfbed34301a6d891126b3111985787d63ccf550aa4f90cebae"
+    },
+    {
+      "path": "candidate-capture-host-access-5e066e5.patch",
+      "bytes": 60015,
+      "sha256": "0d9f7eb17c3dc805428fe8fd649aafa3abfb91b64124d40b147780a454d28bc4"
+    },
+    {
+      "path": "candidate-capture-host-access-5e066e5-review.md",
+      "bytes": 6339,
+      "sha256": "2937d698a81728d9b964b820dba7b2c897f1a720fdcd62f7790b413b031a1b52"
+    }
+  ]
+}
