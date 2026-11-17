@@ -1,0 +1,10 @@
+{
+  "scope": "unadmitted-source-review-checkpoint",
+  "base": "f6776fca7c9f675b3bb762ddaf88d256aad3d77f",
+  "candidate": "d8f8d8a05d697ef0258e1b85db01d5bf369a8385",
+  "tree": "edb75af3081319c1d24fb150b0a689af32ab8bed",
+  "patch_sha256": "025aac9a98485448e53c27556cb09d0f22b9d0f60f30abb1a544016cdf8d1e84",
+  "patch_bytes": 187264,
+  "blocking_review": "native-frontend-review-d8f8d8a.md",
+  "status": "two-important-findings-open"
+}
