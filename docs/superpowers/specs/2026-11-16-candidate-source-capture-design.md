@@ -72,6 +72,8 @@ Use a distinct schema, e.g. `prismpm/conditional-candidate-capture-input/1`; do 
 - actual SDK distribution, local config digest, OS/architecture, independently captured inventory digest and original image helper/launcher measurements;
 - an optional **typed source-owner identity** (Git commit/tree measured from Git, or private inventory owner), never conflated with the modeled fixture's source URI/revision.
 
+Source measurement first returns a closed source-input plan. An explicit binding operation adds the independently inspected runtime observations and produces the full closed capture descriptor before bootstrap. An unbound source plan is not stage input; null, inferred or fabricated runtime observations are forbidden. Component tests may use explicitly labeled structural fixtures but cannot claim runtime qualification.
+
 Keep image config identity separate from distribution/index digest. The parent, not the guest's environment string, observes and binds the actual container image. No arbitrary root, arbitrary launcher, extra environment, alternative inventory path or user-defined authority module is admitted.
 
 New-route canonical framing uses the unchanged Python `encoded` semantics: sorted object keys, compact JSON, ASCII escapes (including surrogate pairs for non-BMP characters), and exactly one final LF. Source/union row order is lexicographic UTF-8 byte order; reject non-scalar Unicode paths. The independent JS reader must implement that exact framing rather than hash ordinary `JSON.stringify` output, and normalize existing Map iteration order explicitly. Pin cross-language vectors containing both BMP and non-BMP path names.
