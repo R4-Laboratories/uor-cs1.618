@@ -7,7 +7,8 @@
   "patch": "native-frontend-fix-c2139af.patch",
   "patch_sha256": "3e1aed3cc9a764a9d7cead421d61e177885288b9b9b4a07bfe991ac09cc9352f",
   "patch_bytes": 34745,
-  "scope": "SDK Lean launcher versus actual inventory-bound binary; independent source review pending",
+  "scope": "SDK Lean producer/owner identity correction independently verified; checkpoint blocked by retained-reader missing inventory argument",
   "production_admission": false,
-  "upstream_published": false
+  "upstream_published": false,
+  "review": "native-frontend-review-c2139af.md"
 }
