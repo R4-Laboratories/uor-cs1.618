@@ -193,11 +193,11 @@
     },
     {
       "id": "NEXP-009",
-      "status": "source_and_focused_sdk_passed_canonical_packaging_pending",
+      "status": "canonical_packaging_blocked_source_validation_incomplete",
       "repo": "lean4-prod / PrismPM / uor-cs1.618",
       "function": "Canonical bounded numeric export and conversion normalization",
-      "summary": "Reviewed bounded source453dc1bd exports four raw and canonical component roots and passes44648 native/Wasm vectors plus16 helper controls. Compiler source stage and focused dual-authority SDK integration pass; full source VV, governed numeric library packages and rendering integration remain pending.",
-      "reproduction": "Compiler2a13f94 passed all31 pinned-SDK source gates in43978245009. Reviewed Prism2a31 preserves Released default and explicit numeric-task2c authority; fresh repaired43999834837 passes actual acquisitions, retained readers/mutations,10authority controls, final original identities and all wrapper statuses. Typed bounded source453dc1bd avoids the application type/tuple failures using monomorphic helpers and LengthState; actual unmodified generated raw/canonical native and import-freeWasm all44648 vectors and helper controls pass. B2A commit efd0fc8 independently approved. FullsourceVV44002718718 pending; no production admission.",
+      "summary": "Reviewed bounded roots and helpers pass component native/Wasm replay. Actual canonical package builds now fail generated-module timeout (NEXP-012); full source validation exposed baseline and wrapper omissions. No production admission.",
+      "reproduction": "Compiler2a13f94 passed all31 pinned-SDK source gates in43978245009. Reviewed Prism2a31 preserves Released default and explicit numeric-task2c authority; fresh repaired43999834837 passes actual acquisitions, retained readers/mutations,10authority controls, final original identities and all wrapper statuses. Typed bounded source453dc1bd avoids the application type/tuple failures using monomorphic helpers and LengthState; actual unmodified generated raw/canonical native and import-freeWasm all44648 vectors and helper controls pass. B2A commit efd0fc8 independently approved. FullsourceVV44002718718 pending; no production admission. Actual canonical44008985569: four prepare0/build1 PP5007 timeout124, verify/replaynot-run. FullVV44002718718: source/gates fail stale source/golden identities; conformance112/113 with inherited CARGO_BUILD_JOBS refusal; other parts pending.",
       "acceptance_criteria": [
         "Preserve or explicitly refuse eager bounded-target failures in consumed dictionary dependencies and alias bodies.",
         "Pass actual focused native/import-free Wasm replay and unchanged applicable compiler gates on the corrected source identity.",
@@ -223,7 +223,9 @@
         "recovery-2026-11-16/canonical-typed-453dc1bd.json",
         "recovery-2026-11-16/ci-43999834837/README.md",
         "recovery-2026-11-16/bounded-source-review-efd0fc8.md",
-        "recovery-2026-11-16/bounded-source-453dc1bd.json"
+        "recovery-2026-11-16/bounded-source-453dc1bd.json",
+        "recovery-2026-11-16/ci-44008985569/README.md",
+        "recovery-2026-11-16/full-vv-gates-diagnosis.md"
       ],
       "dependencies": [
         "NEXP-002",
@@ -268,6 +270,24 @@
       "dependencies": [],
       "production_admission": false,
       "application_mitigation": "Reviewed source453dc1bd monomorphic helpers/named record pass actual canonical native/Wasm corpus and helper checks; generic compiler defect remains open."
+    },
+    {
+      "id": "NEXP-012",
+      "status": "confirmed_open",
+      "repo": "PrismPM / LexLean runtime / Lean",
+      "function": "library_build generated-module compilation / LexLeanRuntime.Laws C emission",
+      "summary": "All four actual governed numeric package builds hit PP5007 generated-module timeout. Local exact-runtime comparison and partial artifacts identify post-frontend Laws C emission as a bottleneck; hosted internal subphase is not independently profiled.",
+      "acceptance_criteria": [
+        "Preserve all Bounds statements, actual source proof/audit closure, source/export custody and explicit failures.",
+        "Repair the supported source-owned compilation path without removing proof modules, extending timeouts, replacing pinned tools or editing generated kernels.",
+        "Pass actual unchanged-SDK build/verify of all four packages, then replay exact newly emitted artifacts and independent custody controls."
+      ],
+      "evidence": [
+        "recovery-2026-11-16/canonical-laws-diagnosis.md",
+        "recovery-2026-11-16/ci-44008985569/README.md"
+      ],
+      "dependencies": [],
+      "production_admission": false
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",

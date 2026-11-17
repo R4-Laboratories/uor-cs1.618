@@ -104,3 +104,10 @@ experiment did not justify a runtime import.
 The typed source checkpoint `453dc1bd` now passes all four canonical extraction/codegen/native and import-free Wasm paths, with all44,648 oracle cases passing and native output identical to the frozen corpus. [Retained component evidence](numeric-export/recovery-2026-11-16/canonical-typed-453dc1bd.json) records its scope: expanded helper/source verification has since passed and been reviewed; governed canonical packaging remains required, and NEXP-010/011 generic compiler defects stay open.
 
 Full upstream source validation is running as [44002718718](https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44002718718), using all eight unchanged partitions and their original assembler. A green focused SDK job or local arithmetic suite does not replace that result. The next implementation packages each actual root using PrismPM native-library contracts; no new numeric guest or Pages release is enabled yet.
+
+
+### Current blocking results
+
+Actual canonical package run[44008985569](numeric-export/recovery-2026-11-16/ci-44008985569/README.md) failed all four builds with PP5007 generated-module timeout. Arithmetic and acceptance modules compiled, but verification and new-output replay did not run. NEXP-012 tracks this separately from the open generic type/tuple defects. The exact-runtime [local diagnosis](numeric-export/recovery-2026-11-16/canonical-laws-diagnosis.md) places the local bottleneck in Laws C emission after frontend completion; hosted internal phase profiling is not claimed.
+
+Full-source run44002718718 has confirmed failures, not a pending clean result: stale fixture/emitter/shared-golden/native-recipe records, plus a wrapper-owned inherited Cargo setting rejected by a conformance owner. [Diagnosis and supported repair sequence](numeric-export/recovery-2026-11-16/full-vv-gates-diagnosis.md) retain the distinctions. A reviewed source preparation checkpoint exists, but genuine golden regeneration, native review and new exact-source acceptance remain outstanding. Original SDK pins, proof scope and time limits remain unchanged.
