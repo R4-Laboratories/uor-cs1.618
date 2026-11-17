@@ -283,116 +283,20 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-17T19:24:59.846Z",
-    "base": "a629d7d880a9e0a218e415e65215701661186169",
+    "at": "2026-11-17T19:38:55.195Z",
+    "base": "cd1bf6334c3015d747ab4782ca5088d7e8b0be85",
     "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
-    "previous": "40a6ebf08776bd7898955a7ae00a2ae5d230c0eb4ed8a88814d5f5fa95bebfc1",
+    "previous": "be7785932f2b8a6e4cc6a5210d09fa2082716cddec3903f8eec6f34ffb0039ba",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "render-32-4",
+        "candidate": "render-64-4",
         "family": "render",
         "author": "optimizer",
         "metric": "work count",
-        "configHash": "14110a877320dc7fab6b1c9b9a952f4f0129ac8b0771acbc624734884efebe05",
+        "configHash": "aaff297533a7ab34fa573c6d8ee5dd282939cb3e94c880472631657b2ce5e856",
         "baselineWork": 91188,
-        "candidateWork": 81748,
-        "fidelity": true,
-        "bounds": false,
-        "samples": 4,
-        "comparisons": [
-          {
-            "mean": 5.616830065359477e-8,
-            "changed": 0
-          },
-          {
-            "mean": 0.0000010059232026143791,
-            "changed": 0.0000078125
-          },
-          {
-            "mean": 1.2254901960784314e-7,
-            "changed": 0
-          },
-          {
-            "mean": 5.1062091503267976e-9,
-            "changed": 0
-          }
-        ],
-        "reference": [
-          {
-            "calls": 469,
-            "triangles": 5234,
-            "frameMs": 11.099999999991269
-          },
-          {
-            "calls": 366,
-            "triangles": 4118,
-            "frameMs": 3.2000000000116415
-          },
-          {
-            "calls": 335,
-            "triangles": 3746,
-            "frameMs": 2.6000000000058208
-          },
-          {
-            "calls": 414,
-            "triangles": 4634,
-            "frameMs": 3.6999999999970896
-          }
-        ],
-        "before": [
-          {
-            "calls": 233,
-            "triangles": 5678,
-            "frameMs": 5.399999999994179
-          },
-          {
-            "calls": 196,
-            "triangles": 4742,
-            "frameMs": 4.80000000000291
-          },
-          {
-            "calls": 127,
-            "triangles": 4046,
-            "frameMs": 1.8999999999941792
-          },
-          {
-            "calls": 162,
-            "triangles": 4922,
-            "frameMs": 3.5
-          }
-        ],
-        "after": [
-          {
-            "calls": 202,
-            "triangles": 5798,
-            "frameMs": 4.30000000000291
-          },
-          {
-            "calls": 174,
-            "triangles": 5582,
-            "frameMs": 2.5
-          },
-          {
-            "calls": 104,
-            "triangles": 4598,
-            "frameMs": 1.8000000000029104
-          },
-          {
-            "calls": 128,
-            "triangles": 4970,
-            "frameMs": 2.7999999999883585
-          }
-        ]
-      },
-      {
-        "candidate": "render-64-2",
-        "family": "render",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "2203993d904e1eb00a48df37fd855532700c906cd6ac4d930c3e8eec0fe55f11",
-        "baselineWork": 91188,
-        "candidateWork": 73036,
+        "candidateWork": 73876,
         "fidelity": true,
         "bounds": false,
         "samples": 4,
@@ -402,11 +306,11 @@
             "changed": 0
           },
           {
-            "mean": 0.0000010212418300653596,
+            "mean": 0.0000010110294117647058,
             "changed": 0.0000078125
           },
           {
-            "mean": 1.2765522875816995e-7,
+            "mean": 1.2254901960784314e-7,
             "changed": 0
           },
           {
@@ -418,221 +322,171 @@
           {
             "calls": 469,
             "triangles": 5234,
-            "frameMs": 5.100000000005821
+            "frameMs": 7.800000000017462
           },
           {
             "calls": 366,
             "triangles": 4118,
-            "frameMs": 3.1000000000058208
+            "frameMs": 6.899999999994179
           },
           {
             "calls": 335,
             "triangles": 3746,
-            "frameMs": 2.8000000000174623
+            "frameMs": 2.8999999999941792
           },
           {
             "calls": 414,
             "triangles": 4634,
-            "frameMs": 2.6999999999825377
+            "frameMs": 3.900000000023283
           }
         ],
         "before": [
           {
             "calls": 233,
             "triangles": 5678,
-            "frameMs": 5.2000000000116415
+            "frameMs": 15.39999999999418
           },
           {
             "calls": 196,
             "triangles": 4742,
-            "frameMs": 3.5
+            "frameMs": 5.099999999976717
           },
           {
             "calls": 127,
             "triangles": 4046,
-            "frameMs": 2.6000000000058208
+            "frameMs": 3.8000000000174623
           },
           {
             "calls": 162,
             "triangles": 4922,
-            "frameMs": 2.5
+            "frameMs": 7.599999999976717
           }
         ],
         "after": [
           {
-            "calls": 172,
+            "calls": 176,
             "triangles": 6038,
-            "frameMs": 2.1000000000058208
+            "frameMs": 4.5
           },
           {
-            "calls": 151,
-            "triangles": 5894,
-            "frameMs": 1.3000000000174623
+            "calls": 153,
+            "triangles": 5882,
+            "frameMs": 5.099999999976717
           },
           {
-            "calls": 82,
+            "calls": 84,
+            "triangles": 4910,
+            "frameMs": 2.6999999999825377
+          },
+          {
+            "calls": 105,
+            "triangles": 5246,
+            "frameMs": 2.6999999999825377
+          }
+        ]
+      },
+      {
+        "candidate": "render-8-2",
+        "family": "render",
+        "author": "optimizer",
+        "metric": "work count",
+        "configHash": "ac5c513909c7eea1ec74468f3d281e3b45de14b329889e94979f79888aeaa254",
+        "baselineWork": 91188,
+        "candidateWork": 102928,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 5.616830065359477e-8,
+            "changed": 0
+          },
+          {
+            "mean": 0.0000010008169934640522,
+            "changed": 0.0000078125
+          },
+          {
+            "mean": 1.1744281045751634e-7,
+            "changed": 0
+          },
+          {
+            "mean": 5.1062091503267976e-9,
+            "changed": 0
+          }
+        ],
+        "reference": [
+          {
+            "calls": 469,
+            "triangles": 5234,
+            "frameMs": 9.60000000000582
+          },
+          {
+            "calls": 366,
+            "triangles": 4118,
+            "frameMs": 8.10000000000582
+          },
+          {
+            "calls": 335,
+            "triangles": 3746,
+            "frameMs": 2.6999999999825377
+          },
+          {
+            "calls": 414,
+            "triangles": 4634,
+            "frameMs": 3.2000000000116415
+          }
+        ],
+        "before": [
+          {
+            "calls": 233,
+            "triangles": 5678,
+            "frameMs": 6.2999999999883585
+          },
+          {
+            "calls": 196,
+            "triangles": 4742,
+            "frameMs": 5.899999999994179
+          },
+          {
+            "calls": 127,
+            "triangles": 4046,
+            "frameMs": 2.7999999999883585
+          },
+          {
+            "calls": 162,
             "triangles": 4922,
-            "frameMs": 0.7000000000116415
+            "frameMs": 4.7000000000116415
+          }
+        ],
+        "after": [
+          {
+            "calls": 269,
+            "triangles": 5630,
+            "frameMs": 5.7000000000116415
           },
           {
-            "calls": 104,
-            "triangles": 5282,
-            "frameMs": 2.3000000000174623
+            "calls": 219,
+            "triangles": 4406,
+            "frameMs": 6.399999999994179
+          },
+          {
+            "calls": 157,
+            "triangles": 3866,
+            "frameMs": 3.8999999999941792
+          },
+          {
+            "calls": 197,
+            "triangles": 4826,
+            "frameMs": 4.199999999982538
           }
         ]
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "be7785932f2b8a6e4cc6a5210d09fa2082716cddec3903f8eec6f34ffb0039ba"
+    "hash": "05e22459b361a71737e03f31f6c56e4a93434c679ef622ca47794ae8b66a8f8a"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 8,
-      "author": null,
-      "at": "2026-11-16T10:15:52.709Z",
-      "base": "8f75752596868f66d12d365032be64e4af6083ec",
-      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-      "previous": "4230373899399771fb80c0684420e4982a475d75cf8d7e5526f48d8cf7ea6118",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "navigation-6",
-          "family": "navigation",
-          "author": "optimizer",
-          "metric": "work count",
-          "configHash": "84f6f738a071a0fde53726faa1b900aba8303ca057762b836ac04c621100de78",
-          "baselineWork": 2651,
-          "candidateWork": 9349,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 480,
-          "comparisons": null,
-          "reference": {
-            "pairs": 101926,
-            "elapsed": 32.153462999999874,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          },
-          "before": {
-            "pairs": 2651,
-            "elapsed": 16.01831799999991,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          },
-          "after": {
-            "pairs": 9349,
-            "elapsed": 16.136236000000054,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          }
-        },
-        {
-          "candidate": "render-32-4",
-          "family": "render",
-          "author": "optimizer",
-          "metric": "work count",
-          "configHash": "ed471686bfd8eb0f334cced045b10dc4ded071928743a7b86b538010c66dc226",
-          "baselineWork": 60636,
-          "candidateWork": 51316,
-          "fidelity": true,
-          "bounds": false,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 1.0723039215686274e-7,
-              "changed": 0
-            },
-            {
-              "mean": 0.0000013020833333333333,
-              "changed": 0.0000078125
-            },
-            {
-              "mean": 1.787173202614379e-7,
-              "changed": 0
-            },
-            {
-              "mean": 0,
-              "changed": 0
-            }
-          ],
-          "reference": [
-            {
-              "calls": 279,
-              "triangles": 3418,
-              "frameMs": 4.5
-            },
-            {
-              "calls": 197,
-              "triangles": 2554,
-              "frameMs": 1.5
-            },
-            {
-              "calls": 244,
-              "triangles": 2926,
-              "frameMs": 1.5999999999985448
-            },
-            {
-              "calls": 290,
-              "triangles": 3650,
-              "frameMs": 1.9000000000014552
-            }
-          ],
-          "before": [
-            {
-              "calls": 137,
-              "triangles": 3862,
-              "frameMs": 6.099999999998545
-            },
-            {
-              "calls": 100,
-              "triangles": 2950,
-              "frameMs": 1.3999999999941792
-            },
-            {
-              "calls": 103,
-              "triangles": 3058,
-              "frameMs": 2.400000000001455
-            },
-            {
-              "calls": 129,
-              "triangles": 3866,
-              "frameMs": 2.1999999999970896
-            }
-          ],
-          "after": [
-            {
-              "calls": 108,
-              "triangles": 3886,
-              "frameMs": 0.8000000000029104
-            },
-            {
-              "calls": 80,
-              "triangles": 3670,
-              "frameMs": 1.0999999999985448
-            },
-            {
-              "calls": 81,
-              "triangles": 3418,
-              "frameMs": 1.1000000000058208
-            },
-            {
-              "calls": 96,
-              "triangles": 3842,
-              "frameMs": 2.3999999999941792
-            }
-          ]
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "d8a96cd9d42abb09a6e03af8e85e514bfb6ecfc83576be470f22ed6cf33ddf3d"
-    },
     {
       "generation": 8,
       "author": null,
@@ -9833,6 +9687,211 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "be7785932f2b8a6e4cc6a5210d09fa2082716cddec3903f8eec6f34ffb0039ba"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T19:38:55.195Z",
+      "base": "cd1bf6334c3015d747ab4782ca5088d7e8b0be85",
+      "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
+      "previous": "be7785932f2b8a6e4cc6a5210d09fa2082716cddec3903f8eec6f34ffb0039ba",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "render-64-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "aaff297533a7ab34fa573c6d8ee5dd282939cb3e94c880472631657b2ce5e856",
+          "baselineWork": 91188,
+          "candidateWork": 73876,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010110294117647058,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 2.9105392156862744e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 469,
+              "triangles": 5234,
+              "frameMs": 7.800000000017462
+            },
+            {
+              "calls": 366,
+              "triangles": 4118,
+              "frameMs": 6.899999999994179
+            },
+            {
+              "calls": 335,
+              "triangles": 3746,
+              "frameMs": 2.8999999999941792
+            },
+            {
+              "calls": 414,
+              "triangles": 4634,
+              "frameMs": 3.900000000023283
+            }
+          ],
+          "before": [
+            {
+              "calls": 233,
+              "triangles": 5678,
+              "frameMs": 15.39999999999418
+            },
+            {
+              "calls": 196,
+              "triangles": 4742,
+              "frameMs": 5.099999999976717
+            },
+            {
+              "calls": 127,
+              "triangles": 4046,
+              "frameMs": 3.8000000000174623
+            },
+            {
+              "calls": 162,
+              "triangles": 4922,
+              "frameMs": 7.599999999976717
+            }
+          ],
+          "after": [
+            {
+              "calls": 176,
+              "triangles": 6038,
+              "frameMs": 4.5
+            },
+            {
+              "calls": 153,
+              "triangles": 5882,
+              "frameMs": 5.099999999976717
+            },
+            {
+              "calls": 84,
+              "triangles": 4910,
+              "frameMs": 2.6999999999825377
+            },
+            {
+              "calls": 105,
+              "triangles": 5246,
+              "frameMs": 2.6999999999825377
+            }
+          ]
+        },
+        {
+          "candidate": "render-8-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "ac5c513909c7eea1ec74468f3d281e3b45de14b329889e94979f79888aeaa254",
+          "baselineWork": 91188,
+          "candidateWork": 102928,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 5.616830065359477e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010008169934640522,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.1744281045751634e-7,
+              "changed": 0
+            },
+            {
+              "mean": 5.1062091503267976e-9,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 469,
+              "triangles": 5234,
+              "frameMs": 9.60000000000582
+            },
+            {
+              "calls": 366,
+              "triangles": 4118,
+              "frameMs": 8.10000000000582
+            },
+            {
+              "calls": 335,
+              "triangles": 3746,
+              "frameMs": 2.6999999999825377
+            },
+            {
+              "calls": 414,
+              "triangles": 4634,
+              "frameMs": 3.2000000000116415
+            }
+          ],
+          "before": [
+            {
+              "calls": 233,
+              "triangles": 5678,
+              "frameMs": 6.2999999999883585
+            },
+            {
+              "calls": 196,
+              "triangles": 4742,
+              "frameMs": 5.899999999994179
+            },
+            {
+              "calls": 127,
+              "triangles": 4046,
+              "frameMs": 2.7999999999883585
+            },
+            {
+              "calls": 162,
+              "triangles": 4922,
+              "frameMs": 4.7000000000116415
+            }
+          ],
+          "after": [
+            {
+              "calls": 269,
+              "triangles": 5630,
+              "frameMs": 5.7000000000116415
+            },
+            {
+              "calls": 219,
+              "triangles": 4406,
+              "frameMs": 6.399999999994179
+            },
+            {
+              "calls": 157,
+              "triangles": 3866,
+              "frameMs": 3.8999999999941792
+            },
+            {
+              "calls": 197,
+              "triangles": 4826,
+              "frameMs": 4.199999999982538
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "05e22459b361a71737e03f31f6c56e4a93434c679ef622ca47794ae8b66a8f8a"
     }
   ]
 }
