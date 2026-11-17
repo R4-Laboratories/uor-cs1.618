@@ -293,11 +293,12 @@
         "recovery-2026-11-16/native-frontend-review-d8f8d8a.md",
         "recovery-2026-11-16/native-frontend-report-e1c32a6.md",
         "recovery-2026-11-16/native-frontend-review-e1c32a6.md",
-        "recovery-2026-11-16/native-frontend-fix-e1c32a6.tar.json"
+        "recovery-2026-11-16/native-frontend-fix-e1c32a6.tar.json",
+        "recovery-2026-11-16/frontend-harness-review-3126661.md"
       ],
       "dependencies": [],
       "production_admission": false,
-      "reproduction": "Original actual SDK44008985569 remains failed for all four builds. Proposed source d8f8d8a preserves the complete eight-module closure without optional C emission: two fresh frontend runs, eight pinned kernel checks and two identical full exports passed in45.14s locally; actual component reader rejected18 mutations. Independent review confirmed two repair requirements: /3 manifest rejects actual acquisition/2 source-backport, and cumulative output accounting charges normalized text rather than original stream bytes. Fix round1 is active; candidate remains unadmitted. Full SDK verification, new selected-output corpus and source/native baseline qualification remain pending. Reviewed fix e1c32a64 resolves both review findings: complete /3 publication and independent authority controls pass; cumulative raw-byte and asymmetric-stream controls pass. Independent scoped re-review approves diagnostic launch only. Actual SDK package and full source gates remain outstanding."
+      "reproduction": "Original actual SDK44008985569 remains failed for all four builds. Proposed source d8f8d8a preserves the complete eight-module closure without optional C emission: two fresh frontend runs, eight pinned kernel checks and two identical full exports passed in45.14s locally; actual component reader rejected18 mutations. Independent review confirmed two repair requirements: /3 manifest rejects actual acquisition/2 source-backport, and cumulative output accounting charges normalized text rather than original stream bytes. Fix round1 is active; candidate remains unadmitted. Full SDK verification, new selected-output corpus and source/native baseline qualification remain pending. Reviewed fix e1c32a64 resolves both review findings: complete /3 publication and independent authority controls pass; cumulative raw-byte and asymmetric-stream controls pass. Independent scoped re-review approves diagnostic launch only. Actual SDK package and full source gates remain outstanding. Subsequent independent game-harness review3126661 blocks launch: original SDK PATH Lean/Lake identify the same elan launcher, while actual Lean has a different inventory-bound binary hash. The source SDK frontend assumes these are the same and its owner simultaneously requires Lean differ from Lake. Game capture also compares real Cargo with its rustup process launcher. Actual retained SDK records and immutable inventory confirm both distinctions. Source fix round2 and dependent harness repair are pending; earlier scoped approval does not establish current launch readiness."
     },
     {
       "id": "NEXP-013",
@@ -316,7 +317,10 @@
         "recovery-2026-11-16/full-vv-oc10-diagnosis.md"
       ],
       "dependencies": [],
-      "production_admission": false
+      "production_admission": false,
+      "implementation_plan": "../../superpowers/plans/2026-11-16-candidate-source-capture.md",
+      "design": "../../superpowers/specs/2026-11-16-candidate-source-capture-design.md",
+      "implementation_status": "Planned only: explicit candidate source transport, retired staging writer, read-only input and compiled-root subpath, independent reader; actual daemon and unchanged-SDK capture qualification pending."
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
