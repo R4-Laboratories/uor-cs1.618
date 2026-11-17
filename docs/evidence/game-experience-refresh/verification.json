@@ -9,6 +9,17 @@
   "presentationResponsiveStates": 16,
   "offlineAudioCues": 16,
   "objectiveBrowser": "passed after main integration; real keyboard/WebSocket interaction with late-progress/expiry fixtures",
-  "hostedWorkflow": "pending publication; GitHub Pages requires the complete browser suite",
-  "logSha256": "e5a4e9cc9f353bd2f5edbb6d6cbbdedc38f21e12d3314cadadfe84b77f6cc201"
+  "hostedWorkflow": {
+    "run": 44128058920,
+    "conclusion": "success",
+    "url": "https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44128058920",
+    "releaseCommit": "788e9b74dd7bd82a8bb1fbb97ef7934d0b6aa732",
+    "jobs": [
+      "build",
+      "deploy",
+      "continue-evolution"
+    ]
+  },
+  "logSha256": "e5a4e9cc9f353bd2f5edbb6d6cbbdedc38f21e12d3314cadadfe84b77f6cc201",
+  "liveOrigin": "Expected revision; actual ten-player local practice; zero page/asset errors. See live-pages.json for exact scope."
 }
