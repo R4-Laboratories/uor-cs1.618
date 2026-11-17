@@ -1,0 +1,166 @@
+\begin{lexlean}{HelperControls}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Wide}
+\title{addition}
+\begin{semanticmodule}
+definition{
+  name: signedLess,
+  parameters: [a : Int16, b : Int16],
+  result: Bool,
+  body: (Wide::signedLess a b),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: lengthStep,
+  parameters: [state : (Option Wide::LengthState)],
+  result: (Option Wide::LengthState),
+  body: (Wide::lengthStep state),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: length,
+  parameters: [a : UInt32, b : UInt32, c : UInt32, d : UInt32],
+  result: (Option Int16),
+  body: (Wide::length (record Wide::Limbs {l0 := a, l1 := b, l2 := c, l3 := d})),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: round,
+  parameters: [a : UInt32, b : UInt32, c : UInt32, d : UInt32, amount : Int16],
+  result: (Option UInt64),
+  body: (Wide::round (record Wide::Limbs {l0 := a, l1 := b, l2 := c, l3 := d}) amount),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: multiply,
+  parameters: [a : UInt64, b : UInt64],
+  result: (Option Wide::Limbs),
+  body: (Wide::multiply a b),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: unsignedLess,
+  parameters: [a : UInt64, b : UInt64],
+  result: Bool,
+  body: (Wide::unsignedLess a b),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt64ToUInt8,
+  parameters: [value : UInt64],
+  result: (Option UInt8),
+  body: (Wide::convertUInt64ToUInt8 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt64ToUInt16,
+  parameters: [value : UInt64],
+  result: (Option UInt16),
+  body: (Wide::convertUInt64ToUInt16 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt64ToUInt32,
+  parameters: [value : UInt64],
+  result: (Option UInt32),
+  body: (Wide::convertUInt64ToUInt32 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt32ToUInt64,
+  parameters: [value : UInt32],
+  result: (Option UInt64),
+  body: (Wide::convertUInt32ToUInt64 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt8ToInt16,
+  parameters: [value : UInt8],
+  result: (Option Int16),
+  body: (Wide::convertUInt8ToInt16 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertUInt16ToInt16,
+  parameters: [value : UInt16],
+  result: (Option Int16),
+  body: (Wide::convertUInt16ToInt16 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertInt16ToUInt8,
+  parameters: [value : Int16],
+  result: (Option UInt8),
+  body: (Wide::convertInt16ToUInt8 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertInt16ToUInt16,
+  parameters: [value : Int16],
+  result: (Option UInt16),
+  body: (Wide::convertInt16ToUInt16 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertInt16ToUInt32,
+  parameters: [value : Int16],
+  result: (Option UInt32),
+  body: (Wide::convertInt16ToUInt32 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+
+definition{
+  name: convertInt16ToUInt64,
+  parameters: [value : Int16],
+  result: (Option UInt64),
+  body: (Wide::convertInt16ToUInt64 value),
+  axioms: [Quot.sound, propext],
+  executable: true,
+  production: {effects: [overflow], targets: [rust-std]}
+}
+\end{semanticmodule}
+\end{lexlean}

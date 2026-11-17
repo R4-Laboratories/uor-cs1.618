@@ -1,0 +1,106 @@
+{
+  "spec": "numeric/bounded-source-evidence/1",
+  "scope": "Local component raw verification and empirical replay; not governed Prism or exact-SDK admission",
+  "source_id": "453dc1bd8c46c374bbd40745d3204be62cc972ba4ae0971f66b997fbf625153d",
+  "semantic_id": "02f577acd0c84d1e060f89f57de693f499244f5299cd05cbbffbce310547a8d7",
+  "root_attestation": "23ee81a60fb7ac5b576f26387a27c6b484cc7b58bc53795b03c176618a3e2da4",
+  "helper_attestation": "8874e5bffe4921d57dbd2b05db7f2283ada6a387d36a17d93f77471474107e80",
+  "root_bundle": "86b854c4a4d8f46bebd60c5e716f8b6a6298d4dbdc5c7f9f8e9f1523de5f655b",
+  "helper_bundle": "38aaf4264aa339d9f6e596dad90e92cc568ace7a336c2848fcf46fce76791990",
+  "archive": "bounded-source-453dc1bd.tar.gz",
+  "archive_sha256": "4df72906b6028eaf9765cc7f1f27a6348eb7fd94c6ff6c42e5060340995c7e62",
+  "archive_bytes": 11072244,
+  "retained_files": 709,
+  "retained_index_sha256": "18d3b6a211a0abc1c52ba399735b343493a9a1def5e5436f11d20d0fab860312",
+  "working_manifest_sha256": "064b974a8c075f65df06412a5f8e8e9421c0eb53262e5ecb21905bd6dfb15da6",
+  "working_manifest_files": 1855,
+  "working_manifest_hash_mismatches": 0,
+  "tools": {
+    "scope": "local components; raw LexLean diagnostic only",
+    "lexlean": {
+      "path": "/workspace/diagnostic-tools/lexlean-target/release/lexlean",
+      "sha256": "3765ef724d19a4d08681aaa0123ff637e65c1ffcc0b8d02ae268b521b5cf2c94"
+    },
+    "rustc": {
+      "path": "/workspace/diagnostic-tools/rust-1.97.1/bin/rustc",
+      "sha256": "d3a664c970a9fd8361b64194861bebc1ae37b9054e5ee3400dc1c9e691797eea"
+    },
+    "environment": {
+      "ELAN_HOME": "/workspace/diagnostic-tools/elan",
+      "CARGO_HOME": "/workspace/diagnostic-tools/cargo-home",
+      "PATH": "/workspace/diagnostic-tools/elan/bin:/workspace/diagnostic-tools/rust-1.97.1/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback"
+    },
+    "lexlean_version": "lexlean 0.4.0\nlanguage 1.0\ncompiler-semantics 07859acb5a756221018b7f65e7f725d99b00a694670eecc7cd264832ba1333fb\nlean-toolchain leanprover/lean4:v4.32.1",
+    "lexlean_resolved_sha256": "3765ef724d19a4d08681aaa0123ff637e65c1ffcc0b8d02ae268b521b5cf2c94",
+    "rustc_version": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+    "rustc_resolved_sha256": "d3a664c970a9fd8361b64194861bebc1ae37b9054e5ee3400dc1c9e691797eea",
+    "node_version": "v24.22.1",
+    "node_resolved_sha256": "61ab14cd750fc24d5db53490ec5fc40f756e4b6e136b78cf7004265471d9bd1d",
+    "lean_version": "Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)",
+    "lean_resolved_sha256": "840179e70803ef373c2ec53342d6a45ea7d022533e4145489fc1278b4f716385",
+    "lean_actual": {
+      "path": "/workspace/diagnostic-tools/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean",
+      "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+    }
+  },
+  "targets": [
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    },
+    {
+      "digest": "957f6e9a7a87b504094f9c5d0ed9305aad7cbee156bba670acc8bda99db5224c",
+      "id": "rust-std"
+    }
+  ],
+  "public_raw_signatures": {
+    "numeric_div32": "pub fn run(p0: u32, p1: u32) -> Option<u32> {",
+    "numeric_div64": "pub fn run(p0: u64, p1: u64) -> Option<u64> {",
+    "numeric_mul32": "pub fn run(p0: u32, p1: u32) -> Option<u32> {",
+    "numeric_mul64": "pub fn run(p0: u64, p1: u64) -> Option<u64> {"
+  },
+  "raw_generated_source_sha256": {
+    "numeric_div32": "1305ccbe6fa3ad6ab10188f2051a6be67da7d9c9c80b20d3513a23e13796600f",
+    "numeric_div64": "b58b4bcf6aaea62090c861d3325222e23086bbef33c6e5772edb3d9047bbc87a",
+    "numeric_mul32": "80e248e1e3e81cc32736cf6e96c331a337600a7fd28d75db8bc051c9c7e8493b",
+    "numeric_mul64": "9f9c43907974c3173a341eee9c357a5804bb8f6a969f2f5268999872458827a7"
+  },
+  "tests": {
+    "native_vectors": 44648,
+    "wasm_vectors": 44648,
+    "wasm_imports": 0,
+    "native_frozen_task2_byte_parity": true,
+    "helper_roots": 16,
+    "helper_native": "passed",
+    "helper_wasm": "passed, zero imports",
+    "generated_failure_status_and_retention": "passed",
+    "wrong_result": "rejected by exact comparator",
+    "changed_bundle": "rejected with LLV7102",
+    "historical_orchestration_tests": 5,
+    "historical_orchestration_status": "passed"
+  },
+  "wasm_sha256": "47fe7ee9baea42f7ae4f0b4fea0e78db29797eb0d974082fe903f7fc743cc3b6",
+  "native_replay_sha256": "7adfdec1cbf4fc47112ac70cdb11c7f4f635e36efd4cc8596f19ea4028d3cb95",
+  "corpus_sha256": "9edf45b030d1a317adc378abb579386503ca39ea71c37e2d3f475ba6a91b7f92",
+  "canonical_reference": "canonical-typed-453dc1bd.json",
+  "exclusions": "No prior evidence is overwritten. Live stdout was excluded from the working manifest; its now-completed bytes are included in this archive. rlibs, Lake caches and previous exploratory project trees are excluded from the compact archive.",
+  "retention_verification": {
+    "archive_file_hashes_verified": 709,
+    "archived_root_bundle": "4 outputs: bindings verified",
+    "archived_helper_bundle": "16 outputs: bindings verified",
+    "artifact_verifier_did_not_rerun": [
+      "axiom-audit",
+      "lean-elaboration",
+      "leanchecker-replay",
+      "named-root-extraction"
+    ]
+  }
+}

@@ -2,6 +2,123 @@
 \useglossary{lexlean.std.nat@1.2.0}
 \title{addition}
 \begin{semanticmodule}
+definition{
+  name: convertUInt64ToUInt8,
+  parameters: [value : UInt64],
+  result: (Option UInt8),
+  body: (prim checked_convert value : (Option UInt8)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertUInt64ToUInt16,
+  parameters: [value : UInt64],
+  result: (Option UInt16),
+  body: (prim checked_convert value : (Option UInt16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertUInt64ToUInt32,
+  parameters: [value : UInt64],
+  result: (Option UInt32),
+  body: (prim checked_convert value : (Option UInt32)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertUInt32ToUInt64,
+  parameters: [value : UInt32],
+  result: (Option UInt64),
+  body: (prim checked_convert value : (Option UInt64)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertUInt8ToInt16,
+  parameters: [value : UInt8],
+  result: (Option Int16),
+  body: (prim checked_convert value : (Option Int16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertUInt16ToInt16,
+  parameters: [value : UInt16],
+  result: (Option Int16),
+  body: (prim checked_convert value : (Option Int16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertInt16ToUInt8,
+  parameters: [value : Int16],
+  result: (Option UInt8),
+  body: (prim checked_convert value : (Option UInt8)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertInt16ToUInt16,
+  parameters: [value : Int16],
+  result: (Option UInt16),
+  body: (prim checked_convert value : (Option UInt16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertInt16ToUInt32,
+  parameters: [value : Int16],
+  result: (Option UInt32),
+  body: (prim checked_convert value : (Option UInt32)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: convertInt16ToUInt64,
+  parameters: [value : Int16],
+  result: (Option UInt64),
+  body: (prim checked_convert value : (Option UInt64)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: int16Add,
+  parameters: [a : Int16, b : Int16],
+  result: (Option Int16),
+  body: (prim checked_add a b : (Option Int16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: int16Subtract,
+  parameters: [a : Int16, b : Int16],
+  result: (Option Int16),
+  body: (prim checked_subtract a b : (Option Int16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: int16Negate,
+  parameters: [a : Int16],
+  result: (Option Int16),
+  body: (prim checked_negate a : (Option Int16)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
 structure{
   name: Limbs,
   type_parameters: [],
@@ -34,10 +151,10 @@ definition{
                             | Option.some m3 => (match (prim checked_add m3 c1 : (Option UInt64))
                               | Option.some u3 => (match (prim checked_add u3 c2 : (Option UInt64))
                                 | Option.some t3 => (match (prim shift_right t3 (32 : UInt32) : (Option UInt64))
-                                  | Option.some top => (match (prim checked_convert (prim bit_and t0 (4294967295 : UInt64) : UInt64) : (Option UInt32))
-                                    | Option.some r0 => (match (prim checked_convert (prim bit_and t2 (4294967295 : UInt64) : UInt64) : (Option UInt32))
-                                      | Option.some r1 => (match (prim checked_convert (prim bit_and t3 (4294967295 : UInt64) : UInt64) : (Option UInt32))
-                                        | Option.some r2 => (match (prim checked_convert (prim bit_and top (4294967295 : UInt64) : UInt64) : (Option UInt32))
+                                  | Option.some top => (match (convertUInt64ToUInt32 (prim bit_and t0 (4294967295 : UInt64) : UInt64))
+                                    | Option.some r0 => (match (convertUInt64ToUInt32 (prim bit_and t2 (4294967295 : UInt64) : UInt64))
+                                      | Option.some r1 => (match (convertUInt64ToUInt32 (prim bit_and t3 (4294967295 : UInt64) : UInt64))
+                                        | Option.some r2 => (match (convertUInt64ToUInt32 (prim bit_and top (4294967295 : UInt64) : UInt64))
                                           | Option.some r3 => (ctor Option.some [Limbs] (record Limbs {l0 := r0, l1 := r1, l2 := r2, l3 := r3}))
                                           | Option.none => (ctor Option.none [Limbs]))
                                         | Option.none => (ctor Option.none [Limbs]))
@@ -90,8 +207,8 @@ definition{
   name: low64,
   parameters: [w : Limbs],
   result: (Option UInt64),
-  body: (if ((prim equal (project w l2) (0 : UInt32) : Bool) && (prim equal (project w l3) (0 : UInt32) : Bool)) then (match (prim checked_convert (project w l0) : (Option UInt64))
-    | Option.some lo => (match (prim checked_convert (project w l1) : (Option UInt64))
+  body: (if ((prim equal (project w l2) (0 : UInt32) : Bool) && (prim equal (project w l3) (0 : UInt32) : Bool)) then (match (convertUInt32ToUInt64 (project w l0))
+    | Option.some lo => (match (convertUInt32ToUInt64 (project w l1))
       | Option.some hi => (match (prim shift_left hi (32 : UInt32) : (Option UInt64))
         | Option.some sh => (ctor Option.some [UInt64] (prim bit_or lo sh : UInt64))
         | Option.none => (ctor Option.none [UInt64]))
@@ -102,14 +219,99 @@ definition{
 }
 
 definition{
+  name: unsignedLess,
+  parameters: [a : UInt64, b : UInt64],
+  result: Bool,
+  body: (match (prim checked_subtract a b : (Option UInt64))
+    | Option.some difference => false
+    | Option.none => true),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: negative,
+  parameters: [a : Int16],
+  result: Bool,
+  body: (match (convertInt16ToUInt16 a) | Option.some nonnegative => false | Option.none => true),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: signedLess,
+  parameters: [a : Int16, b : Int16],
+  result: Bool,
+  body: (match (int16Subtract a b)
+    | Option.some difference => (negative difference)
+    | Option.none => (negative a)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+structure{
+  name: LengthState,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: word, type: UInt32}, {name: count, type: Int16}]
+}
+
+definition{
   name: lengthStep,
-  parameters: [state : (Option (UInt32 * Int))],
-  result: (Option (UInt32 * Int)),
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
   body: (match state
-    | Option.some st => (match (prim shift_right (first st) (1 : UInt32) : (Option UInt32))
-      | Option.some next => (ctor Option.some [(UInt32 * Int)] (next, (if (prim equal (first st) (0 : UInt32) : Bool) then (second st) else (prim subtract (second st) (-1 : Int) : Int))))
-      | Option.none => (ctor Option.none [(UInt32 * Int)]))
-    | Option.none => (ctor Option.none [(UInt32 * Int)])),
+    | Option.some st => (match (prim shift_right (project st word) (1 : UInt32) : (Option UInt32))
+      | Option.some next => (if (prim equal (project st word) (0 : UInt32) : Bool) then (ctor Option.some [LengthState] (record LengthState {word := next, count := (project st count)})) else (match (int16Add (project st count) (1 : Int16))
+        | Option.some count => (ctor Option.some [LengthState] (record LengthState {word := next, count := count}))
+        | Option.none => (ctor Option.none [LengthState])))
+      | Option.none => (ctor Option.none [LengthState]))
+    | Option.none => (ctor Option.none [LengthState])),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length2,
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
+  body: (lengthStep (lengthStep state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length4,
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
+  body: (length2 (length2 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length8,
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
+  body: (length4 (length4 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length16,
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
+  body: (length8 (length8 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: length32Steps,
+  parameters: [state : (Option LengthState)],
+  result: (Option LengthState),
+  body: (length16 (length16 state)),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -117,10 +319,10 @@ definition{
 definition{
   name: length32,
   parameters: [v : UInt32],
-  result: (Option Int),
-  body: (match (prim iterate (fun (state : (Option (UInt32 * Int))) => (lengthStep state)) 32 (ctor Option.some [(UInt32 * Int)] (v, (0 : Int))) : (Option (UInt32 * Int)))
-    | Option.some st => (ctor Option.some [Int] (second st))
-    | Option.none => (ctor Option.none [Int])),
+  result: (Option Int16),
+  body: (match (length32Steps (ctor Option.some [LengthState] (record LengthState {word := v, count := (0 : Int16)})))
+    | Option.some st => (ctor Option.some [Int16] (project st count))
+    | Option.none => (ctor Option.none [Int16])),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -128,14 +330,14 @@ definition{
 definition{
   name: length,
   parameters: [w : Limbs],
-  result: (Option Int),
+  result: (Option Int16),
   body: (if (prim equal (project w l3) (0 : UInt32) : Bool) then (if (prim equal (project w l2) (0 : UInt32) : Bool) then (if (prim equal (project w l1) (0 : UInt32) : Bool) then (length32 (project w l0)) else (match (length32 (project w l1))
-    | Option.some n => (ctor Option.some [Int] (prim subtract n (-32 : Int) : Int))
-    | Option.none => (ctor Option.none [Int]))) else (match (length32 (project w l2))
-    | Option.some n => (ctor Option.some [Int] (prim subtract n (-64 : Int) : Int))
-    | Option.none => (ctor Option.none [Int]))) else (match (length32 (project w l3))
-    | Option.some n => (ctor Option.some [Int] (prim subtract n (-96 : Int) : Int))
-    | Option.none => (ctor Option.none [Int]))),
+    | Option.some n => (int16Add n (32 : Int16))
+    | Option.none => (ctor Option.none [Int16]))) else (match (length32 (project w l2))
+    | Option.some n => (int16Add n (64 : Int16))
+    | Option.none => (ctor Option.none [Int16]))) else (match (length32 (project w l3))
+    | Option.some n => (int16Add n (96 : Int16))
+    | Option.none => (ctor Option.none [Int16]))),
   axioms: [Quot.sound, propext],
   executable: true
 }
@@ -161,15 +363,98 @@ definition{
 }
 
 definition{
+  name: round2,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (roundStep (roundStep state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round4,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round2 (round2 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round8,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round4 (round4 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round16,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round8 (round8 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round32,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round16 (round16 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round64,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round32 (round32 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: round128,
+  parameters: [state : (Option Rounding)],
+  result: (Option Rounding),
+  body: (round64 (round64 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: round,
-  parameters: [w : Limbs, amount : Int],
+  parameters: [w : Limbs, amount : Int16],
   result: (Option UInt64),
-  body: (if (prim less_than amount (0 : Int) : Bool) then (match (prim checked_convert (prim negate amount : Int) : (Option UInt32))
-    | Option.some count => (match (low64 w)
-      | Option.some bits => (prim shift_left bits count : (Option UInt64))
+  body: (if (negative amount) then (match (int16Negate amount)
+    | Option.some positive => (match (convertInt16ToUInt32 positive)
+      | Option.some count => (match (low64 w)
+        | Option.some bits => (prim shift_left bits count : (Option UInt64))
+        | Option.none => (ctor Option.none [UInt64]))
       | Option.none => (ctor Option.none [UInt64]))
-    | Option.none => (ctor Option.none [UInt64])) else (if (prim less_than (128 : Int) amount : Bool) then (ctor Option.some [UInt64] (0 : UInt64)) else (match (prim checked_convert amount : (Option UInt8))
-    | Option.some count => (match (prim iterate (fun (state : (Option Rounding)) => (roundStep state)) (prim to_nat count : Nat) (ctor Option.some [Rounding] (record Rounding {value := w, guard := false, sticky := false})) : (Option Rounding))
+    | Option.none => (ctor Option.none [UInt64])) else (if (signedLess (128 : Int16) amount) then (ctor Option.some [UInt64] (0 : UInt64)) else (match (convertInt16ToUInt8 amount)
+    | Option.some count => (match (match (ctor Option.some [Rounding] (record Rounding {value := w, guard := false, sticky := false}))
+        | Option.some state0 => (match (if (prim equal (prim bit_and count (1 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state0) else (roundStep (ctor Option.some [Rounding] state0)))
+          | Option.some state1 => (match (if (prim equal (prim bit_and count (2 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state1) else (round2 (ctor Option.some [Rounding] state1)))
+            | Option.some state2 => (match (if (prim equal (prim bit_and count (4 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state2) else (round4 (ctor Option.some [Rounding] state2)))
+              | Option.some state3 => (match (if (prim equal (prim bit_and count (8 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state3) else (round8 (ctor Option.some [Rounding] state3)))
+                | Option.some state4 => (match (if (prim equal (prim bit_and count (16 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state4) else (round16 (ctor Option.some [Rounding] state4)))
+                  | Option.some state5 => (match (if (prim equal (prim bit_and count (32 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state5) else (round32 (ctor Option.some [Rounding] state5)))
+                    | Option.some state6 => (match (if (prim equal (prim bit_and count (64 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state6) else (round64 (ctor Option.some [Rounding] state6)))
+                      | Option.some state7 => (match (if (prim equal (prim bit_and count (128 : UInt8) : UInt8) (0 : UInt8) : Bool) then (ctor Option.some [Rounding] state7) else (round128 (ctor Option.some [Rounding] state7)))
+                        | Option.some state8 => (ctor Option.some [Rounding] state8)
+                        | Option.none => (ctor Option.none [Rounding]))
+                      | Option.none => (ctor Option.none [Rounding]))
+                    | Option.none => (ctor Option.none [Rounding]))
+                  | Option.none => (ctor Option.none [Rounding]))
+                | Option.none => (ctor Option.none [Rounding]))
+              | Option.none => (ctor Option.none [Rounding]))
+            | Option.none => (ctor Option.none [Rounding]))
+          | Option.none => (ctor Option.none [Rounding]))
+        | Option.none => (ctor Option.none [Rounding]))
       | Option.some st => (match (low64 (project st value))
         | Option.some bits => (if ((project st guard) && ((project st sticky) || (prim equal (prim bit_and bits (1 : UInt64) : UInt64) (1 : UInt64) : Bool))) then (prim checked_add bits (1 : UInt64) : (Option UInt64)) else (ctor Option.some [UInt64] bits))
         | Option.none => (ctor Option.none [UInt64]))
@@ -183,9 +468,9 @@ definition{
   name: from64,
   parameters: [v : UInt64],
   result: (Option Limbs),
-  body: (match (prim checked_convert (prim bit_and v (4294967295 : UInt64) : UInt64) : (Option UInt32))
+  body: (match (convertUInt64ToUInt32 (prim bit_and v (4294967295 : UInt64) : UInt64))
     | Option.some lo => (match (prim shift_right v (32 : UInt32) : (Option UInt64))
-      | Option.some upper => (match (prim checked_convert upper : (Option UInt32))
+      | Option.some upper => (match (convertUInt64ToUInt32 upper)
         | Option.some hi => (ctor Option.some [Limbs] (record Limbs {l0 := lo, l1 := hi, l2 := (0 : UInt32), l3 := (0 : UInt32)}))
         | Option.none => (ctor Option.none [Limbs]))
       | Option.none => (ctor Option.none [Limbs]))
@@ -225,11 +510,56 @@ definition{
 }
 
 definition{
+  name: divide2,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (divideStep (divideStep state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: divide4,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (divide2 (divide2 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: divide8,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (divide4 (divide4 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: divide16,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (divide8 (divide8 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
+  name: divide32,
+  parameters: [state : (Option Division)],
+  result: (Option Division),
+  body: (divide16 (divide16 state)),
+  axioms: [Quot.sound, propext],
+  executable: true
+}
+
+definition{
   name: quotient32,
   parameters: [a : UInt64, b : UInt64],
   result: (Option UInt64),
   body: (match (prim checked_subtract a b : (Option UInt64))
-    | Option.some initial => (match (prim iterate (fun (state : (Option Division)) => (divideStep state)) 25 (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})) : (Option Division))
+    | Option.some initial => (match (divide16 (divide8 (divideStep (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})))))
       | Option.some st => (ctor Option.some [UInt64] (prim bit_or (project st quotient) (if (prim equal (project st remainder) (0 : UInt64) : Bool) then (0 : UInt64) else (1 : UInt64)) : UInt64))
       | Option.none => (ctor Option.none [UInt64]))
     | Option.none => (ctor Option.none [UInt64])),
@@ -242,7 +572,7 @@ definition{
   parameters: [a : UInt64, b : UInt64],
   result: (Option UInt64),
   body: (match (prim checked_subtract a b : (Option UInt64))
-    | Option.some initial => (match (prim iterate (fun (state : (Option Division)) => (divideStep state)) 54 (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b})) : (Option Division))
+    | Option.some initial => (match (divide32 (divide16 (divide4 (divide2 (ctor Option.some [Division] (record Division {quotient := (1 : UInt64), remainder := initial, divisor := b}))))))
       | Option.some st => (ctor Option.some [UInt64] (prim bit_or (project st quotient) (if (prim equal (project st remainder) (0 : UInt64) : Bool) then (0 : UInt64) else (1 : UInt64)) : UInt64))
       | Option.none => (ctor Option.none [UInt64]))
     | Option.none => (ctor Option.none [UInt64])),

@@ -1,4 +1,7 @@
-"""Build orchestration checks with real oracle/collector and a stubbed SDK boundary."""
+"""Current orchestration with a frozen historical project and stubbed SDK boundary.
+
+The fixture is not evidence for the evolving numeric source or a new compiler.
+"""
 import hashlib
 import json
 import os
@@ -20,10 +23,31 @@ class BuildInputsTest(unittest.TestCase):
         self.root = Path(self.temp.name)
         shutil.copytree(ROOT / "scripts/numeric", self.root / "scripts/numeric",
                         ignore=shutil.ignore_patterns("__pycache__"))
-        shutil.copytree(ROOT / "prism/numeric/src", self.root / "prism/numeric/src")
-        shutil.copy(ROOT / "prism/numeric/lexlean.lock", self.root / "prism/numeric/lexlean.lock")
-        for name in ("lexlean.toml", "lakefile.toml", "lake-manifest.json", "lean-toolchain"):
-            shutil.copy(ROOT / "prism/numeric" / name, self.root / "prism/numeric" / name)
+        # These SDK receipts bind the historical project, not the current
+        # arithmetic implementation. No runtime git history is needed in CI.
+        fixture = ROOT / "scripts/numeric/tests/fixtures/task2-project"
+        provenance = json.loads((fixture / "manifest.json").read_text())
+        self.assertEqual(provenance["source_commit"], "022c11363fd3a1b1c6871991f32ab02994515a7e")
+        archive = fixture / provenance["archive"]["file"]
+        self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(),
+                         provenance["archive"]["sha256"])
+        self.assertEqual(set(provenance["files"]), {
+            "src/Float.lex.tex", "src/Wide.lex.tex", "src/Bounds.lex.tex",
+            "lexlean.lock", "lexlean.toml", "lakefile.toml",
+            "lake-manifest.json", "lean-toolchain",
+        })
+        with tarfile.open(archive, "r:gz") as project:
+            members = project.getmembers()
+            self.assertEqual(sorted(m.name for m in members), sorted(provenance["files"]))
+            for member in members:
+                self.assertTrue(member.isfile())
+                data = project.extractfile(member).read()
+                expected = provenance["files"][member.name]
+                self.assertEqual(len(data), expected["bytes"])
+                self.assertEqual(hashlib.sha256(data).hexdigest(), expected["sha256"])
+                target = self.root / "prism/numeric" / member.name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
         command = json.loads((ROOT / "artifacts/numeric-task2/build-result.json").read_text())
         self.command = command
         shutil.copy(ROOT / "artifacts/numeric-task2/build-result.json", self.root / "build-result.fixture.json")

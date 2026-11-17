@@ -1,0 +1,44 @@
+{
+  "spec": "numeric/historical-project-fixture/1",
+  "source_commit": "022c11363fd3a1b1c6871991f32ab02994515a7e",
+  "scope": "Historical Task2 orchestration fixture only; not current-source or new compiler evidence",
+  "files": {
+    "lake-manifest.json": {
+      "sha256": "e2d7568929818723dcc8517bf677001b81a9bcdcd0c8efa4ac5779d50d5cf0ef",
+      "bytes": 150
+    },
+    "lakefile.toml": {
+      "sha256": "64bbda1d8f6492d8e4a20b0eddffe2199e3654a1855324837a5a3bf3244f8abd",
+      "bytes": 46
+    },
+    "lean-toolchain": {
+      "sha256": "8e3538e0ab5f81a3ee04927d8838c8c674e0e112838b4b3ce87ec218143276af",
+      "bytes": 25
+    },
+    "lexlean.lock": {
+      "sha256": "7b2806004d5f35e529a5e191144baad6dd08fcd13998e1425930c2ccb9dabfaa",
+      "bytes": 1597
+    },
+    "lexlean.toml": {
+      "sha256": "d3b824d45e15fe46a43b0bdbd37e6619e8eb3d5758f0f979a317892b32912f55",
+      "bytes": 694
+    },
+    "src/Bounds.lex.tex": {
+      "sha256": "c32cce5627955f91a8ceb4c44d0a32bcdf84f6fe92e27dc08d916159c5dcb2a9",
+      "bytes": 1364
+    },
+    "src/Float.lex.tex": {
+      "sha256": "e3199264f41cb83ff5e41606b71712ab0c1abc6ac6dcba12b1d43601af29daef",
+      "bytes": 23824
+    },
+    "src/Wide.lex.tex": {
+      "sha256": "7dccec6988f3aa67ed3ae237a9752c48075855138f0fc550c8e435517b735fd0",
+      "bytes": 14004
+    }
+  },
+  "archive": {
+    "file": "project.tar.gz",
+    "sha256": "42b31ea259880af95d6c8090662cd7a2f6cf8a3d4e77ca5532e8b7846ebe33be",
+    "bytes": 5135
+  }
+}
