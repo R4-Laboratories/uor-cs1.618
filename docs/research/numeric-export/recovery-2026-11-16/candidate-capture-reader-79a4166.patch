@@ -1,0 +1,1137 @@
+diff --git a/SPEC.md b/SPEC.md
+index a214274f..a4a15154 100644
+--- a/SPEC.md
++++ b/SPEC.md
+@@ -3548,6 +3548,27 @@ or successful application journeys. Those remain independent release gates.
+ 
+ ### Conditional publication admission
+ 
++The source-test-only OC-10 capture selector `PRISMPM_OC10_CAPTURE_ROUTE`
++admits `image-owned-v1` (also the absent default) and `candidate-source-v1`.
++Unknown values refuse before execution; failures never fall back. Only the
++owning capture invocation and complete workspace-test child select the latter,
++and ambient overrides refuse. An SDK child executes the original test body.
++The candidate route retains the original conditional capture receipt and all
++22 graph refusal controls. Its separate `candidate-transport-evidence.json`
++binds the independently owned complete source/fixture union, six authority
++members, actual ELF/listing, unchanged SDK distribution/inventory and original
++capture tree. Python-compatible canonical JSON uses sorted keys, ASCII escapes
++and one final LF; source rows use UTF-8 byte order and Unicode scalar paths.
++The pre-envelope tree hash excludes only that envelope; the outer owner retains
++and rechecks the complete tree including it, avoiding a circular digest.
++Mount, image-config, inspection/stage barriers, retirement and EOF fields are
++privately retained process observations, not cryptographic daemon attestations.
++Separate bounded candidate diagnostics remain outside the accepted capture
++tree; forwarded stdout/stderr do not assert complete diagnostic retention.
++These test controls preserve `complete_application_accepted=false` and confer
++no production admission, source-free compiler runtime, malicious-daemon
++isolation, universal arithmetic or multi-architecture qualification.
++
+ OC-09's private `Production.PublicationAdmission.V1` source reducer separates
+ producer readiness, deployment authorization and final acceptance. The proved
+ declaration fixes the complete stage obligation partition, authorities, policy,
+diff --git a/crates/conformance/src/cases/node_suite.rs b/crates/conformance/src/cases/node_suite.rs
+index a27f0148..5b97d36f 100644
+--- a/crates/conformance/src/cases/node_suite.rs
++++ b/crates/conformance/src/cases/node_suite.rs
+@@ -247,6 +247,20 @@ pub(super) fn verify_exact(root: &Path, id: &str, files: &[(&str, usize)], timeo
+     verify_inner(root, id, &paths, total, timeout, Some(&counts));
+ }
+ 
++// The complete workspace Cargo child owns the Rust capture selector. Each
++// independently owning Node suite must select its own route at its exact call.
++fn node_command(route: Option<&std::ffi::OsStr>) -> Result<Command, &'static str> {
++    if route.is_some_and(|value| value != "candidate-source-v1") {
++        return Err("conflicting inherited source-test capture route");
++    }
++    let mut command = Command::new("node");
++    command
++        .env_remove("PRISMPM_OC10_CAPTURE_ROUTE")
++        .env_remove("LD_LIBRARY_PATH")
++        .env_remove("NODE_TEST_CONTEXT");
++    Ok(command)
++}
++
+ fn verify_inner(
+     root: &Path,
+     id: &str,
+@@ -266,9 +280,9 @@ fn verify_inner(
+     // Measure this actual child execution, not time spent waiting for the
+     // compiler scheduler. Timing is diagnostic only, never acceptance.
+     let started = std::time::Instant::now();
+-    let output = Command::new("node")
+-        .env_remove("LD_LIBRARY_PATH")
+-        .env_remove("NODE_TEST_CONTEXT")
++    let route = std::env::var_os("PRISMPM_OC10_CAPTURE_ROUTE");
++    let output = node_command(route.as_deref())
++        .expect("owned source-test capture route")
+         .args(["--test", &reporter, "--test-timeout", timeout])
+         .args(files)
+         .current_dir(root)
+@@ -380,6 +394,35 @@ mod tests {
+     };
+     use std::path::PathBuf;
+ 
++    #[test]
++    fn candidate_route_stops_at_the_owning_node_boundary() {
++        use std::ffi::OsStr;
++        for route in [None, Some(OsStr::new("candidate-source-v1"))] {
++            let mut command = super::node_command(route).unwrap();
++            command.args(["--test", "owned.test.mjs"]);
++            assert_eq!(
++                command.get_args().collect::<Vec<_>>(),
++                ["--test", "owned.test.mjs"]
++            );
++            let environment = command
++                .get_envs()
++                .collect::<std::collections::BTreeMap<_, _>>();
++            assert_eq!(
++                environment.get(OsStr::new("PRISMPM_OC10_CAPTURE_ROUTE")),
++                Some(&None)
++            );
++            assert_eq!(environment.get(OsStr::new("PRISMPM_TEST_SDK_IMAGE")), None);
++            assert_eq!(environment.get(OsStr::new("LD_LIBRARY_PATH")), Some(&None));
++            assert_eq!(
++                environment.get(OsStr::new("NODE_TEST_CONTEXT")),
++                Some(&None)
++            );
++        }
++        for route in ["", "unknown", "image-owned-v1", " candidate-source-v1"] {
++            assert!(super::node_command(Some(OsStr::new(route))).is_err());
++        }
++    }
++
+     #[test]
+     fn complete_diagnostics_are_formatted_before_the_transport_write() {
+         #[derive(Default)]
+diff --git a/crates/prismpm/src/oci/publication_context/capture_tests.rs b/crates/prismpm/src/oci/publication_context/capture_tests.rs
+index 1b9a466d..8d1cf9ad 100644
+--- a/crates/prismpm/src/oci/publication_context/capture_tests.rs
++++ b/crates/prismpm/src/oci/publication_context/capture_tests.rs
+@@ -122,26 +122,81 @@ fn graph_refusals(root: &Path, reference: &str, subjects: &[(String, Vec<u8>)])
+     refused
+ }
+ 
++// cfg(test)-only dispatch. The SDK child always executes the original body.
++fn capture_helper(
++    route: Option<&std::ffi::OsStr>,
++    sdk_child: bool,
++    installed: bool,
++) -> Result<Option<&'static str>, &'static str> {
++    let helper = match route {
++        None => "scripts/conditional-capture-sdk.py",
++        Some(value) if value == "image-owned-v1" => "scripts/conditional-capture-sdk.py",
++        Some(value) if value == "candidate-source-v1" => "scripts/conditional-capture-candidate.py",
++        Some(_) => return Err("unknown PRISMPM_OC10_CAPTURE_ROUTE"),
++    };
++    if sdk_child && !installed {
++        return Err("SDK child lost its installed inventory");
++    }
++    if sdk_child || (installed && helper == "scripts/conditional-capture-sdk.py") {
++        Ok(None)
++    } else {
++        Ok(Some(helper))
++    }
++}
++
++#[test]
++fn capture_route_is_closed_and_never_falls_back() {
++    use std::ffi::OsStr;
++    for route in [None, Some(OsStr::new("image-owned-v1"))] {
++        assert_eq!(
++            capture_helper(route, false, false),
++            Ok(Some("scripts/conditional-capture-sdk.py"))
++        );
++    }
++    assert_eq!(
++        capture_helper(Some(OsStr::new("candidate-source-v1")), false, false),
++        Ok(Some("scripts/conditional-capture-candidate.py"))
++    );
++    assert_eq!(
++        capture_helper(Some(OsStr::new("candidate-source-v1")), false, true),
++        Ok(Some("scripts/conditional-capture-candidate.py"))
++    );
++    for route in ["", "candidate-source-v2", " candidate-source-v1"] {
++        assert!(capture_helper(Some(OsStr::new(route)), false, false).is_err());
++        assert!(capture_helper(Some(OsStr::new(route)), true, true).is_err());
++    }
++    for route in [
++        None,
++        Some(OsStr::new("image-owned-v1")),
++        Some(OsStr::new("candidate-source-v1")),
++    ] {
++        assert_eq!(capture_helper(route, true, true), Ok(None));
++        assert!(capture_helper(route, true, false).is_err());
++    }
++}
++
+ #[test]
+ fn actual_source_free_capture_constructs_complete_conditional_context() {
+     // The complete Cargo gate runs in the tools container. This one test
+     // requires the already-built immutable runtime; do not filter the gate,
+     // copy an inventory into tools, or compile a second test executable.
++    let route = std::env::var_os("PRISMPM_OC10_CAPTURE_ROUTE");
++    let helper = capture_helper(
++        route.as_deref(),
++        std::env::var_os("PRISMPM_OC10_SDK_CHILD").is_some(),
++        Path::new("/etc/profile.d/prismpm-sdk.sh").exists()
++            || Path::new("/opt/prismpm/share/inventory.json").exists(),
++    )
++    .unwrap();
+     let _compiler = crate::test_compiler::acquire();
+-    if !Path::new("/etc/profile.d/prismpm-sdk.sh").exists()
+-        && !Path::new("/opt/prismpm/share/inventory.json").exists()
+-    {
+-        assert!(
+-            std::env::var_os("PRISMPM_OC10_SDK_CHILD").is_none(),
+-            "SDK child lost its installed inventory"
+-        );
++    if let Some(helper) = helper {
+         let repository = Path::new(env!("CARGO_MANIFEST_DIR"))
+             .ancestors()
+             .nth(2)
+             .unwrap();
+         let result = std::process::Command::new("/usr/bin/python3")
+             .args(["-I", "-B"])
+-            .arg(repository.join("scripts/conditional-capture-sdk.py"))
++            .arg(repository.join(helper))
+             .arg("parent")
+             .arg(repository)
+             .arg(std::env::current_exe().unwrap())
+diff --git a/tests/browser-view/compile.mjs b/tests/browser-view/compile.mjs
+index 06b1a67f..e0ffb134 100644
+--- a/tests/browser-view/compile.mjs
++++ b/tests/browser-view/compile.mjs
+@@ -249,6 +249,8 @@ export function run(program,args,cwd,env={},artifact) {
+ // application compilation, external oracle execution and source-free OCI replay.
+ // This is not a general timeout or environment override for compiler commands.
+ export function runPublicationCapture(executable, cwd, output) {
++  assert.equal(process.env.PRISMPM_OC10_CAPTURE_ROUTE, undefined, 'ambient capture route refused');
++  assert.equal(process.env.PRISMPM_OC10_SDK_CHILD, undefined, 'ambient SDK child refused');
+   const environment = compilerEnvironment({});
+   if (!compilerToolsVerified) { verifyCompilerTools(); compilerToolsVerified = true; }
+   assert.equal(realpathSync(cwd), cwd, 'unaliased private capture owner');
+@@ -265,7 +267,7 @@ export function runPublicationCapture(executable, cwd, output) {
+   const result = spawnSync('/usr/bin/timeout',
+     ['--signal=TERM', '--kill-after=5s', '2400s', executable, ...arguments_],
+     {cwd, detached:true, encoding:'utf8', timeout:2410000, killSignal:'SIGKILL',
+-      maxBuffer:32*1024*1024, env:{...environment, PRISMPM_OC10_CAPTURE_OUTPUT:output}});
++      maxBuffer:32*1024*1024, env:{...environment, PRISMPM_OC10_CAPTURE_OUTPUT:output, PRISMPM_OC10_CAPTURE_ROUTE:'candidate-source-v1'}});
+   terminateOwnedGroup(result.pid);
+   for (const [name, text] of [['stdout', result.stdout], ['stderr', result.stderr]])
+     writeFileSync(join(cwd, 'capture.' + name), text ?? '', {flag:'wx', mode:0o444});
+diff --git a/tests/publication-context-linkage/candidate-transport.mjs b/tests/publication-context-linkage/candidate-transport.mjs
+new file mode 100644
+index 00000000..2c586b03
+--- /dev/null
++++ b/tests/publication-context-linkage/candidate-transport.mjs
+@@ -0,0 +1,315 @@
++// Independent reader of privately owned test evidence, not daemon attestation.
++import assert from 'node:assert/strict';
++import {createHash} from 'node:crypto';
++import {spawnSync} from 'node:child_process';
++import {closeSync, constants, fstatSync, lstatSync, openSync, readSync, readdirSync,
++  readlinkSync, realpathSync} from 'node:fs';
++import {dirname, join, posix, resolve} from 'node:path';
++import {requireCompilerArtifact} from '../browser-view/compiler-artifact.mjs';
++import {decodeCaptureJson, verifyCaptureReceipt} from './capture-oracle.mjs';
++
++const MIB = 1048576, MAX_TREE = 512 * MIB, MAX_FILE = 256 * MIB;
++const SDK = 'ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c';
++const ROUTE = 'candidate-source-v1', ENVELOPE = 'candidate-transport-evidence.json';
++const UTILITY = 'ca09b9de3bf57c3e2dc16e11d4d1a527b9b2f1f271566bb7a87846d0a24f8e9a';
++const LAUNCHER = 'ac11aadd31f0a3e40df7866cc7690be8e7c8c252120146d718471358840ed6dd';
++const AUTHORITY = ['conditional-capture-bootstrap.py', 'conditional-capture-candidate-command.mjs',
++  'conditional-capture-candidate.py', 'conditional-capture-sdk.py', 'sdk-command-owner.mjs', 'sdk-command-owner.py']
++  .map(name => 'scripts/' + name);
++const FIXTURES = ['examples/Calculator/src', 'stdlib/src/Foundation', 'stdlib/src/Production'];
++const TEST = 'oci::publication_context::capture_tests::actual_source_free_capture_constructs_complete_conditional_context';
++const sha = bytes => createHash('sha256').update(bytes).digest('hex');
++const order = (a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b));
++function scalar(value) {
++  assert.equal(typeof value, 'string');
++  for (const character of value) assert.ok(!/[\ud800-\udfff]/u.test(character), 'Unicode scalar strings only');
++  return value;
++}
++// Python ensure_ascii=True, sort_keys=True, separators=(',', ':'), plus one LF.
++// Sorting keys by Unicode scalar order agrees with UTF-8 order, unlike JS UTF-16.
++export function canonicalTransport(value) {
++  function encode(value, depth = 0) {
++    assert.ok(depth <= 64, 'bounded transport JSON depth');
++    if (typeof value === 'string') return JSON.stringify(scalar(value))
++      .replace(/[\u007f-\uffff]/g, char => '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0'));
++    if (value === null || typeof value === 'boolean') return JSON.stringify(value);
++    if (typeof value === 'number') {assert.ok(Number.isSafeInteger(value) && !Object.is(value, -0)); return String(value);}
++    if (Array.isArray(value)) return '[' + value.map(child => encode(child, depth + 1)).join(',') + ']';
++    assert.ok(value && Object.getPrototypeOf(value) === Object.prototype, 'plain closed transport object');
++    return '{' + Object.keys(value).sort(order).map(key => encode(key, depth + 1) + ':' + encode(value[key], depth + 1)).join(',') + '}';
++  }
++  const bytes = Buffer.from(encode(value) + '\n'); assert.ok(bytes.length <= 32 * MIB, 'transport JSON bound'); return bytes;
++}
++const digest = value => sha(canonicalTransport(value));
++function closed(value, keys, label) {
++  assert.ok(value && !Array.isArray(value) && typeof value === 'object', label);
++  assert.deepEqual(Object.keys(value).sort(), keys.split(' ').sort(), 'closed ' + label);
++}
++function integer(value, low, high) {assert.ok(Number.isSafeInteger(value) && value >= low && value <= high, 'bounded exact integer');}
++function hash(value) {assert.equal(typeof value, 'string'); assert.match(value, /^[0-9a-f]{64}$/);}
++function pathName(value, capture = false) {
++  scalar(value); assert.ok(value && !/[\\\x00-\x1f\x7f]/.test(value)
++    && value.split('/').every(part => part && part !== '.' && part !== '..' && (capture || part !== '.git')),
++  'canonical confined transport path'); return value;
++}
++function rows(value, {ancestors = true, capture = false} = {}) {
++  assert.ok(Array.isArray(value) && value.length > 0 && value.length <= 100000, 'bounded nonempty rows');
++  const kinds = new Map(); let total = 0, previous;
++  for (const row of value) {
++    pathName(row.path, capture);
++    if (previous !== undefined) assert.ok(order(previous, row.path) < 0, 'strict UTF-8 row order');
++    previous = row.path; kinds.set(row.path, row.kind);
++    if (row.kind === 'file') {
++      closed(row, 'path kind bytes sha256 executable', 'file row'); integer(row.bytes, 0, MAX_FILE); hash(row.sha256);
++      assert.equal(typeof row.executable, 'boolean'); total += row.bytes;
++    } else if (row.kind === 'directory') closed(row, 'path kind', 'directory row');
++    else {
++      assert.equal(row.kind, 'link'); closed(row, 'path kind target', 'alias row'); scalar(row.target);
++      assert.ok(row.target && !row.target.startsWith('/') && !/[\\\x00-\x1f\x7f]/.test(row.target), 'relative alias');
++    }
++  }
++  assert.ok(total <= MAX_TREE, 'complete tree byte bound');
++  for (const row of value) {
++    const paths = [row.path];
++    if (row.kind === 'link') {
++      const target = pathName(posix.normalize(posix.join(posix.dirname(row.path), row.target)), capture);
++      assert.notEqual(target, row.path); assert.ok(['file', 'directory'].includes(kinds.get(target)), 'direct measured alias'); paths.push(target);
++    }
++    for (const path of paths) for (let parent = posix.dirname(path); parent !== '.'; parent = posix.dirname(parent))
++      assert.ok(kinds.get(parent) === 'directory' || (!ancestors && !kinds.has(parent)), 'measured real directory ancestor');
++  }
++  return value;
++}
++function stable(before, after) {
++  for (const key of ['dev', 'ino', 'mode', 'nlink', 'uid', 'gid', 'size', 'mtimeNs', 'ctimeNs'])
++    assert.equal(after[key], before[key], 'stable independently measured member ' + key);
++}
++function regular(path, maximum = MAX_FILE, retain = false) {
++  assert.equal(realpathSync(path), path, 'unaliased measured regular member');
++  const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
++  try {
++    const stat = fstatSync(fd, {bigint:true});
++    assert.ok(stat.isFile() && stat.nlink === 1n && stat.size <= BigInt(maximum), 'bounded singly linked member');
++    const size = Number(stat.size), buffer = Buffer.alloc(Math.min(65536, Math.max(1, size))), parts = [], h = createHash('sha256');
++    for (let offset = 0; offset < size;) {
++      const count = readSync(fd, buffer, 0, Math.min(buffer.length, size - offset), null); assert.ok(count > 0);
++      h.update(buffer.subarray(0, count)); if (retain) parts.push(Buffer.from(buffer.subarray(0, count))); offset += count;
++    }
++    assert.equal(readSync(fd, buffer, 0, 1, null), 0);
++    stable(stat, fstatSync(fd, {bigint:true})); stable(stat, lstatSync(path, {bigint:true}));
++    return {bytes:size, sha256:h.digest('hex'), executable:!!(stat.mode & 0o100n), body:retain ? Buffer.concat(parts) : undefined};
++  } finally {closeSync(fd);}
++}
++function measuredTree(root, {source = false, omitEnvelope = false} = {}) {
++  assert.equal(realpathSync(root), root); assert.ok(lstatSync(root).isDirectory());
++  const result = []; let bytes = 0;
++  function visit(path) {
++    pathName(path, !source); assert.ok(result.length < 100000);
++    const absolute = join(root, path), stat = lstatSync(absolute, {bigint:true});
++    if (stat.isSymbolicLink()) {
++      const target = readlinkSync(absolute), resolved = resolve(dirname(absolute), target);
++      assert.ok(!target.startsWith('/') && resolved.startsWith(root + '/'));
++      assert.equal(realpathSync(absolute), resolved, 'unchained measured alias'); result.push({path, kind:'link', target});
++    } else if (stat.isDirectory()) {
++      result.push({path, kind:'directory'});
++      if (source || path !== 'producer-source/target') for (const name of readdirSync(absolute).sort(order)) visit(path + '/' + name);
++    } else {
++      const record = regular(absolute); bytes += record.bytes; assert.ok(bytes <= MAX_TREE);
++      result.push({path, kind:'file', bytes:record.bytes, sha256:record.sha256, executable:record.executable});
++    }
++    stable(stat, lstatSync(absolute, {bigint:true}));
++  }
++  for (const name of readdirSync(root).sort(order)) {
++    if (source && ['.git', 'target', '.lexlean', '.prism'].includes(name)) continue;
++    if (omitEnvelope && name === ENVELOPE) continue;
++    visit(name);
++  }
++  rows([...result].sort((a, b) => order(a.path, b.path)), {capture:!source});
++  return source ? result.sort((a, b) => order(a.path, b.path)) : result;
++}
++function normalizedOwned(records) {
++  assert.ok(records instanceof Map, 'independently owned source Map required');
++  return rows([...records].map(([path, record]) => {
++    if (record.kind === 'link') {
++      closed(record, 'kind target resolved', 'owned alias');
++      assert.equal(record.resolved, posix.normalize(posix.join(posix.dirname(path), record.target)), 'owned alias resolution');
++      return {path, kind:'link', target:record.target};
++    }
++    return {path, ...record};
++  }).sort((a, b) => order(a.path, b.path)));
++}
++function successfulResult(result) {
++  const retirement = {scope:'private-linux-subreaper-exhaustion', leader_exit_observed:true, close_observed:true,
++    descendants_absent:true, uncertainty:null, supervisor_status:0, supervisor_signal:null, owner_error:null,
++    protocol_failure:null, python_version:'3.12.3'};
++  assert.deepEqual(result, {status:0, signal:null, timedOut:false, overflow:false, aborted:false,
++    orphaned:false, close_observed:true, retirement}, 'original complete process exhaustion');
++}
++
++export function verifyCandidateTransport({envelopeBytes, sourceRoot, sourceRecords, executable, captureRoot, sdkLock, inventoryBytes}) {
++  assert.ok(Buffer.isBuffer(envelopeBytes) && envelopeBytes.length <= 32 * MIB);
++  const envelope = JSON.parse(new TextDecoder('utf-8', {fatal:true}).decode(envelopeBytes));
++  assert.deepEqual(canonicalTransport(envelope), envelopeBytes, 'exact candidate envelope framing');
++  closed(envelope, 'schema route complete_application_accepted scope descriptor stage_admission inspection stage_retired_before_execution execution_mounts readonly_views sdk_tree sdk_tree_sha256 candidate_matches_sdk_tree image_authority candidate_utility_matches_image capture_receipt_sha256 capture_records_sha256 result owner_token retirement', 'transport envelope');
++  assert.equal(envelope.schema, 'prismpm/conditional-candidate-transport-evidence/1');
++  assert.equal(envelope.route, ROUTE); assert.equal(envelope.complete_application_accepted, false);
++  assert.equal(envelope.scope, 'current exact-source conditional capture in immutable SDK; not installed-controller acceptance');
++  const d = envelope.descriptor;
++  closed(d, 'schema route source_root source_selection source fixture_inputs source_sha256 fixture_inputs_sha256 union union_sha256 authority executable_bytes executable_sha256 listing_sha256 test_count remaining_seconds sdk_image runtime', 'input descriptor');
++  assert.equal(d.schema, 'prismpm/conditional-candidate-capture-input/1'); assert.equal(d.route, ROUTE);
++  assert.equal(d.source_root, sourceRoot);
++  assert.ok(/^\/workspaces\/(?!\.{1,2}$)[A-Za-z0-9_.-]+$/.test(sourceRoot)
++    || /^\/tmp\/prismpm-publication-capture-[A-Za-z0-9_-]{6,64}\/source$/.test(sourceRoot), 'protected runtime source root');
++  assert.equal(d.source_selection, lstatSync(join(sourceRoot, '.git'), {throwIfNoEntry:false}) ? 'tracked' : 'private');
++  if (d.source_selection === 'private') assert.match(sourceRoot, /^\/tmp\/prismpm-publication-capture-[A-Za-z0-9_-]{6,64}\/source$/);
++  const owned = normalizedOwned(sourceRecords), measured = measuredTree(sourceRoot, {source:true});
++  assert.deepEqual(measured, owned, 'independently owned source bytes and complete membership');
++  assert.deepEqual(rows(d.source), owned, 'descriptor source independently owned');
++  const fixtures = measured.filter(row => FIXTURES.some(path => row.path === path || row.path.startsWith(path + '/')));
++  rows(d.fixture_inputs, {ancestors:false}); assert.deepEqual(d.fixture_inputs, fixtures, 'complete independently measured fixture closure');
++  for (const path of FIXTURES) assert.ok(fixtures.some(row => row.path === path && row.kind === 'directory'));
++  assert.ok(fixtures.every(row => row.kind !== 'link'));
++  // The owner's complete private source already includes all recursively consumed fixtures.
++  assert.deepEqual(rows(d.union), measured, 'complete source/fixture union');
++  for (const field of ['source', 'fixture_inputs', 'union']) assert.equal(d[field + '_sha256'], digest(d[field]));
++  const byPath = new Map(measured.map(row => [row.path, row]));
++  assert.deepEqual(d.authority, AUTHORITY.map(path => byPath.get(path)), 'all six independently measured authority members');
++  assert.ok(d.authority.every(row => row?.kind === 'file')); assert.equal(d.authority[3].sha256, UTILITY);
++  for (const [index, cap] of [[0, 32768], [2, MIB], [3, MIB]]) integer(d.authority[index].bytes, 1, cap);
++  integer(d.executable_bytes, 4, 1024 * MIB); integer(d.test_count, 1, 100000); integer(d.remaining_seconds, 1, 1980);
++  requireCompilerArtifact(executable); // An invented record/hash cannot grant ELF execution authority.
++  const elf = regular(executable.path, 1024 * MIB);
++  assert.equal(elf.sha256, d.executable_sha256); assert.equal(elf.bytes, d.executable_bytes);
++  assert.equal(elf.sha256, executable.evidence.private.sha256);
++  const listing = spawnSync('/usr/bin/timeout',
++    ['--signal=TERM', '--kill-after=1s', '30s', executable.path, '--list', '--format=terse'],
++    {detached:true, timeout:32000, killSignal:'SIGKILL', maxBuffer:MIB});
++  if (Number.isSafeInteger(listing.pid) && listing.pid > 1) {
++    try {process.kill(-listing.pid, 'SIGKILL');} catch (error) {if (error.code !== 'ESRCH') throw error;}
++  }
++  executable.verify(); assert.ifError(listing.error); assert.equal(listing.status, 0); assert.equal(listing.signal, null);
++  assert.ok(listing.stdout.length + listing.stderr.length <= MIB);
++  const lines = new TextDecoder('utf-8', {fatal:true}).decode(listing.stdout).split(/\r?\n/); if (lines.at(-1) === '') lines.pop();
++  assert.ok(lines.every(line => line.endsWith(': test'))); assert.equal(new Set(lines).size, lines.length);
++  assert.equal(lines.filter(line => line === TEST + ': test').length, 1); assert.equal(lines.length, d.test_count);
++  assert.equal(sha(listing.stdout), d.listing_sha256, 'actual ELF listing hash');
++  assert.equal(d.sdk_image, SDK);
++  const runtime = d.runtime;
++  closed(runtime, 'sdk_image config_digest os architecture inventory_sha256 image_authority', 'observed runtime');
++  assert.equal(runtime.sdk_image, SDK); assert.equal(runtime.os, 'linux');
++  assert.equal(runtime.architecture, {x64:'amd64', arm64:'arm64'}[process.arch], 'actual native architecture'); assert.match(runtime.config_digest, /^sha256:[0-9a-f]{64}$/);
++  assert.equal(runtime.inventory_sha256, sha(inventoryBytes));
++  const inventory = JSON.parse(new TextDecoder('utf-8', {fatal:true}).decode(inventoryBytes)); closed(inventory, 'schema commands artifacts', 'installed SDK inventory');
++  assert.equal(inventory.schema, 'prismpm/sdk-inventory/1'); assert.ok(Array.isArray(inventory.commands) && Array.isArray(inventory.artifacts));
++  const lock = decodeCaptureJson(sdkLock, 'prismpm'); assert.equal(lock.sdk_image, SDK);
++  // The unchanged fixture's sdk-lock/1 includes precisely the installed rows
++  // and one sdk-manifest row. Do not silently invent platform-lock support.
++  closed(lock, 'schema sdk_version sdk_image standards_lock inventory', 'original captured SDK lock');
++  assert.equal(lock.schema, 'prismpm/sdk-lock/1'); assert.equal(lock.sdk_version, '0.3.0');
++  assert.match(lock.standards_lock, /^sha256:[0-9a-f]{64}$/);
++  assert.ok(Array.isArray(lock.inventory) && lock.inventory.length > 0 && lock.inventory.length <= 8192);
++  const kinds = ['binary', 'crate', 'image', 'adapter', 'oracle', 'schema', 'workflow', 'base-image', 'dependency-lock', 'trust-root', 'test-corpus'];
++  for (const list of [inventory.artifacts, lock.inventory]) {
++    let previous;
++    for (const row of list) {
++      closed(row, 'id kind version digest', 'SDK artifact');
++      for (const key of ['id', 'version']) {scalar(row[key]); integer([...row[key]].length, 1, 128);}
++      assert.ok(kinds.includes(row.kind)); assert.match(row.digest, /^sha256:[0-9a-f]{64}$/);
++      if (previous !== undefined) assert.ok(order(previous, row.id) < 0, 'unique ordered SDK inventory'); previous = row.id;
++    }
++  }
++  assert.deepEqual(lock.inventory.filter(row => row.id !== 'sdk-manifest'), inventory.artifacts);
++  assert.deepEqual(lock.inventory.filter(row => row.id === 'sdk-manifest'),
++    [{id:'sdk-manifest', kind:'image', version:'0.3.0', digest:SDK.split('@')[1]}]);
++  assert.deepEqual(envelope.image_authority, runtime.image_authority);
++  assert.ok(Array.isArray(runtime.image_authority) && runtime.image_authority.length === 2);
++  runtime.image_authority.forEach((row, index) => {
++    closed(row, 'path bytes sha256', 'image authority'); integer(row.bytes, 1, MAX_FILE);
++    assert.equal(row.path, '/opt/prismpm/share/conformance-root/scripts/' + ['conditional-capture-sdk.py', 'conditional-capture-command.mjs'][index]);
++    assert.equal(row.sha256, [UTILITY, LAUNCHER][index]);
++    const sourceMember = byPath.get('scripts/' + ['conditional-capture-sdk.py', 'conditional-capture-command.mjs'][index]);
++    assert.equal(sourceMember?.kind, 'file'); assert.equal(sourceMember.sha256, row.sha256);
++    assert.equal(sourceMember.bytes, row.bytes, 'image authority joins immutable source bytes');
++  });
++  rows(envelope.sdk_tree); assert.equal(envelope.sdk_tree_sha256, digest(envelope.sdk_tree));
++  const sdkTree = new Map(envelope.sdk_tree.map(row => [row.path, row]));
++  for (const row of runtime.image_authority) {
++    const member = sdkTree.get(row.path.slice('/opt/prismpm/share/conformance-root/'.length));
++    assert.equal(member?.kind, 'file'); assert.equal(member.bytes, row.bytes); assert.equal(member.sha256, row.sha256);
++  }
++  assert.equal(envelope.candidate_matches_sdk_tree, canonicalTransport(d.union).equals(canonicalTransport(envelope.sdk_tree)));
++  assert.equal(envelope.candidate_utility_matches_image, d.authority[3].sha256 === runtime.image_authority[0].sha256);
++  const transfer = d.union.filter(row => row.kind === 'file').map(row => ({path:'candidate-source/' + row.path, bytes:row.bytes, sha256:row.sha256}));
++  transfer.push({path:'current-test-elf', bytes:d.executable_bytes, sha256:d.executable_sha256});
++  assert.deepEqual(envelope.stage_admission, {schema:'prismpm/conditional-candidate-stage-admission/1', route:ROUTE,
++    descriptor_sha256:digest(d), source_sha256:d.source_sha256, union_sha256:d.union_sha256,
++    fixture_inputs_sha256:d.fixture_inputs_sha256, transfer_manifest_sha256:digest(transfer), authority:d.authority,
++    executable_sha256:d.executable_sha256, input_eof_observed:true});
++  assert.deepEqual(envelope.inspection, {role:'inspect', never_started:true, retired_before_stage:true, anonymous_volumes_absent:true});
++  assert.equal(envelope.stage_retired_before_execution, true);
++  assert.deepEqual(envelope.readonly_views, {input:'/candidate-input', compiled_root:sourceRoot, subpath:'candidate-source',
++    same_directory:true, readonly:true, protected_ancestors:true});
++  assert.match(envelope.owner_token, /^[0-9a-f]{32}$/); const prefix = 'prismpm-candidate-' + envelope.owner_token;
++  assert.deepEqual(envelope.execution_mounts, [
++    {Type:'volume', Source:prefix + '-input', Target:'/candidate-input', ReadOnly:true},
++    {Type:'volume', Source:prefix + '-input', Target:sourceRoot, ReadOnly:true, VolumeOptions:{Subpath:'candidate-source'}},
++    {Type:'volume', Source:prefix + '-work', Target:'/workspace', ReadOnly:false},
++    {Type:'bind', Source:'/var/run/docker.sock', Target:'/var/run/docker.sock', ReadOnly:false}]);
++  const retirement = envelope.retirement; closed(retirement, 'actors volumes attachment_eof_observed cleanup_daemon_calls', 'retirement observations');
++  assert.equal(retirement.attachment_eof_observed, true); integer(retirement.cleanup_daemon_calls, 0, 18);
++  assert.equal(retirement.actors.length, 3); const ids = new Set();
++  ['inspect', 'stage', 'execute'].forEach((role, index) => {
++    const row = retirement.actors[index]; hash(row.id); ids.add(row.id);
++    assert.deepEqual(row, {role, name:prefix + '-' + role, id:row.id, absent:true});
++  }); assert.equal(ids.size, 3);
++  assert.deepEqual(retirement.volumes, ['input', 'work'].map(role => ({role, name:prefix + '-' + role, absent:true})));
++  successfulResult(envelope.result);
++  const read = name => regular(join(captureRoot, pathName(name, true)), 32 * MIB, true).body;
++  assert.deepEqual(read(ENVELOPE), envelopeBytes, 'actual retained envelope bytes');
++  assert.deepEqual(read('sdk-lock.json'), sdkLock); assert.deepEqual(read('installed-sdk-inventory.json'), inventoryBytes);
++  assert.equal(lock.standards_lock, 'sha256:' + sha(read('standards.lock')), 'original SDK/standards lock byte join');
++  const receiptBytes = read('capture-evidence.json'), receipt = decodeCaptureJson(receiptBytes, 'prismpm');
++  verifyCaptureReceipt(receipt, {executableSha:d.executable_sha256, sdkImage:SDK, inventorySha:runtime.inventory_sha256, read});
++  assert.equal(envelope.capture_receipt_sha256, sha(receiptBytes));
++  const archive = regular(join(sourceRoot, 'sdk/stdlib-sources.tar')).sha256;
++  assert.equal(receipt.fixture_source_archive_sha256, archive);
++  const sources = lock.inventory.filter(row => row.id === 'stdlib-sources');
++  assert.equal(receipt.installed_sdk_source_matches, sources.length === 1 && sources[0].kind === 'crate' && sources[0].digest === 'sha256:' + archive);
++  const retained = measuredTree(captureRoot, {omitEnvelope:true});
++  assert.equal(envelope.capture_records_sha256, digest(retained), 'complete pre-envelope retained tree');
++  const complete = measuredTree(captureRoot); // Includes envelope in bounds and outer custody, without a circular digest.
++  executable.verify();
++  assert.deepEqual(measuredTree(sourceRoot, {source:true}), owned, 'source remains frozen through independent verification');
++  return {schema:'prismpm/verified-candidate-transport/1', complete_application_accepted:false,
++    envelope_sha256:sha(envelopeBytes), source_sha256:d.source_sha256, executable_sha256:d.executable_sha256,
++    retained_tree_sha256:digest(complete), observation_scope:'owned transport observations; not cryptographic daemon attestation'};
++}
++
++// Diagnostics are a separate owned sibling. This indexes available bytes only;
++// absent channels and an exit code cannot establish completeness or success.
++export function verifyCandidateDiagnostics(captureRoot) {
++  const directory = captureRoot + '.candidate-diagnostics';
++  const stat = lstatSync(directory, {throwIfNoEntry:false}); if (!stat) return null;
++  assert.equal(realpathSync(directory), directory);
++  assert.ok(stat.isDirectory() && stat.uid === process.getuid() && (stat.mode & 0o777) === 0o700);
++  const manifest = regular(join(directory, 'manifest.json'), MIB, true), value = JSON.parse(manifest.body);
++  assert.deepEqual(manifest.body, canonicalTransport(value));
++  assert.match(value.owner_token, /^[0-9a-f]{32}$/);
++  const caps = {'capture.stderr':32*MIB, 'capture.stdout':32*MIB, 'exception.stderr':32*MIB,
++    'exception.stdout':32*MIB, 'execute.stderr':MIB, 'owner.stderr':MIB, 'stage.stderr':MIB};
++  assert.deepEqual(value, {schema:'prismpm/conditional-candidate-diagnostics/1', owner_token:value.owner_token,
++    complete_application_accepted:false, channels:Object.keys(caps).sort().map(path => ({path, maximum_bytes:caps[path]})),
++    aggregate_limits:{capture:64*MIB, exception:32*MIB}});
++  const files = []; let capture = 0, exception = 0;
++  for (const path of readdirSync(directory).sort()) {
++    assert.ok(path === 'manifest.json' || Object.hasOwn(caps, path), 'closed diagnostic channel');
++    const row = regular(join(directory, path), path === 'manifest.json' ? MIB : caps[path]);
++    if (path.startsWith('capture.')) capture += row.bytes;
++    if (path.startsWith('exception.')) exception += row.bytes;
++    files.push({path, bytes:row.bytes, sha256:row.sha256});
++  }
++  assert.ok(capture <= 64*MIB && exception <= 32*MIB);
++  const after = lstatSync(directory); assert.equal(after.ino, stat.ino); assert.equal(after.dev, stat.dev);
++  return {schema:'prismpm/private-candidate-diagnostics-index/1', directory, owner_token:value.owner_token,
++    complete_application_accepted:false, completeness:'not asserted', files};
++}
+diff --git a/tests/publication-context-linkage/candidate-transport.test.mjs b/tests/publication-context-linkage/candidate-transport.test.mjs
+new file mode 100644
+index 00000000..6f638c98
+--- /dev/null
++++ b/tests/publication-context-linkage/candidate-transport.test.mjs
+@@ -0,0 +1,232 @@
++import assert from 'node:assert/strict';
++import test from 'node:test';
++import {createHash} from 'node:crypto';
++import {spawnSync} from 'node:child_process';
++import {chmodSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync,
++  truncateSync, unlinkSync, writeFileSync} from 'node:fs';
++import {tmpdir} from 'node:os';
++import {dirname, join} from 'node:path';
++import {canonicalTransport, verifyCandidateTransport, verifyCandidateDiagnostics} from './candidate-transport.mjs';
++import {captureCompilerArtifact} from '../browser-view/compiler-artifact.mjs';
++import {sourceInventory} from './capture-owner.mjs';
++import {runPublicationCapture} from '../browser-view/compile.mjs';
++
++const sha = bytes => createHash('sha256').update(bytes).digest('hex');
++const digest = value => sha(canonicalTransport(value));
++const order = (a, b) => Buffer.compare(Buffer.from(a.path), Buffer.from(b.path));
++const json = value => canonicalTransport(value).subarray(0, -1);
++const testName = 'oci::publication_context::capture_tests::actual_source_free_capture_constructs_complete_conditional_context';
++const sdkImage = 'ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c';
++const authority = ['conditional-capture-bootstrap.py', 'conditional-capture-candidate-command.mjs',
++  'conditional-capture-candidate.py', 'conditional-capture-sdk.py', 'sdk-command-owner.mjs', 'sdk-command-owner.py'];
++const fixtures = ['examples/Calculator/src', 'stdlib/src/Foundation', 'stdlib/src/Production'];
++const normalized = records => [...records].map(([path, row]) => {
++  const {resolved, ...rest} = row; return {path, ...rest};
++});
++const revision = 'a'.repeat(40), hex = 'b'.repeat(64);
++function put(root, path, bytes) {const file = join(root, path); mkdirSync(dirname(file), {recursive:true}); writeFileSync(file, bytes, {mode:0o600});}
++function rebind(e) {
++  const d = e.descriptor;
++  for (const field of ['source', 'fixture_inputs', 'union']) d[field + '_sha256'] = digest(d[field]);
++  const transfer = d.union.filter(row => row.kind === 'file').map(({path, bytes, sha256}) => ({path:'candidate-source/' + path, bytes, sha256}));
++  transfer.push({path:'current-test-elf', bytes:d.executable_bytes, sha256:d.executable_sha256});
++  e.stage_admission = {schema:'prismpm/conditional-candidate-stage-admission/1', route:'candidate-source-v1', descriptor_sha256:digest(d),
++    source_sha256:d.source_sha256, union_sha256:d.union_sha256, fixture_inputs_sha256:d.fixture_inputs_sha256,
++    transfer_manifest_sha256:digest(transfer), authority:d.authority, executable_sha256:d.executable_sha256, input_eof_observed:true};
++}
++// Component fixture: actual locally compiled libtest ELF and actual files. The
++// exact-name stub only exercises listing/transport; it never claims OC-10 ran.
++function fixture(t) {
++  const work = mkdtempSync(join(tmpdir(), 'prismpm-publication-capture-')); t.after(() => rmSync(work, {recursive:true, force:true}));
++  const sourceRoot = join(work, 'source'), captureRoot = join(work, 'capture'); mkdirSync(sourceRoot); mkdirSync(captureRoot);
++  for (const name of [...authority, 'conditional-capture-command.mjs']) put(sourceRoot, 'scripts/' + name, readFileSync(new URL('../../scripts/' + name, import.meta.url)));
++  for (const path of fixtures) put(sourceRoot, path + '/fixture.lex.tex', 'component fixture bytes\n');
++  put(sourceRoot, 'sdk/stdlib-sources.tar', 'component fixture archive bytes');
++  put(sourceRoot, '\ue000', 'BMP'); put(sourceRoot, '\u{10000}', 'non-BMP');
++  symlinkSync('sdk/stdlib-sources.tar', join(sourceRoot, 'archive-alias'));
++  const rust = 'mod oci { mod publication_context { mod capture_tests { #[test] fn actual_source_free_capture_constructs_complete_conditional_context() {} } } }';
++  const original = join(work, 'component-libtest'), rustPath = join(work, 'component.rs'); writeFileSync(rustPath, rust);
++  const built = spawnSync('rustc', ['--test', '--edition=2024', '-C', 'debuginfo=0', rustPath, '-o', original], {encoding:'utf8', timeout:30000});
++  assert.ifError(built.error); assert.equal(built.status, 0, built.stderr); chmodSync(original, 0o500);
++  const executable = captureCompilerArtifact(work, original, 'publication-capture');
++  const listed = spawnSync(executable.path, ['--list', '--format=terse']); assert.equal(listed.status, 0);
++  assert.equal(listed.stdout.toString(), testName + ': test\n');
++  const sourceRecords = sourceInventory(sourceRoot), source = normalized(sourceRecords).sort(order);
++  const fixtureInputs = source.filter(row => fixtures.some(path => row.path === path || row.path.startsWith(path + '/')));
++  const inventoryBytes = json({schema:'prismpm/sdk-inventory/1', commands:[], artifacts:[{id:'stdlib-sources', kind:'crate', version:'0.3.0', digest:'sha256:' + sha(readFileSync(join(sourceRoot, 'sdk/stdlib-sources.tar')))}]});
++  const sdkLock = json({schema:'prismpm/sdk-lock/1', sdk_version:'0.3.0', sdk_image:sdkImage, standards_lock:'sha256:' + sha(Buffer.from('component standards lock')),
++    inventory:[{id:'sdk-manifest', kind:'image', version:'0.3.0', digest:sdkImage.split('@')[1]}, ...JSON.parse(inventoryBytes).artifacts]});
++  const image_authority = ['conditional-capture-sdk.py', 'conditional-capture-command.mjs'].map(name => {
++    const body = readFileSync(new URL('../../scripts/' + name, import.meta.url));
++    return {path:'/opt/prismpm/share/conformance-root/scripts/' + name, bytes:body.length, sha256:sha(body)};
++  });
++  const sdk_tree = [{path:'scripts', kind:'directory'}, ...image_authority.map(row => ({path:row.path.slice('/opt/prismpm/share/conformance-root/'.length),
++    kind:'file', bytes:row.bytes, sha256:row.sha256, executable:false}))].sort(order);
++  const d = {schema:'prismpm/conditional-candidate-capture-input/1', route:'candidate-source-v1', source_root:sourceRoot, source_selection:'private',
++    source, fixture_inputs:fixtureInputs, union:structuredClone(source), authority:authority.map(name => source.find(row => row.path === 'scripts/' + name)),
++    executable_bytes:lstatSync(executable.path).size, executable_sha256:sha(readFileSync(executable.path)), listing_sha256:sha(listed.stdout), test_count:1,
++    remaining_seconds:1000, sdk_image:sdkImage, runtime:{sdk_image:sdkImage, config_digest:'sha256:' + hex, os:'linux', architecture:'amd64',
++      inventory_sha256:sha(inventoryBytes), image_authority}};
++  put(captureRoot, 'standards.lock', 'component standards lock');
++  put(captureRoot, 'sdk-lock.json', sdkLock); put(captureRoot, 'installed-sdk-inventory.json', inventoryBytes);
++  put(captureRoot, 'context.preimage', 'component context'); put(captureRoot, 'metadata.request', 'component metadata');
++  for (let i = 0; i < 7; i++) put(captureRoot, 'linkage-' + i + '.preimage', 'component linkage ' + i);
++  // DFS traversal differs from global path sorting; preserve original records framing.
++  put(captureRoot, 'a/x', 'nested'); put(captureRoot, 'a.txt', 'sibling');
++  const roles = ['build-manifest', 'sdk-lock', 'standards-lock', 'semantic-snapshot', 'model', 'system', 'runtime-manifest',
++    'kernel-attestation', 'provenance', 'validation', 'oracle-attestation'];
++  const receipt = {schema:'prismpm/conditional-publication-capture-evidence/1', complete_application_accepted:false,
++    runtime_scope:'conditional source-built test controller in immutable SDK; not installed-controller acceptance', runtime_inventory_sha256:sha(inventoryBytes),
++    test_executable_sha256:d.executable_sha256, source_uri:'urn:prismpm:fixture:publication-context-linkage', source_revision:revision,
++    build_id:hex, attestation_id:hex, root_digest:'sha256:' + hex, sdk_image:sdkImage, sdk_lock_sha256:sha(sdkLock),
++    fixture_source_archive_sha256:sha(readFileSync(join(sourceRoot, 'sdk/stdlib-sources.tar'))), installed_sdk_source_matches:true,
++    context_digest:sha(readFileSync(join(captureRoot, 'context.preimage'))), expected_subject:{producer:'urn:prismpm:fixture:publication-context-linkage',
++      source:revision, release:hex, model:hex, build:hex, sdk:sdkImage.split('@sha256:')[1], tree:hex}, publisher_field_substitutions:3,
++    refused_attempts:['instance', 'revision', 'empty-ref', 'oversized-ref'], graph_refusals:roles.flatMap(role => ['changed', 'missing'].map(defect => ({role, defect, code:'PP6101'}))),
++    elapsed_seconds:1, source_free:true, metadata_sha256:sha(readFileSync(join(captureRoot, 'metadata.request'))),
++    linkage_sha256:Array.from({length:7}, (_, i) => sha(readFileSync(join(captureRoot, 'linkage-' + i + '.preimage'))))};
++  put(captureRoot, 'capture-evidence.json', json(receipt));
++  const token = 'c'.repeat(32), prefix = 'prismpm-candidate-' + token;
++  const envelope = {schema:'prismpm/conditional-candidate-transport-evidence/1', route:'candidate-source-v1', complete_application_accepted:false,
++    scope:'current exact-source conditional capture in immutable SDK; not installed-controller acceptance', descriptor:d,
++    inspection:{role:'inspect', never_started:true, retired_before_stage:true, anonymous_volumes_absent:true}, stage_retired_before_execution:true,
++    execution_mounts:[{Type:'volume', Source:prefix + '-input', Target:'/candidate-input', ReadOnly:true},
++      {Type:'volume', Source:prefix + '-input', Target:sourceRoot, ReadOnly:true, VolumeOptions:{Subpath:'candidate-source'}},
++      {Type:'volume', Source:prefix + '-work', Target:'/workspace', ReadOnly:false},
++      {Type:'bind', Source:'/var/run/docker.sock', Target:'/var/run/docker.sock', ReadOnly:false}],
++    readonly_views:{input:'/candidate-input', compiled_root:sourceRoot, subpath:'candidate-source', same_directory:true, readonly:true, protected_ancestors:true},
++    sdk_tree, sdk_tree_sha256:digest(sdk_tree), candidate_matches_sdk_tree:false, image_authority, candidate_utility_matches_image:true,
++    capture_receipt_sha256:sha(json(receipt)), capture_records_sha256:digest(normalized(sourceInventory(captureRoot))),
++    result:{status:0, signal:null, timedOut:false, overflow:false, aborted:false, orphaned:false, close_observed:true,
++      retirement:{scope:'private-linux-subreaper-exhaustion', leader_exit_observed:true, close_observed:true, descendants_absent:true,
++        uncertainty:null, supervisor_status:0, supervisor_signal:null, owner_error:null, protocol_failure:null, python_version:'3.12.3'}},
++    owner_token:token, retirement:{actors:['inspect', 'stage', 'execute'].map((role, i) => ({role, name:prefix + '-' + role, id:String(i + 1).repeat(64), absent:true})),
++      volumes:['input', 'work'].map(role => ({role, name:prefix + '-' + role, absent:true})), attachment_eof_observed:true, cleanup_daemon_calls:12}};
++  rebind(envelope);
++  function verify(value = envelope, overrides = {}) {
++    const envelopeBytes = canonicalTransport(value); put(captureRoot, 'candidate-transport-evidence.json', envelopeBytes);
++    return verifyCandidateTransport({envelopeBytes, sourceRoot, sourceRecords, executable, captureRoot, sdkLock, inventoryBytes, ...overrides});
++  }
++  return {work, sourceRoot, sourceRecords, captureRoot, executable, envelope, sdkLock, inventoryBytes, verify};
++}
++
++test('Python-compatible scalar framing and UTF-8 ordering', () => {
++  const vector = [{kind:'directory', path:'\ue000'}, {kind:'directory', path:'\u{10000}'}];
++  const bytes = canonicalTransport(vector);
++  assert.equal(bytes.toString(), '[{"kind":"directory","path":"\\ue000"},{"kind":"directory","path":"\\ud800\\udc00"}]\n');
++  assert.equal(sha(bytes), 'cf49b0434bd524f4577489c108f8362dde4b0f2c25f1f2259b2c2abe2adee327');
++  const values = [vector, {'\u{10000}':'é\n\t\u007f', '\ue000':'"\\\b\f\r', a:[true, false, null, 100000]}];
++  for (const value of values) {
++    const python = spawnSync('/usr/bin/python3', ['-I', '-B', '-c',
++      'import json,sys;sys.stdout.write(json.dumps(json.load(sys.stdin),sort_keys=True,separators=(",",":"))+"\\n")'], {input:JSON.stringify(value)});
++    assert.equal(python.status, 0); assert.deepEqual(canonicalTransport(value), python.stdout);
++  }
++  for (const value of ['\ud800', '\udfff', {path:'\ud800'}, NaN, -0, 1.5]) assert.throws(() => canonicalTransport(value));
++});
++
++test('real-file transport closure, normalized aliases and independently captured ELF', t => {
++  const f = fixture(t), evidence = f.verify();
++  assert.equal(evidence.complete_application_accepted, false); assert.match(evidence.observation_scope, /not cryptographic/);
++  assert.deepEqual(f.verify(), evidence);
++  assert.throws(() => f.verify(f.envelope, {executable:{path:f.executable.path, evidence:f.executable.evidence, verify(){}}}), /actual captured compiler artifact/);
++  const map = new Map(f.sourceRecords); map.set('archive-alias', {...map.get('archive-alias'), resolved:'wrong'});
++  assert.throws(() => f.verify(f.envelope, {sourceRecords:map}), /owned alias resolution/);
++});
++
++test('closed descriptor, union, authority and observed lifecycle mutations refuse', t => {
++  const f = fixture(t); f.verify();
++  const changes = [
++    e => {e.extra = true;}, e => {e.descriptor.extra = true;}, e => {e.descriptor.runtime.extra = true;},
++    e => {e.descriptor.source.pop();}, e => {e.descriptor.union.pop();}, e => {e.descriptor.fixture_inputs.pop();},
++    e => {e.descriptor.source.reverse();}, e => {e.descriptor.source[0].extra = true;},
++    e => {e.descriptor.source_root = '/workspace/source';}, e => {e.descriptor.source_selection = 'tracked';},
++    e => {e.descriptor.executable_sha256 = hex;}, e => {e.descriptor.executable_bytes++;},
++    e => {e.descriptor.listing_sha256 = hex;}, e => {e.descriptor.test_count++;},
++    e => {e.descriptor.sdk_image = sdkImage.replace('d6c263', 'a6c263');}, e => {e.descriptor.runtime.config_digest = hex;},
++    e => {e.descriptor.runtime.config_digest = 'sha256:' + 'e'.repeat(64);}, // no matching stage digest
++    e => {e.descriptor.runtime.inventory_sha256 = hex;}, e => {e.descriptor.runtime.architecture = 'unknown';},
++    e => {e.sdk_tree[1].sha256 = hex; e.sdk_tree_sha256 = digest(e.sdk_tree);},
++    e => {e.image_authority[1].sha256 = hex;}, e => {e.candidate_matches_sdk_tree = true;},
++    e => {e.candidate_utility_matches_image = false;}, e => {e.capture_receipt_sha256 = hex;},
++    e => {e.capture_records_sha256 = hex;}, e => {e.inspection.never_started = false;},
++    e => {e.inspection.retired_before_stage = false;}, e => {e.stage_retired_before_execution = false;},
++    e => {e.execution_mounts[0].ReadOnly = false;}, e => {e.execution_mounts[1].VolumeOptions.Subpath = 'wrong';},
++    e => {e.execution_mounts.push(e.execution_mounts[2]);}, e => {e.readonly_views.same_directory = 1;},
++    e => {e.readonly_views.protected_ancestors = false;}, e => {e.stage_admission.input_eof_observed = 1;},
++    e => {e.retirement.actors.shift();}, e => {e.retirement.actors[0].role = 'stage';},
++    e => {e.retirement.actors[2].absent = false;}, e => {e.retirement.actors[0].extra = true;},
++    e => {e.retirement.volumes[0].absent = false;}, e => {e.retirement.attachment_eof_observed = false;},
++    e => {e.retirement.cleanup_daemon_calls = 19;}, e => {e.result.retirement.python_version = '3.13.5';},
++    e => {e.result.status = true;}, e => {e.complete_application_accepted = true;},
++  ];
++  for (const [index, change] of changes.entries()) {
++    const changed = structuredClone(f.envelope); change(changed); assert.throws(() => f.verify(changed), undefined, 'mutation ' + index);
++  }
++  for (const name of authority) {
++    const changed = structuredClone(f.envelope), path = 'scripts/' + name;
++    for (const list of [changed.descriptor.source, changed.descriptor.union, changed.descriptor.authority]) list.find(row => row.path === path).sha256 = hex;
++    rebind(changed); assert.throws(() => f.verify(changed), /independently owned/, name + ' coherent record copies');
++  }
++});
++
++test('altered actual source, each authority, ELF, receipt and extra retained files refuse', t => {
++  const f = fixture(t); f.verify();
++  for (const path of ['\ue000', ...authority.map(name => 'scripts/' + name), 'examples/Calculator/src/fixture.lex.tex']) {
++    const file = join(f.sourceRoot, path), original = readFileSync(file);
++    try {writeFileSync(file, Buffer.concat([original, Buffer.from('changed')])); assert.throws(() => f.verify(), /independently owned source/);}
++    finally {writeFileSync(file, original);}
++  }
++  for (const path of ['capture-evidence.json', 'sdk-lock.json', 'installed-sdk-inventory.json', 'standards.lock', 'context.preimage', 'linkage-6.preimage']) {
++    const file = join(f.captureRoot, path), original = readFileSync(file);
++    try {writeFileSync(file, Buffer.concat([original, Buffer.from('changed')])); assert.throws(() => f.verify());}
++    finally {writeFileSync(file, original);}
++  }
++  const added = join(f.captureRoot, 'unreported'); writeFileSync(added, 'added');
++  assert.throws(() => f.verify(), /complete pre-envelope retained tree/); unlinkSync(added);
++  const original = readFileSync(f.executable.path); chmodSync(f.executable.path, 0o700); const altered = Buffer.from(original); altered[8] ^= 1;
++  try {writeFileSync(f.executable.path, altered); chmodSync(f.executable.path, 0o500); assert.throws(() => f.verify(), /immutable private compiler/);}
++  finally {chmodSync(f.executable.path, 0o700); writeFileSync(f.executable.path, original); chmodSync(f.executable.path, 0o500);}
++  f.verify();
++  const oversized = join(f.sourceRoot, 'oversized'); writeFileSync(oversized, ''); truncateSync(oversized, 268435457);
++  try {assert.throws(() => f.verify(), /bounded singly linked member/);} finally {unlinkSync(oversized);}
++});
++
++test('held outer tree detects coherent observation replacement without circular hashing', t => {
++  const f = fixture(t); const original = f.verify(), held = sourceInventory(f.captureRoot);
++  const changed = structuredClone(f.envelope); changed.descriptor.runtime.config_digest = 'sha256:' + 'e'.repeat(64); rebind(changed);
++  // A valid new observation cannot be rejected as a cryptographic forgery by JSON alone.
++  const replacement = f.verify(changed); assert.notEqual(replacement.envelope_sha256, original.envelope_sha256);
++  assert.throws(() => assert.deepEqual(sourceInventory(f.captureRoot), held, 'complete retained actual capture tree'), /complete retained actual capture tree/);
++  f.verify(); assert.deepEqual(sourceInventory(f.captureRoot), held);
++  const bytes = canonicalTransport(f.envelope);
++  for (const malformed of [Buffer.concat([bytes, Buffer.from('\n')]), Buffer.from(bytes.toString().replace('"route":', '"route" :'))])
++    assert.throws(() => f.verify(f.envelope, {envelopeBytes:malformed}), /exact candidate envelope framing/);
++});
++
++test('ambient route and SDK child conflicts refuse before compiler or capture execution', () => {
++  for (const key of ['PRISMPM_OC10_CAPTURE_ROUTE', 'PRISMPM_OC10_SDK_CHILD']) {
++    const previous = process.env[key];
++    try {
++      for (const value of ['', 'image-owned-v1', 'candidate-source-v1', 'unknown']) {
++        process.env[key] = value;
++        assert.throws(() => runPublicationCapture('/not-an-executable', '/not-a-directory', '/not-output'), /ambient .* refused/);
++      }
++    } finally {if (previous === undefined) delete process.env[key]; else process.env[key] = previous;}
++  }
++});
++
++test('separate diagnostics index retains bounded channels without claiming completeness', t => {
++  const work = mkdtempSync(join(tmpdir(), 'candidate-diagnostics-reader-')); t.after(() => rmSync(work, {recursive:true, force:true}));
++  const output = join(work, 'capture'), root = output + '.candidate-diagnostics';
++  assert.equal(verifyCandidateDiagnostics(output), null); mkdirSync(root, {mode:0o700});
++  const caps = {'capture.stderr':33554432, 'capture.stdout':33554432, 'exception.stderr':33554432, 'exception.stdout':33554432,
++    'execute.stderr':1048576, 'owner.stderr':1048576, 'stage.stderr':1048576};
++  const manifest = {schema:'prismpm/conditional-candidate-diagnostics/1', owner_token:'a'.repeat(32), complete_application_accepted:false,
++    channels:Object.entries(caps).map(([path, maximum_bytes]) => ({path, maximum_bytes})), aggregate_limits:{capture:67108864, exception:33554432}};
++  put(root, 'manifest.json', canonicalTransport(manifest)); put(root, 'exception.stderr', 'original failed operation and cleanup\n');
++  const evidence = verifyCandidateDiagnostics(output); assert.equal(evidence.completeness, 'not asserted'); assert.equal(evidence.files.length, 2);
++  put(root, 'extra', 'not a channel'); assert.throws(() => verifyCandidateDiagnostics(output), /closed diagnostic channel/); unlinkSync(join(root, 'extra'));
++  put(root, 'execute.stderr', Buffer.alloc(1048577));
++  assert.throws(() => verifyCandidateDiagnostics(output), /bounded singly linked member/); unlinkSync(join(root, 'execute.stderr'));
++  manifest.complete_application_accepted = true; put(root, 'manifest.json', canonicalTransport(manifest)); assert.throws(() => verifyCandidateDiagnostics(output));
++});
+diff --git a/tests/publication-context-linkage/capture-oracle.mjs b/tests/publication-context-linkage/capture-oracle.mjs
+index 49771c1b..e39331a4 100644
+--- a/tests/publication-context-linkage/capture-oracle.mjs
++++ b/tests/publication-context-linkage/capture-oracle.mjs
+@@ -129,6 +129,39 @@ export function projectCapturedSource(snapshot) {
+   return {closure, member:[module, member], module:modules.get(module)};
+ }
+ 
++// Original receipt contract, independently joined to retained bytes. This is
++// shared by the transport reader and the complete source/preimage oracle below.
++export function verifyCaptureReceipt(receipt, {executableSha, sdkImage, inventorySha, read}) {
++  assert.deepEqual(Object.keys(receipt).sort(), (`schema complete_application_accepted runtime_scope runtime_inventory_sha256
++    test_executable_sha256 source_uri source_revision build_id attestation_id root_digest sdk_image sdk_lock_sha256
++    fixture_source_archive_sha256 installed_sdk_source_matches context_digest expected_subject publisher_field_substitutions
++    refused_attempts graph_refusals elapsed_seconds source_free metadata_sha256 linkage_sha256`).split(/\s+/).sort());
++  assert.equal(receipt.schema, 'prismpm/conditional-publication-capture-evidence/1');
++  assert.equal(receipt.complete_application_accepted, false); assert.equal(receipt.source_free, true);
++  assert.equal(receipt.runtime_scope, 'conditional source-built test controller in immutable SDK; not installed-controller acceptance');
++  assert.equal(receipt.test_executable_sha256, executableSha); assert.equal(receipt.sdk_image, sdkImage);
++  assert.equal(receipt.runtime_inventory_sha256, inventorySha);
++  assert.equal(receipt.source_uri, 'urn:prismpm:fixture:publication-context-linkage');
++  assert.match(receipt.source_revision, /^[0-9a-f]{40}$/); assert.equal(typeof receipt.installed_sdk_source_matches, 'boolean');
++  assert.ok(Number.isSafeInteger(receipt.elapsed_seconds) && receipt.elapsed_seconds >= 0 && receipt.elapsed_seconds <= 2400);
++  for (const key of ['build_id', 'attestation_id', 'fixture_source_archive_sha256']) assert.match(receipt[key], /^[0-9a-f]{64}$/);
++  assert.match(receipt.root_digest, /^sha256:[0-9a-f]{64}$/);
++  const subject = receipt.expected_subject;
++  assert.deepEqual(Object.keys(subject).sort(), ['producer', 'source', 'release', 'model', 'build', 'sdk', 'tree'].sort());
++  assert.equal(subject.producer, receipt.source_uri); assert.equal(subject.source, receipt.source_revision);
++  for (const key of ['release', 'model', 'build', 'sdk', 'tree']) assert.match(subject[key], /^[0-9a-f]{64}$/);
++  assert.equal(subject.release, receipt.root_digest.slice(7)); assert.equal(subject.sdk, sdkImage.split('@sha256:')[1]);
++  const roles = ['build-manifest', 'sdk-lock', 'standards-lock', 'semantic-snapshot', 'model', 'system',
++    'runtime-manifest', 'kernel-attestation', 'provenance', 'validation', 'oracle-attestation'];
++  assert.deepEqual(receipt.graph_refusals, roles.flatMap(role => ['changed', 'missing'].map(defect => ({role, defect, code:'PP6101'}))));
++  assert.equal(receipt.publisher_field_substitutions, 3);
++  assert.deepEqual(receipt.refused_attempts, ['instance', 'revision', 'empty-ref', 'oversized-ref']);
++  for (const [key, path] of [['runtime_inventory_sha256', 'installed-sdk-inventory.json'], ['sdk_lock_sha256', 'sdk-lock.json'],
++    ['context_digest', 'context.preimage'], ['metadata_sha256', 'metadata.request']]) assert.equal(receipt[key], sha(read(path)));
++  assert.deepEqual(receipt.linkage_sha256, Array.from({length:7}, (_, i) => sha(read('linkage-' + i + '.preimage'))));
++  return receipt;
++}
++
+ export function verifyCaptureOracle(root, executableSha, sourceRoot) {
+   const files = new Map();
+   function read(path) {
+@@ -154,6 +187,8 @@ export function verifyCaptureOracle(root, executableSha, sourceRoot) {
+     visit(''); return rows.sort(([a], [b]) => order(a, b));
+   }
+   const receipt = json('capture-evidence.json');
++  verifyCaptureReceipt(receipt, {executableSha, sdkImage:receipt.sdk_image,
++    inventorySha:sha(read('installed-sdk-inventory.json')), read});
+   assert.equal(receipt.schema, 'prismpm/conditional-publication-capture-evidence/1');
+   assert.equal(receipt.complete_application_accepted, false); assert.equal(receipt.source_free, true);
+   assert.equal(receipt.test_executable_sha256, executableSha);
+diff --git a/tests/publication-context-linkage/capture-owner.mjs b/tests/publication-context-linkage/capture-owner.mjs
+index 90740553..300dde99 100644
+--- a/tests/publication-context-linkage/capture-owner.mjs
++++ b/tests/publication-context-linkage/capture-owner.mjs
+@@ -10,6 +10,7 @@ import {prerequisite} from '../browser-view/prerequisites.mjs';
+ import {repository, run, sha} from './compile.mjs';
+ import {executeWasm} from './execute.mjs';
+ import {verifyCaptureOracle} from './capture-oracle.mjs';
++import {verifyCandidateTransport, verifyCandidateDiagnostics} from './candidate-transport.mjs';
+ 
+ const excluded = new Set(['.git', 'target', '.lexlean', '.prism']);
+ const completeOwners = new WeakSet();
+@@ -108,6 +109,7 @@ function captureExecutable(work, source) {
+   assert.match(fixtureOutput, /test result: ok\. 1 passed; 0 failed; 0 ignored;/);
+   writeFileSync(join(work, 'readonly-fixture.stdout'), fixtureOutput, {flag:'wx', mode:0o444});
+   const gateTests = [
++    'candidate_route_stops_at_the_owning_node_boundary',
+     'compiler_phase_diagnostics_are_closed_bounded_and_not_acceptance',
+     'complete_diagnostics_are_formatted_before_the_transport_write',
+     'complete_json_records_survive_competing_stdout_and_stderr_writers',
+@@ -122,12 +124,12 @@ function captureExecutable(work, source) {
+   ].map(name => 'cases::node_suite::tests::' + name);
+   const gateList = run(gate.path, ['cases::node_suite::tests::', '--list'], source.root);
+   assert.deepEqual(gateList.split('\n').filter(line => line.length > 0),
+-    [...gateTests.map(name => name + ': test'), '11 tests, 0 benchmarks'],
++    [...gateTests.map(name => name + ': test'), '12 tests, 0 benchmarks'],
+     'complete current exact-gate regression inventory before execution');
+   writeFileSync(join(work, 'exact-gate.list'), gateList, {flag:'wx', mode:0o444});
+   source.verify(); owner.verify(); gate.verify();
+   const gateOutput = run(gate.path, ['cases::node_suite::tests::', '--nocapture'], source.root);
+-  assert.match(gateOutput, /test result: ok\. 11 passed; 0 failed; 0 ignored; 0 measured;/);
++  assert.match(gateOutput, /test result: ok\. 12 passed; 0 failed; 0 ignored; 0 measured;/);
+   writeFileSync(join(work, 'exact-gate.stdout'), gateOutput, {flag:'wx', mode:0o444});
+   writeFileSync(join(work, 'exact-gate-evidence.json'), JSON.stringify(gate.evidence) + '\n', {flag:'wx', mode:0o444});
+   assert.equal(readFileSync(join(target, 'CACHEDIR.TAG'), 'utf8').split('\n')[0],
+@@ -155,7 +157,7 @@ function replay(build, oracle) {
+ 
+ export async function verifyCapturedFactory(t) {
+   const work = mkdtempSync(join(tmpdir(), 'prismpm-publication-capture-'));
+-  let source, executable, oracle, finished = false;
++  let source, executable, oracle, transport, diagnosticEvidence, finished = false;
+   try {
+     await prerequisite(t, 'fresh complete source-built capture executable has private custody', () => {
+       source = stageSource(work); executable = captureExecutable(work, source);
+@@ -177,8 +179,30 @@ export async function verifyCapturedFactory(t) {
+     });
+     await prerequisite(t, 'actual source-free release and 22 changed/missing blob refusals execute', () => {
+       executable.verify(); source.verify();
++      let failure;
+       try {runPublicationCapture(executable.path, work, output);}
+-      finally {executable.verify(); source.verify();}
++      catch (error) {failure = error; throw error;}
++      finally {
++        try {
++          diagnosticEvidence = verifyCandidateDiagnostics(output);
++          if (diagnosticEvidence) writeFileSync(join(work, 'candidate-diagnostics-index.json'),
++            JSON.stringify(diagnosticEvidence) + '\n', {flag:'wx', mode:0o444});
++        } catch (error) {
++          if (!failure) throw error;
++          process.stderr.write('Separate candidate diagnostics indexing failed: ' + error.message + '\n');
++        }
++        executable.verify(); source.verify();
++      }
++    });
++    const verifyTransport = () => verifyCandidateTransport({
++      envelopeBytes:readFileSync(join(output, 'candidate-transport-evidence.json')),
++      sourceRoot:source.root, sourceRecords:source.records, executable, captureRoot:output,
++      sdkLock:readFileSync(join(output, 'sdk-lock.json')), inventoryBytes:readFileSync(join(output, 'installed-sdk-inventory.json'))});
++    await prerequisite(t, 'independent candidate source, ELF and complete transport closure agree', () => {
++      transport = verifyTransport();
++      assert.ok(diagnosticEvidence, 'separately owned candidate diagnostics manifest required');
++      assert.equal(diagnosticEvidence.owner_token,
++        JSON.parse(readFileSync(join(output, 'candidate-transport-evidence.json'))).owner_token);
+     });
+     await prerequisite(t, 'independent retained-source metadata and all eight preimages agree', () => {
+       oracle = verifyCaptureOracle(output, executable.evidence.private.sha256, source.root);
+@@ -207,7 +231,8 @@ export async function verifyCapturedFactory(t) {
+     const retained = sourceInventory(output, captureInventoryRole);
+     const verify = () => {executable.verify(); source.verify();
+       assert.deepEqual(sourceInventory(output, captureInventoryRole), retained, 'complete retained actual capture tree');
+-      assert.deepEqual(verifyCaptureOracle(output, executable.evidence.private.sha256, source.root), oracle);};
++      assert.deepEqual(verifyCaptureOracle(output, executable.evidence.private.sha256, source.root), oracle);
++      assert.deepEqual(verifyTransport(), transport);};
+     verify();
+     for (const name of ['.git', 'target', '.lexlean', '.prism']) {
+       const path = join(output, name); assert.equal(lstatSync(path, {throwIfNoEntry:false}), undefined);
+@@ -219,7 +244,7 @@ export async function verifyCapturedFactory(t) {
+     }
+     const evidence = {schema:'prismpm/private-publication-capture-factory/1', completeApplicationAccepted:false,
+       source:Object.fromEntries(source.records), executable:executable.evidence,
+-      actualCapture:oracle.evidence, retainedTree:Object.fromEntries(retained),
++      actualCapture:oracle.evidence, candidateTransport:transport, separateDiagnostics:diagnosticEvidence, retainedTree:Object.fromEntries(retained),
+       reconstructibleCacheOnly:['producer-source/target']};
+     const receipt = join(work, 'capture-factory-evidence.json');
+     writeFileSync(receipt, JSON.stringify(evidence) + '\n', {flag:'wx', mode:0o444});
+diff --git a/xtask/src/gate_driver.rs b/xtask/src/gate_driver.rs
+index 420371e8..a1ffd8ff 100644
+--- a/xtask/src/gate_driver.rs
++++ b/xtask/src/gate_driver.rs
+@@ -54,6 +54,65 @@ fn isolated_target(root: &Path, executable: &Path) -> Result<PathBuf, Fail> {
+     Err("cannot isolate nested Cargo gates from the executing VV driver".into())
+ }
+ 
++// Only complete workspace source-test owners call this; ambient choices refuse.
++pub(crate) fn select_candidate_capture(
++    command: &mut Command,
++    arguments: &[&str],
++) -> Result<(), Fail> {
++    candidate_capture_command(
++        command,
++        arguments,
++        std::env::var_os("PRISMPM_OC10_CAPTURE_ROUTE").is_some(),
++        std::env::var_os("PRISMPM_OC10_SDK_CHILD").is_some(),
++    )
++}
++
++fn candidate_capture_command(
++    command: &mut Command,
++    arguments: &[&str],
++    ambient_route: bool,
++    sdk_child: bool,
++) -> Result<(), Fail> {
++    if ambient_route || sdk_child {
++        return Err("ambient conditional capture route/SDK child refused".into());
++    }
++    let allowed: &[&[&str]] = &[
++        &[
++            "test",
++            "--workspace",
++            "--all-features",
++            "--locked",
++            "--offline",
++        ],
++        &[
++            "test",
++            "--workspace",
++            "--exclude",
++            "repo-conformance",
++            "--all-features",
++            "--locked",
++            "--offline",
++        ],
++        &[
++            "test",
++            "--workspace",
++            "--bins",
++            "--lib",
++            "--tests",
++            "--exclude",
++            "repo-conformance",
++            "--all-features",
++            "--locked",
++            "--offline",
++        ],
++    ];
++    if !allowed.contains(&arguments) {
++        return Err("candidate route requires the complete workspace-test command".into());
++    }
++    command.env("PRISMPM_OC10_CAPTURE_ROUTE", "candidate-source-v1");
++    Ok(())
++}
++
+ impl GateDriver {
+     pub(crate) fn capture(root: &Path) -> Result<Self, Fail> {
+         let executable = ExecutableIdentity::capture(std::env::current_exe()?)?;
+@@ -74,6 +133,21 @@ impl GateDriver {
+         command
+     }
+ 
++    pub(crate) fn run_source_tests(&self, root: &Path, arguments: &[&str]) -> Result<(), Fail> {
++        self.executable
++            .require_unchanged(&std::env::current_exe()?)?;
++        let mut command = self.cargo_command(root, arguments);
++        select_candidate_capture(&mut command, arguments)?;
++        let outcome = command.status();
++        self.executable
++            .require_unchanged(&std::env::current_exe()?)?;
++        let status = outcome?;
++        if !status.success() {
++            return Err(format!("cargo {} exited {status}", arguments.join(" ")).into());
++        }
++        Ok(())
++    }
++
+     pub(crate) fn run_cargo(&self, root: &Path, arguments: &[&str]) -> Result<(), Fail> {
+         self.executable
+             .require_unchanged(&std::env::current_exe()?)?;
+@@ -99,6 +173,53 @@ impl GateDriver {
+ mod tests {
+     use super::*;
+ 
++    #[test]
++    fn candidate_capture_is_scoped_to_complete_source_test_child() {
++        let args = [
++            "test",
++            "--workspace",
++            "--all-features",
++            "--locked",
++            "--offline",
++        ];
++        for (ambient, child) in [(false, false), (true, false), (false, true)] {
++            let mut command = Command::new("cargo");
++            command
++                .args(args)
++                .env("PRISMPM_TEST_SDK_IMAGE", "unchanged-image");
++            let result = candidate_capture_command(&mut command, &args, ambient, child);
++            assert_eq!(result.is_ok(), !ambient && !child);
++            assert_eq!(command.get_args().collect::<Vec<_>>(), args);
++            let environment = command
++                .get_envs()
++                .collect::<std::collections::BTreeMap<_, _>>();
++            assert_eq!(
++                environment.get(std::ffi::OsStr::new("PRISMPM_TEST_SDK_IMAGE")),
++                Some(&Some(std::ffi::OsStr::new("unchanged-image")))
++            );
++            assert_eq!(
++                environment
++                    .get(std::ffi::OsStr::new("PRISMPM_OC10_CAPTURE_ROUTE"))
++                    .copied(),
++                if ambient || child {
++                    None
++                } else {
++                    Some(Some(std::ffi::OsStr::new("candidate-source-v1")))
++                }
++            );
++        }
++        for args in [
++            vec!["build", "--workspace"],
++            vec!["test", "--package", "prismpm"],
++            vec!["test", "--workspace", "--", "filtered"],
++            vec!["test", "--workspace", "--test", "filtered"],
++        ] {
++            assert!(
++                candidate_capture_command(&mut Command::new("cargo"), &args, false, false).is_err()
++            );
++        }
++    }
++
+     #[test]
+     fn executable_identity_rejects_changed_or_deleted_driver() {
+         let work = tempfile::tempdir().unwrap();
+diff --git a/xtask/src/main.rs b/xtask/src/main.rs
+index 9b56c2d7..645b54aa 100644
+--- a/xtask/src/main.rs
++++ b/xtask/src/main.rs
+@@ -246,9 +246,8 @@ fn verify_standalone_browser_owners(root: &Path) -> Result<(), Fail> {
+ 
+ fn run_unit_tests(root: &Path) -> Result<(), Fail> {
+     println!("Running workspace unit and integration tests");
+-    command(
++    source_test_command(
+         root,
+-        "cargo",
+         &[
+             "test",
+             "--workspace",
+@@ -354,6 +353,7 @@ fn audit_all(root: &Path) -> Result<(), Fail> {
+             "scripts/compiler-driver-cache.test.mjs",
+             "scripts/compiler-phase-observation.test.mjs",
+             "scripts/compiler-phase-transport.test.mjs",
++            "tests/publication-context-linkage/candidate-transport.test.mjs",
+             "tests/browser-view/compiler-artifact.test.mjs",
+             "tests/browser-view/generated-package.test.mjs",
+             "tests/browser-view/file-custody.test.mjs",
+@@ -402,6 +402,20 @@ fn audit_all(root: &Path) -> Result<(), Fail> {
+     Ok(())
+ }
+ 
++fn source_test_command(root: &Path, args: &[&str]) -> Result<(), Fail> {
++    let mut child = Command::new("cargo");
++    child
++        .args(args)
++        .current_dir(root)
++        .env("CARGO_NET_OFFLINE", "true");
++    gate_driver::select_candidate_capture(&mut child, args)?;
++    let status = child.status()?;
++    if !status.success() {
++        return Err(format!("cargo {} exited {status}", args.join(" ")).into());
++    }
++    Ok(())
++}
++
+ fn command(root: &Path, program: &str, args: &[&str]) -> Result<(), Fail> {
+     let mut child = Command::new(program);
+     child
+@@ -706,7 +720,7 @@ fn run_vv(root: &Path) -> Result<(), Fail> {
+     run_vv_gates_1_to_5(root, &driver)?;
+ 
+     println!("VV gate 6/15: workspace unit and property tests");
+-    driver.run_cargo(
++    driver.run_source_tests(
+         root,
+         &[
+             "test",
+@@ -812,7 +826,7 @@ fn run_vv_part(root: &Path, arguments: &[String]) -> Result<(), Fail> {
+         "source" => {
+             run_vv_gates_1_to_5(root, &driver)?;
+             println!("VV gate 6/15: workspace unit and property tests without repo-conformance");
+-            driver.run_cargo(
++            driver.run_source_tests(
+                 root,
+                 &[
+                     "test",

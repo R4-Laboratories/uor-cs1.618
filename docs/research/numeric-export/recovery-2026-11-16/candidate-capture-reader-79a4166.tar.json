@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/recovery-evidence-archive/1",
+  "source_revision": "79a41668ef04c0bb566e0789589934a79c3d8019",
+  "scope": "Task3 component implementation, independent review changes required; not SDK acceptance",
+  "archive": "candidate-capture-reader-79a4166.tar.gz",
+  "bytes": 37769,
+  "sha256": "7582feb24611847125e46b3c88aa9978043d08cf0cf9f9a7f0cacd5c3449e5d3",
+  "index_sha256": "51a302c07e2f048650fdc4640047a19081440fd3dc27fb005c9ba99c569d4cb9",
+  "entries": 65
+}
