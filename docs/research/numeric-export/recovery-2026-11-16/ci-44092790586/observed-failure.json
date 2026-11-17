@@ -1,0 +1,44 @@
+{
+  "schema": "cs1618/hosted-qualification-observation/1",
+  "run": 44092790586,
+  "game_commit": "a37db958cbed291f215cf034069ffddfbd1fee44",
+  "source_snapshot": "f292c7100874c0e0b2d1e0e81b27caeec8391f77",
+  "result": "failed_preflight_before_source_image_or_qualification",
+  "observed_error": "UID1000 host child PermissionError reading source preparation-partial.json",
+  "runner_uid": 1001,
+  "runner_gid": 1001,
+  "denied_ancestor_and_socket_layout": "not_retained",
+  "retained_failure_artifact": true,
+  "entries": [
+    {
+      "path": "launch.json",
+      "bytes": 2440,
+      "sha256": "65e3c8f03bc21224bf0d14c59c7e3fff571af76927aba3f814c48968dd445185"
+    },
+    {
+      "path": "completed-run.json",
+      "bytes": 2439,
+      "sha256": "adfcc7f910bd3f929d008cbe355e599b7b7d58c803e927554bd4e60f130f8cb7"
+    },
+    {
+      "path": "failed-steps.log",
+      "bytes": 2247,
+      "sha256": "808fc1273b0974b8c5094283c3ab6e7e7e938c771b71c70f62ccaa7c844472b2"
+    },
+    {
+      "path": "full-run.log",
+      "bytes": 164571,
+      "sha256": "7941353ac36c0bab0fd6bfb0f51a9e2584bd8349ffb634b78e44943727a6f64e"
+    },
+    {
+      "path": "artifacts.json",
+      "bytes": 235,
+      "sha256": "8a231b030d9f9a60cfa782169f8885b39eb03daa492f952e9b6f731696a1b13a"
+    },
+    {
+      "path": "source-image-failure-artifact.zip",
+      "bytes": 422,
+      "sha256": "9639e77154ef7dd2d26814861ca556d3e67eb5490a7e2867403bc6e44571df95"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+image	Exercise actual host privilege and artifact handoff	﻿2026-11-17T13:27:12.5543521Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.5544510Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image[0m
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.5566760Z shell: /usr/bin/bash -e {0}
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.5567027Z ##[endgroup]
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.7568858Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: UID1000 host child: [Errno 13] Permission denied: '/home/runner/work/uor-cs1.618/uor-cs1.618/prismpm/target/candidate-qualification-driver/preparation-partial.json'
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.7570768Z 
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:27:12.7674431Z ##[error]Process completed with exit code 1.
+image	Retain actual source image and cleanliness	﻿2026-11-17T13:27:12.7736728Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.7737664Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect[0m
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.7759506Z shell: /usr/bin/bash -e {0}
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.7759771Z ##[endgroup]
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.9681980Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: completed actual bridge preflight required
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.9682681Z 
+image	Retain actual source image and cleanliness	2026-11-17T13:27:12.9779366Z ##[error]Process completed with exit code 1.
