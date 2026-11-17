@@ -1,0 +1,11 @@
+{
+  "schema": "cs1618/game-harness-fix-evidence/1",
+  "revision": "a334ccd8b8e6171438ea1d10d0b7eebadac56916",
+  "source_revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "archive": "frontend-harness-fix-a334ccd.tar.gz",
+  "archive_bytes": 3850,
+  "archive_sha256": "820b11c9a59f730efb2a9928fea8b201b693c2d3220ee09362a5a282a5d723b7",
+  "indexed_files": 11,
+  "archive_members": 12,
+  "scope": "14 source-enabled harness tests and 21 restoration tests; original SDK identity provenance and historical component-reader controls only, not new SDK execution."
+}
