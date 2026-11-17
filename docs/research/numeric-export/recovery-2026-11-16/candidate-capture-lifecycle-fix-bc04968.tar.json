@@ -1,0 +1,11 @@
+{
+  "archive": "candidate-capture-lifecycle-fix-bc04968.tar.gz",
+  "bytes": 21525,
+  "sha256": "1adadeab879422ff51c93facb95122e184c92009aba5b085af55793d56f4a618",
+  "indexed_entries": 44,
+  "evidence_index_sha256": "c9ef6a66113680a7356995850cf3117bc3561098c3587ca835e52bf407c63597",
+  "base": "0c3fa37b598e0ded05fdfd7437ef8b9ae379f94a",
+  "commit": "bc049680103bbaf285a5582a346a73f4d2f790e4",
+  "tree": "1f3f4b6d244414c422115a842949d39e4a46ac3c",
+  "actual_sdk_qualified": false
+}

@@ -1,0 +1,707 @@
+diff --git a/scripts/conditional-capture-candidate.py b/scripts/conditional-capture-candidate.py
+index 4b18cb92..fe5f3439 100644
+--- a/scripts/conditional-capture-candidate.py
++++ b/scripts/conditional-capture-candidate.py
+@@ -705,6 +705,16 @@ def checked_candidate_response(value, descriptor):
+     return value
+ 
+ 
++def retirement_control(descriptor):
++    return {"retire": True, "descriptor_sha256": digest(descriptor)}
++
++
++def receive_retirement(reader, descriptor):
++    require(encoded(reader.line()) == encoded(retirement_control(descriptor)),
++            "closed descriptor-bound candidate retirement acknowledgement required")
++    reader.exhausted()
++
++
+ def response_wrapper(descriptor, baseline, views, payload):
+     return checked_candidate_response({"schema": RESPONSE_SCHEMA, "route": ROUTE,
+         "descriptor_sha256": digest(descriptor), **{k: descriptor[k] for k in (
+@@ -857,21 +867,229 @@ def _guest(descriptor, deadline):
+             require(sha(body) == record["sha256"] and len(body) == record["bytes"], "capture member changed")
+             legacy.write_bounded(sys.stdout.buffer, body, deadline)
+     reader = Reader(sys.stdin.buffer, deadline)
+-    require(reader.line() == {"retire": True}, "candidate retirement acknowledgement required")
+-    reader.exhausted()
++    receive_retirement(reader, descriptor)
+     return response
+ 
+ 
+ 
++def nonblocking_forward(body, target, deadline):
++    """Never wait on an inherited sink; retention belongs to Diagnostics."""
++    if time.monotonic() >= deadline:
++        return False
++    fd = target.fileno()
++    blocked = os.get_blocking(fd)
++    try:
++        os.set_blocking(fd, False)
++        with deadline_scope(deadline):
++            offset = 0
++            while offset < len(body):
++                try:
++                    count = os.write(fd, body[offset:offset + 4096])
++                except (BlockingIOError, BrokenPipeError):
++                    return False
++                require(count > 0, "diagnostic sink write failed")
++                offset += count
++        return True
++    except (OSError, RuntimeError):
++        return False
++    finally:
++        os.set_blocking(fd, blocked)
++
++
++class Diagnostics:
++    """Private fixed-channel spool; persistent on failure or sink backpressure.
++
++    Attachment writers retain their existing RLIMIT_FSIZE=1 MiB. Parent writes
++    never enter Python's inherited buffered streams or wait for pipe capacity.
++    Files live outside the capture tree and can never be capture admission.
++    """
++    CAPS = {"owner.stderr": legacy.MIB, "exception.stdout": 32 * legacy.MIB,
++            "exception.stderr": 32 * legacy.MIB, "stage.stderr": legacy.MIB, "execute.stderr": legacy.MIB,
++            "capture.stdout": 32 * legacy.MIB, "capture.stderr": 32 * legacy.MIB}
++
++    def __init__(self, deadline, token=None):
++        self.deadline, self.directory = deadline, None
++        self.token = token or legacy.uuid.uuid4().hex
++        require(re.fullmatch(r"[0-9a-f]{32}", self.token), "diagnostic owner token")
++        self.location = Path("/tmp") / ("prismpm-candidate-diagnostics-" + self.token)
++        self.reconciled = False
++        self.forwarded = set()
++        self.streams, self.lengths, self.attachments = {}, {}, set()
++        self.closed_attachments = set()
++        self.closed = False
++        self.directory_fd, self.directory_identity = None, None
++        self.file_identities = {}
++
++    @staticmethod
++    def ownership(info):
++        return (info.st_dev, info.st_ino, info.st_mode, info.st_uid, info.st_gid)
++
++    def bind_output(self, output):
++        require(self.directory is None, "diagnostic location already allocated")
++        info = os.lstat(output)
++        require(output.is_absolute() and output.resolve() == output and stat.S_ISDIR(info.st_mode)
++                and info.st_uid == os.getuid() and info.st_mode & 0o077 == 0,
++                "validated capture output required for diagnostic sibling")
++        self.location = output.with_name(output.name + ".candidate-diagnostics")
++        self.ensure()  # Allocate the locator manifest before any actor work.
++
++    def check_owner(self):
++        require(self.directory.resolve() == self.directory
++                and self.ownership(os.lstat(self.directory)) == self.directory_identity
++                and self.ownership(os.fstat(self.directory_fd)) == self.directory_identity,
++                "diagnostic directory ownership changed")
++
++    def open_owned(self, name):
++        require(name in self.CAPS or name == "manifest.json", "closed diagnostic filename")
++        self.check_owner()
++        fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
++                     0o600, dir_fd=self.directory_fd)
++        self.file_identities[name] = self.ownership(os.fstat(fd))
++        return os.fdopen(fd, "wb", buffering=0)
++
++    def manifest(self):
++        return {"schema": "prismpm/conditional-candidate-diagnostics/1", "owner_token": self.token,
++                "complete_application_accepted": False,
++                "channels": [{"path": name, "maximum_bytes": self.CAPS[name]} for name in sorted(self.CAPS)],
++                "aggregate_limits": {"capture": 64 * legacy.MIB, "exception": 32 * legacy.MIB}}
++
++    def locator(self):
++        return {"schema": "prismpm/conditional-candidate-diagnostics-locator/1", "owner_token": self.token,
++                "directory": str(self.location), "manifest": "manifest.json",
++                "manifest_sha256": digest(self.manifest()), "complete_application_accepted": False}
++
++    def ensure(self):
++        with deadline_scope(self.deadline):
++            if self.directory is None:
++                require(self.location.parent.resolve() == self.location.parent, "aliased diagnostic parent")
++                parent_fd = os.open(self.location.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
++                try:
++                    os.mkdir(self.location.name, mode=0o700, dir_fd=parent_fd)
++                    self.directory_fd = os.open(self.location.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
++                                                | os.O_CLOEXEC, dir_fd=parent_fd)
++                finally:
++                    os.close(parent_fd)
++                self.directory = self.location
++                info = os.fstat(self.directory_fd)
++                require(stat.S_IMODE(info.st_mode) == 0o700 and info.st_uid == os.getuid(), "private diagnostic owner")
++                self.directory_identity = self.ownership(info)
++                with self.open_owned("manifest.json") as stream:
++                    body = encoded(self.manifest())
++                    require(len(body) <= legacy.MIB and stream.write(body) == len(body), "bounded diagnostic manifest")
++            self.check_owner()
++            return self.directory
++
++    def stream(self, channel):
++        require(channel in self.CAPS and not self.closed, "closed diagnostic channel")
++        if channel not in self.streams:
++            self.ensure()
++            self.streams[channel] = self.open_owned(channel)
++            self.lengths[channel] = 0
++        return self.streams[channel]
++
++    def attachment(self, role):
++        require(role in ("stage", "execute"), "closed attachment diagnostic role")
++        channel = role + ".stderr"
++        with deadline_scope(self.deadline):
++            require(channel not in self.streams, "duplicate attachment diagnostic stream")
++            stream = self.stream(channel)
++            self.attachments.add(channel)
++            return stream
++
++    def record(self, channel, body):
++        require(channel in self.CAPS and isinstance(body, bytes), "closed diagnostic bytes")
++        if time.monotonic() >= self.deadline:
++            return False
++        with deadline_scope(self.deadline):
++            stream = self.stream(channel)
++            self.check_owner()
++            require(self.ownership(os.fstat(stream.fileno())) == self.file_identities[channel],
++                    "diagnostic file ownership changed")
++            require(channel not in self.attachments and self.lengths[channel] + len(body) <= self.CAPS[channel],
++                    "candidate diagnostic channel bound")
++            if channel.startswith(("capture.", "exception.")):
++                prefix = channel.split(".", 1)[0] + "."
++                combined = sum(size for name, size in self.lengths.items() if name.startswith(prefix)) + len(body)
++                require(combined <= (64 if prefix == "capture." else 32) * legacy.MIB,
++                        "combined original diagnostic stream bound")
++            offset = 0
++            while offset < len(body):
++                count = stream.write(body[offset:offset + legacy.MIB])
++                require(count is not None and count > 0, "diagnostic retention write failed")
++                self.lengths[channel] += count
++                offset += count
++        return True  # Sink forwarding is deferred until actor reconciliation.
++
++    def message(self, text):
++        body = (text + "\n").encode("utf-8", "backslashreplace")
++        remaining = self.CAPS["owner.stderr"] - self.lengths.get("owner.stderr", 0)
++        if len(body) > remaining:
++            body = body[:max(0, remaining - 32)] + b"\n[diagnostic message truncated]\n"[:remaining]
++            body = body[:remaining]
++        return self.record("owner.stderr", body)
++
++    def exception(self, error):
++        # Called only after the parent's actor reconciliation finalizer. Listing
++        # failure streams retain their original aggregate 1 MiB listing cap;
++        # bounded daemon control streams retain their original 32 MiB cap.
++        for name in ("stdout", "stderr"):
++            body = getattr(error, name, b"")
++            if body:
++                self.record("exception." + name, body)
++        self.message("candidate capture failed: " + str(error))
++
++    def forward(self, channels):
++        if not self.reconciled:
++            return
++        for channel in sorted(set(channels) - self.forwarded):
++            if time.monotonic() >= self.deadline:
++                break  # Actual bytes persist; never renew time or wait on sinks.
++            with deadline_scope(self.deadline):
++                self.check_owner()
++                require(self.ownership(os.lstat(self.directory / channel)) == self.file_identities[channel],
++                        "diagnostic file ownership changed")
++                body = legacy.read_regular(self.directory / channel, self.CAPS[channel])
++                self.check_owner()
++            target = sys.stdout.buffer if channel.endswith(".stdout") else sys.stderr.buffer
++            nonblocking_forward(body, target, self.deadline)
++            self.forwarded.add(channel)
++
++    def close_attachments(self):
++        pending = sorted(self.attachments - self.closed_attachments)
++        for channel in pending:
++            self.streams[channel].close()
++            self.closed_attachments.add(channel)
++        self.forward(pending)
++
++    def close(self):
++        if self.closed:
++            return
++        try:
++            try:
++                self.close_attachments()
++            finally:
++                for stream in self.streams.values():
++                    stream.close()
++                self.closed = True
++            self.forward(self.streams)
++        finally:
++            if self.directory_fd is not None:
++                os.close(self.directory_fd)
++                self.directory_fd = None
++
++
++
+ class Lifecycle:
+     """Single-deadline actor custody; fake transcripts test policy, never Docker."""
+-    def __init__(self, deadline, image, environment, token=None):
++    def __init__(self, deadline, image, environment, token=None, diagnostics=None):
+         self.deadline = deadline
+         # Six seconds covers Task1's failure-only listing/Git reap; all other
+         # run_bounded failure reaps are charged inside their per-call cap.
+         self.work_deadline = deadline - legacy.RETIREMENT_RESERVE_SECONDS - 6
+         self.image, self.environment = image, environment
+-        self.token = token or legacy.uuid.uuid4().hex
++        self.token = token or (diagnostics.token if diagnostics is not None else legacy.uuid.uuid4().hex)
++        self.diagnostics = diagnostics or Diagnostics(deadline, self.token)
++        require(self.diagnostics.token == self.token, "diagnostic/lifecycle owner token differs")
+         self.prefix = "prismpm-candidate-" + self.token
+         self.actors, self.volumes, self.attachments = {}, {}, []
+         self.cleanup_calls, self.cleanup_mode = 0, False
+@@ -894,7 +1112,10 @@ class Lifecycle:
+                 env={k: v for k, v in os.environ.items() if not k.startswith("DOCKER_")})
+         finally:
+             signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
+-        require(result.returncode == 0, "candidate Docker control failed: " + result.stderr.decode(errors="replace"))
++        if result.returncode != 0:
++            error = RuntimeError("candidate Docker control failed; original streams retained")
++            error.stdout, error.stderr = result.stdout, result.stderr
++            raise error
+         return result
+ 
+     def inspect(self, cid):
+@@ -1143,9 +1364,10 @@ class Lifecycle:
+                 except Exception as error:
+                     errors.append("volume retirement: " + str(error))
+                     break
+-        else:
+-            print("Candidate failure; owned volumes retained; nested-oracle retirement unqualified: "
+-                  + legacy.json.dumps(self.volumes, sort_keys=True), file=sys.stderr)
++        self.diagnostics.reconciled = True
++        if not completed or errors:
++            self.diagnostics.message("Candidate failure; owned volumes retained; nested-oracle retirement unqualified: "
++                                     + legacy.json.dumps(self.volumes, sort_keys=True))
+         require(not errors, "candidate reconciliation unqualified: " + "; ".join(errors))
+         return {"actors": [{"role": role, "name": item["spec"]["name"], "id": item["id"], "absent": True}
+                            for role, item in self.actors.items()],
+@@ -1197,7 +1419,7 @@ def recheck_inputs(source, executable, descriptor, identities, deadline):
+                 "outer source/fixture/authority/ELF custody changed")
+ 
+ 
+-def receive_log(reader, length, target):
++def receive_log(reader, length, target, diagnostics=None, channel=None):
+     require(type(length) is int and 0 <= length <= 32 * legacy.MIB, "original response stream bound")
+     body = bytearray()
+     while len(body) < length:
+@@ -1208,16 +1430,22 @@ def receive_log(reader, length, target):
+         part = bytes(reader.buffer[:count])
+         del reader.buffer[:count]
+         body.extend(part)
+-        target.write(part)
+-        target.flush()
++        if diagnostics is not None:
++            require(diagnostics.record(channel, part), "candidate diagnostic retention deadline")
++        else:
++            # Component callers can retain into an in-memory byte sink. Actual
++            # parent calls always supply its persistent Diagnostics owner.
++            import io
++            require(isinstance(target, io.BytesIO), "diagnostic owner required for external output sink")
++            target.write(part)
+     return bytes(body)
+ 
+ 
+-def receive_capture(reader, response, output):
++def receive_capture(reader, response, output, diagnostics):
+     payload = response["payload"]
+     require(payload["stdout_bytes"] + payload["stderr_bytes"] <= 64 * legacy.MIB, "combined original response log bound")
+-    stdout = receive_log(reader, payload["stdout_bytes"], sys.stdout.buffer)
+-    stderr = receive_log(reader, payload["stderr_bytes"], sys.stderr.buffer)
++    stdout = receive_log(reader, payload["stdout_bytes"], sys.stdout.buffer, diagnostics, "capture.stdout")
++    stderr = receive_log(reader, payload["stderr_bytes"], sys.stderr.buffer, diagnostics, "capture.stderr")
+     rows = payload["records"]
+     for record in rows:
+         target = output / record["path"]
+@@ -1259,31 +1487,47 @@ def publish_envelope(output, body, deadline):
+ def parent(source: Path, executable: Path) -> int:
+     complete_deadline = time.monotonic() + legacy.DEADLINE_SECONDS
+     require(threading.current_thread() is threading.main_thread(), "candidate parent requires main thread")
++    diagnostics = Diagnostics(complete_deadline)
+     previous = {s: signal.getsignal(s) for s in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)}
+     def interrupted(_signal, _frame):
+         raise RuntimeError("candidate capture interrupted")
+     try:
+         for signum in previous:
+             signal.signal(signum, interrupted)
+-        return _parent(source, executable, complete_deadline)
++        return _parent(source, executable, complete_deadline, diagnostics)
++    except BaseException as error:
++        # _parent's finally has already reconciled actors. Logging must never
++        # precede or postpone that authentication/removal work.
++        diagnostics.reconciled = True
++        try:
++            diagnostics.exception(error)
++        except Exception:
++            pass  # Preserve original failure; prior spooled bytes remain owned.
++        error.candidate_diagnostics = diagnostics.locator()
++        error.candidate_diagnostics_reported = True
++        raise
+     finally:
+-        for signum, handler in previous.items():
+-            signal.signal(signum, handler)
++        try:
++            diagnostics.close()
++        finally:
++            for signum, handler in previous.items():
++                signal.signal(signum, handler)
+ 
+ 
+-def _parent(source, executable, complete_deadline):
++def _parent(source, executable, complete_deadline, diagnostics):
+     source = protected_root(str(source))  # This refusal precedes every Docker call.
+     require(os.environ.get("PRISMPM_TEST_SDK_IMAGE") == SDK_IMAGE, "exact pinned candidate SDK image required")
+-    owner = Lifecycle(complete_deadline, None, [])
+-    with deadline_scope(owner.work_deadline):
+-        plan = measure_inputs(source, executable, remaining_seconds(owner.work_deadline))
+-        identities = input_identities(source, executable, plan, owner.work_deadline)
++    owner = Lifecycle(complete_deadline, None, [], diagnostics=diagnostics)
+     output = Path(os.environ["PRISMPM_OC10_CAPTURE_OUTPUT"]) if "PRISMPM_OC10_CAPTURE_OUTPUT" in os.environ \
+         else Path(legacy.tempfile.mkdtemp(prefix="prismpm-conditional-capture-"))
+     held_output = os.lstat(output)
+     require(output.is_absolute() and output.resolve() == output and stat.S_ISDIR(held_output.st_mode)
+             and held_output.st_uid == os.getuid() and held_output.st_mode & 0o077 == 0
+             and not any(output.iterdir()), "fresh unaliased capture output required")
++    diagnostics.bind_output(output)
++    with deadline_scope(owner.work_deadline):
++        plan = measure_inputs(source, executable, remaining_seconds(owner.work_deadline))
++        identities = input_identities(source, executable, plan, owner.work_deadline)
+     image_rows = legacy.json.loads(owner.call("image", "inspect", SDK_IMAGE).stdout)
+     require(type(image_rows) is list and len(image_rows) == 1, "one actual immutable SDK image required")
+     image = image_rows[0]
+@@ -1300,14 +1544,14 @@ def _parent(source, executable, complete_deadline):
+     owner.image = image["Id"]
+     owner.environment = image_environment + ["PRISMPM_TEST_SDK_IMAGE=" + SDK_IMAGE]
+     completed, retirement, response, descriptor = False, None, None, None
+-    diagnostics = legacy.ExitStack()
+     previous_signals = {s: signal.getsignal(s) for s in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)}
+     def interrupted(_signal, _frame):
+         raise RuntimeError("candidate capture interrupted")
+     for signum in previous_signals:
+         signal.signal(signum, interrupted)
+-    print("Candidate capture infrastructure owner " + legacy.json.dumps({"token": owner.token,
+-          "prefix": owner.prefix, "config_digest": owner.image}, sort_keys=True), file=sys.stderr, flush=True)
++    diagnostics.message("Candidate capture infrastructure owner " + legacy.json.dumps({"token": owner.token,
++        "prefix": owner.prefix, "config_digest": owner.image,
++        "diagnostics": str(diagnostics.ensure())}, sort_keys=True))
+     try:
+         socket = os.stat("/var/run/docker.sock")
+         require(stat.S_ISSOCK(socket.st_mode), "actual Docker transport required")
+@@ -1319,7 +1563,7 @@ def _parent(source, executable, complete_deadline):
+         stage_spec = owner.spec("stage", bootstrap_argv(source, descriptor, "stage-v1", owner.work_deadline))
+         stage_id = owner.create(stage_spec)
+         owner.references(stage_id)
+-        stage_errors = diagnostics.enter_context(legacy.infrastructure_diagnostics())
++        stage_errors = diagnostics.attachment("stage")
+         attached = owner.attach("stage", stage_errors)
+         for name in (UTILITY_NAME, ENTRY_NAME):
+             body = legacy.read_regular(source / "scripts" / name, MAX_MODULE)
+@@ -1341,12 +1585,12 @@ def _parent(source, executable, complete_deadline):
+                                     str(source), socket.st_gid)
+         execution_id = owner.create(execution_spec)
+         owner.references(execution_id)
+-        execution_errors = diagnostics.enter_context(legacy.infrastructure_diagnostics())
++        execution_errors = diagnostics.attachment("execute")
+         attached = owner.attach("execute", execution_errors)
+         reader = Reader(attached.stdout, owner.work_deadline)
+         response = checked_candidate_response(reader.line(), descriptor)
+         with deadline_scope(owner.work_deadline):
+-            stdout, _stderr = receive_capture(reader, response, output)
++            stdout, _stderr = receive_capture(reader, response, output, diagnostics)
+             legacy.checked_result(response["payload"]["result"])
+             legacy.checked_summary(stdout, descriptor["test_count"])
+             receipt = legacy.json.loads(legacy.read_regular(output / "capture-evidence.json", legacy.MAX_JSON))
+@@ -1355,18 +1599,11 @@ def _parent(source, executable, complete_deadline):
+             current = os.lstat(output)
+             require((current.st_dev, current.st_ino) == (held_output.st_dev, held_output.st_ino), "capture output owner changed")
+         owner.references(execution_id)
+-        legacy.write_bounded(attached.stdin, encoded({"retire": True}), owner.work_deadline)
++        legacy.write_bounded(attached.stdin, encoded(retirement_control(descriptor)), owner.work_deadline)
+         attached.stdin.close()
+         reader.exhausted()
+         owner.wait_attachment(attached, successful=True)
+         completed = True
+-    except BaseException as error:
+-        for name in ("stdout", "stderr"):
+-            body = getattr(error, name, b"")
+-            if body:
+-                getattr(sys, name).buffer.write(body)
+-                getattr(sys, name).buffer.flush()
+-        raise
+     finally:
+         for signum in previous_signals:
+             signal.signal(signum, signal.SIG_IGN)
+@@ -1374,10 +1611,14 @@ def _parent(source, executable, complete_deadline):
+             retirement = owner.finish(completed)
+         finally:
+             try:
+-                diagnostics.close()
++                diagnostics.close_attachments()
+             finally:
+                 for signum, handler in previous_signals.items():
+                     signal.signal(signum, handler)
++    # Read/forward every retained channel before publication. Final close only
++    # releases unbuffered handles on success; it cannot introduce a late sink
++    # wait or a late diagnostic-read deadline failure after an envelope exists.
++    diagnostics.forward(diagnostics.streams)
+     with deadline_scope(complete_deadline):
+         tick(complete_deadline)
+         # This is the only publication site, reached after all actual retirements.
+@@ -1402,17 +1643,30 @@ def _parent(source, executable, complete_deadline):
+                 "complete retained tree including envelope exceeds original bound")
+     publish_envelope(output, body, complete_deadline)
+ 
+-    print("PASS complete candidate-source conditional capture and measured actor/volume retirement: " + str(output))
++    nonblocking_forward(("PASS complete candidate-source conditional capture and measured actor/volume retirement: "
++                         + str(output) + "\n").encode(), sys.stdout.buffer, complete_deadline)
+     return 0
+ 
+ 
+ 
+ if __name__ == "__main__":
++    cli_deadline = time.monotonic() + legacy.DEADLINE_SECONDS
+     try:
+         if len(sys.argv) == 4 and sys.argv[1] == "parent":
+             parent(Path(sys.argv[2]), Path(sys.argv[3]))
+         else:
+             raise RuntimeError("closed candidate entry; stage/guest require authenticated bootstrap")
+     except Exception as error:
+-        print("candidate capture failed: " + str(error), file=sys.stderr)
++        if not getattr(error, "candidate_diagnostics_reported", False):
++            diagnostics = Diagnostics(cli_deadline)
++            diagnostics.reconciled = True
++            try:
++                diagnostics.exception(error)
++            except Exception:
++                pass
++            finally:
++                try:
++                    diagnostics.close()
++                except Exception:
++                    pass
+         sys.exit(1)
+diff --git a/scripts/conditional-capture-candidate.test.py b/scripts/conditional-capture-candidate.test.py
+index aa5955a3..8dd14923 100644
+--- a/scripts/conditional-capture-candidate.test.py
++++ b/scripts/conditional-capture-candidate.test.py
+@@ -712,6 +712,204 @@ class ProtocolControls(unittest.TestCase):
+         self.assertEqual((output / candidate.ENVELOPE_NAME).read_bytes(), b"unit fixture")
+         self.assertEqual([p.name for p in output.iterdir()], [candidate.ENVELOPE_NAME])
+ 
++    def test_diagnostic_sibling_manifest_fixed_channels_and_owner_custody(self):
++        output = self.root / "capture-output"
++        output.mkdir(mode=0o700)
++        diagnostics = candidate.Diagnostics(time.monotonic() + 2)
++        self.addCleanup(diagnostics.close)
++        diagnostics.bind_output(output)
++        self.assertEqual(diagnostics.directory, output.with_name(output.name + '.candidate-diagnostics'))
++        self.assertEqual(list(output.iterdir()), [])
++        owner = candidate.Lifecycle(diagnostics.deadline, None, [], diagnostics=diagnostics)
++        self.assertEqual(owner.token, diagnostics.token)
++        locator = diagnostics.locator()
++        self.assertEqual(locator['directory'], str(diagnostics.directory))
++        manifest = (diagnostics.directory / locator['manifest']).read_bytes()
++        self.assertEqual(legacy.sha(manifest), locator['manifest_sha256'])
++        self.assertEqual(json.loads(manifest)['owner_token'], owner.token)
++        self.assertEqual(stat.S_IMODE(diagnostics.directory.stat().st_mode), 0o700)
++        with self.assertRaisesRegex(RuntimeError, "closed diagnostic"):
++            diagnostics.record('../escape', b'never')
++        with self.assertRaisesRegex(RuntimeError, "channel bound"):
++            diagnostics.record('owner.stderr', b'x' * (legacy.MIB + 1))
++        diagnostics.record('owner.stderr', b'retained')
++        replacement = candidate.Diagnostics(time.monotonic() + 2)
++        with self.assertRaises(FileExistsError):
++            replacement.bind_output(output)
++        self.assertEqual((diagnostics.directory / 'owner.stderr').read_bytes(), b'retained')
++        old = diagnostics.directory.with_name('held-diagnostic-owner')
++        diagnostics.directory.rename(old)
++        diagnostics.directory.mkdir(mode=0o700)
++        with self.assertRaisesRegex(RuntimeError, "ownership changed"):
++            diagnostics.record('owner.stderr', b'not admitted')
++        self.assertEqual(list(diagnostics.directory.iterdir()), [])
++        self.assertEqual((old / 'owner.stderr').read_bytes(), b'retained')
++
++    def test_diagnostic_aliased_sibling_refuses_without_adopting_target(self):
++        output = self.root / 'capture-alias'
++        output.mkdir(mode=0o700)
++        target = self.root / 'unowned-target'
++        target.mkdir()
++        output.with_name(output.name + '.candidate-diagnostics').symlink_to(target)
++        diagnostics = candidate.Diagnostics(time.monotonic() + 2)
++        with self.assertRaises(FileExistsError):
++            diagnostics.bind_output(output)
++        self.assertEqual(list(target.iterdir()), [])
++        self.assertIsNone(diagnostics.directory)
++
++    def test_retirement_ack_exact_boolean_descriptor_binding_and_actual_eof(self):
++        control = {"retire": True, "descriptor_sha256": candidate.digest(self.descriptor)}
++        def consume(value, trailing=b""):
++            read_fd, write_fd = os.pipe()
++            os.write(write_fd, legacy.encoded(value) + trailing)
++            os.close(write_fd)
++            with os.fdopen(read_fd, "rb") as stream:
++                candidate.receive_retirement(candidate.Reader(stream, time.monotonic() + 1), self.descriptor)
++        for value in ({"retire": 1}, {"retire": 1.0}, {"retire": True},
++                      {**control, "retire": 1}, {**control, "retire": 1.0},
++                      {**control, "descriptor_sha256": "0" * 64}, {**control, "extra": False},
++                      {"descriptor_sha256": control["descriptor_sha256"]}):
++            with self.subTest(value=value), self.assertRaises(RuntimeError):
++                consume(value)
++        with self.assertRaises(RuntimeError):
++            consume(control, b"trailing")
++        self.assertEqual(candidate.retirement_control(self.descriptor), control)
++        consume(control)
++
++    def test_retirement_ack_waits_for_actual_eof_under_existing_deadline(self):
++        read_fd, write_fd = os.pipe()
++        os.write(write_fd, legacy.encoded(candidate.retirement_control(self.descriptor)))
++        try:
++            with os.fdopen(read_fd, "rb") as stream:
++                started = time.monotonic()
++                with self.assertRaisesRegex(RuntimeError, "retirement deadline"):
++                    candidate.receive_retirement(candidate.Reader(stream, started + 0.04), self.descriptor)
++                self.assertLess(time.monotonic() - started, 0.3)
++        finally:
++            os.close(write_fd)
++
++    def test_real_saturated_diagnostic_closure_exception_and_capture_retention(self):
++        code = """import importlib.util,json,os,pathlib,sys,time
++s=importlib.util.spec_from_file_location('candidate',sys.argv[1]);c=importlib.util.module_from_spec(s);s.loader.exec_module(c)
++mode,marker=sys.argv[2],pathlib.Path(sys.argv[3])
++for fd in (1,2):
++ os.set_blocking(fd,False)
++ try:
++  while True: os.write(fd,b'x'*4096)
++ except BlockingIOError: pass
++ os.set_blocking(fd,True)
++started=time.monotonic();diag=c.Diagnostics(started+0.15)
++if mode in ('attachments','expired-attachments'):
++ for role in ('stage','execute'): diag.attachment(role).write((role+' attachment diagnostic').encode())
++ owner=c.Lifecycle(diag.deadline,None,[],diagnostics=diag)
++ owner.finish(False)
++ if mode=='expired-attachments': diag.deadline=time.monotonic()-1
++ diag.close_attachments();diag.close()
++elif mode=='exception':
++ def failed_parent(source,executable,deadline,diagnostics):
++  global diag
++  diag=diagnostics;diag.deadline=min(deadline,time.monotonic()+0.15)
++  owner=c.Lifecycle(diag.deadline,None,[],diagnostics=diag)
++  owner.finish(False)
++  marker.with_suffix('.reconciled').write_text('RECONCILED_BEFORE_EXCEPTION_FORWARDING')
++  error=RuntimeError('original injected failure')
++  error.stdout=b'original exception stdout';error.stderr=b'original exception stderr'
++  raise error
++ c._parent=failed_parent
++ try: c.parent(pathlib.Path('/unused'),pathlib.Path('/unused'))
++ except RuntimeError as error:
++  assert str(error)=='original injected failure'
++  assert error.candidate_diagnostics==diag.locator()
++ else: raise AssertionError('original failure swallowed')
++elif mode=='capture':
++ r,w=os.pipe();os.write(w,b'original capture stdout');os.close(w)
++ with os.fdopen(r,'rb') as stream:
++  body=c.receive_log(c.Reader(stream,diag.deadline),23,sys.stdout.buffer,diag,'capture.stdout')
++  assert body==b'original capture stdout'
++ owner=c.Lifecycle(diag.deadline,None,[],diagnostics=diag);owner.finish(False)
++ diag.close()
++else: raise AssertionError('closed control mode')
++marker.write_text(json.dumps({'directory':str(diag.directory),'elapsed':time.monotonic()-started,
++                            'stdout_blocking':os.get_blocking(1),'stderr_blocking':os.get_blocking(2)}))
++"""
++        for mode in ("attachments", "expired-attachments", "exception", "capture"):
++            with self.subTest(mode=mode):
++                marker = self.root / ("saturated-" + mode + ".json")
++                child = subprocess.Popen([sys.executable, "-I", "-B", "-c", code,
++                    str(HERE / candidate.ENTRY_NAME), mode, str(marker)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++                try:
++                    child.wait(timeout=0.8)
++                    self.assertEqual(child.returncode, 0)
++                    record = json.loads(marker.read_bytes())
++                    self.assertLess(record["elapsed"], 0.3)
++                    self.assertTrue(record["stdout_blocking"] and record["stderr_blocking"])
++                    directory = Path(record["directory"])
++                    self.assertEqual(directory.parent, Path('/tmp'))
++                    self.assertTrue(directory.name.startswith('prismpm-candidate-diagnostics-'))
++                    self.addCleanup(shutil.rmtree, directory)
++                    self.assertEqual(stat.S_IMODE(directory.stat().st_mode), 0o700)
++                    manifest = json.loads((directory / 'manifest.json').read_bytes())
++                    self.assertEqual(directory.name, 'prismpm-candidate-diagnostics-' + manifest['owner_token'])
++                    self.assertFalse(manifest['complete_application_accepted'])
++                    if "attachments" in mode:
++                        for role in ("stage", "execute"):
++                            self.assertEqual((directory / (role + '.stderr')).read_bytes(),
++                                             (role + ' attachment diagnostic').encode())
++                    elif mode == "exception":
++                        self.assertEqual(marker.with_suffix('.reconciled').read_text(),
++                                         'RECONCILED_BEFORE_EXCEPTION_FORWARDING')
++                        for channel in ("stdout", "stderr"):
++                            self.assertEqual((directory / ('exception.' + channel)).read_bytes(),
++                                             ('original exception ' + channel).encode())
++                    else:
++                        self.assertEqual((directory / 'capture.stdout').read_bytes(), b'original capture stdout')
++                    self.assertFalse((directory / candidate.ENVELOPE_NAME).exists())
++                    self.assertFalse((self.root / candidate.ENVELOPE_NAME).exists())
++                    with self.assertRaises(ChildProcessError):
++                        os.waitpid(child.pid, os.WNOHANG)
++                finally:
++                    if child.poll() is None:
++                        child.kill()
++                        child.wait(timeout=2)
++                    child.stdout.close()
++                    child.stderr.close()
++
++    def test_real_saturated_failure_sink_does_not_block_retirement(self):
++        code = """import importlib.util,os,pathlib,sys,time
++s=importlib.util.spec_from_file_location('candidate',sys.argv[1]);c=importlib.util.module_from_spec(s);s.loader.exec_module(c)
++os.set_blocking(2,False)
++try:
++ while True: os.write(2,b'x'*4096)
++except BlockingIOError: pass
++os.set_blocking(2,True)
++owner=c.Lifecycle(time.monotonic()+0.15,None,[])
++owner.finish(False)
++owner.diagnostics.close()
++pathlib.Path(sys.argv[2]).write_text(str(owner.diagnostics.directory))
++"""
++        marker = self.root / "saturated-finish-result"
++        child = subprocess.Popen([sys.executable, "-I", "-B", "-c", code,
++                                  str(HERE / candidate.ENTRY_NAME), str(marker)],
++                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++        try:
++            child.wait(timeout=0.8)
++            self.assertEqual(child.returncode, 0)
++            directory = Path(marker.read_text())
++            self.assertEqual(directory.parent, Path('/tmp'))
++            self.assertTrue(directory.name.startswith('prismpm-candidate-diagnostics-'))
++            self.addCleanup(shutil.rmtree, directory)
++            self.assertIn(b'owned volumes retained', (directory / 'owner.stderr').read_bytes())
++            self.assertFalse((directory / candidate.ENVELOPE_NAME).exists())
++            self.assertFalse((self.root / candidate.ENVELOPE_NAME).exists())
++            with self.assertRaises(ChildProcessError):
++                os.waitpid(child.pid, os.WNOHANG)
++        finally:
++            if child.poll() is None:
++                child.kill()
++                child.wait(timeout=2)
++            child.stdout.close()
++            child.stderr.close()
++
+     def test_lifecycle_policy_primitives_exist(self):
+         self.assertEqual(candidate.ENVELOPE_NAME, "candidate-transport-evidence.json")
+         with self.assertRaisesRegex(RuntimeError, "protected"):
+@@ -746,6 +944,12 @@ class LifecycleControls(unittest.TestCase):
+         self.addCleanup(guard.stop)
+         self.owner = candidate.Lifecycle(time.monotonic() + 2400, "sha256:" + "1" * 64,
+             ["PATH=/pinned", "PRISMPM_TEST_SDK_IMAGE=" + candidate.SDK_IMAGE], token="2" * 32)
++        diagnostic_owner = self.owner.diagnostics
++        def clean_diagnostics():
++            diagnostic_owner.close()
++            if diagnostic_owner.directory is not None:
++                shutil.rmtree(diagnostic_owner.directory)
++        self.addCleanup(clean_diagnostics)
+         self.owner.volumes = {"input": "owned-input", "work": "owned-work"}
+         self.owner.inspection_retired = True
+         self.owner.stage_retired = True
