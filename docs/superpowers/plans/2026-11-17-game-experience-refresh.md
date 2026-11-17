@@ -51,6 +51,6 @@
 
 ## Release verification (parent)
 
-- [ ] Independent task reviews and final branch review; fix material findings.
-- [ ] `npm run verify`, objective and presentation browser tests; hosted workflow covers remaining multiplayer/discovery/identity gates.
+- [x] Independent task reviews and final branch review; fix material findings.
+- [x] `npm run verify`, objective and presentation browser tests; hosted workflow covers remaining multiplayer/discovery/identity gates.
 - [ ] Add concise release evidence/changelog, push reviewed code to main within existing authorization, inspect Actions and verify live build.json commit. Infrastructure branch is a separate checkpoint and not part of this release.
