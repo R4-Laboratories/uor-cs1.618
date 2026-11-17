@@ -1,0 +1,8 @@
+{
+  "archive": "canonical-theorem-source-feasibility.tar.gz",
+  "bytes": 246400,
+  "sha256": "ca2c4d9c84628ca4c3cd28256eb86111abb59b15171963550740deb844ba37e8",
+  "indexed_files": 159,
+  "evidence_index_sha256": "6d806598214f3bf854998a5d94e19c8e2fb08a7866ab14495560783c7910778d",
+  "scope": "Bounded authored-source feasibility diagnostics; no production or SDK acceptance"
+}
