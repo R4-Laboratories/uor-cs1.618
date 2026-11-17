@@ -1,0 +1,13 @@
+{
+  "schema": "cs1618/source-fix-checkpoint/1",
+  "repository": "UOR-Foundation/prismpm",
+  "base": "e1c32a64fd2a99b438341267e9d005e559ae2506",
+  "revision": "c2139afad62941d2feae01442884056e2d850b75",
+  "tree": "f4c3291569bebf9e8673c7dc1f191241ac4bcc06",
+  "patch": "native-frontend-fix-c2139af.patch",
+  "patch_sha256": "3e1aed3cc9a764a9d7cead421d61e177885288b9b9b4a07bfe991ac09cc9352f",
+  "patch_bytes": 34745,
+  "scope": "SDK Lean launcher versus actual inventory-bound binary; independent source review pending",
+  "production_admission": false,
+  "upstream_published": false
+}

@@ -1,0 +1,641 @@
+diff --git a/SPEC.md b/SPEC.md
+index 628577a9568de2bc8f867e75dfbce9ded2a217a2..71a017c4aa6867c611b4c04e34ad3caddf0bb7f4 100644
+--- a/SPEC.md
++++ b/SPEC.md
+@@ -1977,9 +1977,17 @@ are rechecked through the final package command before workspace retirement.
+ The exact closed frontend environment is `LANG=C`, `LC_ALL=C`,
+ `LEAN_NUM_THREADS=2`, `LEAN_PATH=.lake/build/lib/lean`. The receipt binds normalized
+ cwd, source/import order, every source/artifact digest and length, and distinct
+-launcher/actual-Lean identities. The source-bootstrap proxy resolves only its
+-fixed pinned released toolchain; installed SDK commands retain independent
+-inventory authority. `model/library-frontend-runtime.json` is generated reader
++launcher/actual-Lean identities. PATH Lean and Lake may both identify the elan
++launcher; neither is the actual frontend binary. The source-bootstrap proxy
++resolves only its fixed pinned released toolchain. Installed SDK frontend work
++uses only `/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean`,
++independent of ambient toolchain selectors, and binds its bytes to the freshly
++verified inventory artifact `lean` / `binary` / `4.32.1`. The original PATH Lean
++preflight and launcher receipt retain command identity. Original launcher, actual
++Lean and verified inventory file custody remain held across the closed frontend
++sequence; substituted bytes or same-byte file replacements fail closed. The
++source SDK reader separately checks launcher command and actual binary artifact
++against its independently bound native inventory document. `model/library-frontend-runtime.json` is generated reader
+ metadata, checked byte-for-byte against LexLean's runtime API by the Rust gate.
+ The original modeled-library 300-second compilation budget is shared by the
+ entire sequence, including identity measurement; it is never renewed per module.
+diff --git a/crates/prismpm/src/exporter/owner.rs b/crates/prismpm/src/exporter/owner.rs
+index fa1cd31e227e6dff1bfb7090e225aa3d95fc17bb..1c671471f6d6b619a71e5abeaa61df8892bc9df8 100644
+--- a/crates/prismpm/src/exporter/owner.rs
++++ b/crates/prismpm/src/exporter/owner.rs
+@@ -1267,6 +1267,67 @@ mod tests {
+     use super::*;
+     use std::os::unix::fs::PermissionsExt;
+ 
++    #[test]
++    fn sdk_frontend_owner_binds_launcher_preflight_and_independent_actual_artifact() {
++        let lock: Value = serde_json::from_slice(include_bytes!(
++            "../../../../tests/fixtures/exporter-backport/sdk-lock.json"
++        ))
++        .unwrap();
++        for platform in lock["platforms"].as_array().unwrap() {
++            let inventory: Value =
++                serde_json::from_str(platform["inventory_document"].as_str().unwrap()).unwrap();
++            let expected = crate::library_frontend::lean_artifact_digest(&inventory).unwrap();
++            let command = |name| {
++                inventory["commands"]
++                    .as_array()
++                    .unwrap()
++                    .iter()
++                    .find(|r| r["command"] == name)
++                    .unwrap()["sha256"]
++                    .clone()
++            };
++            let lean = json!({"executable_sha256":command("lean"),"stdout":"independent preflight version"});
++            let lake = json!({"executable_sha256":command("lake")});
++            assert_eq!(lean["executable_sha256"], lake["executable_sha256"]);
++            let frontend = json!({"launcher_sha256":command("lean"),"lean_sha256":expected});
++            let version = json!({"stdout":lean["stdout"]});
++            validate_frontend_tool_identity(&frontend, &version, &lean, &lake, Some(&expected))
++                .unwrap();
++            for (field, changed) in [
++                ("launcher_sha256", json!(expected)),
++                ("lean_sha256", command("lean")),
++                ("lean_sha256", json!("f".repeat(64))),
++            ] {
++                let mut foreign = frontend.clone();
++                foreign[field] = changed;
++                assert!(validate_frontend_tool_identity(
++                    &foreign,
++                    &version,
++                    &lean,
++                    &lake,
++                    Some(&expected)
++                )
++                .is_err());
++            }
++            assert!(validate_frontend_tool_identity(
++                &frontend,
++                &json!({"stdout":"changed"}),
++                &lean,
++                &lake,
++                Some(&expected)
++            )
++            .is_err());
++            assert!(validate_frontend_tool_identity(
++                &frontend,
++                &version,
++                &lean,
++                &lake,
++                Some(&"f".repeat(64))
++            )
++            .is_err());
++        }
++    }
++
+     // Unaccepted custody fixture only. No compiler execution or production
+     // acceptance is claimed; its empty transcript must never pass finish().
+     struct Unaccepted(Vec<(String, Vec<u8>)>);
+@@ -1862,6 +1923,26 @@ mod tests {
+     }
+ }
+ 
++fn validate_frontend_tool_identity(
++    frontend: &Value,
++    version: &Value,
++    lean: &Value,
++    lake: &Value,
++    sdk_lean_sha256: Option<&str>,
++) -> Result<(), PrismError> {
++    if frontend["launcher_sha256"] != lean["executable_sha256"]
++        || sdk_lean_sha256.is_some_and(|expected| frontend["lean_sha256"] != expected)
++        || frontend["lean_sha256"] == lean["executable_sha256"]
++        || frontend["lean_sha256"] == lake["executable_sha256"]
++        || version["stdout"] != lean["stdout"]
++    {
++        return Err(failure(
++            "frontend launcher, actual Lean artifact or native preflight differs",
++        ));
++    }
++    Ok(())
++}
++
+ /// Bind both original generations to independently retained source, products
+ /// and native preflight; replay must also be the original top-level transcript.
+ #[allow(clippy::too_many_arguments)]
+@@ -1895,6 +1976,11 @@ pub(crate) fn validate_binding(
+         .iter()
+         .find(|row| row["tool"] == "lake-version")
+         .ok_or_else(|| failure("independent native Lake preflight is absent"))?;
++    let sdk_lean = if frontend_library {
++        crate::library_frontend::sdk_lean_authority()?
++    } else {
++        None
++    };
+     for phase in phases {
+         let offset = if frontend_library {
+             phase["frontend"]["modules"]
+@@ -1912,16 +1998,13 @@ pub(crate) fn validate_binding(
+                 .iter()
+                 .find(|row| row["tool"] == "lean-version")
+                 .ok_or_else(|| failure("independent Lean preflight absent"))?;
+-            if phase["frontend"]["launcher_sha256"] != lean["executable_sha256"]
+-                || (crate::sdk::inventory_path().is_some()
+-                    && phase["frontend"]["lean_sha256"] != lean["executable_sha256"])
+-                || phase["frontend"]["lean_sha256"] == lake["executable_sha256"]
+-                || phase["processes"][0]["stdout"] != lean["stdout"]
+-            {
+-                return Err(failure(
+-                    "frontend actual Lean differs from native preflight",
+-                ));
+-            }
++            validate_frontend_tool_identity(
++                &phase["frontend"],
++                &phase["processes"][0],
++                lean,
++                lake,
++                sdk_lean.as_ref().map(|a| a.lean_sha256.as_str()),
++            )?;
+             let manifest: Value =
+                 serde_json::from_slice(lex_manifest).map_err(|e| failure(&e.to_string()))?;
+             let mut expected = manifest["outputs"].as_array().ok_or_else(|| failure("generated source rows absent"))?.iter()
+@@ -1949,6 +2032,9 @@ pub(crate) fn validate_binding(
+             ));
+         }
+     }
++    if let Some(authority) = &sdk_lean {
++        authority.verify()?;
++    }
+     Ok(())
+ }
+ 
+diff --git a/crates/prismpm/src/library_frontend.rs b/crates/prismpm/src/library_frontend.rs
+index a0bf7bb1533049f47c96614ff7668d615c1422a0..3a2296eb35a9fb95681f411893bafe075a81448e 100644
+--- a/crates/prismpm/src/library_frontend.rs
++++ b/crates/prismpm/src/library_frontend.rs
+@@ -242,9 +242,142 @@ pub(crate) fn plan(
+     Ok(ordered)
+ }
+ 
++const SDK_LEAN: &str = "/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean";
++
++/// Artifact authority is distinct from PATH command authority: SDK Lean and
++/// Lake commands may both be elan, while this artifact is the actual Lean ELF.
++pub(crate) fn lean_artifact_digest(inventory: &Value) -> Result<String, PrismError> {
++    let rows = inventory["artifacts"]
++        .as_array()
++        .ok_or_else(|| fail("SDK artifacts absent"))?;
++    let rows = rows
++        .iter()
++        .filter(|row| row["id"] == "lean")
++        .collect::<Vec<_>>();
++    if rows.len() != 1
++        || rows[0]["kind"] != "binary"
++        || rows[0]["version"] != "4.32.1"
++        || rows[0].as_object().is_none_or(|row| {
++            row.keys()
++                .map(String::as_str)
++                .ne(["digest", "id", "kind", "version"])
++        })
++    {
++        return Err(fail("exact pinned SDK Lean binary artifact required"));
++    }
++    let hash = rows[0]["digest"]
++        .as_str()
++        .and_then(|s| s.strip_prefix("sha256:"))
++        .filter(|s| {
++            s.len() == 64
++                && s.bytes()
++                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        })
++        .ok_or_else(|| fail("SDK Lean artifact digest malformed"))?;
++    Ok(hash.into())
++}
++
++pub(crate) struct SdkLeanAuthority {
++    path: PathBuf,
++    file: crate::sdk::ExecutableFile,
++    pub(crate) lean_sha256: String,
++}
++impl SdkLeanAuthority {
++    pub(crate) fn verify(&self) -> Result<(), PrismError> {
++        if crate::sdk::inventory_path().as_ref() != Some(&self.path) {
++            return Err(fail("original SDK inventory selection changed"));
++        }
++        self.file
++            .verify_reference(&self.path)
++            .map_err(|e| fail(e.to_string()))
++    }
++}
++
++/// Fresh independent inventory verification, followed by a bounded read bound
++/// to that exact verification digest. The opened metadata stays in custody.
++pub(crate) fn sdk_lean_authority() -> Result<Option<SdkLeanAuthority>, PrismError> {
++    let Some(path) = crate::sdk::inventory_path() else {
++        return Ok(None);
++    };
++    let verified =
++        crate::sdk::verify_environment()?.ok_or_else(|| fail("SDK inventory disappeared"))?;
++    let mut file = crate::sdk::ExecutableFile::open(&path).map_err(|e| fail(e.to_string()))?;
++    if file.len() > 8 * 1024 * 1024 {
++        return Err(fail("SDK inventory exceeds original metadata bound"));
++    }
++    let bytes = file
++        .read_exact_bytes(file.len() as usize)
++        .map_err(|e| fail(e.to_string()))?;
++    if verified["inventory_sha256"] != sha256(&bytes) {
++        return Err(fail("SDK inventory changed after independent verification"));
++    }
++    let inventory: Value = serde_json::from_slice(&bytes).map_err(|e| fail(e.to_string()))?;
++    let authority = SdkLeanAuthority {
++        path,
++        file,
++        lean_sha256: lean_artifact_digest(&inventory)?,
++    };
++    authority.verify()?;
++    Ok(Some(authority))
++}
++
++struct LeanTools {
++    launcher: PathBuf,
++    selected_lean: PathBuf,
++    lean: PathBuf,
++    launcher_file: crate::sdk::ExecutableFile,
++    lean_file: crate::sdk::ExecutableFile,
++    launcher_sha256: String,
++    lean_sha256: String,
++}
++impl LeanTools {
++    fn open(
++        launcher: PathBuf,
++        selected_lean: PathBuf,
++        expected: Option<&str>,
++    ) -> Result<Self, PrismError> {
++        let canonical = |p: &Path| p.canonicalize().map_err(|e| fail(e.to_string()));
++        let lean = canonical(&selected_lean)?;
++        let mut launcher_file = crate::sdk::ExecutableFile::open(&canonical(&launcher)?)
++            .map_err(|e| fail(e.to_string()))?;
++        let mut lean_file =
++            crate::sdk::ExecutableFile::open(&lean).map_err(|e| fail(e.to_string()))?;
++        let launcher_sha256 = launcher_file.sha256().map_err(|e| fail(e.to_string()))?;
++        let lean_sha256 = lean_file.sha256().map_err(|e| fail(e.to_string()))?;
++        if launcher_sha256 == lean_sha256 || expected.is_some_and(|hash| hash != lean_sha256) {
++            return Err(fail(
++                "actual Lean differs from independent binary authority or is the launcher",
++            ));
++        }
++        let tools = Self {
++            launcher,
++            selected_lean,
++            lean,
++            launcher_file,
++            lean_file,
++            launcher_sha256,
++            lean_sha256,
++        };
++        tools.verify()?;
++        Ok(tools)
++    }
++    fn verify(&self) -> Result<(), PrismError> {
++        self.launcher_file
++            .verify_reference(&self.launcher)
++            .map_err(|e| fail(e.to_string()))?;
++        self.lean_file
++            .verify_reference(&self.selected_lean)
++            .map_err(|e| fail(e.to_string()))?;
++        self.lean_file
++            .verify_reference(&self.lean)
++            .map_err(|e| fail(e.to_string()))
++    }
++}
++
+ pub(crate) struct Frontend {
+     workspace: PathBuf,
+-    lean: PathBuf,
++    tools: LeanTools,
++    sdk_authority: Option<SdkLeanAuthority>,
+     receipt: Receipt,
+     next: usize,
+     deadline: Instant,
+@@ -270,23 +403,29 @@ impl Frontend {
+             }
+         }
+         let launcher = executable("lean")?;
+-        let launcher_sha256 = sha256(&std::fs::read(&launcher).map_err(|e| fail(e.to_string()))?);
++        let sdk_authority = sdk_lean_authority()?;
+         // Source bootstrap uses the already pinned elan proxy. Select only its
+         // fixed released toolchain; never the ambient default or a local override.
+-        let lean = if crate::sdk::inventory_path().is_none() {
++        let lean = if sdk_authority.is_none() {
+             PathBuf::from(
+                 std::env::var_os("ELAN_HOME")
+                     .ok_or_else(|| fail("explicit pinned ELAN_HOME required"))?,
+             )
+             .join("toolchains/leanprover--lean4---v4.32.1/bin/lean")
+         } else {
+-            launcher
++            PathBuf::from(SDK_LEAN)
+         };
+-        let lean = lean.canonicalize().map_err(|e| fail(e.to_string()))?;
+-        let lean_sha256 = sha256(&std::fs::read(&lean).map_err(|e| fail(e.to_string()))?);
++        let tools = LeanTools::open(
++            launcher,
++            lean,
++            sdk_authority.as_ref().map(|a| a.lean_sha256.as_str()),
++        )?;
++        let launcher_sha256 = tools.launcher_sha256.clone();
++        let lean_sha256 = tools.lean_sha256.clone();
+         Ok(Self {
+             workspace: workspace.into(),
+-            lean,
++            tools,
++            sdk_authority,
+             receipt: Receipt {
+                 schema: "prismpm/library-frontend/1".into(),
+                 profile: PROFILE.into(),
+@@ -323,10 +462,9 @@ impl Frontend {
+                 }
+             }
+         }
+-        if sha256(&std::fs::read(&self.lean).map_err(|e| fail(e.to_string()))?)
+-            != self.receipt.lean_sha256
+-        {
+-            return Err(fail("actual Lean binary changed"));
++        self.tools.verify()?;
++        if let Some(authority) = &self.sdk_authority {
++            authority.verify()?;
+         }
+         Ok(())
+     }
+@@ -362,7 +500,7 @@ impl Frontend {
+             .ok_or_else(|| PrismError::new("PP5007", "native frontend total deadline exhausted"))?;
+         let result = run_process_closed_limited(
+             tool,
+-            &self.lean,
++            &self.tools.lean,
+             &args,
+             &self.workspace,
+             &self.receipt.environment,
+@@ -605,6 +743,109 @@ mod tests {
+         })).collect::<Vec<_>>())
+     }
+     #[test]
++    fn sdk_layout_keeps_launcher_and_actual_lean_distinct_under_real_frontend_execution() {
++        use std::os::unix::fs::symlink;
++        // A private layout fixture using the real pinned bootstrap tools. No
++        // SDK marker, inventory environment variable, PATH or installed file is
++        // changed; this exercises resolution/custody, not installed admission.
++        let layout = tempfile::tempdir().unwrap();
++        let bin = layout.path().join("usr/local/elan/bin");
++        std::fs::create_dir_all(&bin).unwrap();
++        std::fs::copy(executable("lean").unwrap(), bin.join("elan")).unwrap();
++        symlink("elan", bin.join("lean")).unwrap();
++        symlink("elan", bin.join("lake")).unwrap();
++        let actual = layout.path().join(SDK_LEAN.strip_prefix('/').unwrap());
++        std::fs::create_dir_all(actual.parent().unwrap()).unwrap();
++        let original = PathBuf::from(std::env::var_os("ELAN_HOME").unwrap())
++            .join("toolchains/leanprover--lean4---v4.32.1");
++        std::fs::copy(original.join("bin/lean"), &actual).unwrap();
++        symlink(
++            original.join("lib"),
++            actual.parent().unwrap().parent().unwrap().join("lib"),
++        )
++        .unwrap();
++        let lock: Value = serde_json::from_slice(include_bytes!(
++            "../../../tests/fixtures/exporter-backport/sdk-lock.json"
++        ))
++        .unwrap();
++        let platform = match std::env::consts::ARCH {
++            "x86_64" => "linux/amd64",
++            "aarch64" => "linux/arm64",
++            _ => panic!("unsupported native frontend host"),
++        };
++        let row = lock["platforms"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .find(|r| r["platform"] == platform)
++            .unwrap();
++        let inventory: Value =
++            serde_json::from_str(row["inventory_document"].as_str().unwrap()).unwrap();
++        let expected = lean_artifact_digest(&inventory).unwrap();
++        let tools = LeanTools::open(bin.join("lean"), actual.clone(), Some(&expected)).unwrap();
++        assert_ne!(tools.launcher_sha256, tools.lean_sha256);
++        assert_eq!(
++            sha256(&std::fs::read(bin.join("lake")).unwrap()),
++            tools.launcher_sha256
++        );
++        let (work, manifest) = stage(&sources());
++        let mut frontend = Frontend::new(work.path(), &manifest).unwrap();
++        frontend.receipt.launcher_sha256 = tools.launcher_sha256.clone();
++        frontend.receipt.lean_sha256 = tools.lean_sha256.clone();
++        frontend.tools = tools;
++        for _ in 0..frontend.count() {
++            let record = frontend.run(&[]).unwrap();
++            assert_eq!(record.executable_sha256, expected);
++        }
++        frontend.complete().unwrap();
++        assert!(LeanTools::open(bin.join("lean"), actual.clone(), Some(&"f".repeat(64))).is_err());
++        assert!(LeanTools::open(bin.join("lean"), bin.join("elan"), Some(&expected)).is_err());
++        for path in [bin.join("elan"), actual] {
++            let tools = LeanTools::open(
++                bin.join("lean"),
++                frontend.tools.lean.clone(),
++                Some(&expected),
++            )
++            .unwrap();
++            let saved = path.with_extension("original");
++            std::fs::rename(&path, &saved).unwrap();
++            std::fs::copy(&saved, &path).unwrap();
++            assert!(
++                tools.verify().is_err(),
++                "same-byte substitution must fail custody"
++            );
++            std::fs::remove_file(&path).unwrap();
++            std::fs::rename(saved, path).unwrap();
++        }
++        let mut missing = inventory.clone();
++        missing["artifacts"]
++            .as_array_mut()
++            .unwrap()
++            .retain(|r| r["id"] != "lean");
++        assert!(lean_artifact_digest(&missing).is_err());
++        for field in ["id", "kind", "version", "digest", "extra"] {
++            let mut changed = inventory.clone();
++            let row = changed["artifacts"]
++                .as_array_mut()
++                .unwrap()
++                .iter_mut()
++                .find(|r| r["id"] == "lean")
++                .unwrap();
++            row[field] = json!("foreign");
++            assert!(lean_artifact_digest(&changed).is_err(), "changed {field}");
++        }
++        let mut duplicate = inventory.clone();
++        let row = duplicate["artifacts"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .find(|r| r["id"] == "lean")
++            .unwrap()
++            .clone();
++        duplicate["artifacts"].as_array_mut().unwrap().push(row);
++        assert!(lean_artifact_digest(&duplicate).is_err());
++    }
++    #[test]
+     fn runtime_reader_registry_matches_authoritative_lexlean() {
+         let path =
+             Path::new(env!("CARGO_MANIFEST_DIR")).join("model/library-frontend-runtime.json");
+@@ -717,10 +958,10 @@ mod tests {
+             receipt.source_plan(),
+             "source-plan projection cannot hide source drift"
+         );
+-        let original_lean = frontend.lean.clone();
+-        frontend.lean = PathBuf::from("/bin/false");
++        let original_lean = frontend.tools.lean.clone();
++        frontend.tools.lean = PathBuf::from("/bin/false");
+         assert!(frontend.complete().is_err());
+-        frontend.lean = original_lean;
++        frontend.tools.lean = original_lean;
+         let (stale, stale_manifest) = stage(&sources());
+         let mut stale_frontend = Frontend::new(stale.path(), &stale_manifest).unwrap();
+         stale_frontend.run(&[]).unwrap();
+@@ -982,11 +1223,12 @@ mod tests {
+                 .is_err());
+         }
+ 
+-        let checker = frontend.lean.parent().unwrap().join("leanchecker");
++        let checker = frontend.tools.lean.parent().unwrap().join("leanchecker");
+         let mut checker_env = environment();
+         checker_env.insert(
+             "PATH".into(),
+             frontend
++                .tools
+                 .lean
+                 .parent()
+                 .unwrap()
+diff --git a/scripts/library-sdk-check.mjs b/scripts/library-sdk-check.mjs
+index 9d6c5e5ee5d1c8122de4194fa47488627a50aeef..2ee2f802c3140fac3bd44badf7b2961c3b6561e3 100644
+--- a/scripts/library-sdk-check.mjs
++++ b/scripts/library-sdk-check.mjs
+@@ -443,8 +443,8 @@ export function verifyExporterProcess(process,role,mode,binding,sourceAuthority)
+ 
+ // Current qualification requires the two original executions. Historical /1
+ // parsing remains separate and never qualifies a newly installed SDK.
+-export function validateVerificationOwner(manifest,role,mode,binding,sourceAuthority){
+- if(role==='library')return validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority);
++export function validateVerificationOwner(manifest,role,mode,binding,sourceAuthority,nativeInventory){
++ if(role==='library')return validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority,nativeInventory);
+  return validateLakeVerificationOwner(manifest,role,mode,binding,sourceAuthority);
+ }
+ function validateLakeVerificationOwner(manifest,role,mode,binding,sourceAuthority){
+@@ -490,7 +490,14 @@ function validateLakeVerificationOwner(manifest,role,mode,binding,sourceAuthorit
+  return owner;
+ }
+ 
+-function validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority){
++function validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority,nativeInventory){
++ assert(typeof nativeInventory==='string','independently captured native inventory required');
++ const inventoryBytes=Buffer.from(nativeInventory);assert.equal(hash(inventoryBytes),binding.inventory_sha256,'independent inventory binding');
++ const inventory=validateInventory(inventoryBytes),artifacts=inventory.artifacts.filter(row=>row.id==='lean');
++ assert.equal(artifacts.length,1,'exact Lean artifact authority required');
++ const actualLean=artifacts[0];same(actualLean,{id:'lean',kind:'binary',version:'4.32.1',digest:actualLean.digest});
++ const actualLeanSha=actualLean.digest.slice(7);hex(actualLeanSha);
++ const launchers=inventory.commands.filter(row=>row.command==='lean');assert.equal(launchers.length,1,'exact Lean launcher authority required');
+  const owner=manifest.exporter_owner;keys(owner,['schema','phases']);assert.equal(owner.schema,'prismpm/library-exporter-owner/2');
+  assert.equal(manifest.schema,'prismpm/library-verification-manifest/3');assert(Array.isArray(owner.phases)&&owner.phases.length===2);
+  const lake=manifest.processes.find(p=>p.tool==='lake-version'),lean=manifest.processes.find(p=>p.tool==='lean-version');assert(lake&&lean);
+@@ -499,7 +506,7 @@ function validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority){
+   assert.equal(phase.phase,['controller-build','replay'][index]);assert.equal(phase.role,'library');assert.equal(phase.model_sha256,manifest.model_sha256);hex(phase.lexlean_manifest_sha256);
+   const n=validateFrontend(phase.frontend,phase.processes);assert.equal(phase.processes.length,n+3);
+   same(phase.artifacts.find(a=>a.path==='library/frontend.json'),{path:'library/frontend.json',byte_length:Buffer.byteLength(canonical(frontendSourcePlan(phase.frontend))),sha256:hash(canonical(frontendSourcePlan(phase.frontend)))});
+-  assert.equal(phase.frontend.launcher_sha256,lean.executable_sha256);assert.equal(phase.frontend.lean_sha256,lean.executable_sha256);assert.notEqual(phase.frontend.lean_sha256,lake.executable_sha256);same(phase.processes[0].stdout,lean.stdout);
++  assert.equal(phase.frontend.launcher_sha256,lean.executable_sha256);assert.equal(lean.executable_sha256,launchers[0].sha256);assert.equal(phase.frontend.lean_sha256,actualLeanSha);assert.notEqual(actualLeanSha,lean.executable_sha256);assert.notEqual(actualLeanSha,lake.executable_sha256);same(phase.processes[0].stdout,lean.stdout);
+   const tail=phase.processes.slice(n);same(tail.map(p=>p.tool),['lean4-prod-build','prod-export','native-library-package']);
+   same(tail[0].argv,['build','prod-export']);same(tail[2].argv,['package','--locked','--offline','--allow-dirty']);
+   verifyExporterProcess(tail[1],'prod-export',mode,binding,sourceAuthority);
+@@ -569,7 +576,7 @@ export function verifyResult(value,binding,sourceAuthority){
+    assert.equal(typeof process.stdout,'string');assert.equal(typeof process.stderr,'string');
+   }
+   verifyExporterProcess(manifest.processes.find(p=>p.tool==='prod-export'),'prod-export',row.acquisition,binding,sourceAuthority);
+-  validateVerificationOwner(manifest,'library',row.acquisition,binding,sourceAuthority);
++  validateVerificationOwner(manifest,'library',row.acquisition,binding,sourceAuthority,concurrency.custody.before.inventory_document);
+  }
+ }
+ export function testOutput(output){assert.equal(output.error,undefined);assert.equal(output.signal,null);assert.equal(output.status,0);assert.equal(verifyTap(output.stdout,29),29,'complete owning gate test count');}
+diff --git a/scripts/library-sdk-check.test.mjs b/scripts/library-sdk-check.test.mjs
+index 8f13010d967076446389386cc6e71cb4ded7cd37..ba7e23146325217d599e1cec5b430828362ce26c 100644
+--- a/scripts/library-sdk-check.test.mjs
++++ b/scripts/library-sdk-check.test.mjs
+@@ -6,7 +6,7 @@ import {cpSync,mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,renameSyn
+ import {tmpdir} from 'node:os';
+ import {dirname,join,resolve} from 'node:path';
+ import {test} from 'node:test';
+-import {capture,verifySource,sourceRoots,sourceAliases,cli,readHistoricalLibraryEvidence,checkAccepted as checkAcceptedWithAuthority,mutateModule,tree,verifyImage,verifyResult,testOutput,validateCapturedLock} from './library-sdk-check.mjs';
++import {capture,verifySource,sourceRoots,sourceAliases,cli,readHistoricalLibraryEvidence,checkAccepted as checkAcceptedWithAuthority,mutateModule,tree,verifyImage,verifyResult,testOutput,validateCapturedLock,validateVerificationOwner} from './library-sdk-check.mjs';
+ import {lockFixture,resultFixture,sourceAuthorityFixture} from './library-sdk-fixture.mjs';
+ const checkAccepted=(project,receipt)=>readHistoricalLibraryEvidence(project,receipt,'3'.repeat(64));
+ 
+@@ -111,6 +111,27 @@ test('library evidence cannot be accepted without genuinely published closed art
+ test('outer acceptance refuses absent or partial run results and incomplete or skipped test suites',()=>{
+  const fixture=lockFixture(),binding=fixture.binding('amd64'),value=resultFixture(binding);
+  const verify=(value,authority=binding)=>verifyResult(value,authority,sourceAuthorityFixture);verify(value);
++ const manifest=JSON.parse(value.runs[0].manifest),inventory=fixture.lock.platforms[0].inventory_document;
++ assert.equal(manifest.processes[0].executable_sha256,manifest.processes[1].executable_sha256);
++ assert.notEqual(manifest.processes[0].executable_sha256,manifest.exporter_owner.phases[0].frontend.lean_sha256);
++ const owner=(m=manifest,bytes=inventory,b=binding)=>validateVerificationOwner(m,'library','cold',b,sourceAuthorityFixture,bytes);
++ owner();assert.throws(()=>validateVerificationOwner(manifest,'library','cold',binding,sourceAuthorityFixture),/inventory required/);
++ for(const field of ['launcher_sha256','lean_sha256']){
++  const changed=structuredClone(manifest);
++  for(const phase of changed.exporter_owner.phases){
++   phase.frontend[field]='f'.repeat(64);
++   if(field==='lean_sha256')for(const row of phase.processes)if(row.tool.startsWith('library-lean-'))row.executable_sha256='f'.repeat(64);
++  }
++  for(const row of changed.processes)if(field==='launcher_sha256'?row.tool==='lean-version':row.tool.startsWith('library-lean-'))row.executable_sha256='f'.repeat(64);
++  assert.throws(()=>owner(changed),'coherent receipts cannot replace independent launcher/artifact authority');
++ }
++ for(const mutate of [i=>i.artifacts=i.artifacts.filter(r=>r.id!=='lean'),i=>i.artifacts.push(i.artifacts.find(r=>r.id==='lean')),
++  i=>i.artifacts.find(r=>r.id==='lean').digest='sha256:'+'f'.repeat(64),i=>i.artifacts.find(r=>r.id==='lean').version='4.32.0',
++  i=>i.artifacts.find(r=>r.id==='lean').kind='crate',i=>i.commands.find(r=>r.command==='lean').sha256='f'.repeat(64)]){
++  const changed=JSON.parse(inventory);mutate(changed);const bytes=fixture.encode(changed);
++  assert.throws(()=>owner(manifest,bytes,{...binding,inventory_sha256:fixture.hash(bytes)}));
++ }
++
+  for(const change of [v=>v.checks.pop(),v=>v.checks.reverse(),v=>v.extra=true,v=>v.scope='production-release',v=>v.build_id='mutable',
+   v=>v.runs.pop(),v=>v.runs.reverse(),v=>v.runs[2].acquisition='cold',v=>v.runs[3].root=v.runs[2].root,
+   v=>v.runs[2].manifest+=' ',v=>v.binding.inventory_sha256='f'.repeat(64),
+diff --git a/scripts/library-sdk-fixture.mjs b/scripts/library-sdk-fixture.mjs
+index 4086b85ca89cd32ea24bcd2a61cd94b91b1c556f..5d9dd4eab7a5ad39908d71c314eba58a7007d04b 100644
+--- a/scripts/library-sdk-fixture.mjs
++++ b/scripts/library-sdk-fixture.mjs
+@@ -29,12 +29,12 @@ export function lockFixture(authority=sourceAuthorityFixture,standards=Buffer.fr
+   const manifest=seedManifestFixture(architecture,authority);
+   const artifacts=['adapter','base-image','binary','crate','dependency-lock','oracle','schema','test-corpus','trust-root','workflow']
+    .map(kind=>({id:'test-'+kind,kind,version:'fixture',digest:'sha256:'+hash(architecture+kind)}));
+-  artifacts.push({id:'lean4-prod-exporter',kind:'binary',version:'a'.repeat(40),digest:'sha256:'+manifest.files.at(-1).sha256},
++  artifacts.push({id:'lean',kind:'binary',version:'4.32.1',digest:'sha256:'+'b'.repeat(64)}, {id:'lean4-prod-exporter',kind:'binary',version:'a'.repeat(40),digest:'sha256:'+manifest.files.at(-1).sha256},
+    {id:'lean4-prod-exporter-seed',kind:'dependency-lock',version:'1',digest:'sha256:'+hash(encode(manifest)+'\n')});
+   artifacts.sort((a,b)=>a.id.localeCompare(b.id));
+   const inventory_document=encode({schema:'prismpm/sdk-inventory/1',artifacts,
+-   commands:['cargo','devcontainer','docker','just','node','prismpm','python3','tar'].map(command=>({command,
+-    executable:command==='node'?'/usr/bin/node':command==='python3'?'/usr/bin/python3.12':command==='tar'?'/usr/bin/tar':'/usr/local/bin/'+command,sha256:hash(architecture+command)}))});
++   commands:['cargo','devcontainer','docker','just','lake','lean','node','prismpm','python3','tar'].map(command=>({command,
++    executable:['lean','lake'].includes(command)?'/usr/local/elan/bin/elan':command==='node'?'/usr/bin/node':command==='python3'?'/usr/bin/python3.12':command==='tar'?'/usr/bin/tar':'/usr/local/bin/'+command,sha256:['lean','lake'].includes(command)?'e'.repeat(64):hash(architecture+command)}))});
+   platforms.push({platform:'linux/'+architecture,inventory_digest:'sha256:'+hash(inventory_document),inventory_document,inventory:artifacts});
+  }
+  const cleanup=[];
+@@ -81,7 +81,7 @@ export function resultFixture(binding,sourceAuthority=sourceAuthorityFixture){
+   const processes=tools.map(tool=>({tool,argv:[],executable_sha256:'e'.repeat(64),exit_code:0,stdout:'parser fixture',stderr:''}));
+   processes[5].argv=['--version'];processes[6].argv=frontendFixture().argv;processes[7].argv=['build','prod-export'];
+   processes[0].stdout=processes[5].stdout='Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)\n';
+-  processes[0].executable_sha256=processes[5].executable_sha256=processes[6].executable_sha256='b'.repeat(64);
++  processes[5].executable_sha256=processes[6].executable_sha256='b'.repeat(64);
+   processes[9].argv=['package','--locked','--offline','--allow-dirty'];
+   processes[8].argv=['exe','prod-export'];
+   processes[8].exporter={schema:'prismpm/exporter-execution/1',source_archive_sha256:sourceAuthority.archive_sha256,
+@@ -159,5 +159,5 @@ export function ownerFixture(manifest,role,processes){
+ export function frontendFixture(){
+  const module='LibraryProbe.Probe',path=module.replaceAll('.','/'),output='.lake/build/lib/lean';
+  return {argv:['-j2','-R','.','-o',output+'/'+path+'.olean','-i',output+'/'+path+'.ilean',path+'.lean'],
+- receipt:{schema:'prismpm/library-frontend/1',profile:'lean-frontend-lcnf/1',working_directory:'$LIBRARY_WORK',launcher_sha256:'b'.repeat(64),lean_sha256:'b'.repeat(64),environment:{LC_ALL:'C',LANG:'C',LEAN_PATH:output,LEAN_NUM_THREADS:'2'},modules:[{name:module,runtime:false,imports:['Init'],source:{path:path+'.lean',byte_length:12,sha256:hash('synthetic-source')},artifacts:['olean','olean.private','olean.server','ilean','ir'].map(s=>({path:output+'/'+path+'.'+s,byte_length:12,sha256:hash(s)}))}]}};
++ receipt:{schema:'prismpm/library-frontend/1',profile:'lean-frontend-lcnf/1',working_directory:'$LIBRARY_WORK',launcher_sha256:'e'.repeat(64),lean_sha256:'b'.repeat(64),environment:{LC_ALL:'C',LANG:'C',LEAN_PATH:output,LEAN_NUM_THREADS:'2'},modules:[{name:module,runtime:false,imports:['Init'],source:{path:path+'.lean',byte_length:12,sha256:hash('synthetic-source')},artifacts:['olean','olean.private','olean.server','ilean','ir'].map(s=>({path:output+'/'+path+'.'+s,byte_length:12,sha256:hash(s)}))}]}};
+ }

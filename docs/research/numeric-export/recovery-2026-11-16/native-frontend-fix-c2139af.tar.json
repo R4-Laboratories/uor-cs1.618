@@ -1,0 +1,10 @@
+{
+  "schema": "cs1618/source-fix-evidence/1",
+  "revision": "c2139afad62941d2feae01442884056e2d850b75",
+  "archive": "native-frontend-fix-c2139af.tar.gz",
+  "archive_bytes": 6838,
+  "archive_sha256": "933bebce3b78945d10f4df92564160479086331cd773eac1948be3db7383373a",
+  "indexed_files": 20,
+  "archive_members": 21,
+  "scope": "Actual local SDK-shaped compiler/custody controls and independent reader fixtures; not installed-SDK acceptance. Initial two unchanged process-owner failures retained; exact semantic-source PATH retry passed."
+}
