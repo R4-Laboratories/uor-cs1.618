@@ -1,0 +1,31 @@
+# Task4b host handoff implementation review
+
+**SpecCompliance: PASS. Quality: APPROVE.** No Critical or Important finding in this scoped repair. Approval is for the reviewed implementation and proceeding to the separately controlled hosted preflight; it establishes neither privileged hosted success nor SDK/application acceptance.
+
+## Reviewed identity and evidence
+
+Reviewed commit `b09d45c1d9813a06925dfbcf5dea9399c612d20b`, tree `621f473b8474d19c8b27d75ea401be6924f29eb6`, parent `bfbc718f8cfa1b95f822c6490833125924b4bda7`. Exactly three implementation paths change: the qualification workflow, driver and focused tests. The supplied review diff is 69,945 bytes, SHA256 `00fb7f37fae2814538c003e3bcfedb28c95fe3fd0c429fba6a86bd91efe5a85d`; its patch body exactly equals `git diff -U10 b09d45c^ b09d45c`. All three reviewed working files equal the committed Git bytes and recorded preservation-proof hashes. The later documentation HEAD `8c5b4c2` does not change those files.
+
+Read the scoped review brief, binding diagnosis/design review, latest report, implementation diff and relevant retained command results. Independently checked all 45 indexed host-handoff files, totaling 129,069 bytes. The index SHA256 is `bf3ee419ed3ad092aa165a83f9d10540acd29a14b06be9c58516dd6c24d31b72`. Also rechecked all 77 original and 51 fix1 indexed files against their unchanged indexes. No component suite was repeated.
+
+The actual covering command in `08-final-components.json` is `python3 -B -m unittest discover -s scripts/numeric/tests -p test_candidate_capture_qualification.py -v`; its complete stderr records 50 tests, 49 passing and one explicitly skipped privileged fixture. Recorded Python AST, all 14 workflow shell syntax checks, scoped whitespace and preservation checks pass. The source checkout remains clean at `463177a0971d95e112e10ed5da39c8cbaf0a4c96`; fixed capture snapshot f292/d48 remains unchanged.
+
+## Spec compliance
+
+The repair addresses the observed failure without pretending its exact sudoers cause was proved. Both jobs invoke the fixed `sudo -n -- /usr/bin/python3 -I -B ... host-root` route through the normal-runner bridge. The closed eight-operation interface accepts no arbitrary command, path, destination owner or environment. Root authenticates actual sudo-origin identities against the owned request/workspace and original preparation/job clock, checks exact game driver authority, and records exclusive operation state (`candidate-capture-qualification.py:2049`).
+
+The original source readers retain their UID-sensitive checks. The supervised child closes unrelated descriptors, uses minimal environment and process-only supplementary-group/GID/UID transition, and verifies its actual UID1000 credentials. Docker socket group access is limited to preflight/image inspection (`:1903`, `:1954`, `:1999`). The ordinary runner alone appends closed typed scalars to its checked GITHUB_OUTPUT descriptor, without ownership or mode changes (`:1972`, `:2186`).
+
+Export admission uses complete path/device/inode/size/hash inventories, safe ownership and single-link checks, an absent same-device destination and `renameat2(RENAME_NOREPLACE)`. Ownership transfer is restricted to enumerated retained-copy descriptors; original source/private capture products are not recursively changed. The actual runner traverses and hashes the exports before recording admission or emitting safe controls (`:1832`, `:1865`, `:1899`). Raw copies move once to `evidence/raw-upload`; metadata, handoff mapping and reserved runner records remain within the existing metadata/combined caps. Partial transfer cannot satisfy the later admission join.
+
+The privileged supervisor owns its timer and child retirement; it does not rely on the normal runner being able to kill UID0. Root/child/transfer/runner verification consume a shared request deadline narrowed by the original job/collection cutoff. Later guards use fixed completed handoff state, runner admission and the persistent collection clock, without recollection or another relocation (`:2035`). The original seven/one/one/one collection allocation and five-second guard bounds remain. Source-side scenarios, complete OC10 inventories, source pins and other authority files are outside and unchanged by this diff.
+
+Both workflows place the actual handoff preflight before cache/image work or SDK acquisition. It checks the drop/socket route, a disposable copy transfer, preservation of its private original and actual runner readability. Image upload now requires explicit metadata admission. Root-entry refusal retains a small runner-owned failure record, preserving the real failed exit; partial exports are not promoted to safe artifacts.
+
+## Quality and remaining gate
+
+The focused tests exercise real single-UID file relocation and read/hash admission, absent/occupied/cross-device destinations, inventory omissions/extras/aliases/hardlinks/ownership/byte changes, descriptor closure, child nonzero/signal/oversized result, timeout and direct-child reap. They also cover interruption after an actual descriptor transfer, unchanged output ownership/mode, failure-only versus partial-image admission, shortened runner deadlines and repeated control-only guards. Existing inventory/partial-retention regressions remain passing. Structural and fault-injected tests are correctly described as such.
+
+The real two-identity fixture was **skipped**, because the local process is UID1000 and sudo is absent. Neither that skipped fixture nor the single-UID supervisor tests establish actual privileged credential drop, cross-UID transfer, privileged timeout behavior or the hosted runner's sudo policy. These remain explicit hosted validation requirements; the early exact preflight is the next gate. Throughput within the fixed host minute, actual six-scenario/OC10 execution, full artifact contents and final upload outcomes also remain unproved. Run44081334047 remains failed with qualification skipped and no artifacts; this review does not relabel it.
+
+Review performed read-only Git/file/hash inspection and wrote only this report. No implementation/source/index edits, privileged tests, network, Docker, builds, broad suite reruns or subagents. Observed free space was 9,224,716,288 bytes, above the 8GiB floor.
