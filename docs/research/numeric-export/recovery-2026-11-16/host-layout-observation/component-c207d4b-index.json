@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/host-layout-component-retention/1",
   "commit": "c207d4b1f8b1bf4db7699a60ae8e579465573b0f",
-  "review": "pending",
+  "review": "changes required: R1 root refusal retention; R2 root-ledger role ownership",
   "hosted_execution": "not_run",
   "evidence_files": 15,
   "evidence_bytes": 100747,
@@ -10,5 +10,10 @@
     "path": "component-c207d4b.tar.gz",
     "bytes": 41753,
     "sha256": "3aafbbc7d5130feead939e493874f51d2492611ac85d3730d40d3bc0f1642fc8"
+  },
+  "review_file": {
+    "path": "component-c207d4b-review.md",
+    "bytes": 7350,
+    "sha256": "c1b18325c801e2f4ff4a32f963013a97596a21e3935a635aadec2832a0a8d8a2"
   }
 }
