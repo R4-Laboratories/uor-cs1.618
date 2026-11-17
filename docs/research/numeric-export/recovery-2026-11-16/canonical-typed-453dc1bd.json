@@ -1,0 +1,11 @@
+{
+  "scope": "canonical component diagnostic, not governed Prism admission or universal IEEE proof",
+  "source_id": "453dc1bd8c46c374bbd40745d3204be62cc972ba4ae0971f66b997fbf625153d",
+  "archive": "canonical-typed-453dc1bd.tar.gz",
+  "sha256": "7d4ec7d7f8a96f3c1da475d91fa5c1261bce1c7e87bcaea7a8cc1038ca19cc3d",
+  "bytes": 4856039,
+  "native_and_wasm_vectors": 44648,
+  "wasm_sha256": "96d3b129d040344f0c9fc2dc6255c4eba294e1766bad001683c503b6a1a3f6f7",
+  "excluded": "Lean build cache and Rust rlibs; their recorded digests remain in replay/receipt.json. Actual native executable and Wasm included.",
+  "setup_note": "Initial replay orchestration stopped on absent historical vectors.json after all native/Wasm packages and adapters compiled. Regenerated frozen corpus using unchanged oracle, verified SHA9edf45..., then actual replay passed. No source/target change for that rerun."
+}
