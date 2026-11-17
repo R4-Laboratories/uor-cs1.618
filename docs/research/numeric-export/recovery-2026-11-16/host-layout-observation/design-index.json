@@ -1,0 +1,16 @@
+{
+  "schema": "cs1618/host-layout-diagnostic-design/1",
+  "status": "independently READY; observation-only; no access-policy or qualification approval",
+  "files": [
+    {
+      "path": "task-4c1-layout-observation-brief.md",
+      "bytes": 14490,
+      "sha256": "1f94313a305b4fa33d890b40f3438651810e3e4741f4539b8a97ed9b8b4ab927"
+    },
+    {
+      "path": "task-4c1-design-review.md",
+      "bytes": 8868,
+      "sha256": "2269a14b01b60fbd3edd90c389581ef76d065e762f0c17cd4e79b0d54a264cd2"
+    }
+  ]
+}
