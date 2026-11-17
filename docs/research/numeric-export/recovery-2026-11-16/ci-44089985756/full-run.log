@@ -1,0 +1,916 @@
+image	Set up job	﻿2026-11-17T13:09:59.3881552Z Current runner version: '2.338.2'
+image	Set up job	2026-11-17T13:09:59.3900012Z ##[group]Runner Image Provisioner
+image	Set up job	2026-11-17T13:09:59.3900692Z Hosted Compute Agent
+image	Set up job	2026-11-17T13:09:59.3901188Z Version: 20261103.629
+image	Set up job	2026-11-17T13:09:59.3901640Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+image	Set up job	2026-11-17T13:09:59.3902163Z Build Date: 2026-11-03T17:26:59Z
+image	Set up job	2026-11-17T13:09:59.3902680Z Worker ID: {3f9bbb9a-b373-4969-8e95-60195334d72b}
+image	Set up job	2026-11-17T13:09:59.3903183Z Region: us-west-2
+image	Set up job	2026-11-17T13:09:59.3903554Z Cloud: AWS
+image	Set up job	2026-11-17T13:09:59.3903969Z ##[endgroup]
+image	Set up job	2026-11-17T13:09:59.3904962Z ##[group]Operating System
+image	Set up job	2026-11-17T13:09:59.3905419Z Ubuntu
+image	Set up job	2026-11-17T13:09:59.3905780Z 24.04.5
+image	Set up job	2026-11-17T13:09:59.3906121Z LTS
+image	Set up job	2026-11-17T13:09:59.3906503Z ##[endgroup]
+image	Set up job	2026-11-17T13:09:59.3906885Z ##[group]Runner Image
+image	Set up job	2026-11-17T13:09:59.3907317Z Image: ubuntu-24.04
+image	Set up job	2026-11-17T13:09:59.3907717Z Version: 20261111.127.1
+image	Set up job	2026-11-17T13:09:59.3908705Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+image	Set up job	2026-11-17T13:09:59.3909960Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+image	Set up job	2026-11-17T13:09:59.3910657Z ##[endgroup]
+image	Set up job	2026-11-17T13:09:59.3911507Z ##[group]GITHUB_TOKEN Permissions
+image	Set up job	2026-11-17T13:09:59.3913068Z Contents: read
+image	Set up job	2026-11-17T13:09:59.3913504Z Metadata: read
+image	Set up job	2026-11-17T13:09:59.3913899Z ##[endgroup]
+image	Set up job	2026-11-17T13:09:59.3915379Z Secret source: Actions
+image	Set up job	2026-11-17T13:09:59.3915999Z Cache mode: write
+image	Set up job	2026-11-17T13:09:59.3916497Z Prepare workflow directory
+image	Set up job	2026-11-17T13:09:59.4142639Z Prepare all required actions
+image	Set up job	2026-11-17T13:09:59.4178426Z Getting action download info
+image	Set up job	2026-11-17T13:09:59.8375948Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+image	Set up job	2026-11-17T13:10:03.4707274Z Download action repository 'devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6' (SHA:8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6)
+image	Set up job	2026-11-17T13:10:03.8265637Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+image	Set up job	2026-11-17T13:10:04.1883042Z Complete job name: image
+image	Start absolute source-image job clock	﻿2026-11-17T13:10:04.2488334Z ##[group]Run mkdir -p evidence
+image	Start absolute source-image job clock	2026-11-17T13:10:04.2489431Z [36;1mmkdir -p evidence[0m
+image	Start absolute source-image job clock	2026-11-17T13:10:04.2491027Z [36;1mpython3 -c 'import json,time; print(json.dumps({"monotonic":time.monotonic()}))' > evidence/job-start.json[0m
+image	Start absolute source-image job clock	2026-11-17T13:10:04.7023766Z shell: /usr/bin/bash -e {0}
+image	Start absolute source-image job clock	2026-11-17T13:10:04.7024922Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-17T13:10:04.7551682Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7552905Z with:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7553624Z   ref: b09d45c1d9813a06925dfbcf5dea9399c612d20b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7554531Z   path: game
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7555242Z   persist-credentials: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7556085Z   repository: R4-Laboratories/uor-cs1.618
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7562906Z   token: ***
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7563620Z   ssh-strict: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7564342Z   ssh-user: git
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7565004Z   clean: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7565725Z   sparse-checkout-cone-mode: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7566540Z   fetch-depth: 1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7567212Z   fetch-tags: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7568077Z   show-progress: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7568802Z   lfs: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7569504Z   submodules: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7570212Z   set-safe-directory: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:04.7571057Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.6169915Z Syncing repository: R4-Laboratories/uor-cs1.618
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.6171490Z ##[group]Getting Git version info
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.6171950Z Working directory is '/home/runner/work/uor-cs1.618/uor-cs1.618/game'
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.6172769Z [command]/usr/bin/git version
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.9676226Z git version 2.56.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.9693746Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.9705130Z Temporarily overriding HOME='/home/runner/work/_temp/b4bde326-97cb-4f83-929b-86b44453c03b' before making global git config changes
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.9706172Z Adding repository directory to the temporary git global config as a safe directory
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:09.9709176Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/game
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0136644Z ##[group]Initializing the repository
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0141253Z [command]/usr/bin/git init /home/runner/work/uor-cs1.618/uor-cs1.618/game
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0273846Z hint: Using 'master' as the name for the initial branch. This default branch name
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0274337Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0275047Z hint: to use in all of your new repositories, which will suppress this warning,
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0275406Z hint: call:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0275696Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0276041Z hint: 	git config --global init.defaultBranch <name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0276500Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0276885Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0277418Z hint: 'development'. The just-created branch can be renamed via this command:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0277819Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0278423Z hint: 	git branch -m <name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0278820Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0279285Z hint: Disable this message with "git config set advice.defaultBranchName false"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0282772Z Initialized empty Git repository in /home/runner/work/uor-cs1.618/uor-cs1.618/game/.git/
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0291183Z [command]/usr/bin/git remote add origin https://github.com/R4-Laboratories/uor-cs1.618
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0335721Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0336447Z ##[group]Disabling automatic garbage collection
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0339047Z [command]/usr/bin/git config --local gc.auto 0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0360939Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0361423Z ##[group]Setting up auth
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0365111Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.0392267Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3520930Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3546053Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3698608Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3726037Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3726932Z ##[group]Fetching the repository
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:10.3737570Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin b09d45c1d9813a06925dfbcf5dea9399c612d20b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1473352Z From https://github.com/R4-Laboratories/uor-cs1.618
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1473973Z  * branch            b09d45c1d9813a06925dfbcf5dea9399c612d20b -> FETCH_HEAD
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1477678Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1478719Z ##[group]Determining the checkout info
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1479564Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1484508Z [command]/usr/bin/git sparse-checkout disable
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1547522Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1569092Z ##[group]Checking out the ref
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.1578262Z [command]/usr/bin/git checkout --progress --force b09d45c1d9813a06925dfbcf5dea9399c612d20b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4543749Z Note: switching to 'b09d45c1d9813a06925dfbcf5dea9399c612d20b'.
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4544469Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4544882Z You are in 'detached HEAD' state. You can look around, make experimental
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4545409Z changes and commit them, and you can discard any commits you make in this
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4545877Z state without impacting any branches by switching back to a branch.
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4546337Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4546519Z If you want to create a new branch to retain commits you create, you may
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4546930Z do so (now or later) by using -c with the switch command. Example:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547162Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547266Z   git switch -c <new-branch-name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547435Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547533Z Or undo this operation with:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547695Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4547787Z   git switch -
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4548130Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4548360Z Turn off this advice by setting config variable advice.detachedHead to false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4548595Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4548864Z HEAD is now at b09d45c Fix candidate qualification host privilege and artifact handoff
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4616698Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4619071Z [command]/usr/bin/git log -1 --format=%H
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4647765Z b09d45c1d9813a06925dfbcf5dea9399c612d20b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4654890Z ##[group]Removing auth
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4657466Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4680651Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4835479Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4856997Z http.https://github.com/.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4861751Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.4884130Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5027300Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-17T13:10:13.5182729Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5183130Z with:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5183364Z   repository: UOR-Foundation/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5183683Z   ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5183959Z   fetch-depth: 0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5184180Z   path: prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5184422Z   persist-credentials: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5186412Z   token: ***
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5186626Z   ssh-strict: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5186888Z   ssh-user: git
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5187098Z   clean: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5187433Z   sparse-checkout-cone-mode: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5187695Z   fetch-tags: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5188116Z   show-progress: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5188355Z   lfs: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5188578Z   submodules: false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5188807Z   set-safe-directory: true
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5189071Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5803834Z Syncing repository: UOR-Foundation/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5804722Z ##[group]Getting Git version info
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5805297Z Working directory is '/home/runner/work/uor-cs1.618/uor-cs1.618/prismpm'
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5827726Z [command]/usr/bin/git version
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5842570Z git version 2.56.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5886959Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5899362Z Temporarily overriding HOME='/home/runner/work/_temp/85940c7f-97c4-4da5-a975-75d3438419a2' before making global git config changes
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5899986Z Adding repository directory to the temporary git global config as a safe directory
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5903742Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5940195Z ##[group]Initializing the repository
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5940799Z [command]/usr/bin/git init /home/runner/work/uor-cs1.618/uor-cs1.618/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5967409Z hint: Using 'master' as the name for the initial branch. This default branch name
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5968819Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5969499Z hint: to use in all of your new repositories, which will suppress this warning,
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5969891Z hint: call:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5970141Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5970438Z hint: 	git config --global init.defaultBranch <name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5970782Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5971137Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5971824Z hint: 'development'. The just-created branch can be renamed via this command:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5972293Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5972540Z hint: 	git branch -m <name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5972862Z hint:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5973270Z hint: Disable this message with "git config set advice.defaultBranchName false"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5973975Z Initialized empty Git repository in /home/runner/work/uor-cs1.618/uor-cs1.618/prismpm/.git/
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5975061Z [command]/usr/bin/git remote add origin https://github.com/UOR-Foundation/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5994131Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5994647Z ##[group]Disabling automatic garbage collection
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.5994959Z [command]/usr/bin/git config --local gc.auto 0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6022385Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6022838Z ##[group]Setting up auth
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6029290Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6051857Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6215876Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6236079Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6402286Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6431538Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6431980Z ##[group]Fetching the repository
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:13.6439219Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8981216Z From https://github.com/UOR-Foundation/prismpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8982145Z  * [new branch]        adr/016-holo-canonical-bytes -> origin/adr/016-holo-canonical-bytes
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8982880Z  * [new branch]        backport/request-hooks-on-706fb746 -> origin/backport/request-hooks-on-706fb746
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8983538Z  * [new branch]        build/foundry-codec-compiler -> origin/build/foundry-codec-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8984168Z  * [new branch]        build/merged-native-compiler -> origin/build/merged-native-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8984766Z  * [new branch]        build/shared-byte-compiler -> origin/build/shared-byte-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8985687Z  * [new branch]        build/shared-byte-native-records -> origin/build/shared-byte-native-records
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8986767Z  * [new branch]        build/typed-byte-stdlib   -> origin/build/typed-byte-stdlib
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8987366Z  * [new branch]        chore/668-repository-standards -> origin/chore/668-repository-standards
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8988257Z  * [new branch]        chore/lexlean-matmul-sdk-osv-2026-10-16 -> origin/chore/lexlean-matmul-sdk-osv-2026-10-16
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8988961Z  * [new branch]        chore/osv-inputs-20260928 -> origin/chore/osv-inputs-20260928
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8989554Z  * [new branch]        chore/osv-inputs-20261010 -> origin/chore/osv-inputs-20261010
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8990097Z  * [new branch]        ci/focused-release-repro  -> origin/ci/focused-release-repro
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8990814Z  * [new branch]        ci/lexlean-matmul-resource-probe-2026-10-16 -> origin/ci/lexlean-matmul-resource-probe-2026-10-16
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8991776Z  * [new branch]        ci/main-release-rehearsal-support -> origin/ci/main-release-rehearsal-support
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8992409Z  * [new branch]        ci/native-sdk-construction -> origin/ci/native-sdk-construction
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8992998Z  * [new branch]        ci/release-branch-rehearsal -> origin/ci/release-branch-rehearsal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8993636Z  * [new branch]        ci/sdk-ca-mount-diagnostic-4dcb7e-2026-10-19 -> origin/ci/sdk-ca-mount-diagnostic-4dcb7e-2026-10-19
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8994176Z  * [new branch]        ci/sdk-candidate-free-disk -> origin/ci/sdk-candidate-free-disk
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8994710Z  * [new branch]        ci/sdk-source-unit-public-f43f6778-2026-10-20 -> origin/ci/sdk-source-unit-public-f43f6778-2026-10-20
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8995363Z  * [new branch]        ci/sdk-text-v4-ca-isolation-fa2040-2026-10-19 -> origin/ci/sdk-text-v4-ca-isolation-fa2040-2026-10-19
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8996041Z  * [new branch]        ci/sdk-text-workbench-budget-transport-2026-10-17 -> origin/ci/sdk-text-workbench-budget-transport-2026-10-17
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8996640Z  * [new branch]        ci/v04-release-devcontainer-cache -> origin/ci/v04-release-devcontainer-cache
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8997166Z  * [new branch]        claude/209-threat-model-oscal-961944 -> origin/claude/209-threat-model-oscal-961944
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8997655Z  * [new branch]        claude/215-mcp-interface-kind -> origin/claude/215-mcp-interface-kind
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8998325Z  * [new branch]        claude/270-check-done     -> origin/claude/270-check-done
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8998923Z  * [new branch]        claude/270-check-rust-signed -> origin/claude/270-check-rust-signed
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.8999538Z  * [new branch]        claude/284-histories-replay-f2717d -> origin/claude/284-histories-replay-f2717d
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9000072Z  * [new branch]        claude/285-check-policy-fafc3a -> origin/claude/285-check-policy-fafc3a
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9000534Z  * [new branch]        claude/286-testing        -> origin/claude/286-testing
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9001157Z  * [new branch]        claude/287-conformance-suite-23f6d9 -> origin/claude/287-conformance-suite-23f6d9
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9001738Z  * [new branch]        claude/288-prism-dev-studio-1b5209 -> origin/claude/288-prism-dev-studio-1b5209
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9002319Z  * [new branch]        claude/292-push-pull-oci-fd448c -> origin/claude/292-push-pull-oci-fd448c
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9002822Z  * [new branch]        claude/294-provider-services-9025d2 -> origin/claude/294-provider-services-9025d2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9003291Z  * [new branch]        claude/299-docs-site-1f8e25 -> origin/claude/299-docs-site-1f8e25
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9003809Z  * [new branch]        claude/301-changelog-migration-655e3a -> origin/claude/301-changelog-migration-655e3a
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9004341Z  * [new branch]        claude/303-release-automation-0b71d4 -> origin/claude/303-release-automation-0b71d4
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9004864Z  * [new branch]        claude/325-authoring-front-door-e5f972 -> origin/claude/325-authoring-front-door-e5f972
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9005424Z  * [new branch]        claude/348-container-lifecycle-0d8948 -> origin/claude/348-container-lifecycle-0d8948
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9005941Z  * [new branch]        claude/440-module-check-02b200 -> origin/claude/440-module-check-02b200
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9006472Z  * [new branch]        claude/440-nine-module-proposal-8b3eba -> origin/claude/440-nine-module-proposal-8b3eba
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9006987Z  * [new branch]        claude/442-prism-images-d2ce7d -> origin/claude/442-prism-images-d2ce7d
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9007492Z  * [new branch]        claude/444-prism-networks-71af7f -> origin/claude/444-prism-networks-71af7f
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9008183Z  * [new branch]        claude/445-prism-volumes-b29c51 -> origin/claude/445-prism-volumes-b29c51
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9008651Z  * [new branch]        claude/447-prism-auth-cd3ad3 -> origin/claude/447-prism-auth-cd3ad3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9009163Z  * [new branch]        claude/448-prism-errors-23a39b -> origin/claude/448-prism-errors-23a39b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9009679Z  * [new branch]        claude/449-prism-verify-7d855f -> origin/claude/449-prism-verify-7d855f
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9010105Z  * [new branch]        claude/629-session-world  -> origin/claude/629-session-world
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9010552Z  * [new branch]        claude/630-binary-application -> origin/claude/630-binary-application
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9011157Z  * [new branch]        claude/631-guest-host-effects -> origin/claude/631-guest-host-effects
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9011632Z  * [new branch]        claude/632-guest-speed    -> origin/claude/632-guest-speed
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9012069Z  * [new branch]        claude/attest-token-leak  -> origin/claude/attest-token-leak
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9012598Z  * [new branch]        claude/canonical-serverless-build-fda4ee -> origin/claude/canonical-serverless-build-fda4ee
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9013161Z  * [new branch]        claude/compose-loopback-host -> origin/claude/compose-loopback-host
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9013652Z  * [new branch]        claude/confident-neumann-6aebf1 -> origin/claude/confident-neumann-6aebf1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9014140Z  * [new branch]        claude/doctor-host-docker -> origin/claude/doctor-host-docker
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9014571Z  * [new branch]        claude/fast-verified-builds -> origin/claude/fast-verified-builds
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9015125Z  * [new branch]        claude/fix-602-codegen-list-binding-62b129 -> origin/claude/fix-602-codegen-list-binding-62b129
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9015871Z  * [new branch]        claude/issue-217-host-effect-profile -> origin/claude/issue-217-host-effect-profile
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9016545Z  * [new branch]        claude/issue-218-features-journeys -> origin/claude/issue-218-features-journeys
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9017041Z  * [new branch]        claude/issue-262-release-policy -> origin/claude/issue-262-release-policy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9017478Z  * [new branch]        claude/lean-sdk-image     -> origin/claude/lean-sdk-image
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9018238Z  * [new branch]        claude/lexlean-mcp-conformance-compiler -> origin/claude/lexlean-mcp-conformance-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9018794Z  * [new branch]        claude/lexlean-mcp-host-effects -> origin/claude/lexlean-mcp-host-effects
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9019288Z  * [new branch]        claude/lexlean-mcp-host-serving -> origin/claude/lexlean-mcp-host-serving
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9019934Z  * [new branch]        claude/lexlean-mcp-interface-kind -> origin/claude/lexlean-mcp-interface-kind
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9020449Z  * [new branch]        claude/lexlean-mcp-server-verify -> origin/claude/lexlean-mcp-server-verify
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9020903Z  * [new branch]        claude/prism-code-setup   -> origin/claude/prism-code-setup
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9021356Z  * [new branch]        claude/prism-code-setup-machine -> origin/claude/prism-code-setup-machine
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9021860Z  * [new branch]        claude/project-thread-1e2qlx -> origin/claude/project-thread-1e2qlx
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9022307Z  * [new branch]        claude/project-thread-4igtmt -> origin/claude/project-thread-4igtmt
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9022756Z  * [new branch]        claude/project-thread-87e8pc -> origin/claude/project-thread-87e8pc
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9023198Z  * [new branch]        claude/project-thread-8b9hb6 -> origin/claude/project-thread-8b9hb6
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9023677Z  * [new branch]        claude/project-thread-a0rr62 -> origin/claude/project-thread-a0rr62
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9024181Z  * [new branch]        claude/project-thread-a1cnc3 -> origin/claude/project-thread-a1cnc3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9024686Z  * [new branch]        claude/project-thread-cry1z3 -> origin/claude/project-thread-cry1z3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9025312Z  * [new branch]        claude/project-thread-e9d4nn -> origin/claude/project-thread-e9d4nn
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9025876Z  * [new branch]        claude/project-thread-eiudci -> origin/claude/project-thread-eiudci
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9026406Z  * [new branch]        claude/project-thread-f85vf3 -> origin/claude/project-thread-f85vf3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9027055Z  * [new branch]        claude/project-thread-h6sbjv -> origin/claude/project-thread-h6sbjv
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9027605Z  * [new branch]        claude/project-thread-hboh76 -> origin/claude/project-thread-hboh76
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9028304Z  * [new branch]        claude/project-thread-jbxsn0 -> origin/claude/project-thread-jbxsn0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9028785Z  * [new branch]        claude/project-thread-m7yage -> origin/claude/project-thread-m7yage
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9029375Z  * [new branch]        claude/project-thread-q9lqlj -> origin/claude/project-thread-q9lqlj
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9029810Z  * [new branch]        claude/project-thread-qkdcpm -> origin/claude/project-thread-qkdcpm
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9030250Z  * [new branch]        claude/project-thread-v1zdl1 -> origin/claude/project-thread-v1zdl1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9030685Z  * [new branch]        claude/project-thread-vm659i -> origin/claude/project-thread-vm659i
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9031254Z  * [new branch]        claude/project-thread-y7idcx-actions-supply-chain -> origin/claude/project-thread-y7idcx-actions-supply-chain
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9031936Z  * [new branch]        claude/project-thread-y7idcx-app-projection -> origin/claude/project-thread-y7idcx-app-projection
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9032652Z  * [new branch]        claude/project-thread-y7idcx-ci-right-size -> origin/claude/project-thread-y7idcx-ci-right-size
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9033296Z  * [new branch]        claude/project-thread-y7idcx-design-views -> origin/claude/project-thread-y7idcx-design-views
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9033923Z  * [new branch]        claude/project-thread-y7idcx-devcontainer-cache -> origin/claude/project-thread-y7idcx-devcontainer-cache
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9034558Z  * [new branch]        claude/project-thread-y7idcx-download-retry -> origin/claude/project-thread-y7idcx-download-retry
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9035204Z  * [new branch]        claude/project-thread-y7idcx-golden-dev-lock -> origin/claude/project-thread-y7idcx-golden-dev-lock
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9035876Z  * [new branch]        claude/project-thread-y7idcx-golden-refresh -> origin/claude/project-thread-y7idcx-golden-refresh
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9036482Z  * [new branch]        claude/project-thread-y7idcx-land-184 -> origin/claude/project-thread-y7idcx-land-184
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9037025Z  * [new branch]        claude/project-thread-y7idcx-land-195 -> origin/claude/project-thread-y7idcx-land-195
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9037669Z  * [new branch]        claude/project-thread-y7idcx-lexlean-runtime-staging -> origin/claude/project-thread-y7idcx-lexlean-runtime-staging
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9038493Z  * [new branch]        claude/project-thread-y7idcx-main-repair -> origin/claude/project-thread-y7idcx-main-repair
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9039107Z  * [new branch]        claude/project-thread-y7idcx-qual-accessibility -> origin/claude/project-thread-y7idcx-qual-accessibility
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9039801Z  * [new branch]        claude/project-thread-y7idcx-sdk-home-traversable -> origin/claude/project-thread-y7idcx-sdk-home-traversable
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9040459Z  * [new branch]        claude/project-thread-y7idcx-sdk-lexlean-0.4 -> origin/claude/project-thread-y7idcx-sdk-lexlean-0.4
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9041085Z  * [new branch]        claude/project-thread-y7idcx-status-region -> origin/claude/project-thread-y7idcx-status-region
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9041677Z  * [new branch]        claude/project-thread-y7idcx-stdlib-gaps -> origin/claude/project-thread-y7idcx-stdlib-gaps
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9042233Z  * [new branch]        claude/project-thread-y7idcx-text-cli -> origin/claude/project-thread-y7idcx-text-cli
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9042741Z  * [new branch]        claude/project-thread-y7idcx-yaml -> origin/claude/project-thread-y7idcx-yaml
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9043266Z  * [new branch]        claude/project-thread-zgkrpx -> origin/claude/project-thread-zgkrpx
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9043746Z  * [new branch]        claude/pull-verdict-statements -> origin/claude/pull-verdict-statements
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9044280Z  * [new branch]        claude/release-installed-tmpfs -> origin/claude/release-installed-tmpfs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9044730Z  * [new branch]        claude/release-installed-vv -> origin/claude/release-installed-vv
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9045152Z  * [new branch]        claude/release-runtime-help -> origin/claude/release-runtime-help
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9045597Z  * [new branch]        claude/release-three-parts -> origin/claude/release-three-parts
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9046035Z  * [new branch]        claude/remove-spec-json   -> origin/claude/remove-spec-json
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9046464Z  * [new branch]        claude/roadmap-287        -> origin/claude/roadmap-287
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9046836Z  * [new branch]        claude/roadmap-289        -> origin/claude/roadmap-289
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9047204Z  * [new branch]        claude/roadmap-289-cli    -> origin/claude/roadmap-289-cli
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9047606Z  * [new branch]        claude/roadmap-298        -> origin/claude/roadmap-298
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9048140Z  * [new branch]        claude/roadmap-347        -> origin/claude/roadmap-347
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9048635Z  * [new branch]        claude/roadmap-347-familiarity -> origin/claude/roadmap-347-familiarity
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9049089Z  * [new branch]        claude/roadmap-582        -> origin/claude/roadmap-582
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9049524Z  * [new branch]        claude/roadmap-582-proof  -> origin/claude/roadmap-582-proof
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9049972Z  * [new branch]        claude/roadmap-582-signer -> origin/claude/roadmap-582-signer
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9050399Z  * [new branch]        claude/roadmap-583        -> origin/claude/roadmap-583
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9050869Z  * [new branch]        claude/roadmap-584        -> origin/claude/roadmap-584
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9051289Z  * [new branch]        claude/roadmap-585        -> origin/claude/roadmap-585
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9051710Z  * [new branch]        claude/rustsec-2026-0486  -> origin/claude/rustsec-2026-0486
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9052259Z  * [new branch]        claude/self-hosted-vv-runners -> origin/claude/self-hosted-vv-runners
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9052840Z  * [new branch]        claude/server-host-effects-on-main -> origin/claude/server-host-effects-on-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9053703Z  * [new branch]        claude/server-host-request-hooks -> origin/claude/server-host-request-hooks
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9054249Z  * [new branch]        claude/server-host-serving-on-main -> origin/claude/server-host-serving-on-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9054752Z  * [new branch]        claude/server-verify-on-main -> origin/claude/server-verify-on-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9055224Z  * [new branch]        claude/sixteen-fields     -> origin/claude/sixteen-fields
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9055635Z  * [new branch]        claude/v05-containers     -> origin/claude/v05-containers
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9056074Z  * [new branch]        claude/v05-verify         -> origin/claude/v05-verify
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9056569Z  * [new branch]        claude/verify-statements-seam -> origin/claude/verify-statements-seam
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9057096Z  * [new branch]        claude/vv-three-parts     -> origin/claude/vv-three-parts
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9057601Z  * [new branch]        codex/core-wasm-allocation-reuse -> origin/codex/core-wasm-allocation-reuse
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9058297Z  * [new branch]        codex/file-backed-workbench -> origin/codex/file-backed-workbench
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9058819Z  * [new branch]        codex/file-session-oracle-diagnostics -> origin/codex/file-session-oracle-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9059472Z  * [new branch]        codex/prism-code-fixture-bindings -> origin/codex/prism-code-fixture-bindings
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9060006Z  * [new branch]        codex/sdk-http-retry-cache -> origin/codex/sdk-http-retry-cache
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9060635Z  * [new branch]        diagnostic/release-genesis-616-check -> origin/diagnostic/release-genesis-616-check
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9061226Z  * [new branch]        diagnostic/release-genesis-616-proposal -> origin/diagnostic/release-genesis-616-proposal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9061784Z  * [new branch]        docs-site                 -> origin/docs-site
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9062242Z  * [new branch]        docs/016-one-canonical-holo -> origin/docs/016-one-canonical-holo
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9062665Z  * [new branch]        docs/journey-qualification -> origin/docs/journey-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9063148Z  * [new branch]        docs/main-v04-tag-sequence -> origin/docs/main-v04-tag-sequence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9063578Z  * [new branch]        docs/prism-code-setup-latest -> origin/docs/prism-code-setup-latest
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9064037Z  * [new branch]        docs/release-qualification-status -> origin/docs/release-qualification-status
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9064503Z  * [new branch]        docs/v04-tag-sequence     -> origin/docs/v04-tag-sequence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9064894Z  * [new branch]        factory-receipts          -> origin/factory-receipts
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9065307Z  * [new branch]        feat-stream-resource-v1   -> origin/feat-stream-resource-v1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9065790Z  * [new branch]        feat/account-genesis-current-compiler -> origin/feat/account-genesis-current-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9066325Z  * [new branch]        feat/authenticated-exporter-seed -> origin/feat/authenticated-exporter-seed
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9066797Z  * [new branch]        feat/bounded-sdk-metadata -> origin/feat/bounded-sdk-metadata
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9067227Z  * [new branch]        feat/browser-account-genesis -> origin/feat/browser-account-genesis
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9067759Z  * [new branch]        feat/browser-application-compiler-closure -> origin/feat/browser-application-compiler-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9068511Z  * [new branch]        feat/browser-application-verify-closure -> origin/feat/browser-application-verify-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9069060Z  * [new branch]        feat/browser-bootstrap-candidate -> origin/feat/browser-bootstrap-candidate
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9069597Z  * [new branch]        feat/browser-contextual-effects -> origin/feat/browser-contextual-effects
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9070149Z  * [new branch]        feat/browser-credential-custody -> origin/feat/browser-credential-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9070606Z  * [new branch]        feat/browser-dynamic-choice -> origin/feat/browser-dynamic-choice
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9071056Z  * [new branch]        feat/browser-effect-protocol -> origin/feat/browser-effect-protocol
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9071503Z  * [new branch]        feat/browser-effective-policy -> origin/feat/browser-effective-policy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9071945Z  * [new branch]        feat/browser-holo-surface -> origin/feat/browser-holo-surface
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9072398Z  * [new branch]        feat/browser-operation-journal -> origin/feat/browser-operation-journal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9072884Z  * [new branch]        feat/browser-p256-validation -> origin/feat/browser-p256-validation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9073296Z  * [new branch]        feat/browser-pkce         -> origin/feat/browser-pkce
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9073692Z  * [new branch]        feat/browser-presentation -> origin/feat/browser-presentation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9074169Z  * [new branch]        feat/browser-presentation-progress -> origin/feat/browser-presentation-progress
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9074728Z  * [new branch]        feat/browser-private-journal-policy -> origin/feat/browser-private-journal-policy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9075190Z  * [new branch]        feat/browser-rs256-verifier -> origin/feat/browser-rs256-verifier
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9075692Z  * [new branch]        feat/browser-runtime-integration -> origin/feat/browser-runtime-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9076144Z  * [new branch]        feat/browser-secret-input -> origin/feat/browser-secret-input
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9076605Z  * [new branch]        feat/browser-session-composition -> origin/feat/browser-session-composition
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9077083Z  * [new branch]        feat/browser-session-journal -> origin/feat/browser-session-journal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9077564Z  * [new branch]        feat/browser-session-journal-metadata -> origin/feat/browser-session-journal-metadata
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9078389Z  * [new branch]        feat/browser-session-journal-recovery -> origin/feat/browser-session-journal-recovery
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9078877Z  * [new branch]        feat/browser-session-kernel -> origin/feat/browser-session-kernel
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9079461Z  * [new branch]        feat/browser-session-recovery-frames -> origin/feat/browser-session-recovery-frames
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9080103Z  * [new branch]        feat/browser-session-reservation -> origin/feat/browser-session-reservation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9080728Z  * [new branch]        feat/browser-signed-context -> origin/feat/browser-signed-context
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9081396Z  * [new branch]        feat/cross-engine-browser-verification -> origin/feat/cross-engine-browser-verification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9081923Z  * [new branch]        feat/foundry-account-kernels -> origin/feat/foundry-account-kernels
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9082388Z  * [new branch]        feat/foundry-sdk-integration -> origin/feat/foundry-sdk-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9083034Z  * [new branch]        feat/foundry-web-production-audit -> origin/feat/foundry-web-production-audit
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9083624Z  * [new branch]        feat/holo-primary-component -> origin/feat/holo-primary-component
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9084248Z  * [new branch]        feat/import-oscal-json-sources -> origin/feat/import-oscal-json-sources
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9084882Z  * [new branch]        feat/inline-question-forms -> origin/feat/inline-question-forms
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9085459Z  * [new branch]        feat/installed-sdk-vv     -> origin/feat/installed-sdk-vv
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9086068Z  * [new branch]        feat/integrated-session-kernel -> origin/feat/integrated-session-kernel
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9086762Z  * [new branch]        feat/issue-10-standard-native-adapters -> origin/feat/issue-10-standard-native-adapters
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9087633Z  * [new branch]        feat/issue-11-supply-chain-operations-recovery -> origin/feat/issue-11-supply-chain-operations-recovery
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9088856Z  * [new branch]        feat/issue-12-universal-sdk-entrypoint -> origin/feat/issue-12-universal-sdk-entrypoint
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9089808Z  * [new branch]        feat/issue-13-release-status-closure -> origin/feat/issue-13-release-status-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9090819Z  * [new branch]        feat/issue-15-sdk-security-advisory-disposition -> origin/feat/issue-15-sdk-security-advisory-disposition
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9091700Z  * [new branch]        feat/issue-16-production-system-model -> origin/feat/issue-16-production-system-model
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9092384Z  * [new branch]        feat/issue-17-calculator-reference-closure -> origin/feat/issue-17-calculator-reference-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9093010Z  * [new branch]        feat/issue-18-lean4-prod-dependency-closure -> origin/feat/issue-18-lean4-prod-dependency-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9093603Z  * [new branch]        feat/issue-19-crates-io-bootstrap -> origin/feat/issue-19-crates-io-bootstrap
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9094152Z  * [new branch]        feat/issue-20-ecosystem-release-closure -> origin/feat/issue-20-ecosystem-release-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9094726Z  * [new branch]        feat/issue-22-workspace-functional-core -> origin/feat/issue-22-workspace-functional-core
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9095292Z  * [new branch]        feat/issue-23-hologram-oracle-interop -> origin/feat/issue-23-hologram-oracle-interop
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9095843Z  * [new branch]        feat/issue-3-release-acceptance-closure -> origin/feat/issue-3-release-acceptance-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9096486Z  * [new branch]        feat/issue-4-calculator-baseline -> origin/feat/issue-4-calculator-baseline
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9097186Z  * [new branch]        feat/issue-5-production-system-schemas -> origin/feat/issue-5-production-system-schemas
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9098108Z  * [new branch]        feat/issue-6-authority-oracle-verification -> origin/feat/issue-6-authority-oracle-verification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9099035Z  * [new branch]        feat/issue-7-reproducible-sdk -> origin/feat/issue-7-reproducible-sdk
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9099704Z  * [new branch]        feat/issue-8-oci-release-graph -> origin/feat/issue-8-oci-release-graph
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9100409Z  * [new branch]        feat/issue-9-controller-cli-lifecycle -> origin/feat/issue-9-controller-cli-lifecycle
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9101112Z  * [new branch]        feat/lexlean-matmul-text-research -> origin/feat/lexlean-matmul-text-research
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9101851Z  * [new branch]        feat/lexlean-matmul-text-workbench -> origin/feat/lexlean-matmul-text-workbench
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9102524Z  * [new branch]        feat/mailbox-admission-model -> origin/feat/mailbox-admission-model
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9103185Z  * [new branch]        feat/model-library        -> origin/feat/model-library
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9103740Z  * [new branch]        feat/native-golden-review -> origin/feat/native-golden-review
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9104336Z  * [new branch]        feat/native-lease-stdlib  -> origin/feat/native-lease-stdlib
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9104932Z  * [new branch]        feat/native-operation-leases -> origin/feat/native-operation-leases
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9105518Z  * [new branch]        feat/organization-lifecycle -> origin/feat/organization-lifecycle
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9106073Z  * [new branch]        feat/oscal-release-oracle -> origin/feat/oscal-release-oracle
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9106574Z  * [new branch]        feat/p256-current-compiler -> origin/feat/p256-current-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9107068Z  * [new branch]        feat/prism-code-native-check -> origin/feat/prism-code-native-check
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9107500Z  * [new branch]        feat/prism-code-one-skill -> origin/feat/prism-code-one-skill
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9108175Z  * [new branch]        feat/prism-code-seamless-start -> origin/feat/prism-code-seamless-start
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9108653Z  * [new branch]        feat/prism-gap-telemetry  -> origin/feat/prism-gap-telemetry
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9109178Z  * [new branch]        feat/prism-journey        -> origin/feat/prism-journey
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9109621Z  * [new branch]        feat/publication-admission -> origin/feat/publication-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9110079Z  * [new branch]        feat/reconcile-lexlean-main -> origin/feat/reconcile-lexlean-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9110523Z  * [new branch]        feat/sdk-image-inputs     -> origin/feat/sdk-image-inputs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9110957Z  * [new branch]        feat/sdk-qualification-evidence -> origin/feat/sdk-qualification-evidence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9111388Z  * [new branch]        feat/sdk-vv-input-closure -> origin/feat/sdk-vv-input-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9111913Z  * [new branch]        feat/sdk-vv-input-materialization -> origin/feat/sdk-vv-input-materialization
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9112355Z  * [new branch]        feat/sdk-vv-runner        -> origin/feat/sdk-vv-runner
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9112787Z  * [new branch]        feat/session-operation-capture -> origin/feat/session-operation-capture
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9113397Z  * [new branch]        feat/unpublished-sdk-artifact-acquisition -> origin/feat/unpublished-sdk-artifact-acquisition
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9113967Z  * [new branch]        feat/unpublished-sdk-artifact-custody -> origin/feat/unpublished-sdk-artifact-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9114526Z  * [new branch]        feat/unpublished-sdk-qualification -> origin/feat/unpublished-sdk-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9115009Z  * [new branch]        fix/500-main-workbench-focus -> origin/fix/500-main-workbench-focus
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9115471Z  * [new branch]        fix/500-release-workbench-focus -> origin/fix/500-release-workbench-focus
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9115936Z  * [new branch]        fix/521-main-build-inputs -> origin/fix/521-main-build-inputs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9116344Z  * [new branch]        fix/521-release-build-sets -> origin/fix/521-release-build-sets
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9116820Z  * [new branch]        fix/529-release-binary-carrier -> origin/fix/529-release-binary-carrier
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9117397Z  * [new branch]        fix/530-installed-semantic-helper-carrier -> origin/fix/530-installed-semantic-helper-carrier
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9118077Z  * [new branch]        fix/530-semantic-helper-setup -> origin/fix/530-semantic-helper-setup
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9118615Z  * [new branch]        fix/594-release-lexlean-466-sdk-admission -> origin/fix/594-release-lexlean-466-sdk-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9119137Z  * [new branch]        fix/account-genesis-rebind-194 -> origin/fix/account-genesis-rebind-194
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9119611Z  * [new branch]        fix/account-genesis-source-id -> origin/fix/account-genesis-source-id
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9120192Z  * [new branch]        fix/action-ephemeral-cache-capacity-2026-10-16 -> origin/fix/action-ephemeral-cache-capacity-2026-10-16
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9120750Z  * [new branch]        fix/agent-audit-2026-11-10 -> origin/fix/agent-audit-2026-11-10
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9121164Z  * [new branch]        fix/app-name-field        -> origin/fix/app-name-field
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9121583Z  * [new branch]        fix/approval-card-and-reach -> origin/fix/approval-card-and-reach
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9122196Z  * [new branch]        fix/binary-current-parent-integration-20261012 -> origin/fix/binary-current-parent-integration-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9122848Z  * [new branch]        fix/binary-private-hash-integration-20261012 -> origin/fix/binary-private-hash-integration-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9123474Z  * [new branch]        fix/binary-program-main-20261104 -> origin/fix/binary-program-main-20261104
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9124045Z  * [new branch]        fix/binary-reviewable-generation-20261014 -> origin/fix/binary-reviewable-generation-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9124649Z  * [new branch]        fix/binary-sdk-owned-retirement-20261012 -> origin/fix/binary-sdk-owned-retirement-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9125203Z  * [new branch]        fix/bootstrap-retry-http-5xx -> origin/fix/bootstrap-retry-http-5xx
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9125804Z  * [new branch]        fix/bounded-exporter-seed-enumeration -> origin/fix/bounded-exporter-seed-enumeration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9126369Z  * [new branch]        fix/bounded-exporter-seed-publication -> origin/fix/bounded-exporter-seed-publication
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9126958Z  * [new branch]        fix/bounded-metadata-aliases -> origin/fix/bounded-metadata-aliases
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9127477Z  * [new branch]        fix/bounded-private-exporter-runtime -> origin/fix/bounded-private-exporter-runtime
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9128153Z  * [new branch]        fix/bounded-sdk-executable-read -> origin/fix/bounded-sdk-executable-read
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9128734Z  * [new branch]        fix/browser-close-retirement-arbitration -> origin/fix/browser-close-retirement-arbitration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9129285Z  * [new branch]        fix/browser-diagnostic-retirement -> origin/fix/browser-diagnostic-retirement
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9129815Z  * [new branch]        fix/browser-fixtures-std-1.2 -> origin/fix/browser-fixtures-std-1.2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9130336Z  * [new branch]        fix/browser-presentation-scheduling -> origin/fix/browser-presentation-scheduling
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9131075Z  * [new branch]        fix/browser-runtime-oracle-admission -> origin/fix/browser-runtime-oracle-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9131654Z  * [new branch]        fix/browser-status-announcements -> origin/fix/browser-status-announcements
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9132158Z  * [new branch]        fix/browser-suite-file-closure -> origin/fix/browser-suite-file-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9132700Z  * [new branch]        fix/cbor-octet-allocation -> origin/fix/cbor-octet-allocation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9133154Z  * [new branch]        fix/chromium-eof-input-20261012 -> origin/fix/chromium-eof-input-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9133676Z  * [new branch]        fix/chromium-sdk-no-clobber-20261012 -> origin/fix/chromium-sdk-no-clobber-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9134258Z  * [new branch]        fix/ci-pr-scoped-supersession -> origin/fix/ci-pr-scoped-supersession
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9134829Z  * [new branch]        fix/ci-private-rust-tool-build-target-20261014 -> origin/fix/ci-private-rust-tool-build-target-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9135460Z  * [new branch]        fix/ci-resource-diagnostics -> origin/fix/ci-resource-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9136014Z  * [new branch]        fix/ci-same-run-sdk-source-owner-v4-20261014 -> origin/fix/ci-same-run-sdk-source-owner-v4-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9136551Z  * [new branch]        fix/ci-shared-capacity-187 -> origin/fix/ci-shared-capacity-187
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9137039Z  * [new branch]        fix/ci-single-sdk-input-20261014 -> origin/fix/ci-single-sdk-input-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9137583Z  * [new branch]        fix/ci-source-only-conformance-image -> origin/fix/ci-source-only-conformance-image
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9138227Z  * [new branch]        fix/command-memory-oracle -> origin/fix/command-memory-oracle
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9138739Z  * [new branch]        fix/compiler-artifact-metadata-custody -> origin/fix/compiler-artifact-metadata-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9139415Z  * [new branch]        fix/compiler-main-private-hash-integration-20261012 -> origin/fix/compiler-main-private-hash-integration-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9140124Z  * [new branch]        fix/compiler-model-input-closure-v2-20261015 -> origin/fix/compiler-model-input-closure-v2-20261015
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9140691Z  * [new branch]        fix/compiler-unit-qualification -> origin/fix/compiler-unit-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9141288Z  * [new branch]        fix/complete-portable-diagnostic-inventory -> origin/fix/complete-portable-diagnostic-inventory
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9141898Z  * [new branch]        fix/configuration-diagnostic-boundaries -> origin/fix/configuration-diagnostic-boundaries
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9142427Z  * [new branch]        fix/consumer-compiler-locks -> origin/fix/consumer-compiler-locks
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9142929Z  * [new branch]        fix/core-wasm-v2-stack-exports -> origin/fix/core-wasm-v2-stack-exports
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9143552Z  * [new branch]        fix/devcontainer-browser-preflight -> origin/fix/devcontainer-browser-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9144147Z  * [new branch]        fix/devcontainer-toolchain-readability -> origin/fix/devcontainer-toolchain-readability
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9144787Z  * [new branch]        fix/duplicate-probe-response-ownership -> origin/fix/duplicate-probe-response-ownership
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9145528Z  * [new branch]        fix/dynamic-choice-substitution-custody -> origin/fix/dynamic-choice-substitution-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9146126Z  * [new branch]        fix/early-native-profile-admission -> origin/fix/early-native-profile-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9146637Z  * [new branch]        fix/exact-sdk-index-numbers -> origin/fix/exact-sdk-index-numbers
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9147186Z  * [new branch]        fix/exclusive-exporter-seed-publication -> origin/fix/exclusive-exporter-seed-publication
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9147750Z  * [new branch]        fix/explicit-sdk-lock-migration -> origin/fix/explicit-sdk-lock-migration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9148481Z  * [new branch]        fix/exporter-configuration-custody -> origin/fix/exporter-configuration-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9148994Z  * [new branch]        fix/exporter-copy-custody -> origin/fix/exporter-copy-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9149499Z  * [new branch]        fix/exporter-custody-shared-golden -> origin/fix/exporter-custody-shared-golden
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9150085Z  * [new branch]        fix/exporter-extraction-tool-authority -> origin/fix/exporter-extraction-tool-authority
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9150624Z  * [new branch]        fix/exporter-failure-custody -> origin/fix/exporter-failure-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9151115Z  * [new branch]        fix/exporter-package-custody -> origin/fix/exporter-package-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9151606Z  * [new branch]        fix/exporter-seed-handoff -> origin/fix/exporter-seed-handoff
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9152159Z  * [new branch]        fix/exporter-source-inventory-bounds -> origin/fix/exporter-source-inventory-bounds
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9152746Z  * [new branch]        fix/first-body-failure-order -> origin/fix/first-body-failure-order
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9153291Z  * [new branch]        fix/fixed-ingress-json-parser-20261012 -> origin/fix/fixed-ingress-json-parser-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9153821Z  * [new branch]        fix/forced-color-system-palette -> origin/fix/forced-color-system-palette
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9154375Z  * [new branch]        fix/fresh-source-compiler-owner -> origin/fix/fresh-source-compiler-owner
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9154952Z  * [new branch]        fix/fresh-tool-construction-current-integration -> origin/fix/fresh-tool-construction-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9155523Z  * [new branch]        fix/gate-worktree-boundary -> origin/fix/gate-worktree-boundary
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9156028Z  * [new branch]        fix/generated-wasm-artifact-identity -> origin/fix/generated-wasm-artifact-identity
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9156496Z  * [new branch]        fix/historical-sdk-runner -> origin/fix/historical-sdk-runner
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9156932Z  * [new branch]        fix/holo-oracle-formatting -> origin/fix/holo-oracle-formatting
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9157407Z  * [new branch]        fix/integrate-main-with-native-stack -> origin/fix/integrate-main-with-native-stack
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9158073Z  * [new branch]        fix/integrated-browser-environment -> origin/fix/integrated-browser-environment
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9158606Z  * [new branch]        fix/integrated-golden-preflight -> origin/fix/integrated-golden-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9159126Z  * [new branch]        fix/integrated-migration-git-custody -> origin/fix/integrated-migration-git-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9159677Z  * [new branch]        fix/integrated-status-announcements -> origin/fix/integrated-status-announcements
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9160179Z  * [new branch]        fix/isolated-sdk-index-decoder -> origin/fix/isolated-sdk-index-decoder
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9160710Z  * [new branch]        fix/issue-14-diagnostic-boundary-coverage -> origin/fix/issue-14-diagnostic-boundary-coverage
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9161293Z  * [new branch]        fix/issue-21-gate-15-closure -> origin/fix/issue-21-gate-15-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9161735Z  * [new branch]        fix/lexlean-466-sdk-admission -> origin/fix/lexlean-466-sdk-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9162284Z  * [new branch]        fix/lexlean-matmul-action-builder-config -> origin/fix/lexlean-matmul-action-builder-config
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9162850Z  * [new branch]        fix/lexlean-matmul-docker-child-config -> origin/fix/lexlean-matmul-docker-child-config
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9163423Z  * [new branch]        fix/lexlean-matmul-local-cargo-inventory -> origin/fix/lexlean-matmul-local-cargo-inventory
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9163965Z  * [new branch]        fix/lexlean-semantic-lowering -> origin/fix/lexlean-semantic-lowering
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9164468Z  * [new branch]        fix/library-root-projection -> origin/fix/library-root-projection
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9164965Z  * [new branch]        fix/m0-prismpm-main-replay-revert -> origin/fix/m0-prismpm-main-replay-revert
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9165590Z  * [new branch]        fix/main-exporter-owner-integration-20261015 -> origin/fix/main-exporter-owner-integration-20261015
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9166153Z  * [new branch]        fix/main-installed-sdk-scratch -> origin/fix/main-installed-sdk-scratch
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9166759Z  * [new branch]        fix/main-owned-compiler-construction-20261012 -> origin/fix/main-owned-compiler-construction-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9167316Z  * [new branch]        fix/main-production-fixture -> origin/fix/main-production-fixture
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9167783Z  * [new branch]        fix/main-release-preflight -> origin/fix/main-release-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9168396Z  * [new branch]        fix/main-reproducible-build-state -> origin/fix/main-reproducible-build-state
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9168981Z  * [new branch]        fix/main-v04-source-union-20261105 -> origin/fix/main-v04-source-union-20261105
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9169502Z  * [new branch]        fix/native-acceptance-failure -> origin/fix/native-acceptance-failure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9170085Z  * [new branch]        fix/native-generator-source-preflight -> origin/fix/native-generator-source-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9170718Z  * [new branch]        fix/native-golden-source-preflight -> origin/fix/native-golden-source-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9171260Z  * [new branch]        fix/native-manifest-count-bound -> origin/fix/native-manifest-count-bound
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9171795Z  * [new branch]        fix/native-source-dependency-cache -> origin/fix/native-source-dependency-cache
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9172345Z  * [new branch]        fix/native-source-hash-profile -> origin/fix/native-source-hash-profile
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9172911Z  * [new branch]        fix/nonblocking-browser-diagnostics -> origin/fix/nonblocking-browser-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9173494Z  * [new branch]        fix/nonroot-oracle-source-comparison -> origin/fix/nonroot-oracle-source-comparison
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9174039Z  * [new branch]        fix/npm-prism-code-package-budget -> origin/fix/npm-prism-code-package-budget
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9174545Z  * [new branch]        fix/oci-null-volume-metadata -> origin/fix/oci-null-volume-metadata
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9175098Z  * [new branch]        fix/opaque-sdk-index-extensions -> origin/fix/opaque-sdk-index-extensions
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9175604Z  * [new branch]        fix/operation-observation-lifetimes -> origin/fix/operation-observation-lifetimes
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9176139Z  * [new branch]        fix/oracle-failure-diagnostics -> origin/fix/oracle-failure-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9176578Z  * [new branch]        fix/oracle-sdk-reference  -> origin/fix/oracle-sdk-reference
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9177065Z  * [new branch]        fix/ordinary-observer-noninterference -> origin/fix/ordinary-observer-noninterference
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9177604Z  * [new branch]        fix/original-sdk-gate-evidence -> origin/fix/original-sdk-gate-evidence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9178343Z  * [new branch]        fix/oscal-conservation-current-release-20261012 -> origin/fix/oscal-conservation-current-release-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9178904Z  * [new branch]        fix/owned-sdk-registry-tls -> origin/fix/owned-sdk-registry-tls
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9179403Z  * [new branch]        fix/package-metadata-evidence -> origin/fix/package-metadata-evidence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9180019Z  * [new branch]        fix/packaged-compiler-acquisition -> origin/fix/packaged-compiler-acquisition
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9180512Z  * [new branch]        fix/pkce-current-integration -> origin/fix/pkce-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9180971Z  * [new branch]        fix/portable-aborted-response -> origin/fix/portable-aborted-response
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9181527Z  * [new branch]        fix/portable-observation-failure-diagnostics -> origin/fix/portable-observation-failure-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9182111Z  * [new branch]        fix/portable-oracle-build-policy -> origin/fix/portable-oracle-build-policy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9182656Z  * [new branch]        fix/portable-oracle-response-evidence -> origin/fix/portable-oracle-response-evidence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9183206Z  * [new branch]        fix/portable-request-failure-context -> origin/fix/portable-request-failure-context
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9183730Z  * [new branch]        fix/portable-submission-completion -> origin/fix/portable-submission-completion
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9184264Z  * [new branch]        fix/portable-view-failure-boundaries -> origin/fix/portable-view-failure-boundaries
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9184733Z  * [new branch]        fix/pr-ci-disk            -> origin/fix/pr-ci-disk
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9185217Z  * [new branch]        fix/pr129-cold-library-owner-20261014 -> origin/fix/pr129-cold-library-owner-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9185814Z  * [new branch]        fix/pr129-effects-family-tools-20261012 -> origin/fix/pr129-effects-family-tools-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9186423Z  * [new branch]        fix/pr129-reviewed-completion-20261014 -> origin/fix/pr129-reviewed-completion-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9187068Z  * [new branch]        fix/pr129-shared-tool-stage-20261012 -> origin/fix/pr129-shared-tool-stage-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9187614Z  * [new branch]        fix/pr129-shared-tool-target-20261014 -> origin/fix/pr129-shared-tool-target-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9188320Z  * [new branch]        fix/pr184-reviewed-compiler-pair-20261012 -> origin/fix/pr184-reviewed-compiler-pair-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9189009Z  * [new branch]        fix/pr192-real-sdk-caller-qualification-20261015 -> origin/fix/pr192-real-sdk-caller-qualification-20261015
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9189631Z  * [new branch]        fix/presentation-fixture-retirement -> origin/fix/presentation-fixture-retirement
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9190252Z  * [new branch]        fix/primary-coherent-manifest-probe -> origin/fix/primary-coherent-manifest-probe
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9190804Z  * [new branch]        fix/primary-holo-current-integration -> origin/fix/primary-holo-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9191382Z  * [new branch]        fix/private-generated-package-adversaries -> origin/fix/private-generated-package-adversaries
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9191955Z  * [new branch]        fix/publication-driver-cache -> origin/fix/publication-driver-cache
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9192444Z  * [new branch]        fix/raw-sdk-acquisition-custody -> origin/fix/raw-sdk-acquisition-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9192927Z  * [new branch]        fix/refresh-osv-snapshots -> origin/fix/refresh-osv-snapshots
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9193496Z  * [new branch]        fix/registry-qualification-buildx-custody -> origin/fix/registry-qualification-buildx-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9194033Z  * [new branch]        fix/release-acceptance-status -> origin/fix/release-acceptance-status
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9194553Z  * [new branch]        fix/release-account-genesis-616 -> origin/fix/release-account-genesis-616
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9195153Z  * [new branch]        fix/release-chromium-source-integration-20261012 -> origin/fix/release-chromium-source-integration-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9195794Z  * [new branch]        fix/release-preflight     -> origin/fix/release-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9196247Z  * [new branch]        fix/release-rehearsal-gates -> origin/fix/release-rehearsal-gates
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9196791Z  * [new branch]        fix/release-reproduction-layer-closure -> origin/fix/release-reproduction-layer-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9197374Z  * [new branch]        fix/release-reviewed-integration -> origin/fix/release-reviewed-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9197947Z  * [new branch]        fix/release-v04-residual  -> origin/fix/release-v04-residual
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9198457Z  * [new branch]        fix/reproducibility-source-copy -> origin/fix/reproducibility-source-copy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9198976Z  * [new branch]        fix/reservation-shared-compiler -> origin/fix/reservation-shared-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9199487Z  * [new branch]        fix/resolve-main-conflict-markers -> origin/fix/resolve-main-conflict-markers
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9200075Z  * [new branch]        fix/restore-compiler-phase-owner-coverage -> origin/fix/restore-compiler-phase-owner-coverage
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9200681Z  * [new branch]        fix/retained-session-products -> origin/fix/retained-session-products
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9201165Z  * [new branch]        fix/retention-input-copy-guard -> origin/fix/retention-input-copy-guard
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9201634Z  * [new branch]        fix/rust-test-drift       -> origin/fix/rust-test-drift
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9202062Z  * [new branch]        fix/rust-tool-change-scope -> origin/fix/rust-tool-change-scope
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9202577Z  * [new branch]        fix/sdk-candidate-test-v0-4-0-tag-194 -> origin/fix/sdk-candidate-test-v0-4-0-tag-194
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9203130Z  * [new branch]        fix/sdk-construction-failure-context -> origin/fix/sdk-construction-failure-context
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9203726Z  * [new branch]        fix/sdk-current-storage-admission -> origin/fix/sdk-current-storage-admission
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9204298Z  * [new branch]        fix/sdk-exclusive-oci-staging -> origin/fix/sdk-exclusive-oci-staging
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9204823Z  * [new branch]        fix/sdk-installed-owner-input-closure -> origin/fix/sdk-installed-owner-input-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9205401Z  * [new branch]        fix/sdk-normal-exit-process-retirement -> origin/fix/sdk-normal-exit-process-retirement
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9206034Z  * [new branch]        fix/sdk-process-retirement-watchdog -> origin/fix/sdk-process-retirement-watchdog
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9206561Z  * [new branch]        fix/sdk-qualification-component-union -> origin/fix/sdk-qualification-component-union
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9207106Z  * [new branch]        fix/sdk-reproducibility-logs -> origin/fix/sdk-reproducibility-logs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9207547Z  * [new branch]        fix/sdk-runtime-reference -> origin/fix/sdk-runtime-reference
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9208163Z  * [new branch]        fix/sdk-sealed-stage-readonly-descriptor -> origin/fix/sdk-sealed-stage-readonly-descriptor
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9208768Z  * [new branch]        fix/sdk-snapshot-xz-preference-20261014 -> origin/fix/sdk-snapshot-xz-preference-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9209279Z  * [new branch]        fix/sdk-standards-lock-custody -> origin/fix/sdk-standards-lock-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9209755Z  * [new branch]        fix/semantic-mutant-evidence -> origin/fix/semantic-mutant-evidence
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9210287Z  * [new branch]        fix/semantic-presentation-artifact-custody -> origin/fix/semantic-presentation-artifact-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9211099Z  * [new branch]        fix/semantic-presentation-current-integration -> origin/fix/semantic-presentation-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9211750Z  * [new branch]        fix/semantic-presentation-provenance -> origin/fix/semantic-presentation-provenance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9212319Z  * [new branch]        fix/session-operation-current-integration -> origin/fix/session-operation-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9212998Z  * [new branch]        fix/signed-context-current-integration -> origin/fix/signed-context-current-integration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9213550Z  * [new branch]        fix/source-authoring-interface-v1 -> origin/fix/source-authoring-interface-v1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9214072Z  * [new branch]        fix/source-bound-oracle-diagnostics -> origin/fix/source-bound-oracle-diagnostics
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9214616Z  * [new branch]        fix/static-elf-runtime-closure -> origin/fix/static-elf-runtime-closure
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9215084Z  * [new branch]        fix/static-parser-refusal-fixture -> origin/fix/static-parser-refusal-fixture
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9215566Z  * [new branch]        fix/strict-nested-sdk-index -> origin/fix/strict-nested-sdk-index
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9216129Z  * [new branch]        fix/test-retained-product-target-custody-20261014 -> origin/fix/test-retained-product-target-custody-20261014
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9216871Z  * [new branch]        fix/text-cli-acceptance-standin-workbench-frame -> origin/fix/text-cli-acceptance-standin-workbench-frame
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9217512Z  * [new branch]        fix/unpublished-sdk-qualification -> origin/fix/unpublished-sdk-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9218088Z  * [new branch]        fix/v0.4-pr-ci-disk       -> origin/fix/v0.4-pr-ci-disk
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9218590Z  * [new branch]        fix/v0.4-release-rehearsal-gates -> origin/fix/v0.4-release-rehearsal-gates
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9219067Z  * [new branch]        fix/v0.4-vv-conformance   -> origin/fix/v0.4-vv-conformance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9219538Z  * [new branch]        fix/v04-bootstrap-http-retry -> origin/fix/v04-bootstrap-http-retry
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9220042Z  * [new branch]        fix/v04-bootstrap-retry-window -> origin/fix/v04-bootstrap-retry-window
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9220560Z  * [new branch]        fix/v04-downstream-release-checks -> origin/fix/v04-downstream-release-checks
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9221184Z  * [new branch]        fix/v04-installed-vv-sbin-and-library-tool -> origin/fix/v04-installed-vv-sbin-and-library-tool
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9221817Z  * [new branch]        fix/v04-reproducible-build-state -> origin/fix/v04-reproducible-build-state
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9222341Z  * [new branch]        fix/v04-rust-tool-change-scope -> origin/fix/v04-rust-tool-change-scope
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9222862Z  * [new branch]        fix/v04-sdk-reproducibility-logs -> origin/fix/v04-sdk-reproducibility-logs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9223386Z  * [new branch]        fix/verified-compiler-refresh -> origin/fix/verified-compiler-refresh
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9223864Z  * [new branch]        fix/verified-compiler-reuse -> origin/fix/verified-compiler-reuse
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9224373Z  * [new branch]        fix/verified-local-function-compiler -> origin/fix/verified-local-function-compiler
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9224924Z  * [new branch]        fix/vv-disk-checkpoints   -> origin/fix/vv-disk-checkpoints
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9225397Z  * [new branch]        fix/vv-library-sdk-shell-check -> origin/fix/vv-library-sdk-shell-check
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9225904Z  * [new branch]        fix/workbench-forced-colors-385 -> origin/fix/workbench-forced-colors-385
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9226414Z  * [new branch]        fix/workspace-corpus-zero-blocks -> origin/fix/workspace-corpus-zero-blocks
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9226977Z  * [new branch]        golden-proposal/500-main-workbench-focus -> origin/golden-proposal/500-main-workbench-focus
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9227557Z  * [new branch]        golden-proposal/500-workbench-focus -> origin/golden-proposal/500-workbench-focus
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9228285Z  * [new branch]        golden-proposal/516-main-62cb0e0 -> origin/golden-proposal/516-main-62cb0e0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9228811Z  * [new branch]        golden-proposal/516-main-source62 -> origin/golden-proposal/516-main-source62
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9229314Z  * [new branch]        holo/016-container-layer  -> origin/holo/016-container-layer
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9229731Z  * [new branch]        ilya/194-release-runbook  -> origin/ilya/194-release-runbook
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9230212Z  * [new branch]        ilya/194-tag-prep         -> origin/ilya/194-tag-prep
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9230678Z  * [new branch]        ilya/194-text3-fixture-runbook -> origin/ilya/194-text3-fixture-runbook
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9231116Z  * [new branch]        ilya/203-acceptance       -> origin/ilya/203-acceptance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9231572Z  * [new branch]        ilya/203-lexlean-v040     -> origin/ilya/203-lexlean-v040
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9232013Z  * [new branch]        ilya/203-pin-lexlean-v04  -> origin/ilya/203-pin-lexlean-v04
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9232565Z  * [new branch]        ilya/203-prism-code-acceptance -> origin/ilya/203-prism-code-acceptance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9233032Z  * [new branch]        ilya/205-pages-workflow   -> origin/ilya/205-pages-workflow
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9233461Z  * [new branch]        ilya/207-workbench-on-227 -> origin/ilya/207-workbench-on-227
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9233990Z  * [new branch]        ilya/228-inputlimit-exit-code -> origin/ilya/228-inputlimit-exit-code
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9234489Z  * [new branch]        ilya/228-manifest-text3   -> origin/ilya/228-manifest-text3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9234898Z  * [new branch]        ilya/228-module-titles    -> origin/ilya/228-module-titles
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9235309Z  * [new branch]        ilya/260-vocabulary       -> origin/ilya/260-vocabulary
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9235698Z  * [new branch]        ilya/262-stability        -> origin/ilya/262-stability
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9236110Z  * [new branch]        ilya/263-spec-package     -> origin/ilya/263-spec-package
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9236545Z  * [new branch]        ilya/263-spec-proposal    -> origin/ilya/263-spec-proposal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9236933Z  * [new branch]        ilya/264-input-lock       -> origin/ilya/264-input-lock
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9237384Z  * [new branch]        ilya/265-lock-update      -> origin/ilya/265-lock-update
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9237823Z  * [new branch]        ilya/266-proof-predicate  -> origin/ilya/266-proof-predicate
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9238354Z  * [new branch]        ilya/266-proof-type       -> origin/ilya/266-proof-type
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9238856Z  * [new branch]        ilya/267-attestation-bundle -> origin/ilya/267-attestation-bundle
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9239260Z  * [new branch]        ilya/267-attestation-wire -> origin/ilya/267-attestation-wire
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9239690Z  * [new branch]        ilya/268-build-provenance -> origin/ilya/268-build-provenance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9240123Z  * [new branch]        ilya/269-assurance-levels -> origin/ilya/269-assurance-levels
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9240557Z  * [new branch]        ilya/270-check-rust       -> origin/ilya/270-check-rust
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9240931Z  * [new branch]        ilya/270-check-verdict    -> origin/ilya/270-check-verdict
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9241286Z  * [new branch]        ilya/271-inspect          -> origin/ilya/271-inspect
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9241677Z  * [new branch]        ilya/272-attest-rust      -> origin/ilya/272-attest-rust
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9242059Z  * [new branch]        ilya/273-verify-package   -> origin/ilya/273-verify-package
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9242465Z  * [new branch]        ilya/274-dual-digests     -> origin/ilya/274-dual-digests
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9242886Z  * [new branch]        ilya/275-tlog-timestamps  -> origin/ilya/275-tlog-timestamps
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9243286Z  * [new branch]        ilya/276-holo-verify      -> origin/ilya/276-holo-verify
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9243738Z  * [new branch]        ilya/278-second-reference-archive -> origin/ilya/278-second-reference-archive
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9244176Z  * [new branch]        ilya/280-prism-toml       -> origin/ilya/280-prism-toml
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9244566Z  * [new branch]        ilya/281-build-check      -> origin/ilya/281-build-check
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9244942Z  * [new branch]        ilya/281-prism-init       -> origin/ilya/281-prism-init
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9245310Z  * [new branch]        ilya/282-run-gated        -> origin/ilya/282-run-gated
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9245722Z  * [new branch]        ilya/283-world-within-policy -> origin/ilya/283-world-within-policy
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9246205Z  * [new branch]        ilya/287-conformance      -> origin/ilya/287-conformance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9246602Z  * [new branch]        ilya/288-dev-studio       -> origin/ilya/288-dev-studio
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9246975Z  * [new branch]        ilya/289-generate         -> origin/ilya/289-generate
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9247335Z  * [new branch]        ilya/290-export           -> origin/ilya/290-export
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9247735Z  * [new branch]        ilya/295-runtime-middleware -> origin/ilya/295-runtime-middleware
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9248323Z  * [new branch]        ilya/300-docs-generator   -> origin/ilya/300-docs-generator
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9248786Z  * [new branch]        ilya/300-docs-pipeline-proposal -> origin/ilya/300-docs-pipeline-proposal
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9249321Z  * [new branch]        ilya/340-no-spec-conflicts -> origin/ilya/340-no-spec-conflicts
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9249734Z  * [new branch]        ilya/ci-merge-group       -> origin/ilya/ci-merge-group
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9250163Z  * [new branch]        ilya/ci-native-golden-push -> origin/ilya/ci-native-golden-push
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9250650Z  * [new branch]        ilya/ci-vv-language-inputs -> origin/ilya/ci-vv-language-inputs
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9251097Z  * [new branch]        ilya/ci-vv-probe-248      -> origin/ilya/ci-vv-probe-248
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9251548Z  * [new branch]        ilya/dockerless-build     -> origin/ilya/dockerless-build
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9252021Z  * [new branch]        ilya/docs-narrative-and-publish -> origin/ilya/docs-narrative-and-publish
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9252540Z  * [new branch]        ilya/issue-templates      -> origin/ilya/issue-templates
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9252977Z  * [new branch]        ilya/m2-wave2-combined    -> origin/ilya/m2-wave2-combined
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9253422Z  * [new branch]        ilya/npm-prism-code       -> origin/ilya/npm-prism-code
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9253889Z  * [new branch]        ilya/npm-trusted-publishing -> origin/ilya/npm-trusted-publishing
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9254486Z  * [new branch]        integration/production-pr-components -> origin/integration/production-pr-components
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9255066Z  * [new branch]        integration/reviewed-pr-component-union -> origin/integration/reviewed-pr-component-union
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9255809Z  * [new branch]        integration/reviewed-production-components-20261013 -> origin/integration/reviewed-production-components-20261013
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9256447Z  * [new branch]        integration/reviewed-sdk-qualification -> origin/integration/reviewed-sdk-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9257030Z  * [new branch]        m0/issue-5-lexlean-reconcile -> origin/m0/issue-5-lexlean-reconcile
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9257437Z  * [new branch]        main                      -> origin/main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9258031Z  * [new branch]        perf/bounded-compiler-artifact-verification -> origin/perf/bounded-compiler-artifact-verification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9258645Z  * [new branch]        perf/budget-source-owner-tools -> origin/perf/budget-source-owner-tools
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9259204Z  * [new branch]        perf/compiler-phase-observation -> origin/perf/compiler-phase-observation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9259708Z  * [new branch]        perf/custody-source-owner-tools -> origin/perf/custody-source-owner-tools
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9260201Z  * [new branch]        perf/extended-source-owner-tools -> origin/perf/extended-source-owner-tools
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9260685Z  * [new branch]        perf/fresh-compiler-observation -> origin/perf/fresh-compiler-observation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9261234Z  * [new branch]        perf/fresh-sdk-alias-inventory-20261012 -> origin/perf/fresh-sdk-alias-inventory-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9261712Z  * [new branch]        perf/node-owner-timing    -> origin/perf/node-owner-timing
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9262127Z  * [new branch]        perf/private-driver-sha2  -> origin/perf/private-driver-sha2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9262654Z  * [new branch]        perf/private-verification-exporter-owner -> origin/perf/private-verification-exporter-owner
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9263241Z  * [new branch]        perf/publication-compiler-owner -> origin/perf/publication-compiler-owner
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9263777Z  * [new branch]        perf/remaining-private-driver-hashes -> origin/perf/remaining-private-driver-hashes
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9264307Z  * [new branch]        perf/remaining-private-driver-sha2 -> origin/perf/remaining-private-driver-sha2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9264817Z  * [new branch]        perf/rust-tool-stage-preflight -> origin/perf/rust-tool-stage-preflight
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9265345Z  * [new branch]        perf/session-source-custody-single-pass -> origin/perf/session-source-custody-single-pass
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9265905Z  * [new branch]        perf/shared-rust-oracle-tools -> origin/perf/shared-rust-oracle-tools
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9266464Z  * [new branch]        perf/source-only-category-preparation-20261012 -> origin/perf/source-only-category-preparation-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9267065Z  * [new branch]        perf/streamed-compiler-source-custody -> origin/perf/streamed-compiler-source-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9267620Z  * [new branch]        perf/unit-compiler-owner-scheduling -> origin/perf/unit-compiler-owner-scheduling
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9268336Z  * [new branch]        prep/controller-capsule-normal-source-20261015 -> origin/prep/controller-capsule-normal-source-20261015
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9268837Z  * [new branch]        prism-receipts            -> origin/prism-receipts
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9269351Z  * [new branch]        probe/convert-fixtures    -> origin/probe/convert-fixtures
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9269752Z  * [new branch]        probe/diag-1              -> origin/probe/diag-1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9270145Z  * [new branch]        probe/diag-2              -> origin/probe/diag-2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9270520Z  * [new branch]        probe/diag-3              -> origin/probe/diag-3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9270934Z  * [new branch]        probe/dk-owners-fixtures  -> origin/probe/dk-owners-fixtures
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9271435Z  * [new branch]        probe/dkws-1              -> origin/probe/dkws-1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9271815Z  * [new branch]        probe/dkws-2              -> origin/probe/dkws-2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9272298Z  * [new branch]        probe/entity-breakdown-main -> origin/probe/entity-breakdown-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9272810Z  * [new branch]        probe/entity-breakdown-sep19 -> origin/probe/entity-breakdown-sep19
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9273249Z  * [new branch]        probe/examples-c          -> origin/probe/examples-c
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9273670Z  * [new branch]        probe/gate6-abc           -> origin/probe/gate6-abc
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9274065Z  * [new branch]        probe/residual-1          -> origin/probe/residual-1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9274470Z  * [new branch]        probe/rust-failing-b      -> origin/probe/rust-failing-b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9274899Z  * [new branch]        probe/rust-full-main      -> origin/probe/rust-full-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9275362Z  * [new branch]        probe/selfhost-tests      -> origin/probe/selfhost-tests
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9275830Z  * [new branch]        probe/standalone-final-a  -> origin/probe/standalone-final-a
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9276293Z  * [new branch]        probe/standalone-timing-fix -> origin/probe/standalone-timing-fix
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9276767Z  * [new branch]        probe/standalone-timing-fix2 -> origin/probe/standalone-timing-fix2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9277263Z  * [new branch]        probe/standalone-timing-main -> origin/probe/standalone-timing-main
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9277721Z  * [new branch]        probe/trim-tests          -> origin/probe/trim-tests
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9278258Z  * [new branch]        probe/vv-gates-7-15       -> origin/probe/vv-gates-7-15
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9278717Z  * [new branch]        probe/vv-gates-7-15-b     -> origin/probe/vv-gates-7-15-b
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9279118Z  * [new branch]        probe/vv-trace            -> origin/probe/vv-trace
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9279818Z  * [new branch]        release-please--branches--main--components--prism-code-conformance -> origin/release-please--branches--main--components--prism-code-conformance
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9280843Z  * [new branch]        release-please--branches--main--components--prism-code-spec -> origin/release-please--branches--main--components--prism-code-spec
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9281720Z  * [new branch]        release-please--branches--main--components--prism-code-verify -> origin/release-please--branches--main--components--prism-code-verify
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9282364Z  * [new branch]        release/prism-code-0.4.0  -> origin/release/prism-code-0.4.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9282806Z  * [new branch]        release/prism-code-0.4.1  -> origin/release/prism-code-0.4.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9283249Z  * [new branch]        release/prism-code-0.4.2  -> origin/release/prism-code-0.4.2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9283682Z  * [new branch]        release/prism-code-0.6.0  -> origin/release/prism-code-0.6.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9284087Z  * [new branch]        release/prism-code-0.7.0  -> origin/release/prism-code-0.7.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9284465Z  * [new branch]        release/v0.4              -> origin/release/v0.4
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9284882Z  * [new branch]        review/521-binary-custody-e3b3b7ab -> origin/review/521-binary-custody-e3b3b7ab
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9285418Z  * [new branch]        review/521-helper-status-867f0275 -> origin/review/521-helper-status-867f0275
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9285941Z  * [new branch]        review/521-private-helper-4d35ad91 -> origin/review/521-private-helper-4d35ad91
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9286407Z  * [new branch]        review/521-union-a1d39f39 -> origin/review/521-union-a1d39f39
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9286850Z  * [new branch]        review/521-writer-ready-853840d8 -> origin/review/521-writer-ready-853840d8
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9287337Z  * [new branch]        review/main-vv-scheduling-bdb38d64 -> origin/review/main-vv-scheduling-bdb38d64
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9287830Z  * [new branch]        sdk-15f630aa-closure-v2   -> origin/sdk-15f630aa-closure-v2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9288383Z  * [new branch]        sdk/threat-model-appended-lists -> origin/sdk/threat-model-appended-lists
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9288972Z  * [new branch]        test/blake3-authoritative-corpus -> origin/test/blake3-authoritative-corpus
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9289450Z  * [new branch]        test/disk-checkpoint-survival -> origin/test/disk-checkpoint-survival
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9289947Z  * [new branch]        test/installed-browser-prerequisites -> origin/test/installed-browser-prerequisites
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9290517Z  * [new branch]        test/installed-sdk-lock-migration -> origin/test/installed-sdk-lock-migration
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9291139Z  * [new branch]        test/installed-seed-concurrency -> origin/test/installed-seed-concurrency
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9291656Z  * [new branch]        test/migration-authority-custody -> origin/test/migration-authority-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9292167Z  * [new branch]        test/migration-source-custody -> origin/test/migration-source-custody
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9292721Z  * [new branch]        test/native-exporter-publication-gates -> origin/test/native-exporter-publication-gates
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9293323Z  * [new branch]        test/native-lease-wasm-agreement -> origin/test/native-lease-wasm-agreement
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9293870Z  * [new branch]        test/native-sdk-browser-runtime-20261012 -> origin/test/native-sdk-browser-runtime-20261012
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9294450Z  * [new branch]        test/oracle-request-finished-controls -> origin/test/oracle-request-finished-controls
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9294995Z  * [new branch]        test/portable-cdp-correlation -> origin/test/portable-cdp-correlation
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9295499Z  * [new branch]        test/portable-view-trigger-matrix -> origin/test/portable-view-trigger-matrix
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9296079Z  * [new branch]        test/reviewed-hologram-source-pins -> origin/test/reviewed-hologram-source-pins
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9296585Z  * [new branch]        test/sdk-metadata-native-join -> origin/test/sdk-metadata-native-join
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9297086Z  * [new branch]        work/194-admit-0-4-0      -> origin/work/194-admit-0-4-0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9297515Z  * [new branch]        work/271-rust-holo-inspect -> origin/work/271-rust-holo-inspect
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9298093Z  * [new branch]        work/binary-generated-review -> origin/work/binary-generated-review
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9298606Z  * [new branch]        work/binary-generated-review-521 -> origin/work/binary-generated-review-521
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9299155Z  * [new branch]        work/binary-program-prerequisite -> origin/work/binary-program-prerequisite
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9299648Z  * [new branch]        work/compression-m0-reconcile -> origin/work/compression-m0-reconcile
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9300135Z  * [new branch]        work/m0-qualification-timings -> origin/work/m0-qualification-timings
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9300663Z  * [new branch]        work/stitch-browser-fixture-binding -> origin/work/stitch-browser-fixture-binding
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9301264Z  * [new branch]        work/stitch-combined-qualification -> origin/work/stitch-combined-qualification
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9301795Z  * [new branch]        work/stitch-factory-compiler-binding -> origin/work/stitch-factory-compiler-binding
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9302303Z  * [new branch]        work/stitch-qualification-overlay -> origin/work/stitch-qualification-overlay
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9302800Z  * [new tag]           prism-code-testing-v0.1.1 -> prism-code-testing-v0.1.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9303186Z  * [new tag]           prism-code-v0.2.0         -> prism-code-v0.2.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9303530Z  * [new tag]           prism-code-v0.4.0         -> prism-code-v0.4.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9303863Z  * [new tag]           prism-code-v0.4.1         -> prism-code-v0.4.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9304181Z  * [new tag]           prism-code-v0.4.2         -> prism-code-v0.4.2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9304538Z  * [new tag]           prism-code-v0.5.0         -> prism-code-v0.5.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9304890Z  * [new tag]           prism-code-v0.5.1         -> prism-code-v0.5.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9305304Z  * [new tag]           prism-code-v0.6.0         -> prism-code-v0.6.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9305635Z  * [new tag]           prism-code-v0.7.0         -> prism-code-v0.7.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9305950Z  * [new tag]           prism-code-v0.7.1         -> prism-code-v0.7.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9306320Z  * [new tag]           prism-code-v0.7.2         -> prism-code-v0.7.2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9306656Z  * [new tag]           prism-code-v0.8.0         -> prism-code-v0.8.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9306981Z  * [new tag]           prism-code-v0.9.0         -> prism-code-v0.9.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9307316Z  * [new tag]           prism-code-v0.9.1         -> prism-code-v0.9.1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9307658Z  * [new tag]           prism-code-v0.9.2         -> prism-code-v0.9.2
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9308150Z  * [new tag]           prism-code-v0.9.3         -> prism-code-v0.9.3
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9308487Z  * [new tag]           prism-code-v0.9.4         -> prism-code-v0.9.4
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9308825Z  * [new tag]           prism-code-v0.9.5         -> prism-code-v0.9.5
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9309368Z  * [new tag]           sdk-oci-354038b14c26913b475c8a2cf0294051cb4fd632-42967825486-1 -> sdk-oci-354038b14c26913b475c8a2cf0294051cb4fd632-42967825486-1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9310096Z  * [new tag]           sdk-oci-b48ee2ffa4d2097685054dc350b57aa204fc7080-42979954447-1 -> sdk-oci-b48ee2ffa4d2097685054dc350b57aa204fc7080-42979954447-1
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9310642Z  * [new tag]           v0.1.0                    -> v0.1.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9310960Z  * [new tag]           v0.2.0                    -> v0.2.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9311315Z  * [new tag]           v0.4.0                    -> v0.4.0
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9312218Z [command]/usr/bin/git rev-parse --verify --quiet 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974^{object}
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9312640Z 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9313673Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9314056Z ##[group]Determining the checkout info
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9314510Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9314746Z [command]/usr/bin/git sparse-checkout disable
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9315374Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9316095Z ##[group]Checking out the ref
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:21.9316446Z [command]/usr/bin/git checkout --progress --force 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7287402Z Note: switching to '3666dc0f9da56fcf066d96ec01cd9e14ec9a2974'.
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7288127Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7288354Z You are in 'detached HEAD' state. You can look around, make experimental
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7288865Z changes and commit them, and you can discard any commits you make in this
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7289316Z state without impacting any branches by switching back to a branch.
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7289564Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7289746Z If you want to create a new branch to retain commits you create, you may
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7290121Z do so (now or later) by using -c with the switch command. Example:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7290379Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7290582Z   git switch -c <new-branch-name>
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7290778Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7290875Z Or undo this operation with:
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7291023Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7291144Z   git switch -
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7291288Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7291462Z Turn off this advice by setting config variable advice.detachedHead to false
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7291731Z 
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7292048Z HEAD is now at 3666dc0f Native-library SDK check: relocation keeps archive modes, tools install root-owned, qualified before merge (#581)
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7335531Z ##[endgroup]
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7379134Z [command]/usr/bin/git log -1 --format=%H
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7397786Z 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7406612Z ##[group]Removing auth
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7412845Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7429150Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7596706Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7614309Z http.https://github.com/.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7619494Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7641906Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:22.7797616Z ##[endgroup]
+image	Restore exact reviewed source and bind game authorities	﻿2026-11-17T13:10:22.7876788Z ##[group]Run set -euo pipefail
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7877100Z [36;1mset -euo pipefail[0m
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7877360Z [36;1mumask 022[0m
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7877801Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare --phase image[0m
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7878512Z [36;1msudo chown -R 1000:1000 prismpm[0m
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7904546Z shell: /usr/bin/bash -e {0}
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:22.7904811Z ##[endgroup]
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:23.5249904Z /home/runner/work/uor-cs1.618/uor-cs1.618/game/scripts/numeric/prismpm-capture-candidate/candidate.bundle is okay
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:23.6534134Z From /home/runner/work/uor-cs1.618/uor-cs1.618/game/scripts/numeric/prismpm-capture-candidate/candidate.bundle
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:23.6534708Z  * branch              numeric-export-backport -> FETCH_HEAD
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:23.7902405Z Previous HEAD position was 3666dc0f Native-library SDK check: relocation keeps archive modes, tools install root-owned, qualified before merge (#581)
+image	Restore exact reviewed source and bind game authorities	2026-11-17T13:10:23.7911608Z HEAD is now at f292c710 test: link private capture evidence to retained linkage work
+image	Exercise actual host privilege and artifact handoff	﻿2026-11-17T13:10:25.3937247Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3938566Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image[0m
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3964893Z shell: /usr/bin/bash -e {0}
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3965289Z ##[endgroup]
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5335560Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: actual fixed Docker socket
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5336323Z 
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5419233Z ##[error]Process completed with exit code 1.
+image	Retain actual source image and cleanliness	﻿2026-11-17T13:10:25.5469290Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5470045Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect[0m
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5495558Z shell: /usr/bin/bash -e {0}
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5495884Z ##[endgroup]
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6836200Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: completed actual bridge preflight required
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6837166Z 
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6910894Z ##[error]Process completed with exit code 1.
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	﻿2026-11-17T13:10:25.6999930Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7000307Z with:
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7000562Z   name: candidate-capture-source-image-44089985756-1
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7000909Z   path: evidence/metadata-upload/
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7001168Z   if-no-files-found: error
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7001428Z   retention-days: 30
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7001691Z   compression-level: 6
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7001902Z   overwrite: false
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7002148Z   include-hidden-files: false
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.7002388Z ##[endgroup]
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.8272472Z (node:2452) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.8273097Z (Use `node --trace-deprecation ...` to show where the warning was created)
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.8311563Z With the provided path, there will be 1 file uploaded
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.8331121Z Artifact name is valid!
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:25.8331580Z Root directory input is valid!
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.4862751Z Beginning upload of artifact content to blob storage
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.5003098Z (node:2452) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.8285927Z Uploaded bytes 341
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.9191428Z Finished uploading artifact content to blob storage!
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.9193285Z SHA256 digest of uploaded artifact zip is ef2659e8aa6cec2b8e7a1e328cb505e5d127c43cda31a2bb96edb625ccea2ffa
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:26.9194006Z Finalizing artifact upload
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:27.3703406Z Artifact candidate-capture-source-image-44089985756-1.zip successfully finalized. Artifact ID 14330982957
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:27.3704408Z Artifact candidate-capture-source-image-44089985756-1 has been successfully uploaded! Final size is 341 bytes. Artifact ID is 14330982957
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T13:10:27.3708456Z Artifact download URL: https://github.com/R4-Laboratories/uor-cs1.618/actions/runs/44089985756/artifacts/14330982957
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-17T13:10:27.3845338Z Post job cleanup.
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4499528Z [command]/usr/bin/git version
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4511169Z git version 2.56.1
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4536149Z Temporarily overriding HOME='/home/runner/work/_temp/224048da-7a43-4ba1-89bb-377b3b579be0' before making global git config changes
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4537199Z Adding repository directory to the temporary git global config as a safe directory
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4540539Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/prismpm
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4568588Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4592696Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4766930Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.4788477Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	﻿2026-11-17T13:10:27.5081617Z Post job cleanup.
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5730265Z [command]/usr/bin/git version
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5758859Z git version 2.56.1
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5783417Z Temporarily overriding HOME='/home/runner/work/_temp/d774e0f9-c042-4b8f-8ef9-9a70b22ecb43' before making global git config changes
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5784383Z Adding repository directory to the temporary git global config as a safe directory
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5787623Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/uor-cs1.618/uor-cs1.618/game
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5813902Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.5839048Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.6014012Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683	2026-11-17T13:10:27.6037780Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Complete job	﻿2026-11-17T13:10:27.6320714Z Cleaning up orphan processes
+image	Complete job	2026-11-17T13:10:27.6844891Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

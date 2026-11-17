@@ -1,0 +1,14 @@
+image	Exercise actual host privilege and artifact handoff	﻿2026-11-17T13:10:25.3937247Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3938566Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation preflight-image[0m
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3964893Z shell: /usr/bin/bash -e {0}
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.3965289Z ##[endgroup]
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5335560Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: actual fixed Docker socket
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5336323Z 
+image	Exercise actual host privilege and artifact handoff	2026-11-17T13:10:25.5419233Z ##[error]Process completed with exit code 1.
+image	Retain actual source image and cleanliness	﻿2026-11-17T13:10:25.5469290Z ##[group]Run python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5470045Z [36;1mpython3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-bridge --bridge-operation image-collect[0m
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5495558Z shell: /usr/bin/bash -e {0}
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.5495884Z ##[endgroup]
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6836200Z host bridge incomplete: root bridge did not return: candidate capture qualification incomplete: completed actual bridge preflight required
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6837166Z 
+image	Retain actual source image and cleanliness	2026-11-17T13:10:25.6910894Z ##[error]Process completed with exit code 1.

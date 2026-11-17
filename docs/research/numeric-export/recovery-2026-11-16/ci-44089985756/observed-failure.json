@@ -1,0 +1,44 @@
+{
+  "schema": "cs1618/hosted-qualification-observation/1",
+  "run": 44089985756,
+  "game_commit": "b09d45c1d9813a06925dfbcf5dea9399c612d20b",
+  "source_snapshot": "f292c7100874c0e0b2d1e0e81b27caeec8391f77",
+  "result": "failed_preflight_before_source_image_or_qualification",
+  "observed_error": "actual fixed Docker socket",
+  "runner_uid": 1001,
+  "runner_gid": 1001,
+  "socket_target_and_mode": "not_retained",
+  "retained_failure_artifact": true,
+  "entries": [
+    {
+      "path": "launch.json",
+      "bytes": 1864,
+      "sha256": "e9a81b9c7dab7b5ace34d9fdc1298d34ada3296b2a21fc5f0a0d61f97bd8c912"
+    },
+    {
+      "path": "completed-run.json",
+      "bytes": 2439,
+      "sha256": "8b45dee24414dcb5d7dd6798dc0b19be8e41084459d0bf0dfcc7c92b316f2295"
+    },
+    {
+      "path": "failed-steps.log",
+      "bytes": 2109,
+      "sha256": "3e0350cb0a38c15061c14edbcd89ff75fce0d0ef6320fe5673d5d6a0d2ef861c"
+    },
+    {
+      "path": "full-run.log",
+      "bytes": 162992,
+      "sha256": "5b3bd5d14b7acee48d8d1e11a884ab064fe277571d7b9a73f6d239890de50bec"
+    },
+    {
+      "path": "artifacts.json",
+      "bytes": 175,
+      "sha256": "a6b9267cff1c33d064f4f03263b8567d8867ea7b8063385302349eb85cf9a5a3"
+    },
+    {
+      "path": "source-image-failure-artifact.zip",
+      "bytes": 341,
+      "sha256": "ef2659e8aa6cec2b8e7a1e328cb505e5d127c43cda31a2bb96edb625ccea2ffa"
+    }
+  ]
+}
