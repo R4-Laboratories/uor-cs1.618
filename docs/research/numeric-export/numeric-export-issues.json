@@ -284,10 +284,14 @@
       ],
       "evidence": [
         "recovery-2026-11-16/canonical-laws-diagnosis.md",
-        "recovery-2026-11-16/ci-44008985569/README.md"
+        "recovery-2026-11-16/ci-44008985569/README.md",
+        "recovery-2026-11-16/native-frontend-report-d8f8d8a.md",
+        "recovery-2026-11-16/native-frontend-d8f8d8a.tar.json",
+        "recovery-2026-11-16/laws-compilation-repair-recon.md"
       ],
       "dependencies": [],
-      "production_admission": false
+      "production_admission": false,
+      "reproduction": "Original actual SDK44008985569 remains failed for all four builds. Proposed source d8f8d8a preserves the complete eight-module closure without optional C emission: two fresh frontend runs, eight pinned kernel checks and two identical full exports passed in45.14s locally; actual component reader rejected18 mutations. Source review is in progress; schema publication compatibility requires review. Full SDK verification, new selected-output corpus and source/native baseline qualification remain pending."
     }
   ],
   "base": "b04af3550bb49c4e5bfdc0747a1e50cd58f13b81",
