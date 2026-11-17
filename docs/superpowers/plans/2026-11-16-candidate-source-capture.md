@@ -54,6 +54,8 @@ This is the NEXP013 dependency of the existing bounded-numeric-kernels Task 2c. 
 
 ### Task 2: Read-only actor lifecycle and candidate execution
 
+The spec’s Task2 implementation rulings add a never-started inspection actor to resolve descriptor/runtime circularity and refuse candidate roots beneath writable `/workspace`. Preserve the original18-call/420s cleanup bound; include all three actors in the finite accounting and evidence.
+
 **Files:** Modify the new candidate helper/tests/bootstrap from Task 1; create `scripts/conditional-capture-candidate-command.mjs` and its focused test. Preserve all four legacy authority files.
 
 **Interfaces:** `parent(source: Path, executable: Path) -> int` orchestrates the closed CLI using Task 1's descriptor/materializer. Bind Task 1’s measured source plan to actual independently inspected image/config/platform/inventory/image-authority observations with `bind_runtime`; fixture or absent observations cannot launch staging. One deadline governs all phases. `guest(descriptor: dict, deadline: float) -> dict` verifies immutable input and separate SDK baseline, then returns the closed response wrapping the unchanged original payload. Candidate launcher admits only `/candidate-input/current-test-elf`, existing `/workspace/conditional-capture` output, and the original exact libtest case/supervisor profile.

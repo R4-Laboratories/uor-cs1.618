@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "path": "rename-probe.json",
+      "bytes": 400,
+      "sha256": "333ed2253e1a207962d551b453027a9a4d9aa22a8836df987e8d39508d70db7a"
+    },
+    {
+      "path": "rename-probe.patch",
+      "bytes": 828,
+      "sha256": "ba6bcd78ca3a38e1224d62ef51d00a182c07d5abde76d8efec2759121d82db4a"
+    }
+  ],
+  "archive_bytes": 767,
+  "archive_sha256": "f56c897f6730df058e649e1fbd954a32054420ac21d03305355fd5c33ea69b0a"
+}
