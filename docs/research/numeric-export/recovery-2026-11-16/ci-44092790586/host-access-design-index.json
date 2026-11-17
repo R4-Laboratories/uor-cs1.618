@@ -1,0 +1,21 @@
+{
+  "schema": "cs1618/host-access-design-checkpoint/1",
+  "status": "design_ready_implementation_and_hosted_outcome_pending",
+  "entries": [
+    {
+      "path": "task-4b-host-access-diagnosis.md",
+      "bytes": 27438,
+      "sha256": "cafc2b49860e9761cf237d6125014f0b280bb80f1ae4a09f037bf4cc4f407eac"
+    },
+    {
+      "path": "task-4b-host-access-ruling.md",
+      "bytes": 3486,
+      "sha256": "389308ea6f062074dbae1b8f70f702f21a975226a64d8e4a2c57f00cec092415"
+    },
+    {
+      "path": "task-4b-host-access-design-review.md",
+      "bytes": 7977,
+      "sha256": "e3b167a55f9d3d2e90d3848f23c11a9fdf6aa3c64091f354a5845f332b8b2368"
+    }
+  ]
+}
