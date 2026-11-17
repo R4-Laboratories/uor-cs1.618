@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 2048218453,
+  "seed": 2335528277,
   "config": {
     "render": {
       "cell": 16,
@@ -319,56 +319,11 @@
     "render-16-4",
     "render-32-2",
     "render-32-4",
-    "render-64-2"
+    "render-64-2",
+    "render-64-4",
+    "render-8-2"
   ],
   "history": [
-    {
-      "generation": 1,
-      "at": "2026-11-16T03:57:38.959Z",
-      "base": "7328f869ece7577dcd59d0705117c111b1f79447",
-      "context": "4dd7965793dbb04bf115e1ebc4477ee248c3261f7d2a6e2037cff303f21f9a39",
-      "previous": "genesis",
-      "result": "admitted",
-      "proposals": [
-        {
-          "candidate": "navigation-3",
-          "family": "navigation",
-          "configHash": "01357a8e90d1c404b667566988c8bb142291b41b046b33e8db656f49158eb77a",
-          "baselineWork": 101926,
-          "candidateWork": 2651,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 480,
-          "comparisons": null,
-          "reference": {
-            "pairs": 101926,
-            "elapsed": 29.834648000000016,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          },
-          "before": {
-            "pairs": 101926,
-            "elapsed": 22.481758999999784,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          },
-          "after": {
-            "pairs": 2651,
-            "elapsed": 16.166187000000036,
-            "nodes": 452,
-            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
-            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
-            "samples": 480
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "73d81a18c591fe5946fed881eb9ada860cb6006b89968b749680c0732c025cbe"
-    },
     {
       "generation": 2,
       "at": "2026-11-16T04:04:18.274Z",
@@ -9401,6 +9356,211 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "13cb9d26bcdd4251180c574acb13902088581e0c844f360aba9640bca69f9640"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-17T06:38:14.295Z",
+      "base": "f26190f7ccaff1b2365a4cc2683cf6da8b586ebf",
+      "context": "9a0d2880bc1f84ebb04bcc3c7010c1f7c16d5d6fc2d5395f414a3d833591199c",
+      "previous": "13cb9d26bcdd4251180c574acb13902088581e0c844f360aba9640bca69f9640",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "render-64-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "aaff297533a7ab34fa573c6d8ee5dd282939cb3e94c880472631657b2ce5e856",
+          "baselineWork": 67276,
+          "candidateWork": 49964,
+          "fidelity": true,
+          "bounds": false,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010110294117647058,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.2254901960784314e-7,
+              "changed": 0
+            },
+            {
+              "mean": 2.9105392156862744e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 3.099999999976717
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 1.7000000000116415
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 1.7999999999883585
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 1.7000000000116415
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 4.699999999953434
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 1.8000000000465661
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 1.400000000023283
+            }
+          ],
+          "after": [
+            {
+              "calls": 84,
+              "triangles": 5398,
+              "frameMs": 2.2000000000116415
+            },
+            {
+              "calls": 61,
+              "triangles": 5242,
+              "frameMs": 0.5
+            },
+            {
+              "calls": 66,
+              "triangles": 4926,
+              "frameMs": 1
+            },
+            {
+              "calls": 79,
+              "triangles": 5398,
+              "frameMs": 1.099999999976717
+            }
+          ]
+        },
+        {
+          "candidate": "render-8-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "ac5c513909c7eea1ec74468f3d281e3b45de14b329889e94979f79888aeaa254",
+          "baselineWork": 67276,
+          "candidateWork": 79016,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 5.616830065359477e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010008169934640522,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 1.1744281045751634e-7,
+              "changed": 0
+            },
+            {
+              "mean": 5.1062091503267976e-9,
+              "changed": 0
+            }
+          ],
+          "reference": [
+            {
+              "calls": 377,
+              "triangles": 4594,
+              "frameMs": 5.400000000023283
+            },
+            {
+              "calls": 274,
+              "triangles": 3478,
+              "frameMs": 1.2999999999883585
+            },
+            {
+              "calls": 317,
+              "triangles": 3762,
+              "frameMs": 2.599999999976717
+            },
+            {
+              "calls": 388,
+              "triangles": 4786,
+              "frameMs": 2
+            }
+          ],
+          "before": [
+            {
+              "calls": 141,
+              "triangles": 5038,
+              "frameMs": 4.099999999976717
+            },
+            {
+              "calls": 104,
+              "triangles": 4102,
+              "frameMs": 1.3000000000465661
+            },
+            {
+              "calls": 109,
+              "triangles": 4062,
+              "frameMs": 1.400000000023283
+            },
+            {
+              "calls": 136,
+              "triangles": 5074,
+              "frameMs": 1.5
+            }
+          ],
+          "after": [
+            {
+              "calls": 177,
+              "triangles": 4990,
+              "frameMs": 1.6000000000349246
+            },
+            {
+              "calls": 127,
+              "triangles": 3766,
+              "frameMs": 1.7000000000116415
+            },
+            {
+              "calls": 139,
+              "triangles": 3882,
+              "frameMs": 2.7000000000116415
+            },
+            {
+              "calls": 171,
+              "triangles": 4978,
+              "frameMs": 1.599999999976717
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "0a1569b54ef612b5ef1a6ef572e4ff3c88b82b2e87a891c2fa7a49ee6c79054b"
     }
   ]
 }
