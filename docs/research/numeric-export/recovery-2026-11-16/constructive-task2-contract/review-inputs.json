@@ -1,0 +1,36 @@
+{
+  "schema": "cs1618/constructive-contract-design/1",
+  "status": "Task2a0 design READY; actual acquisition requires current preflight and exclusive dispatch; later integration/admission gates remain",
+  "files": [
+    {
+      "path": "task-2-contract-design.md",
+      "bytes": 36834,
+      "sha256": "55af11e65e567946daa5e0d29c037609ee8e55927ebcd5bbdb1749e7307390cc"
+    },
+    {
+      "path": "task-2a0-snapshot-brief.md",
+      "bytes": 12151,
+      "sha256": "8c029b7dbfda6eb53401e7ed5c929f744cd51b6f3745ae71a5834b2b4d1d9b4f"
+    },
+    {
+      "path": "task-2-contract-review.md",
+      "bytes": 13894,
+      "sha256": "f2d0fc5250dd2e7258eb9f67941a3c8b1d65ff58f666128622d27cfd03f3bd46"
+    },
+    {
+      "path": "task-2-contract-rereview.md",
+      "bytes": 10465,
+      "sha256": "8ac13b291f2398a40bbce34f3aae8d51e01b8ba949178c972214131a417b1664"
+    },
+    {
+      "path": "task-2a0-pin-rereview.md",
+      "bytes": 2640,
+      "sha256": "5db38efe1d1dd92f3b2b25f0e28c9b7989a39bcd84fa0dc48630dbd92903bdfc"
+    },
+    {
+      "path": "task-2-parent-ruling.md",
+      "bytes": 2486,
+      "sha256": "2c818502513584881d65258c2c6a709c2ca8ea9fba521f780ac56691dd70f670"
+    }
+  ]
+}
