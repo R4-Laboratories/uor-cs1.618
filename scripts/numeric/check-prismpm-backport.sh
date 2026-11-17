@@ -5,7 +5,7 @@ umask 022
 stage=initialization
 trap 'printf "ERROR stage=%s line=%s exit=%s command=%q\n" "$stage" "$LINENO" "$?" "$BASH_COMMAND" >&2' ERR
 finish() {
-  local status=$? cleanup=0
+  local status=$? cleanup=0 archive=0
   trap - EXIT ERR
   if test -f /evidence/original-files.sha256; then
     sha256sum -c /evidence/original-files.sha256 > /evidence/final-identities.log 2>&1 || cleanup=$?
@@ -13,8 +13,20 @@ finish() {
   if test -f /evidence/verifier.sha256; then
     sha256sum -c /evidence/verifier.sha256 >> /evidence/final-identities.log 2>&1 || cleanup=$?
   fi
+  # Run as the project owner: the host artifact collector cannot enter projects/.
+  # tar preserves the private tree's bytes and modes without changing raw evidence.
+  if test -d /evidence/projects; then
+    {
+      tar -czf /evidence/retained-projects.tar.gz.tmp -C /evidence projects &&
+        chmod 644 /evidence/retained-projects.tar.gz.tmp &&
+        mv /evidence/retained-projects.tar.gz.tmp /evidence/retained-projects.tar.gz
+    } > /evidence/archive.log 2>&1 || archive=$?
+    if test "$cleanup" -eq 0; then cleanup=$archive; fi
+  fi
   if test "$status" -eq 0; then status=$cleanup; fi
-  printf '%s\n' "$status" > /evidence/runner-exit-code.txt || status=1
+  printf '%s\n' "$status" > /evidence/runner-exit-code.txt || {
+    if test "$status" -eq 0; then status=1; fi
+  }
   exit "$status"
 }
 trap finish EXIT

@@ -76,7 +76,30 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: prismpm-backport-${{ github.run_id }}
-          path: evidence/
+          # Explicit files avoid upload-artifact's implicit directory recursion
+          # into the UID1000-owned mode0700 projects/ tree.
+          path: |
+            evidence/candidate.json
+            evidence/game-commit.txt
+            evidence/disk-before.txt
+            evidence/docker-storage-driver.txt
+            evidence/runner-image.txt
+            evidence/run.log
+            evidence/container-exit-code.txt
+            evidence/log-capture-exit-code.txt
+            evidence/generated-changes.patch
+            evidence/disk-after.txt
+            evidence/original-files.sha256
+            evidence/verifier.sha256
+            evidence/final-identities.log
+            evidence/runner-exit-code.txt
+            evidence/environment.txt
+            evidence/build.log
+            evidence/gates/retained-reader.log
+            evidence/gates/authority-controls.log
+            evidence/completion.txt
+            evidence/archive.log
+            evidence/retained-projects.tar.gz
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
