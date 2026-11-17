@@ -1,0 +1,14 @@
+{
+  "scope": "failed workflow; actual retained-reader marker observed, final container evidence not yet recovered",
+  "run_id": 43986399997,
+  "head_sha": "022c11363fd3a1b1c6871991f32ab02994515a7e",
+  "compiler_candidate": "2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec",
+  "artifact_id": 14288310173,
+  "artifact_name": "prismpm-backport-43986399997",
+  "artifact_bytes": 1336947756,
+  "artifact_zip_sha256": "20100b809e5b0994703f681dc1c4cf751dda4f50e1d784ec8d65a7ac792a0fa9",
+  "download_status": "direct signed redirect Forbidden; connector refuses artifacts over512MiB; fixed-run hosted recovery planned",
+  "reader_completion_marker": "retained backport projects: 3 independently bound; candidate mutation corpus rejected",
+  "workflow_conclusion": "failure",
+  "production_admission": false
+}
