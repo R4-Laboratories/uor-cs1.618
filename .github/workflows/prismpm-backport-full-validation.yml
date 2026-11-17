@@ -1,0 +1,250 @@
+name: PrismPM backport full source validation
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-backport-full-validation.yml'
+      - '.github/actions/prismpm-source-cache/**'
+      - 'scripts/numeric/full-source-vv.py'
+      - 'scripts/numeric/restore-prismpm-candidate.py'
+      - 'scripts/numeric/prismpm-candidate/**'
+      - 'scripts/numeric/tests/test_full_source_vv.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Source acceptance only. The unchanged-d6 candidate acquisition/retained-reader
+# controls remain separately required in prismpm-backport-diagnostics.yml.
+# This creates a source development environment, never an SDK or a release.
+jobs:
+  image:
+    name: Build the exact pinned source devcontainer once
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          fetch-depth: 0
+          path: prismpm
+          persist-credentials: false
+      - name: Restore and verify the exact source and historical bootstrap
+        run: |
+          set -euo pipefail
+          umask 022
+          python3 game/scripts/numeric/full-source-vv.py prepare
+          printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
+          sudo chown -R 1000:1000 prismpm
+      - id: cache
+        uses: ./game/.github/actions/prismpm-source-cache
+      - uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        with:
+          subFolder: prismpm
+          skipContainerUserIdUpdate: true
+          inheritEnv: false
+          cacheFrom: ${{ steps.cache.outputs.cache-from }}
+          cacheTo: ${{ steps.cache.outputs.cache-to }}
+          push: never
+          runCmd: 'true'
+      - name: Record actual source image identity and require source cleanliness
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 game/scripts/numeric/full-source-vv.py container-identity
+          python3 game/scripts/numeric/full-source-vv.py verify
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: backport-source-image-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  vv:
+    name: Exact backport source VV (${{ matrix.part }})
+    needs: image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [source, gates, conformance, ho-oc, st-sy, dk-0-1, dk-2, dk-3]
+    steps:
+      - name: Free disposable hosted runner tool installations
+        run: |
+          set -euo pipefail
+          test "$GITHUB_ACTIONS" = true
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/.ghcup \
+            /usr/share/swift /usr/local/share/boost /usr/local/julia* /opt/az /opt/microsoft \
+            /usr/lib/jvm /usr/share/miniconda /usr/local/share/powershell
+          df -h /
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          fetch-depth: 0
+          path: prismpm
+          persist-credentials: false
+      - name: Restore and verify this worker's source
+        run: |
+          set -euo pipefail
+          umask 022
+          test "$(uname -m)" = x86_64
+          python3 game/scripts/numeric/full-source-vv.py prepare
+          printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
+          printf '%s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}" > evidence/runner-image.txt
+          df -h > evidence/disk-before.txt
+          docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
+          sudo chown -R 1000:1000 prismpm
+      - name: Start bounded host diagnostics
+        working-directory: prismpm
+        run: node scripts/ci-observe.mjs start ../evidence/diagnostics/host
+      - name: Acquire unchanged d6 SDK oracle in the host daemon
+        run: |
+          set -euo pipefail
+          docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+          python3 game/scripts/numeric/full-source-vv.py sdk-identity
+      - id: cache
+        uses: ./game/.github/actions/prismpm-source-cache
+      - name: Run the unchanged selected VV part with every source preflight
+        uses: devcontainers/ci@8bf61b26e9c3a98f69cb6ce2f88d24ff59b785c6
+        with:
+          subFolder: prismpm
+          skipContainerUserIdUpdate: true
+          inheritEnv: false
+          cacheFrom: ${{ steps.cache.outputs.cache-from }}
+          push: never
+          env: |
+            PRISMPM_VV_PART=${{ matrix.part }}
+            PRISMPM_TEST_SDK_IMAGE=ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+          runCmd: |
+            /usr/local/bin/prismpm-devcontainer-exec bash -euo pipefail <<'PRISMPM_SOURCE_VV'
+            umask 022
+            mkdir -p target/ci-diagnostics
+            finish() {
+              command_status=$?
+              trap - EXIT
+              write_status=0
+              printf '%s\n' "$command_status" > target/ci-diagnostics/full-source-vv-exit-code.txt || write_status=$?
+              if test "$command_status" -ne 0; then exit "$command_status"; fi
+              exit "$write_status"
+            }
+            trap finish EXIT
+            test "$(id -u)" = 1000
+            for name in $(compgen -e); do
+              case "$name" in
+                CARGO_PROFILE_*|RUSTFLAGS|CARGO_ENCODED_RUSTFLAGS|RUSTC_WRAPPER|RUSTC_WORKSPACE_WRAPPER|NODE_OPTIONS|BASH_ENV|ENV|SHELLOPTS|BASHOPTS)
+                  # Bash creates its own read-only options; inherited exported
+                  # versions are forbidden. Do not print values or secrets.
+                  printf 'Unowned exported compiler/shell environment: %s\n' "$name" >&2
+                  exit 1 ;;
+              esac
+            done
+            export CARGO_BUILD_JOBS=2 CARGO_NET_OFFLINE=true
+            test "$(git rev-parse HEAD)" = 2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec
+            test "$(git rev-parse 'HEAD^{tree}')" = 3d4838633c80fb754b33f466c25ef0962057e2fd
+            test -z "$(git status --porcelain --untracked-files=all)"
+            test ! -e "target/vv-part-$PRISMPM_VV_PART.json"
+            bash scripts/bootstrap-verify.sh --check-source
+            node scripts/ci-observe.mjs run target/ci-diagnostics/vv -- just vv-part "$PRISMPM_VV_PART"
+            test -z "$(git status --porcelain --untracked-files=all)"
+            test "$(git rev-parse HEAD)" = 2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec
+            test "$(git rev-parse 'HEAD^{tree}')" = 3d4838633c80fb754b33f466c25ef0962057e2fd
+            PRISMPM_SOURCE_VV
+      - name: Stop bounded host diagnostics
+        if: always()
+        working-directory: prismpm
+        run: node scripts/ci-observe.mjs stop ../evidence/diagnostics/host
+      - name: Record actual worker image identity
+        if: always()
+        run: python3 game/scripts/numeric/full-source-vv.py container-identity
+      - name: Retain originals and require successful clean-source completion
+        if: always()
+        env:
+          VV_PART: ${{ matrix.part }}
+        run: python3 game/scripts/numeric/full-source-vv.py collect --part "$VV_PART"
+      - name: Retain bounded diagnostics separately from acceptance
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backport-source-diagnostics-${{ matrix.part }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            evidence/diagnostics/
+            evidence/*.json
+            evidence/*.txt
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain original source-bootstrap evidence
+        if: ${{ always() && matrix.part == 'source' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backport-source-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/bootstrap/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Retain original successful part record
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backport-source-part-${{ matrix.part }}
+          path: evidence/parts/vv-part-${{ matrix.part }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  complete:
+    name: All eight exact-source parts and fifteen gates
+    needs: vv
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          fetch-depth: 0
+          path: prismpm
+          persist-credentials: false
+      - name: Restore the same reviewed assembler and source
+        run: python3 game/scripts/numeric/full-source-vv.py prepare
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: backport-source-part-*
+          merge-multiple: true
+          path: evidence/vv-parts
+      - name: Require all eight original same-source records
+        working-directory: prismpm
+        run: |
+          set -euo pipefail
+          node --test scripts/vv-assemble.test.mjs
+          node scripts/vv-assemble.mjs ../evidence/vv-parts ../evidence/vv-evidence.json 2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec
+          python3 ../game/scripts/numeric/full-source-vv.py verify --source .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: backport-source-vv-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            evidence/vv-evidence.json
+            evidence/vv-parts/
+            evidence/candidate.json
+            evidence/source-inputs.json
+            evidence/bootstrap-availability.txt
+          if-no-files-found: error
+          retention-days: 30
