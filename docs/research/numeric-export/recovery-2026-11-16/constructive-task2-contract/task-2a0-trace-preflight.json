@@ -1,0 +1,26 @@
+{
+  "scope": "diagnostic tracing availability only; no compiler or snapshot execution",
+  "argv": [
+    "/usr/bin/strace",
+    "-f",
+    "-e",
+    "trace=process",
+    "-s",
+    "4096",
+    "/usr/bin/python3",
+    "-I",
+    "-B",
+    "-c",
+    "import subprocess; subprocess.run([\"/usr/bin/true\"], check=True)"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "exit": 0,
+  "elapsed_seconds": 0.0773283199960133,
+  "stdout": "",
+  "stderr": "execve(\"/usr/bin/python3\", [\"/usr/bin/python3\", \"-I\", \"-B\", \"-c\", \"import subprocess; subprocess.run([\\\"/usr/bin/true\\\"], check=True)\"], 0x7ffda47a14b8 /* 3 vars */) = 0\nclone3({flags=CLONE_VM|CLONE_VFORK|CLONE_CLEAR_SIGHAND, exit_signal=SIGCHLD, stack=0x7f2ede9c4000, stack_size=0x9000}, 88) = -1 ENOSYS (Function not implemented)\nclone(child_stack=0x7f2ede9ccff0, flags=CLONE_VM|CLONE_VFORK|SIGCHLD/usr/bin/strace: Process 569684 attached\n <unfinished ...>\n[pid 569684] execve(\"/usr/bin/true\", [\"/usr/bin/true\"], 0x7ffe6840d0e8 /* 3 vars */ <unfinished ...>\n[pid 569683] <... clone resumed>)       = 569684\n[pid 569684] <... execve resumed>)      = 0\n[pid 569683] wait4(569684,  <unfinished ...>\n[pid 569684] exit_group(0)              = ?\n[pid 569684] +++ exited with 0 +++\n<... wait4 resumed>[{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 569684\n--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=569684, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---\nexit_group(0)                           = ?\n+++ exited with 0 +++\n",
+  "strace_sha256": "69f88291a4e47f258b8e32b089c919a247509f063ef3d6afe5389939051102b3"
+}

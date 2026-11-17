@@ -1,0 +1,26 @@
+{
+  "schema": "cs1618/constructive-snapshot-preflight/1",
+  "status": "reviewed operational design; no compiler or snapshot execution",
+  "files": [
+    {
+      "path": "task-2a0-preflight.md",
+      "bytes": 8112,
+      "sha256": "6d7a082bc7c3f1e92c3fc33d406a6e69a847d343e7b494eb57d06a2abbb07b6b"
+    },
+    {
+      "path": "task-2a0-trace-preflight.json",
+      "bytes": 1655,
+      "sha256": "36986e43e772974c291e5b3e8a282c134864f2b03f38820f9bc0a5e856669663"
+    },
+    {
+      "path": "task-2a0-tracing-ruling.md",
+      "bytes": 2025,
+      "sha256": "2483bfd6e9d25e5b0fc00703cb9bab3a82c733fabc913fc06a5f76fe96263140"
+    },
+    {
+      "path": "task-2a0-tracing-review.md",
+      "bytes": 3605,
+      "sha256": "22454c281ba148118428977f3460b1411d076db716bd6c5526ce1bd5708a7505"
+    }
+  ]
+}
