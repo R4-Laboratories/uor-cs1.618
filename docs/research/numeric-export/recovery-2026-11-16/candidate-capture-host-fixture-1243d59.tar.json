@@ -1,0 +1,20 @@
+{
+  "schema": "cs1618/host-fixture-fix-evidence/1",
+  "commit": "1243d59531541ab1117539d37a48a1675fe318e0",
+  "review": "R4-1 addressed; SpecCompliance PASS; Quality APPROVE",
+  "files": 32,
+  "payload_bytes": 394856,
+  "index_sha256": "1a181dcf0bc198463f40df0c5e56d6363222b6c8ec6fad8e2377a59d490019db",
+  "archive_bytes": 118898,
+  "archive_sha256": "5f37128c0b1ca75fdfba8706efb15659d1ac8b22503ce060c425b3f5bad46feb",
+  "local_tests": {
+    "passed": 69,
+    "privileged_skipped": 2
+  },
+  "hosted_qualification": "not_run",
+  "review_file": {
+    "path": "candidate-capture-host-fixture-1243d59-review.md",
+    "bytes": 4209,
+    "sha256": "9e24f10275d4cd3b2c21a23eb046f3ab5d5cb3d02283fac2096b0310a86c928c"
+  }
+}
