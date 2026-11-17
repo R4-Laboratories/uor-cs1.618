@@ -138,3 +138,6 @@ NEXP013 protocol Task1 is now independently accepted atbb33f7f. Lifecycle Task2 
 
 
 The [authored-source feasibility probes](numeric-export/recovery-2026-11-16/canonical-theorem-source-feasibility.md) did not establish a constructive Bounds repair through the pinned proof forms. The [compiler-boundary design research](numeric-export/recovery-2026-11-16/constructive-proof-backport-design-recon.md) recommends a separately identified constructive lowering of existing `linear_arithmetic`. That needs an explicit additive authority, semantics/lock preparation and independent evidence design; no such compiler is yet implemented or admitted, and no original pin or empty-theorem policy has changed. The shared five-file import is independently complete at89d15ce4 ([review](numeric-export/recovery-2026-11-16/shared-golden-import-review-89d15ce.md)).
+
+
+NEXP013 lifecycle Task2 is now independently accepted at881df278 ([final review](numeric-export/recovery-2026-11-16/candidate-capture-lifecycle-review-881df27.md)), with56 candidate controls and unchanged original authority. The exact ACK, bounded pipe-safe diagnostics and cleanup error-stream retention fixes passed scoped review. Task3 explicit selector and independent JS reader is active; actual unchanged-SDK transport/original capture and full source acceptance remain open.
