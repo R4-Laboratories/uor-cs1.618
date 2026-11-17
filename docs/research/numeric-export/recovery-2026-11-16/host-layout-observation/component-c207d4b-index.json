@@ -1,0 +1,14 @@
+{
+  "schema": "cs1618/host-layout-component-retention/1",
+  "commit": "c207d4b1f8b1bf4db7699a60ae8e579465573b0f",
+  "review": "pending",
+  "hosted_execution": "not_run",
+  "evidence_files": 15,
+  "evidence_bytes": 100747,
+  "index_sha256": "1fed615411179399e39173fa9a84fb1f036184cb0236a780e45d157f73284c22",
+  "archive": {
+    "path": "component-c207d4b.tar.gz",
+    "bytes": 41753,
+    "sha256": "3aafbbc7d5130feead939e493874f51d2492611ac85d3730d40d3bc0f1642fc8"
+  }
+}
