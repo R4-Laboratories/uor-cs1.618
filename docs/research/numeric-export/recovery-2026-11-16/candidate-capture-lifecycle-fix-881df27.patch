@@ -1,0 +1,142 @@
+diff --git a/scripts/conditional-capture-candidate.py b/scripts/conditional-capture-candidate.py
+index fe5f3439..b2b1eaee 100644
+--- a/scripts/conditional-capture-candidate.py
++++ b/scripts/conditional-capture-candidate.py
+@@ -913,6 +913,7 @@ class Diagnostics:
+         require(re.fullmatch(r"[0-9a-f]{32}", self.token), "diagnostic owner token")
+         self.location = Path("/tmp") / ("prismpm-candidate-diagnostics-" + self.token)
+         self.reconciled = False
++        self.retention_incomplete = False
+         self.forwarded = set()
+         self.streams, self.lengths, self.attachments = {}, {}, set()
+         self.closed_attachments = set()
+@@ -1028,15 +1029,32 @@ class Diagnostics:
+             body = body[:remaining]
+         return self.record("owner.stderr", body)
+ 
++    def retain_exception_streams(self, error):
++        # Retain at the observation site, before a cleanup wrapper can replace
++        # this error. Mark individual channels only after a complete write, so
++        # later parent handling neither duplicates bytes nor hides a short write.
++        retained = getattr(error, "candidate_retained_channels", {})
++        error.candidate_retained_channels = retained
++        try:
++            for name in ("stdout", "stderr"):
++                body = getattr(error, name, b"")
++                if body and retained.get(name) != self.token:
++                    require(self.record("exception." + name, body), "exception stream retention deadline")
++                    retained[name] = self.token
++        except Exception:
++            self.retention_incomplete = True
++            raise
++
+     def exception(self, error):
+-        # Called only after the parent's actor reconciliation finalizer. Listing
+-        # failure streams retain their original aggregate 1 MiB listing cap;
+-        # bounded daemon control streams retain their original 32 MiB cap.
+-        for name in ("stdout", "stderr"):
+-            body = getattr(error, name, b"")
+-            if body:
+-                self.record("exception." + name, body)
+-        self.message("candidate capture failed: " + str(error))
++        # Only retention occurs before reconciliation; inherited forwarding is
++        # still exclusively the later forward/close operation.
++        try:
++            self.retain_exception_streams(error)
++        except Exception:
++            pass  # Existing bytes remain; report incomplete retention below.
++        suffix = "; original exception stream retention incomplete (bound/deadline or I/O failure)" \
++            if self.retention_incomplete else ""
++        self.message("candidate capture failed: " + str(error) + suffix)
+ 
+     def forward(self, channels):
+         if not self.reconciled:
+@@ -1113,8 +1131,14 @@ class Lifecycle:
+         finally:
+             signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
+         if result.returncode != 0:
+-            error = RuntimeError("candidate Docker control failed; original streams retained")
++            error = RuntimeError("candidate Docker control failed")
+             error.stdout, error.stderr = result.stdout, result.stderr
++            try:
++                self.diagnostics.retain_exception_streams(error)
++            except Exception as retention_error:
++                # Logging failure must not replace the operation failure or
++                # prevent finish() from attempting the remaining safe calls.
++                error.args = (str(error) + "; diagnostic retention incomplete: " + str(retention_error),)
+             raise error
+         return result
+ 
+diff --git a/scripts/conditional-capture-candidate.test.py b/scripts/conditional-capture-candidate.test.py
+index 8dd14923..7d36d128 100644
+--- a/scripts/conditional-capture-candidate.test.py
++++ b/scripts/conditional-capture-candidate.test.py
+@@ -1161,6 +1161,68 @@ class LifecycleControls(unittest.TestCase):
+         self.assertTrue(all(r["absent"] is False for r in result["volumes"]))
+         self.assertFalse(result["attachment_eof_observed"])
+ 
++    def test_actual_call_reconciliation_preserves_multiple_failure_streams(self):
++        events = []
++        def response(arguments, **kwargs):
++            # Structural daemon return only. Actual call/finish/Diagnostics run;
++            # Popen remains guarded against real Docker by this test fixture.
++            operation = tuple(arguments[3:])
++            events.append(operation)
++            marker = str(len(events)).encode()
++            return subprocess.CompletedProcess(arguments, 1, b'out-' + marker + b'\n', b'err-' + marker + b'\n')
++        with patch.object(legacy, 'run_bounded', side_effect=response):
++            with self.assertRaisesRegex(RuntimeError, 'reconciliation unqualified') as final:
++                try:
++                    self.owner.call('image', 'inspect', 'structural-operation')
++                except RuntimeError as error:
++                    original = error
++                    raise
++                finally:
++                    self.owner.finish(False)  # Supersedes the operation error.
++            self.owner.diagnostics.exception(final.exception)
++            # A later direct handler must not duplicate the earlier operation.
++            self.owner.diagnostics.exception(original)
++        directory = self.owner.diagnostics.directory
++        self.assertEqual(len(events), 3)
++        self.assertEqual(events[1:], [('volume', 'inspect', 'owned-input'), ('volume', 'inspect', 'owned-work')])
++        self.assertEqual((directory / 'exception.stdout').read_bytes(), b'out-1\nout-2\nout-3\n')
++        self.assertEqual((directory / 'exception.stderr').read_bytes(), b'err-1\nerr-2\nerr-3\n')
++        self.assertTrue(self.owner.diagnostics.reconciled)
++        self.assertFalse((directory / candidate.ENVELOPE_NAME).exists())
++
++    def test_daemon_stream_cap_preserves_owned_bytes_and_continues_reconciliation(self):
++        diagnostics = self.owner.diagnostics
++        prefix = b'x' * (legacy.MAX_JSON - 4)
++        diagnostics.record('exception.stdout', prefix)
++        events = []
++        def response(arguments, **kwargs):
++            events.append(tuple(arguments[3:]))
++            return subprocess.CompletedProcess(arguments, 1, b'keep', b'over-cap')
++        with patch.object(legacy, 'run_bounded', side_effect=response), \
++             patch.object(candidate, 'nonblocking_forward', side_effect=AssertionError('forwarded before reconciliation')):
++            with self.assertRaisesRegex(RuntimeError, 'reconciliation unqualified') as final:
++                try:
++                    self.owner.call('image', 'inspect', 'structural-operation')
++                finally:
++                    self.owner.finish(False)
++            diagnostics.exception(final.exception)
++        self.assertEqual(len(events), 3)
++        self.assertTrue(diagnostics.retention_incomplete)
++        self.assertTrue(diagnostics.reconciled)
++        self.assertIn('diagnostic retention incomplete', str(final.exception))
++        directory = diagnostics.directory
++        self.assertEqual((directory / 'exception.stdout').stat().st_size, legacy.MAX_JSON)
++        with (directory / 'exception.stdout').open('rb') as stream:
++            self.assertEqual(stream.read(len(prefix)), prefix)
++            self.assertEqual(stream.read(), b'keep')
++        self.assertEqual((directory / 'exception.stderr').read_bytes(), b'')
++        self.assertIn(b'original exception stream retention incomplete', (directory / 'owner.stderr').read_bytes())
++        self.assertNotIn(b'original streams retained', (directory / 'owner.stderr').read_bytes())
++        self.assertFalse((directory / candidate.ENVELOPE_NAME).exists())
++        # The assertion inspected actual capped file bytes; do not send the
++        # 32 MiB fixture to the test runner during its own artifact cleanup.
++        diagnostics.forwarded.update(diagnostics.streams)
++
+     def test_insufficient_cleanup_budget_and_call_cap_before_process(self):
+         self.owner.cleanup_mode = True
+         self.owner.deadline = time.monotonic() + 4
