@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import tempfile
 
 REVISION = "324955b6923c1d194d7bc870a2d2a05eb687048c"
 TREE = "7cf463121cf5dd15b681ce1dfafd5694617cc474"
@@ -25,7 +26,9 @@ def command(source, *args):
     return subprocess.check_output([str(arg) for arg in args], cwd=source)
 
 
-def git(source, *args):
+def git(source, *args, env=None):
+    if env is not None:
+        return subprocess.check_output(["git", "-c", f"safe.directory={source.resolve()}", *args], cwd=source, env=env)
     return command(source, "git", "-c", f"safe.directory={source.resolve()}", *args)
 
 
@@ -143,22 +146,37 @@ def collect(source, evidence):
         return raw
 
     try:
+        # A failed retry must never upload an earlier successful patch.
+        (evidence / "golden.patch").unlink(missing_ok=True)
         diagnostics = source / "target/ci-diagnostics/golden-preparation"
         for directory, target in ((diagnostics, evidence / "diagnostics"), (source / "tests/golden", evidence / "generated/tests/golden")):
             for path in sorted(directory.rglob("*")):
                 if path.is_symlink() or path.is_file():
                     retain(path, target / path.relative_to(directory))
         verify(source)
-        # Include new generator outputs in the exact review patch, without a commit.
-        git(source, "add", "-N", "--", "tests/golden")
-        changed = git(source, "diff", "HEAD", "--name-only", "-z").decode().split("\0")
-        untracked = git(source, "ls-files", "--others", "--exclude-standard", "-z").decode().split("\0")
-        if any(path and not path.startswith("tests/golden/") for path in changed + untracked):
-            raise ValueError("writer changed a path outside tests/golden")
-        patch = source / "target/golden-preparation.patch"
-        with patch.open("wb") as stream:
-            subprocess.run(["git", "-c", f"safe.directory={source.resolve()}", "diff", "--binary", "--full-index", "HEAD", "--", "tests/golden"], cwd=source, stdout=stream, check=True)
-        retain(patch, evidence / "golden.patch")
+        # Container UID1000 owns the source. Keep its original index/state and
+        # objects read-only; only these collector subprocesses use private writes.
+        index = Path(git(source, "rev-parse", "--git-path", "index").decode().strip())
+        objects = Path(git(source, "rev-parse", "--git-path", "objects").decode().strip())
+        if not index.is_absolute(): index = source / index
+        if not objects.is_absolute(): objects = source / objects
+        with tempfile.TemporaryDirectory(prefix="golden-collection-") as temporary:
+            private = Path(temporary)
+            shutil.copyfile(index, private / "index")
+            (private / "objects").mkdir()
+            env = {**os.environ, "GIT_INDEX_FILE": str(private / "index"),
+                   "GIT_OBJECT_DIRECTORY": str(private / "objects"),
+                   "GIT_ALTERNATE_OBJECT_DIRECTORIES": str(objects.resolve())}
+            git(source, "add", "-N", "--", "tests/golden", env=env)
+            staged = git(source, "diff", "--cached", "HEAD", "--name-only", "-z", env=env)
+            unstaged = git(source, "diff", "--name-only", "-z", env=env)
+            untracked = git(source, "ls-files", "--others", "--exclude-standard", "-z", env=env)
+            if any(path and not path.startswith("tests/golden/") for path in (staged + unstaged + untracked).decode().split("\0")):
+                raise ValueError("writer changed a path outside tests/golden")
+            patch = private / "golden.patch"
+            with patch.open("xb") as stream:
+                subprocess.run(["git", "-c", f"safe.directory={source.resolve()}", "diff", "--binary", "--full-index", "HEAD", "--", "tests/golden"], cwd=source, env=env, stdout=stream, check=True)
+            retain(patch, evidence / "golden.patch")
         for name, argv in COMMANDS:
             if json.loads((diagnostics / f"{name}.json").read_bytes()) != {"argv": argv, "exit_code": 0}:
                 raise ValueError(f"missing successful command: {name}")

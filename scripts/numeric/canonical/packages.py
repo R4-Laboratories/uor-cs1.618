@@ -81,7 +81,7 @@ def metadata(d):
         r'\importmodule{Float}',
         r'\importmodule{Foundation.Library.V1.Model}',
         r'\title{Boolean}', r'\begin{semanticmodule}',
-        'definition{name: acceptance, parameters: [], result: Bool, body: ' + body + '}',
+        'definition{name: acceptance, parameters: [], result: Bool, axioms: [Quot.sound, propext], body: ' + body + '}',
         'definition{name: numericLibrary, parameters: [], result: Foundation.Library.V1.Model::NativeLibrary, body: (record Foundation.Library.V1.Model::NativeLibrary {' +
         f'profile := "prismpm/native-library/1", name := "Bounded numeric {d["operation"]}", cargoName := "{d["cargo_name"]}", cargoVersion := "{d["cargo_version"]}", cargoDescription := "Raw IEEE numeric kernel with finite native acceptance", cargoRepository := "{d["repository"]}", cargoHomepage := "{d["repository"]}", exportRoots := {exports}, acceptanceRoots := (cons "{d["acceptance_root"]}" (nil String))' + '})}',
         r'\end{semanticmodule}', r'\end{lexlean}', ''])

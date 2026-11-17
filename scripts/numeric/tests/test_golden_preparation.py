@@ -80,6 +80,53 @@ class RetentionTests(unittest.TestCase):
         for name in self.identity_records:
             self.assertEqual(record["sha256"][name], hashlib.sha256((self.evidence / name).read_bytes()).hexdigest())
 
+    def test_readonly_source_index_and_target_keep_binary_deletion_and_outside_checks(self):
+        # UID1000 cannot create the original index lock/target patch here,
+        # reproducing the hosted post-container permission failure without sudo.
+        tracked=self.source/'tests/golden/stdlib/deleted.bin';tracked.write_bytes(b'old binary\0')
+        self.git('add',str(tracked));self.git('-c','user.name=Unit','-c','user.email=unit@example.invalid','commit','-qm','Deletion fixture')
+        revision=self.git('rev-parse','HEAD').strip();tree=self.git('rev-parse','HEAD^{tree}').strip()
+        patch.object(OWNER,'REVISION',revision).start();patch.object(OWNER,'TREE',tree).start()
+        self.candidate.update(candidate=revision,tree=tree)
+        self.identity_records['candidate.json']={'diagnosticOnly':True,**self.candidate}
+        for name in ('source-inputs.json','source-container.json'):
+            record=self.identity_records[name]
+            for key in ('revision','source_revision'):
+                if key in record:record[key]=revision
+            for key in ('tree','source_tree'):
+                if key in record:record[key]=tree
+        for name,record in self.identity_records.items():OWNER.write_json(self.evidence/name,record)
+        tracked.unlink()
+        index=self.source/'.git/index';before_bytes=index.read_bytes();before_stat=index.stat()
+        objects={str(p.relative_to(self.source/'.git/objects')):p.read_bytes() for p in (self.source/'.git/objects').rglob('*') if p.is_file()}
+        directories=[self.source/'.git',self.source/'target']
+        for directory in directories:directory.chmod(0o555)
+        try:
+            with self.assertRaises(PermissionError): (self.source/'.git/index.lock').open('xb')
+            with self.assertRaises(PermissionError): (self.source/'target/golden-preparation.patch').open('xb')
+            OWNER.collect(self.source,self.evidence)
+            result=json.loads((self.evidence/'result.json').read_text())
+            self.assertEqual(result['status'],'complete-review-required')
+            data=(self.evidence/'golden.patch').read_bytes()
+            self.assertIn(b'GIT binary patch',data);self.assertIn(b'deleted file mode',data)
+            self.assertIn(b'deleted.bin',data)
+            self.assertFalse((self.source/'target/golden-preparation.patch').exists())
+            self.assertEqual(index.read_bytes(),before_bytes)
+            for key in ('st_ino','st_mode','st_uid','st_gid','st_mtime_ns','st_ctime_ns'):
+                self.assertEqual(getattr(index.stat(),key),getattr(before_stat,key))
+            self.assertEqual(objects,{str(p.relative_to(self.source/'.git/objects')):p.read_bytes() for p in (self.source/'.git/objects').rglob('*') if p.is_file()})
+            self.put('outside.rs','untracked outside output\n');self.failed()
+            self.assertFalse((self.evidence/'golden.patch').exists(),'no previous success patch survives a failed collection')
+        finally:
+            for directory in directories:directory.chmod(0o755)
+
+    def test_staged_outside_change_hidden_by_worktree_restore_is_refused(self):
+        original=(self.source/'.devcontainer/devcontainer.json').read_bytes()
+        self.put('.devcontainer/devcontainer.json','staged outside change\n')
+        self.git('add','--','.devcontainer/devcontainer.json')
+        self.put('.devcontainer/devcontainer.json',original)
+        self.failed()
+
     def test_missing_identity_records_refused(self):
         for name, record in self.identity_records.items():
             with self.subTest(name=name):

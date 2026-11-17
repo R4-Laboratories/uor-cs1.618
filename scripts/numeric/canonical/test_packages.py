@@ -6,6 +6,7 @@ import os
 import tempfile
 import tarfile
 import copy
+import subprocess
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -372,6 +373,64 @@ class HarnessTests(unittest.TestCase):
                 self.assertEqual(rows['replay/mul32-native.log.status.json']['original_sha256'],p.digest(status))
                 self.assertEqual(rows['replay/mul32-native.log.status.json']['original_bytes'],status.stat().st_size)
                 self.assertFalse(rows['replay/mul32-native.log.status.json']['truncated'])
+
+    def test_exact_acceptance_and_none_library_audits_refuse_policy_observed_changes(self):
+        build=self.root/'build';verified=self.root/'verified';build.mkdir();verified.mkdir()
+        prefix='BoundedNumeric.NumericPackage.';exact={'kind':'exact','axioms':['Quot.sound','propext']};none={'kind':'none','axioms':[]}
+        snapshot={'modules':[{'lean_module':prefix[:-1],'declarations':[{'lean_name':'acceptance','axiom_policy':exact},{'lean_name':'numericLibrary','axiom_policy':none}]}]}
+        inputs={'lexlean_build_id':'1'*64,'lexlean_source_id':'2'*64,'lexlean_semantic_id':'3'*64}
+        att={'spec':'lexlean/attestation/2','status':'verified','build_id':inputs['lexlean_build_id'],'source_id':inputs['lexlean_source_id'],'semantic_id':inputs['lexlean_semantic_id'],'attestation_id':'4'*64,'declarations':[{'name':prefix+'acceptance','policy':exact,'observed':['Quot.sound','propext'],'result':'ok'},{'name':prefix+'numericLibrary','policy':none,'observed':[],'result':'ok'}]}
+        acceptance={'lexlean_attestation_id':att['attestation_id']}
+        write(build/'lexlean/snapshot.json',snapshot);write(verified/'lexlean-attestation.json',att)
+        p.audit_bindings(build,verified,inputs,acceptance)
+        for case in ('omitted','wrong-exact','missing-observed','extra-observed','policy-binding','library-observed'):
+            with self.subTest(case=case):
+                snap=copy.deepcopy(snapshot);audit=copy.deepcopy(att)
+                if case in ('omitted','wrong-exact'):
+                    policy=none if case=='omitted' else {'kind':'exact','axioms':['Quot.sound']}
+                    snap['modules'][0]['declarations'][0]['axiom_policy']=policy;audit['declarations'][0]['policy']=policy
+                elif case=='missing-observed':audit['declarations'][0]['observed']=['Quot.sound']
+                elif case=='extra-observed':audit['declarations'][0]['observed']=['Classical.choice','Quot.sound','propext']
+                elif case=='policy-binding':audit['declarations'][0]['policy']=none
+                else:audit['declarations'][1]['observed']=['Quot.sound']
+                write(build/'lexlean/snapshot.json',snap);write(verified/'lexlean-attestation.json',audit)
+                with self.assertRaises(ValueError):p.audit_bindings(build,verified,inputs,acceptance)
+        # Explicitly synthetic audit fixtures; no newly verified receipt is claimed.
+
+    @unittest.skipUnless(os.environ.get('LEXLEAN_BIN') and os.environ.get('PRISMPM_SOURCE'), 'real LexLean and pinned source fixture required')
+    def test_real_lexlean_acceptance_policy_formatter_parser_and_check(self):
+        lex=str(Path(os.environ['LEXLEAN_BIN']).resolve());out=self.root/'staged';p.stage(Path(os.environ['PRISMPM_SOURCE']),out)
+        records=[]
+        def run(project,*args,success=True):
+            argv=[lex,'--diagnostic-format','json',*args];r=subprocess.run(argv,cwd=project,capture_output=True,timeout=30)
+            records.append({'argv':argv,'cwd':str(project),'exit_code':r.returncode,'stdout':r.stdout.decode(),'stderr':r.stderr.decode()})
+            evidence=os.environ.get('NUMERIC_FOLLOWUP_EVIDENCE')
+            if evidence:write(Path(evidence)/'lexlean-policy-commands.json',records)
+            if success:self.assertEqual(r.returncode,0,r.stdout.decode()+r.stderr.decode())
+            return json.loads(r.stdout) if success else r
+        for op in p.OPS:
+            with self.subTest(operation=op):
+                project=out/op;path=project/'src/NumericPackage.lex.tex';authored=path.read_text()
+                for args in (('lock',),('fmt',),('lock',),('fmt','--check'),('lock','--check')):run(project,*args)
+                baseline=run(project,'check');canonical_source=path.read_text()
+                self.assertIn('axioms: [Quot.sound, propext]',canonical_source.split('name: numericLibrary')[0])
+                p.freeze(project);p.check(project)
+                def checked_variant(source):
+                    path.write_text(source);run(project,'fmt');run(project,'fmt','--check');return run(project,'check')
+                library_none=checked_variant(authored.replace('name: numericLibrary, parameters: [],','name: numericLibrary, parameters: [], axioms: [],'))
+                self.assertEqual(library_none['semantic_id'],baseline['semantic_id'])
+                omitted=checked_variant(authored.replace('axioms: [Quot.sound, propext], ',''))
+                self.assertNotEqual(omitted['semantic_id'],baseline['semantic_id'])
+                explicit_none=checked_variant(authored.replace('axioms: [Quot.sound, propext]','axioms: []'))
+                self.assertEqual(explicit_none['semantic_id'],omitted['semantic_id'])
+                wrong=checked_variant(authored.replace('axioms: [Quot.sound, propext]','axioms: [Quot.sound]'))
+                self.assertNotEqual(wrong['semantic_id'],baseline['semantic_id'])
+                path.write_text(authored.replace('axioms: [Quot.sound, propext]','axioms: [17]'))
+                self.assertNotEqual(run(project,'check',success=False).returncode,0,'invalid axiom syntax must fail the real parser')
+                path.write_text(canonical_source);run(project,'fmt','--check');run(project,'lock','--check');p.check(project)
+                for name,want in p.INPUTS['kernel_files'].items():self.assertEqual(p.digest(project/'src'/Path(name).name),want)
+        # Well-formed wrong policies can parse/check; exact observed-set refusal
+        # belongs to unchanged audit_bindings and actual SDK verification.
 
     @unittest.skipUnless(os.environ.get('PRISMPM_SOURCE'),'set PRISMPM_SOURCE for actual pinned fixture staging test')
     def test_actual_fixture_stage_is_deterministic_single_source_and_pinned(self):
