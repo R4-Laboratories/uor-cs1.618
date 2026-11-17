@@ -811,7 +811,7 @@ class EvidenceBoundaryControls(unittest.TestCase):
             output=root/'output';output.touch(mode=0o600);previous=os.getcwd();verify=d.bridge_runner_admit
             def reply(*args):
                 return 0,d.encoded({'exit':0,'controls':{'metadata_safe':True},'clock':None,
-                                   'deadline':time.monotonic()+0.02,'handoff':d.sha(d.encoded(manifest))}),b''
+                                   'deadline':time.monotonic()+0.02,'handoff':d.sha(d.encoded(manifest)),'access':None}),b''
             def slow_verification(*args):verify(*args);time.sleep(0.04)
             try:
                 os.chdir(root)
@@ -1001,7 +1001,7 @@ class HostSocketLayoutControls(unittest.TestCase):
         self.assertIn("socket_group=socket_measurement['socket']['gid']",privileged)
         self.assertIn("'socket':socket_measurement",privileged)
         self.assertIn("bridge_socket(context['deadline'],expected=context['socket'])",child)
-        self.assertIn("'socket':context['socket']",child)
+        self.assertIn("'socket':context['socket']",ast.get_source_segment(source,functions['bridge_child_export']))
         self.assertNotIn('socket-path',source)
 
     def test_host_socket_actual_replacement_during_held_measurement_and_descriptor_closure(self):
@@ -1025,19 +1025,24 @@ class HostSocketLayoutControls(unittest.TestCase):
     def test_host_socket_group_and_identity_reach_existing_child_before_source_access(self):
         import time
         d=self.driver
-        class StopAfterSocket(Exception):pass
         with self.fixture() as (root,runtime,endpoint):
             measurement=d._bridge_socket_measure(root,os.getuid(),time.monotonic()+2)
-            context={'socket':measurement,'deadline':time.monotonic()+2};groups=[];observed=[]
+            record=d.bridge_access_record('preflight-image',root,os.getuid(),os.getgid(),measurement)
+            d.bridge_access_choose(record)
+            context={'socket':measurement,'deadline':time.monotonic()+2,'access':{'record':record,'root':root}}
+            groups=[];observed=[]
             def component_socket(deadline,expected=None):
                 observed.append(expected)
                 return d._bridge_socket_measure(root,os.getuid(),deadline,expected=expected)
             # Only the credential syscall boundary is substituted. This checks
             # argument/context integration, not a privileged drop witness.
-            with patch.object(d,'bridge_drop',side_effect=groups.append),patch.object(d,'bridge_socket',side_effect=component_socket),patch.object(d,'read_json',side_effect=StopAfterSocket):
-                with self.assertRaises(StopAfterSocket):d.bridge_child('preflight-image',context,measurement['socket']['gid'])
-                with self.assertRaisesRegex(ValueError,'socket group'):d.bridge_child('preflight-image',context,measurement['socket']['gid']+1)
-            self.assertEqual(groups,[measurement['socket']['gid'],measurement['socket']['gid']+1])
+            def stop_at_source(*args):raise OSError(13,'component source refusal')
+            with patch.object(d,'bridge_drop',side_effect=lambda a,b:groups.append((a,b))),patch.object(d,'bridge_socket',side_effect=component_socket),patch.object(os,'getgroups',return_value=record['planned']['groups']),patch.object(d,'bridge_access_recheck',side_effect=stop_at_source):
+                result=d.bridge_child('preflight-image',context,measurement['socket']['gid'])
+                self.assertEqual(result['access']['failure']['errno'],13)
+                wrong=d.bridge_child('preflight-image',context,measurement['socket']['gid']+1)
+                self.assertEqual(wrong['access']['failure']['syscall'],'socket-recheck')
+            self.assertEqual(groups,[(measurement['socket']['gid'],None),(measurement['socket']['gid']+1,None)])
             self.assertEqual(observed,[measurement,measurement])
 
     def test_host_socket_actual_failure_measurement_survives_runner_status_bound(self):
@@ -1063,5 +1068,294 @@ class HostSocketLayoutControls(unittest.TestCase):
                 self.assertEqual(retained['exit'],1);self.assertFalse(retained['complete_application_accepted'])
                 self.assertEqual(output.read_bytes(),b'')
             finally:os.chdir(previous)
+
+class HostAccessControls(unittest.TestCase):
+    setUpClass=DriverContracts.__dict__['setUpClass']
+
+    def api(self):
+        self.assertTrue(callable(getattr(self.driver,'bridge_access_choose',None)),
+                        'missing common traversal plan: source ownership cannot grant ancestor search')
+        return self.driver
+
+    def record(self,operation='qualification-collect',socket_gid=None):
+        d=self.api();socket_record=None if socket_gid is None else {'socket':{'gid':socket_gid}}
+        return d.bridge_access_record(operation,pathlib.Path('/home/runner/work/game'),1001,1001,socket_record)
+
+    def row(self,uid,gid,mode,need=1,name='runner',acl='absent'):
+        return {'parent':None,'name':name,'identity':[1,2,uid,gid,mode],
+                'acl':acl,'need':need,'base':None,'selected':None}
+
+    def test_posix_owner_and_matching_group_never_fall_back_to_other_bits(self):
+        d=self.api()
+        for uid,gid,mode,groups,need,want in [
+                (1000,1001,0o40005,[1001],1,('owner',False)),
+                (1001,1000,0o40005,[],1,('group',False)),
+                (1001,1001,0o40005,[1001],1,('group',False)),
+                (1001,1001,0o40005,[],1,('other',True)),
+                (1000,1001,0o40700,[],7,('owner',True)),
+                (1001,1001,0o40750,[1001],5,('group',True))]:
+            with self.subTest(uid=uid,gid=gid,mode=oct(mode),groups=groups):
+                self.assertEqual(d.bridge_access_permission(self.row(uid,gid,mode,need),groups),want)
+
+    def test_all_six_operations_select_only_a_necessary_runner_group(self):
+        d=self.api()
+        for operation,socket_gid,want in [
+                ('preflight-image',118,[118,1001]),('preflight-qualification',118,[118,1001]),
+                ('image-collect',118,[118,1001]),('pull-budget',None,[1001]),
+                ('setup-budget',None,[1001]),('qualification-collect',None,[1001])]:
+            with self.subTest(operation=operation):
+                value=self.record(operation,socket_gid);value['rows']=[self.row(1001,1001,0o40750)]
+                d.bridge_access_choose(value)
+                self.assertEqual(value['planned']['groups'],want);self.assertEqual(value['planned']['traversal'],1001)
+                self.assertIsNone(value['actual'])
+                value=self.record(operation,socket_gid);value['rows']=[self.row(1001,1001,0o40755)]
+                d.bridge_access_choose(value)
+                self.assertEqual(value['planned']['groups'],[] if socket_gid is None else [118])
+                self.assertIsNone(value['planned']['traversal'])
+        for operation in ('metadata-budget','raw-budget'):
+            with self.assertRaises(ValueError):self.record(operation)
+        value=self.record('preflight-image',1001);value['rows']=[self.row(1001,1001,0o40750)]
+        d.bridge_access_choose(value)
+        self.assertEqual(value['planned']['groups'],[1001]);self.assertIsNone(value['planned']['traversal'])
+
+    def test_added_group_must_not_mask_other_access_elsewhere_in_the_plan(self):
+        d=self.api();value=self.record()
+        value['rows']=[self.row(1001,1001,0o40750),self.row(1001,1001,0o100604,4,'authority')]
+        with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_choose(value)
+        self.assertEqual(caught.exception.record['failure']['predicate'],'permission_denied')
+        self.assertEqual(caught.exception.record['failure']['path'],'authority')
+        self.assertIsNone(caught.exception.record['actual'])
+        self.assertEqual(value['rows'][1]['base'],'other');self.assertEqual(value['rows'][1]['selected'],'group')
+
+    def test_owner_only_missing_search_and_unsupported_acl_refuse(self):
+        d=self.api()
+        for row in [self.row(1001,1001,0o40700),self.row(1001,1001,0o40740),
+                    self.row(1000,1001,0o40075),self.row(1001,1001,0o40755,acl='unsupported')]:
+            with self.subTest(row=row):
+                value=self.record();value['rows']=[row]
+                with self.assertRaises(d.HostAccessError):d.bridge_access_choose(value)
+                self.assertIsNone(value['actual'])
+
+    @contextlib.contextmanager
+    def filesystem(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            namespace=pathlib.Path(temporary);root=namespace/'work';root.mkdir(mode=0o755)
+            files=['prismpm/.git/HEAD','prismpm/.git/config','game/.git/HEAD','game/.git/config',
+                   *['prismpm/target/candidate-qualification-driver/'+name for name in
+                     ('preparation-partial.json','source-files.json','game-inputs.json','candidate-capture-qualification.py',
+                      'candidate-capture-probe.py','candidate-capture-subject.mjs')],
+                   *['game/scripts/numeric/'+name for name in
+                     ('candidate-capture-qualification.py','candidate-capture-probe.py','candidate-capture-subject.mjs')]]
+            for name in files:
+                p=root/name;p.parent.mkdir(parents=True,exist_ok=True,mode=0o755);p.write_bytes(b'component bytes\n');p.chmod(0o400)
+            for name in ('prismpm/.git/objects','game/.git/objects'):(root/name).mkdir(mode=0o755)
+            (root/'prismpm/target/candidate-qualification-driver').chmod(0o700)
+            yield namespace,root
+
+    def test_real_measurement_rechecks_replaced_inode_and_refuses_alias_or_unknown_acl(self):
+        import time,errno
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            value=d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None)
+            plan=d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace)
+            d.bridge_access_choose(value)
+            self.assertTrue(value['rows']);self.assertEqual(value['planned']['groups'],[])
+            leaf=root/'prismpm/target/candidate-qualification-driver/preparation-partial.json'
+            leaf.rename(leaf.with_suffix('.old'));leaf.write_bytes(b'component bytes\n');leaf.chmod(0o400)
+            with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_recheck(plan,time.monotonic()+3)
+            self.assertEqual(caught.exception.record['failure']['predicate'],'identity_changed')
+            leaf.unlink();leaf.symlink_to('preparation-partial.old')
+            with self.assertRaises(d.HostAccessError):
+                d._bridge_access_measure(root,d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None),time.monotonic()+3,namespace=namespace)
+        with self.filesystem() as (namespace,root):
+            with patch.object(os,'getxattr',side_effect=OSError(errno.EOPNOTSUPP,'not supported')):
+                with self.assertRaises(d.HostAccessError) as caught:
+                    d._bridge_access_measure(root,d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None),time.monotonic()+3,namespace=namespace)
+            self.assertEqual(caught.exception.record['failure']['predicate'],'acl_unavailable')
+            self.assertEqual(caught.exception.record['failure']['errno'],errno.EOPNOTSUPP)
+
+    def test_overflow_keeps_the_denied_prefix_and_actual_credential_facts(self):
+        d=self.api();value=self.record()
+        value['actual']={'uid':1000,'euid':1000,'gid':1000,'egid':1000,'groups':[1001]}
+        value['failure']={'stage':'child','predicate':'filesystem_refusal','path':'/home/runner/work/private','syscall':'openat','errno':13}
+        value['rows']=[self.row(1001,1001,0o40700,name='x'*200)]*100
+        result=d.bridge_access_bounded(value)
+        self.assertEqual(result['status'],'overflow');self.assertGreater(result['omitted']['rows'],0)
+        self.assertEqual(result['failure'],value['failure']);self.assertEqual(result['actual'],value['actual'])
+        self.assertLessEqual(len(d.encoded({'exit':1,'error':'x'*512,'access':result})),8192)
+
+    def test_real_child_lookup_denial_keeps_root_leaf_measurement_and_errno(self):
+        import time
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            value=d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None)
+            plan=d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(value)
+            original=copy.deepcopy(value['rows']);source=root/'prismpm'
+            value['actual']={'uid':os.getuid(),'euid':os.geteuid(),'gid':os.getgid(),'egid':os.getegid(),'groups':os.getgroups()}
+            source.chmod(0o600)
+            try:
+                with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_recheck(plan,time.monotonic()+3)
+                record=caught.exception.record
+                self.assertEqual(record['failure']['errno'],13);self.assertEqual(record['failure']['syscall'],'openat')
+                self.assertEqual(record['failure']['path'],str(source/'.git'))
+                self.assertEqual(record['rows'],original)
+                self.assertIsNone(record['focus']['observed']);self.assertIsNotNone(record['focus']['root'])
+            finally:source.chmod(0o755)
+
+    def test_fixed_game_git_and_copied_authority_reads_are_real_and_detect_changes(self):
+        import time,subprocess,shutil
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            game=root/'game';home=root/'prismpm/target/candidate-qualification-driver'
+            shutil.rmtree(game/'.git')
+            env={'PATH':os.environ['PATH'],'LANG':'C.UTF-8','GIT_CONFIG_GLOBAL':'/dev/null','GIT_CONFIG_NOSYSTEM':'1'}
+            for args in [('init','-q'),('add','scripts'),('-c','user.name=Component','-c','user.email=component@example.invalid','commit','-qm','fixture')]:
+                subprocess.run(['git','-C',str(game),*args],env=env,check=True,capture_output=True)
+            commit=subprocess.check_output(['git','-C',str(game),'rev-parse','HEAD'],env=env,text=True).strip()
+            partial={'schema':'cs1618/candidate-capture-preparation-partial/1','status':'incomplete','phase':'qualification',
+                     'game':{'commit':commit},'source':{},'host_source':str(root/'prismpm'),'started':time.monotonic(),
+                     'runner':dict.fromkeys(('GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','GITHUB_WORKFLOW_REF','GITHUB_WORKFLOW_SHA','GITHUB_REPOSITORY','GITHUB_REF','RUNNER_OS','RUNNER_ARCH','ImageOS','ImageVersion'))}
+            partial['runner'].update(GITHUB_RUN_ID='1',GITHUB_RUN_ATTEMPT='1',GITHUB_WORKFLOW_SHA=commit,
+                GITHUB_REPOSITORY='R4-Laboratories/uor-cs1.618',GITHUB_REF='refs/heads/numeric-kernels',RUNNER_OS='Linux',RUNNER_ARCH='X64',
+                GITHUB_WORKFLOW_REF='R4-Laboratories/uor-cs1.618/.github/workflows/prismpm-candidate-capture-qualification.yml@refs/heads/numeric-kernels')
+            for role,name in [('driver','candidate-capture-qualification.py'),('probe','candidate-capture-probe.py'),('subject_adapter','candidate-capture-subject.mjs')]:
+                body=(game/'scripts/numeric'/name).read_bytes();partial[role]={'sha256':hashlib.sha256(body).hexdigest(),'bytes':len(body)}
+            for name,data in [('preparation-partial.json',partial),('source-files.json',[]),('game-inputs.json',[])]:
+                (home/name).unlink();d.write(home/name,data)
+            def measured():
+                record=d.bridge_access_record('pull-budget',root,os.getuid(),os.getgid(),None)
+                plan=d._bridge_access_measure(root,record,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(record)
+                return plan
+            plan=measured();self.assertEqual(d.bridge_access_read(plan,partial,time.monotonic()+3),partial)
+            self.assertEqual(plan['record']['status'],'verified')
+            changed=game/'scripts/numeric/candidate-capture-probe.py';changed.chmod(0o600);changed.write_bytes(b'changed game authority\n');changed.chmod(0o400)
+            with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_read(measured(),partial,time.monotonic()+3)
+            self.assertEqual(caught.exception.record['failure']['syscall'],'fixed-game-git-and-authority-read')
+
+    def test_early_child_read_refusal_is_structured_and_runner_retains_it(self):
+        import time
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            value=d.bridge_access_record('pull-budget',root,os.getuid(),os.getgid(),None)
+            plan=d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(value)
+            context={'access':plan,'uid':os.getuid(),'gid':os.getgid(),'partial':{},'socket':None,
+                     'deadline':time.monotonic()+3,'phase':'qualification','clock':None}
+            previous=os.getcwd()
+            try:
+                os.chdir(root)
+                # Only the unavailable setgroups/setuid boundary is substituted.
+                # The real file/ACL traversal and invalid source read must fail.
+                with patch.object(d,'bridge_drop',return_value=None):
+                    try:result=d.bridge_child('pull-budget',context,None)
+                    except Exception:result=None
+                self.assertIsNotNone(result,'child read error must carry structured access facts')
+                self.assertEqual(result['exit'],1);record=result['access']
+                self.assertEqual(record['actual']['uid'],os.getuid())
+                self.assertEqual(record['failure']['path'],str(root/'prismpm/target/candidate-qualification-driver/preparation-partial.json'))
+                self.assertEqual(record['failure']['syscall'],'source-read')
+                self.assertIsNone(record['failure']['errno'])
+                (root/'evidence').mkdir(mode=0o700);output=root/'output';output.touch(mode=0o600)
+                script=root/'game/scripts/numeric/candidate-capture-qualification.py'
+                reply=d.encoded({'exit':1,'controls':None,'clock':None,'deadline':time.monotonic()+2,
+                                 'handoff':None,'access':record})
+                self.assertLessEqual(len(reply),8192)
+                # Root execution is represented only as a nonzero refusal.
+                with patch.object(d,'__file__',str(script)),patch.object(d,'bridge_call_root',return_value=(1,reply,b'')),patch.dict(os.environ,{'GITHUB_OUTPUT':str(output)}):
+                    self.assertEqual(d.bridge_runner('pull-budget'),1)
+                retained=d.read_json(root/'evidence/metadata-upload/bridge-failure.json')
+                self.assertEqual(retained.get('access'),record)
+                self.assertFalse(retained['complete_application_accepted']);self.assertEqual(output.read_bytes(),b'')
+            finally:os.chdir(previous)
+
+    def test_runner_build_readiness_reads_exact_public_files_and_refuses_alias(self):
+        import time
+        d=self.api()
+        with tempfile.TemporaryDirectory() as temporary:
+            root=pathlib.Path(temporary);source=root/'prismpm';source.mkdir()
+            names=['.dockerignore','.devcontainer/devcontainer.json','.devcontainer/Dockerfile',
+                   '.devcontainer/docker-entrypoint.sh','.devcontainer/docker-ready.sh']
+            for name in names:
+                path=source/name;path.parent.mkdir(exist_ok=True);path.write_bytes(name.encode());path.chmod(0o644)
+            result=d.bridge_runner_build_inputs(root,time.monotonic()+2)
+            self.assertEqual([row['path'] for row in result['inputs']],names)
+            self.assertEqual([row['sha256'] for row in result['inputs']],
+                             [hashlib.sha256(name.encode()).hexdigest() for name in names])
+            private=source/'target/candidate-qualification-driver';private.mkdir(parents=True,mode=0o700)
+            self.assertEqual(d.bridge_runner_build_inputs(root,time.monotonic()+2),result)
+            leaf=source/names[-1];leaf.unlink();leaf.symlink_to('Dockerfile')
+            with self.assertRaises(ValueError):d.bridge_runner_build_inputs(root,time.monotonic()+2)
+
+    def test_host_sized_ancestry_socket_and_failure_wrapper_fit_existing_pipe(self):
+        import time
+        d=self.api()
+        with self.filesystem() as (namespace,root),HostSocketLayoutControls.fixture(self) as (socket_root,runtime,endpoint):
+            moved=namespace/'home/runner/work/uor-cs1.618/uor-cs1.618';moved.parent.mkdir(parents=True)
+            root.rename(moved)
+            socket_record=d._bridge_socket_measure(socket_root,os.getuid(),time.monotonic()+3)
+            value=d.bridge_access_record('preflight-image',moved,os.getuid(),os.getgid(),socket_record)
+            d._bridge_access_measure(moved,value,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(value)
+            value['actual']={'uid':1000,'euid':1000,'gid':1000,'egid':1000,'groups':value['planned']['groups']}
+            leaf=moved/'prismpm/target/candidate-qualification-driver/preparation-partial.json'
+            with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_fail(value,'filesystem_refusal',leaf,'source-read',PermissionError(13,'fixture refusal'))
+            record=caught.exception.record
+            self.assertNotEqual(record['status'],'overflow');d.bridge_access_validate(record,'preflight-image',os.getuid(),os.getgid())
+            child=d.encoded({'exit':1,'error':'x'*512,'access':record})
+            outer=d.encoded({'exit':1,'controls':None,'clock':d.collection_clock(1000,1100),'deadline':1700,'handoff':None,'access':record})
+            retained=d.encoded({'operation':'preflight-image','exit':1,'error':'x'*512,'runner_uid':1001,'runner_gid':1001,
+                                'elapsed_seconds':0.5,'complete_application_accepted':False,'access':record})
+            self.assertLessEqual(max(map(len,(child,outer,retained))),8192)
+            print(json.dumps({'host_sized_rows':len(record['rows']),'access_bytes':len(d.encoded(record)),
+                              'child_bytes':len(child),'root_bytes':len(outer),'failure_bytes':len(retained)}))
+
+    def test_present_acl_and_in_measurement_replacement_refuse_and_close_descriptors(self):
+        import time
+        d=self.api()
+        for defect in ('acl','replace'):
+            with self.subTest(defect=defect),self.filesystem() as (namespace,root):
+                leaf=root/'prismpm/target/candidate-qualification-driver/preparation-partial.json'
+                original=os.getxattr;changed=False;before=set(os.listdir('/proc/self/fd'))
+                def access(path,name,**kwargs):
+                    nonlocal changed
+                    if pathlib.Path(path)==leaf and not changed:
+                        changed=True
+                        if defect=='acl':return b'component representation of an unsupported ACL'
+                        leaf.rename(leaf.with_suffix('.old'));leaf.write_bytes(b'component bytes\n');leaf.chmod(0o400)
+                    return original(path,name,**kwargs)
+                with patch.object(os,'getxattr',side_effect=access):
+                    with self.assertRaises(d.HostAccessError) as caught:
+                        d._bridge_access_measure(root,d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None),time.monotonic()+3,namespace=namespace)
+                self.assertEqual(caught.exception.record['failure']['predicate'],'unsupported_acl' if defect=='acl' else 'identity_changed')
+                self.assertEqual(set(os.listdir('/proc/self/fd')),before)
+
+    @unittest.skipUnless(os.geteuid()==0,'actual restricted-ancestor two-identity witness unavailable: local UID1000, no sudo')
+    def test_real_restricted_ancestor_group_read_preserves_private_leaf(self):
+        import time
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            namespace.chmod(0o755);root.chmod(0o750);os.chown(root,1001,1001)
+            for tree,uid in [('game',1001),('prismpm',1000)]:
+                for path in [root/tree,*(root/tree).rglob('*')]:os.chown(path,uid,uid)
+            leaf=root/'prismpm/target/candidate-qualification-driver/preparation-partial.json'
+            value=d.bridge_access_record('qualification-collect',root,1001,1001,None)
+            plan=d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(value)
+            self.assertEqual(value['planned']['groups'],[1001])
+            before=leaf.stat()
+            def child(extra):
+                d.bridge_drop(None,extra)
+                if extra is not None:
+                    value['actual']={'uid':os.getuid(),'euid':os.geteuid(),'gid':os.getgid(),'egid':os.getegid(),'groups':os.getgroups()}
+                    d.bridge_access_recheck(plan,time.monotonic()+2)
+                try:body=d.regular(leaf)
+                except PermissionError:return {'exit':1,'errno':13}
+                return {'exit':0,'body':body.decode(),'groups':os.getgroups()}
+            self.assertEqual(d.bridge_supervise(lambda:child(None),time.monotonic()+2)['exit'],1)
+            self.assertEqual(d.bridge_supervise(lambda:child(value['planned']['traversal']),time.monotonic()+2),
+                             {'exit':0,'body':'component bytes\n','groups':[1001]})
+            root.chmod(0o700)
+            with self.assertRaises(d.HostAccessError):
+                denied=d.bridge_access_record('qualification-collect',root,1001,1001,None)
+                d._bridge_access_measure(root,denied,time.monotonic()+2,namespace=namespace);d.bridge_access_choose(denied)
+            after=leaf.stat();keys=('st_dev','st_ino','st_uid','st_gid','st_mode','st_size')
+            self.assertEqual(tuple(getattr(before,k) for k in keys),tuple(getattr(after,k) for k in keys))
 
 if __name__ == '__main__': unittest.main()

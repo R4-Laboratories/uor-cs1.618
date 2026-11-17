@@ -1951,8 +1951,8 @@ def bridge_supervise(callback,deadline):
             except ChildProcessError:pass
 
 
-def bridge_drop(socket_group):
-    groups=[] if socket_group is None else [socket_group]
+def bridge_drop(socket_group,traversal_group=None):
+    groups=sorted({gid for gid in (socket_group,traversal_group) if gid is not None})
     os.setgroups(groups);os.setgid(1000);os.setuid(1000)
     require(os.getuid()==os.geteuid()==1000 and os.getgid()==os.getegid()==1000
             and os.getgroups()==groups,'actual dropped source credentials')
@@ -2086,17 +2086,314 @@ def bridge_socket(deadline,expected=None):
     return _bridge_socket_measure(Path('/'),0,deadline,expected=expected)
 
 
+ACCESS_OPERATIONS=('preflight-image','preflight-qualification','image-collect',
+                   'pull-budget','setup-budget','qualification-collect')
+ACCESS_SOCKET_OPERATIONS=('preflight-image','preflight-qualification','image-collect')
+ACCESS_LIMIT=6500 # leaves room for the complete wrapper inside the existing8KiB pipe
+BUILD_INPUTS=('.dockerignore','.devcontainer/devcontainer.json','.devcontainer/Dockerfile',
+              '.devcontainer/docker-entrypoint.sh','.devcontainer/docker-ready.sh')
+
+
+class HostAccessError(ValueError):
+    def __init__(self,record):
+        self.record=bridge_access_bounded(record)
+        failure=self.record['failure'] or {'predicate':'diagnostic_overflow','path':self.record['root']}
+        super().__init__('host access '+failure['predicate']+': '+failure['path'])
+
+
+def bridge_access_record(operation,root,uid,gid,socket):
+    require(operation in ACCESS_OPERATIONS,'fixed source-reading bridge operation')
+    return {'schema':'cs1618/host-source-access/1','operation':operation,'root':str(root),
+            'status':'measuring','observer':{'uid':os.getuid(),'gid':os.getgid()},
+            'runner':{'uid':uid,'gid':gid},'planned':None,'actual':None,'socket':socket,
+            'rows':[],'failure':None,'omitted':None,'focus':None}
+
+
+def bridge_access_bounded(record):
+    value=decode(encoded(record));size=len(encoded(value))
+    if size>ACCESS_LIMIT or len(value['rows'])>40:
+        value['status']='overflow';value['omitted']={'rows':len(value['rows']),'bytes':size}
+        # Keep the failed component and credentials explicitly, never silently
+        # truncate the exception string containing the only useful measurement.
+        if value['focus'] is None and value['rows']:
+            value['focus']={'path':bridge_access_path(value,len(value['rows'])-1),'root':value['rows'][-1],'observed':None}
+        value['rows']=[]
+    require(len(encoded(value))<=ACCESS_LIMIT,'bounded access diagnostic wrapper')
+    return value
+
+
+def bridge_access_path(record,index):
+    parts=[]
+    while index is not None:
+        row=record['rows'][index];parts.append(row['name']);index=row['parent']
+    return str(Path(*reversed(parts)))
+
+
+def bridge_access_fail(record,predicate,path,syscall=None,error=None,stage=None):
+    record['status']='refused'
+    record['failure']={'stage':stage or ('child' if record['actual'] is not None else 'root'),
+                       'predicate':predicate,'path':str(path),'syscall':syscall,
+                       'errno':error.errno if isinstance(error,OSError) else None}
+    for i,row in enumerate(record['rows']):
+        if bridge_access_path(record,i)==str(path):record['focus']={'path':str(path),'root':row,'observed':None};break
+    raise HostAccessError(record)
+
+
+def bridge_access_permission(row,groups):
+    _,_,uid,gid,mode=row['identity']
+    if uid==1000:kind,bits='owner',(mode>>6)&7
+    elif gid in {1000,*groups}:kind,bits='group',(mode>>3)&7
+    else:kind,bits='other',mode&7
+    return kind,(bits&row['need'])==row['need']
+
+
+def bridge_access_choose(record):
+    socket=record['socket'];uses_socket=record['operation'] in ACCESS_SOCKET_OPERATIONS
+    require(uses_socket==(socket is not None),'socket role belongs only to fixed Docker operations')
+    socket_gid=socket['socket']['gid'] if uses_socket else None
+    baseline=[] if socket_gid is None else [socket_gid]
+    candidate=sorted(set(baseline+[record['runner']['gid']]))
+    record['planned']={'uid':1000,'gid':1000,'groups':baseline,'socket':socket_gid,'traversal':None,
+                       'scope':'process-wide'}
+    for i,row in enumerate(record['rows']):
+        if row['acl']!='absent':bridge_access_fail(record,'unsupported_acl',bridge_access_path(record,i))
+        row['base']=bridge_access_permission(row,baseline)[0]
+    needed=any(not bridge_access_permission(row,baseline)[1] for row in record['rows'])
+    selected=candidate if needed else baseline
+    if needed:
+        record['planned'].update(groups=selected,traversal=record['runner']['gid'])
+    # Re-evaluate every object. A newly matching group can REMOVE access that
+    # baseline credentials obtained from other bits; owner bits always win.
+    for i,row in enumerate(record['rows']):
+        row['selected'],allowed=bridge_access_permission(row,selected)
+        if not allowed:bridge_access_fail(record,'permission_denied',bridge_access_path(record,i),'mode-admission')
+    record['status']='planned'
+    if bridge_access_bounded(record)['status']=='overflow':raise HostAccessError(record)
+
+
+def _bridge_access_measure(root,record,deadline,namespace=Path('/')):
+    """Fixed objects, held no-follow ancestry; namespace is a private fixture seam."""
+    root=Path(root);namespace=Path(namespace);home=root/'prismpm/target/candidate-qualification-driver'
+    require(root.is_absolute() and root.is_relative_to(namespace),'confined fixed access workspace')
+    if len(os.fsencode(root))>512:bridge_access_fail(record,'workspace_path_bound',str(root)[:512])
+    requirements={root/'prismpm':(5,1000),root/'game':(5,record['runner']['uid']),home:(7,1000)}
+    for tree,uid in [('prismpm',1000),('game',record['runner']['uid'])]:
+        for name in ('.git/HEAD','.git/config'):requirements[root/tree/name]=(4,uid)
+        requirements[root/tree/'.git/objects']=(5,uid)
+    for name in ('preparation-partial.json','source-files.json','game-inputs.json',*AUTHORITY.values()):
+        requirements[home/name]=(4,1000)
+    for name in AUTHORITY.values():requirements[root/'game/scripts/numeric'/name]=(4,record['runner']['uid'])
+    # A later operation also needs the existing source-owned operation parent.
+    if os.path.lexists(home/'host-bridge'):requirements[home/'host-bridge']=(7,1000)
+    paths={namespace}
+    for path in requirements:
+        paths.add(path);paths.update(p for p in path.parents if p==namespace or p.is_relative_to(namespace))
+    paths=sorted(paths,key=lambda p:(len(p.parts),str(p)))
+    record['rows']=[];held=[];by_path={};current=namespace;syscall='openat'
+    identity=('st_dev','st_ino','st_uid','st_gid','st_mode')
+    files=identity+('st_nlink','st_size','st_mtime_ns','st_ctime_ns')
+    def acl(path,info):
+        nonlocal syscall
+        for name in ('system.posix_acl_access','system.posix_acl_default') if stat.S_ISDIR(info.st_mode) else ('system.posix_acl_access',):
+            syscall='getxattr:'+name
+            try:os.getxattr(path,name,follow_symlinks=False)
+            except OSError as error:
+                if error.errno==errno.ENODATA:continue
+                if path in by_path:record['rows'][by_path[path]]['acl']='unavailable'
+                bridge_access_fail(record,'acl_unavailable',path,syscall,error)
+            if path in by_path:record['rows'][by_path[path]]['acl']='unsupported'
+            bridge_access_fail(record,'unsupported_acl',path,syscall)
+        return 'absent'
+    try:
+        for path in paths:
+            current=path;bridge_time(deadline);syscall='openat'
+            parent=None if path==namespace else by_path[path.parent]
+            fd=os.open(path if parent is None else path.name,os.O_PATH|os.O_NOFOLLOW,
+                       dir_fd=None if parent is None else held[parent]['fd'])
+            info=os.fstat(fd);i=len(held)
+            entry={'path':path,'fd':fd,'stat':info,'keys':identity if stat.S_ISDIR(info.st_mode) else files}
+            held.append(entry);by_path[path]=i
+            need,owner=requirements.get(path,(1,None))
+            row={'parent':parent,'name':str(namespace) if parent is None else path.name,
+                 'identity':[getattr(info,k) for k in identity],'acl':'unmeasured','need':need,'base':None,'selected':None}
+            record['rows'].append(row)
+            if len(held)>40:bridge_access_fail(record,'path_count_bound',path,'measure')
+            directory_kind=stat.S_ISDIR(info.st_mode)
+            expected_directory=path not in requirements or need!=4
+            if directory_kind!=expected_directory or not (directory_kind or stat.S_ISREG(info.st_mode)):
+                bridge_access_fail(record,'unexpected_path_type',path,'fstat')
+            allowed_owners={1000} if path==root/'prismpm' or (root/'prismpm') in path.parents else {0,record['runner']['uid']}
+            if (owner is not None and info.st_uid!=owner) or info.st_uid not in allowed_owners or info.st_mode&0o7022:
+                bridge_access_fail(record,'unsafe_owner_or_mode',path,'fstat')
+            if path==home and stat.S_IMODE(info.st_mode)!=0o700:
+                bridge_access_fail(record,'private_source_directory',path,'fstat')
+            if not directory_kind and (info.st_nlink!=1 or info.st_size>MAX_METADATA):
+                bridge_access_fail(record,'unsafe_source_or_game_leaf',path,'fstat')
+            row['acl']=acl(path,info)
+        for entry in held:
+            current=entry['path'];bridge_time(deadline);syscall='identity-recheck';info=entry['stat']
+            if any(getattr(info,k)!=getattr(after,k) for after in (os.fstat(entry['fd']),current.lstat()) for k in entry['keys']):
+                bridge_access_fail(record,'identity_changed',current,syscall)
+            acl(current,info)
+        return {'root':root,'namespace':namespace,'record':record,
+                'held':[(entry['path'],tuple(getattr(entry['stat'],k) for k in entry['keys'])) for entry in held]}
+    except OSError as error:bridge_access_fail(record,'filesystem_refusal',current,syscall,error)
+    except CollectionDeadline:bridge_access_fail(record,'deadline',current,syscall)
+    finally:
+        for entry in held:os.close(entry['fd'])
+
+
+def bridge_access_recheck(plan,deadline):
+    record=plan['record'];fresh=decode(encoded(record))
+    try:
+        measured=_bridge_access_measure(plan['root'],fresh,deadline,namespace=plan['namespace'])
+        old=dict(plan['held']);new=dict(measured['held'])
+        for path in dict.fromkeys([*old,*new]):
+            if old.get(path)!=new.get(path):bridge_access_fail(fresh,'identity_changed',path,'identity-recheck')
+        bridge_access_choose(fresh)
+        if fresh['planned']!=record['planned']:bridge_access_fail(fresh,'access_plan_changed',plan['root'],'plan-recheck')
+    except HostAccessError as error:
+        # Preserve the root's complete measurements even when child traversal
+        # stops before the source leaf. Only the focus is a later observation.
+        failure=error.record['failure']
+        record['status']=error.record['status'];record['failure']=failure;record['omitted']=error.record['omitted']
+        if failure:
+            focus={'path':failure['path'],'root':None,'observed':None}
+            for label,value in [('root',record),('observed',fresh)]:
+                for i,row in enumerate(value['rows']):
+                    if bridge_access_path(value,i)==focus['path']:focus[label]=row;break
+            record['focus']=focus
+        raise HostAccessError(record)
+    return record
+
+
+def bridge_game_read(root,partial,uid,deadline):
+    require(git(root/'game','rev-parse','HEAD').decode().strip()==partial['game']['commit'],'host game checkout identity')
+    for role,name in AUTHORITY.items():
+        bridge_time(deadline)
+        body=git(root/'game','show',partial['game']['commit']+':scripts/numeric/'+name)
+        require(sha(body)==partial[role]['sha256'] and bridge_owned(root/'game/scripts/numeric'/name,uid,MAX_METADATA,deadline)==body,
+                'host game authority bytes')
+
+
+def bridge_access_read(plan,partial,deadline):
+    record=plan['record'];root=plan['root'];home=root/'prismpm/target/candidate-qualification-driver'
+    current=home/'preparation-partial.json';syscall='source-read'
+    try:
+        bridge_time(deadline);actual=validate_partial(read_json(current))
+        require(actual==partial and partial['host_source']==str(root/'prismpm'),'actual source-owned preparation join')
+        for name in ('source-files.json','game-inputs.json'):
+            current=home/name;bridge_time(deadline);read_json(current)
+        for role,name in AUTHORITY.items():
+            current=home/name;bridge_time(deadline);body=regular(current)
+            require(len(body)==partial[role]['bytes'] and sha(body)==partial[role]['sha256'],'copied game authority substitution')
+        current=root/'game';syscall='fixed-game-git-and-authority-read';bridge_time(deadline)
+        bridge_game_read(root,partial,record['runner']['uid'],deadline)
+        bridge_access_recheck(plan,deadline);bridge_time(deadline);record['status']='verified'
+        return actual
+    except HostAccessError:raise
+    except (Exception,CollectionDeadline) as error:
+        bridge_access_fail(record,'filesystem_refusal' if isinstance(error,OSError) else 'read_join_refusal',current,syscall,error)
+
+
+def bridge_runner_build_inputs(root,deadline,access=None):
+    rows=[]
+    for name in BUILD_INPUTS:
+        path=root/'prismpm'/name
+        try:body=bridge_owned(path,1000,MIB,deadline)
+        except (Exception,CollectionDeadline) as error:
+            if access is not None:bridge_access_fail(access,'runner_input_refusal',path,'runner-build-read',error,stage='runner')
+            raise
+        rows.append({'path':name,'bytes':len(body),'sha256':sha(body)})
+    return {'uid':os.getuid(),'gid':os.getgid(),'inputs':rows}
+
+
+def bridge_access_validate(value,operation,uid,gid):
+    closed(value,'schema operation root status observer runner planned actual socket rows failure omitted focus')
+    require(value['schema']=='cs1618/host-source-access/1' and value['operation']==operation
+            and value['runner']=={'uid':uid,'gid':gid} and len(encoded(value))<=ACCESS_LIMIT,
+            'bounded same-operation access diagnostic')
+    require(value['status'] in ('measuring','planned','verified','refused','overflow')
+            and type(value['root']) is str and len(os.fsencode(value['root']))<=512,'fixed access status/root')
+    closed(value['observer'],'uid gid')
+    for identity in (value['observer'],value['runner']):
+        require(all(type(v) is int and v>=0 for v in identity.values()),'measured observer/runner identities')
+    if value['planned'] is not None:
+        plan=closed(value['planned'],'uid gid groups socket traversal scope')
+        require(plan['uid']==plan['gid']==1000 and plan['scope']=='process-wide'
+                and plan['traversal'] in (None,gid),'fixed conditional source credential roles')
+        require(plan['socket'] is None or operation in ACCESS_SOCKET_OPERATIONS,'fixed socket role operation')
+        expected=sorted({v for v in (plan['socket'],plan['traversal']) if v is not None})
+        require(plan['groups']==expected and all(type(v) is int and v>=0 for v in expected),'closed planned groups')
+    if value['actual'] is not None:
+        actual=closed(value['actual'],'uid euid gid egid groups')
+        require(all(type(actual[k]) is int and actual[k]>=0 for k in ('uid','euid','gid','egid'))
+                and type(actual['groups']) is list and len(actual['groups'])<=64
+                and all(type(g) is int and g>=0 for g in actual['groups']),'actual observed child credentials')
+    require(type(value['rows']) is list and len(value['rows'])<=40,'access measurement count bound')
+    for i,row in enumerate(value['rows']):
+        closed(row,'parent name identity acl need base selected')
+        require(row['parent'] is None or (type(row['parent']) is int and 0<=row['parent']<i),'acyclic fixed ancestry')
+        require(type(row['name']) is str and len(os.fsencode(row['name']))<=512
+                and type(row['identity']) is list and len(row['identity'])==5
+                and all(type(n) is int and n>=0 for n in row['identity'])
+                and row['acl'] in ('unmeasured','absent','unavailable','unsupported')
+                and type(row['need']) is int and 0<row['need']<=7
+                and row['base'] in (None,'owner','group','other') and row['selected'] in (None,'owner','group','other'),
+                'typed path identity, ACL state and permission classes')
+    if value['failure'] is not None:
+        failure=closed(value['failure'],'stage predicate path syscall errno')
+        require(failure['stage'] in ('root','child','runner','root-handoff')
+                and type(failure['predicate']) is str and len(failure['predicate'])<=64
+                and type(failure['path']) is str and len(os.fsencode(failure['path']))<=1024
+                and (failure['syscall'] is None or type(failure['syscall']) is str)
+                and (failure['errno'] is None or type(failure['errno']) is int),'typed access refusal')
+    if value['omitted'] is not None:
+        closed(value['omitted'],'rows bytes')
+        require(value['status']=='overflow' and all(type(n) is int and n>=0 for n in value['omitted'].values()),
+                'explicit diagnostic overflow counts')
+    if value['focus'] is not None:
+        focus=closed(value['focus'],'path root observed')
+        require(type(focus['path']) is str and len(os.fsencode(focus['path']))<=1024,'bounded denied component')
+        for row in (focus['root'],focus['observed']):
+            if row is not None:closed(row,'parent name identity acl need base selected')
+    return value
+
+
 def bridge_child(operation,context,socket_group):
-    bridge_drop(socket_group)
-    if context['socket'] is not None:
-        bridge_socket(context['deadline'],expected=context['socket'])
-        require(socket_group==context['socket']['socket']['gid'],'held actual socket group passed to dropped child')
+    plan=context['access'];record=plan['record'];stage='credential-drop';current=plan['root']
+    try:
+        try:bridge_drop(socket_group,record['planned']['traversal'])
+        finally:
+            record['actual']={'uid':os.getuid(),'euid':os.geteuid(),'gid':os.getgid(),
+                              'egid':os.getegid(),'groups':os.getgroups()}
+        require(record['actual']=={'uid':1000,'euid':1000,'gid':1000,'egid':1000,
+                                   'groups':record['planned']['groups']},'actual complete access credential plan')
+        stage='socket-recheck';current=Path('/var/run/docker.sock')
+        if context['socket'] is not None:
+            bridge_socket(context['deadline'],expected=context['socket'])
+            require(socket_group==context['socket']['socket']['gid'],'held actual socket group passed to dropped child')
+        stage='source-access';current=plan['root']
+        bridge_access_recheck(plan,context['deadline'])
+        partial=bridge_access_read(plan,context['partial'],context['deadline'])
+        return bridge_child_export(operation,context,partial)
+    except HostSocketError as error:
+        record['socket']=error.measurement
+        try:bridge_access_fail(record,'socket_refusal',current,stage)
+        except HostAccessError as refusal:return {'exit':1,'error':str(refusal)[:512],'access':refusal.record}
+    except HostAccessError as error:
+        return {'exit':1,'error':str(error)[:512],'access':error.record}
+    except (Exception,CollectionDeadline) as error:
+        try:bridge_access_fail(record,'filesystem_refusal' if isinstance(error,OSError) else 'child_refusal',current,stage,error)
+        except HostAccessError as refusal:return {'exit':1,'error':str(refusal)[:512],'access':refusal.record}
+
+
+def bridge_child_export(operation,context,partial):
     root=Path.cwd();home=root/'prismpm/target/candidate-qualification-driver'
-    partial=validate_partial(read_json(home/'preparation-partial.json'))
-    require(partial==context['partial'],'actual source-owned preparation join')
+    access=bridge_access_bounded(context['access']['record'])
     if operation in ('pull-budget','setup-budget'):
         minutes=int((partial['started']+2700-time.monotonic())//60)
-        return {'exit':0,'controls':bridge_controls(operation,{'minutes':minutes})}
+        return {'exit':0,'controls':bridge_controls(operation,{'minutes':minutes}),'access':access}
     folder=home/'host-bridge'/operation;folder.mkdir(parents=True,mode=0o700)
     if operation.startswith('preflight-'):
         require(os.access('/var/run/docker.sock',os.R_OK|os.W_OK),'actual dropped Docker socket access')
@@ -2108,21 +2405,35 @@ def bridge_child(operation,context,socket_group):
                 ('st_dev','st_ino','st_uid','st_gid','st_mode','st_size','st_nlink')}}
     else:
         try:export_host(context['phase'],folder);result={'exit':0}
-        except BaseException as error:result={'exit':1,'error':str(error)[:2048]}
+        except BaseException as error:result={'exit':1,'error':str(error)[:512]}
         destination=folder/'metadata-upload'
     write(destination/'bridge-context.json',{'operation':operation,'runner_uid':context['uid'],'runner_gid':context['gid'],
           'source_uid':os.getuid(),'source_gid':os.getgid(),'source_groups':os.getgroups(),
           'job_started':partial['started'],'collection_clock':context['clock'],'child':result,'socket':context['socket'],
+          'access':access,'runner_build_inputs':context.get('runner_build_inputs'),
           'raw_mapping':{'from':'prismpm/target/candidate-qualification-driver/raw','to':'evidence/raw-upload'}
                         if operation=='qualification-collect' else None})
+    result['access']=access
     return result
 
 
-def bridge_admission(root,operation,state,uid,deadline):
+def bridge_admission(root,operation,state,uid,deadline,gid=None):
     admission=bridge_read(root/'evidence/host-bridge'/(operation+'.admission.json'),uid,deadline)
+    build_inputs=None
+    if operation.startswith('preflight-'):
+        closed(admission,'operation handoff_sha256 deadline metadata raw runner_build_inputs')
+        build_inputs=admission.pop('runner_build_inputs');closed(build_inputs,'uid gid inputs')
+        require(build_inputs['uid']==uid and type(build_inputs['gid']) is int and build_inputs['gid']==gid
+                and type(build_inputs['inputs']) is list and len(build_inputs['inputs'])==len(BUILD_INPUTS),
+                'actual runner build-input readiness')
+        for name,row in zip(BUILD_INPUTS,build_inputs['inputs']):
+            closed(row,'path bytes sha256')
+            require(row['path']==name and type(row['bytes']) is int and 0<=row['bytes']<=MIB
+                    and re.fullmatch('[0-9a-f]{64}',row['sha256']),'fixed bounded build-input readback')
     require(admission=={'operation':operation,'handoff_sha256':state['handoff_sha256'],
                        'deadline':state['deadline'],'metadata':True,'raw':state['raw']},
             'actual runner admission joins one completed handoff')
+    return build_inputs
 
 
 def bridge_guard(root,ledger,operation,uid,job_started,deadline):
@@ -2161,6 +2472,7 @@ def bridge_privileged(operation):
     def expired(signum,frame):raise CollectionDeadline('privileged host bridge interrupted or expired')
     previous={sig:signal.signal(sig,expired) for sig in (signal.SIGALRM,signal.SIGTERM,signal.SIGINT)}
     signal.setitimer(signal.ITIMER_REAL,max(0.001,deadline-time.monotonic()))
+    access=None;clock=None;runner_build_inputs=None
     try:
         job=bridge_read(root/'evidence/job-start.json',uid,deadline);closed(job,'monotonic')
         partial=validate_partial(bridge_read(root/'evidence/preparation-partial.json',uid,deadline))
@@ -2182,12 +2494,12 @@ def bridge_privileged(operation):
         if operation!=preflight:
             previous_state=read_json(ledger/(preflight+'.json'))
             require(previous_state['status']=='completed','completed actual bridge preflight required')
-            bridge_admission(root,preflight,previous_state,uid,deadline)
+            runner_build_inputs=bridge_admission(root,preflight,previous_state,uid,deadline,gid)
         clock=None
         if operation in ('metadata-budget','raw-budget'):
             # Control only: never revisit source/raw files or repeat relocation.
             clock=bridge_guard(root,ledger,operation,uid,partial['started'],deadline)
-            result={'exit':0,'controls':{'admitted':True},'clock':clock,'deadline':deadline,'handoff':None}
+            result={'exit':0,'controls':{'admitted':True},'clock':clock,'deadline':deadline,'handoff':None,'access':None}
         else:
             home=root/'prismpm/target/candidate-qualification-driver'
             if operation=='qualification-collect':
@@ -2202,13 +2514,23 @@ def bridge_privileged(operation):
                 deadline=min(deadline,partial['started']+(14400 if phase=='image' else 2700))
             bridge_time(deadline);signal.setitimer(signal.ITIMER_REAL,max(0.001,deadline-time.monotonic()))
             socket_group=None;socket_measurement=None
+            access=bridge_access_record(operation,root,uid,gid,None)
             if operation.startswith('preflight-') or operation=='image-collect':
-                socket_measurement=bridge_socket(deadline);socket_group=socket_measurement['socket']['gid']
+                try:socket_measurement=bridge_socket(deadline)
+                except HostSocketError as error:
+                    access['socket']=error.measurement
+                    bridge_access_fail(access,'socket_refusal','/var/run/docker.sock','socket-measure')
+                socket_group=socket_measurement['socket']['gid'];access['socket']=socket_measurement
+            if partial['host_source']!=str(root/'prismpm'):
+                bridge_access_fail(access,'fixed_source_path',root/'prismpm','preparation-join')
+            plan=_bridge_access_measure(root,access,deadline);bridge_access_choose(access)
             context={'uid':uid,'gid':gid,'partial':partial,'phase':phase,'clock':clock,
-                     'socket':socket_measurement,'deadline':deadline}
+                     'socket':socket_measurement,'deadline':deadline,'access':plan,'runner_build_inputs':runner_build_inputs}
             child=bridge_supervise(lambda:bridge_child(operation,context,socket_group),deadline)
+            access=bridge_access_validate(child['access'],operation,uid,gid)
             result={'exit':child['exit'],'controls':child.get('controls'),
-                    'clock':clock,'deadline':deadline,'handoff':None}
+                    'clock':clock,'deadline':deadline,'handoff':None,'access':access}
+            if child['exit'] and access['status'] in ('refused','overflow'):raise HostAccessError(access)
             if operation not in ('pull-budget','setup-budget'):
                 folder=home/'host-bridge'/operation
                 metadata=folder/'metadata-upload'
@@ -2242,8 +2564,18 @@ def bridge_privileged(operation):
                                   'clock':clock,'raw':raw is not None},replace=True)
         bridge_time(deadline);bridge_controls(operation,result['controls'])
         # Root writes only this bounded typed stdout record, never GITHUB_OUTPUT.
+        require(len(encoded(result))<=8192,'complete bounded privileged result')
         print(encoded(result).decode(),end='')
         return result['exit']
+    except (Exception,CollectionDeadline) as error:
+        if access is None:raise
+        if isinstance(error,HostAccessError):diagnostic=error.record
+        else:
+            try:bridge_access_fail(access,'root_refusal',root,'root-handoff',error,stage='root-handoff')
+            except HostAccessError as refusal:diagnostic=refusal.record
+        result={'exit':1,'controls':None,'clock':clock,'deadline':deadline,'handoff':None,'access':diagnostic}
+        require(len(encoded(result))<=8192,'complete bounded privileged refusal')
+        print(encoded(result).decode(),end='');return 1
     finally:
         signal.setitimer(signal.ITIMER_REAL,0)
         for sig,handler in previous.items():signal.signal(sig,handler)
@@ -2286,16 +2618,19 @@ def bridge_runner(operation):
     began=time.monotonic();cap=5 if operation.endswith('-budget') else 30 if operation.startswith('preflight-') else 60
     deadline=began+cap;request={'operation':operation,'uid':os.getuid(),'gid':os.getgid(),'started':began}
     write(control/(operation+'.request.json'),request)
-    exit_code=1;failure=None;outputs=None
+    exit_code=1;failure=None;outputs=None;access=None
     try:
         # No environment preservation or selectable run-as owner/group/program.
         exit_code,stdout,stderr=bridge_call_root(script,operation,deadline)
         require(stdout,'root bridge did not return: '+stderr.decode(errors='replace')[:2048])
-        result=decode(stdout);closed(result,'exit controls clock deadline handoff')
+        result=decode(stdout);closed(result,'exit controls clock deadline handoff access')
         require(type(result['exit']) is int and result['exit']==exit_code and 0<=exit_code<=255,
                 'actual privileged exit/result join')
         require(type(result['deadline']) in (float,int) and began<result['deadline']<=deadline,'same charged host deadline')
         deadline=min(deadline,result['deadline']) # includes the original absolute job/collection cutoffs
+        if result['access'] is not None:
+            access=bridge_access_validate(result['access'],operation,os.getuid(),os.getgid())
+            if exit_code and result['handoff'] is None:raise HostAccessError(access)
         outputs=bridge_controls(operation,result['controls']);bridge_time(deadline)
         require((result['handoff'] is None)==operation.endswith('-budget'),'export controls require one held handoff')
         if result['handoff'] is not None:
@@ -2317,6 +2652,9 @@ def bridge_runner(operation):
                 else:raise ValueError('private original unexpectedly readable by distinct runner')
             admission={'operation':operation,'handoff_sha256':result['handoff'],
                        'deadline':result['deadline'],'metadata':True,'raw':manifest['raw'] is not None}
+            if operation.startswith('preflight-'):
+                require(access is not None and access['status']=='verified','actual preflight access witness')
+                admission['runner_build_inputs']=bridge_runner_build_inputs(root,deadline,access)
             # These bounded runner-created records are in the root's reserved
             # metadata allowance. Their exact bytes are read back as this UID.
             bridge_time(deadline);write(target/'bridge-handoff.json',manifest);write(target/'runner-admission.json',admission)
@@ -2327,10 +2665,12 @@ def bridge_runner(operation):
         bridge_append_outputs(Path(os.environ['GITHUB_OUTPUT']),operation,outputs)
         if exit_code:failure='original UID1000 collection failed; safe exports are diagnostic evidence only'
     except BaseException as error:
-        failure=str(error)[:2048]
+        if isinstance(error,HostAccessError):access=error.record
+        failure=str(error)[:512 if access is not None else 2048]
         if exit_code==0:exit_code=1
     status={'operation':operation,'exit':exit_code,'error':failure,'runner_uid':os.getuid(),'runner_gid':os.getgid(),
-            'elapsed_seconds':time.monotonic()-began,'complete_application_accepted':False}
+            'elapsed_seconds':time.monotonic()-began,'complete_application_accepted':False,'access':access}
+    require(len(encoded(status))<=8192,'complete bounded runner failure record')
     write(control/(operation+'.status.json'),status)
     if failure:
         # Root never started, or incomplete transfer: retain a small readable
@@ -2345,7 +2685,7 @@ def bridge_runner(operation):
                 directory(destination,private=True)
                 require(set(path.name for path in destination.iterdir())=={'bridge-failure.json'},'failure-only export')
                 record=read_json(destination/'bridge-failure.json',8192)
-                closed(record,'operation exit error runner_uid runner_gid elapsed_seconds complete_application_accepted')
+                closed(record,'operation exit error runner_uid runner_gid elapsed_seconds complete_application_accepted access')
                 require(record['runner_uid']==os.getuid() and type(record['exit']) is int and record['exit']!=0
                         and record['complete_application_accepted'] is False,'actual runner-readable failure metadata')
                 bridge_time(deadline);bridge_append_outputs(Path(os.environ['GITHUB_OUTPUT']),operation,{'metadata_safe':True})
