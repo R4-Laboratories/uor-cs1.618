@@ -37,7 +37,7 @@ try{
 
   const cover=await page.evaluate(()=>{const f=(window as any).fixture;f.snapshot.bomb.defuser='teammate';f.draw();return {text:document.getElementById('bomb-card')!.textContent,marginHidden:document.getElementById('bomb-margin-row')!.classList.contains('hidden'),progressHidden:document.getElementById('objective')!.classList.contains('hidden')};});assert.match(cover.text!,/TEAMMATE DEFUSING/);assert(cover.marginHidden);assert(cover.progressHidden);
   const responsive=[];
-  for(const viewport of [{width:390,height:844},{width:390,height:667},{width:667,height:375}]){
+  for(const viewport of [{width:390,height:844},{width:390,height:667},{width:667,height:375},{width:320,height:568},{width:360,height:640},{width:375,height:667},{width:800,height:450},{width:1024,height:600}]){
    await page.setViewportSize(viewport);
    await page.waitForFunction(size=>{const canvas=(window as any).fixture.world.canvas;return canvas.width===size.width&&canvas.height===size.height;},viewport);
    for(const mode of ['defusing','cover'] as const){
@@ -50,11 +50,11 @@ try{
      const separate=(a,b)=>a.right+6<=b.left||a.left>=b.right+6||a.bottom+6<=b.top||a.top>=b.bottom+6;
      const keys=['#bomb-site','#bomb-directive','#bomb-fuse','#bomb-requirement',...(mode==='defusing'?['#bomb-status','#bomb-margin-row>span','#bomb-margin']:[])];
      const readable=keys.every(selector=>{const el=document.querySelector(selector),r=rect(selector);return r.left>=card.left&&r.right<=card.right&&r.top>=card.top&&r.bottom<=card.bottom&&el.scrollWidth<=el.clientWidth;});
-     return {mode,card,radar,aim,progress,readable,fits:card.left>=0&&card.right<=innerWidth&&card.top>=0&&card.bottom<=innerHeight&&document.documentElement.scrollWidth<=innerWidth,clearOfRadar:separate(card,radar),clearOfClock:separate(card,clock),clearOfSession:separate(card,session),clearOfAim:separate(card,aim),clearOfProgress:mode!=='defusing'||separate(card,progress),progressVisible:!document.getElementById('objective').classList.contains('hidden')};
+     return {mode,card,radar,aim,progress,readable,fits:card.left>=0&&card.right<=innerWidth&&card.top>=0&&card.bottom<=innerHeight&&document.documentElement.scrollWidth<=innerWidth,clearOfRadar:separate(card,radar),clearOfClock:separate(card,clock),clearClockRadar:separate(clock,radar),clearOfSession:separate(card,session),clearOfAim:separate(card,aim),clearOfProgress:mode!=='defusing'||separate(card,progress),progressVisible:!document.getElementById('objective').classList.contains('hidden')};
     })()`);
     responsive.push({viewport,...layout});
     const label=`${viewport.width}x${viewport.height} ${mode}`;
-    assert(layout.fits,`${label}: card stays in viewport`);assert(layout.clearOfRadar,`${label}: card clears radar`);assert(layout.clearOfClock,`${label}: card clears scores`);assert(layout.clearOfSession,`${label}: card clears session label`);assert(layout.clearOfAim,`${label}: card clears aiming area`);assert(layout.clearOfProgress,`${label}: card clears hold-E panel`);assert(layout.readable,`${label}: key information remains inside card`);assert.equal(layout.progressVisible,mode==='defusing',`${label}: active interaction stays visible`);
+    assert(layout.fits,`${label}: card stays in viewport`);assert(layout.clearOfRadar,`${label}: card clears radar`);assert(layout.clearOfClock,`${label}: card clears scores`);assert(layout.clearClockRadar,`${label}: scores clear radar`);assert(layout.clearOfSession,`${label}: card clears session label`);assert(layout.clearOfAim,`${label}: card clears aiming area`);assert(layout.clearOfProgress,`${label}: card clears hold-E panel`);assert(layout.readable,`${label}: key information remains inside card`);assert.equal(layout.progressVisible,mode==='defusing',`${label}: active interaction stays visible`);
     await page.screenshot({path:`${out}/after-objective-${viewport.width}x${viewport.height}-${mode}.png`});
     if(viewport.height===844&&mode==='cover')await page.screenshot({path:`${out}/after-mobile-objective.png`});
    }
