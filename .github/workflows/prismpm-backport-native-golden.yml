@@ -1,0 +1,118 @@
+name: PrismPM backport native golden diagnostics
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-backport-native-golden.yml'
+      - 'scripts/numeric/native-golden-preparation.py'
+      - 'scripts/numeric/tests/test_native_golden_preparation.py'
+      - 'scripts/numeric/prismpm-native-candidate/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Diagnostic generation only; six raw records require independent review/import.
+jobs:
+  native:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          path: prismpm
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.2
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+        with:
+          version: v0.28.0
+          driver-opts: image=docker.io/moby/buildkit@sha256:de10faf919fc71ba4eb1dd7bd6449566d012b0c9436b1c61bfee21d621b009aa
+      - name: Check adapter controls
+        run: python3 -m unittest discover -s game/scripts/numeric/tests -p test_native_golden_preparation.py
+      - name: Restore exact reviewed native source and initialize incomplete custody
+        run: |
+          set -euo pipefail
+          umask 022
+          test "$(id -u)" -gt 0
+          python3 game/scripts/numeric/native-golden-preparation.py prepare \
+            --source "$GITHUB_WORKSPACE/prismpm" \
+            --snapshot "$GITHUB_WORKSPACE/game/scripts/numeric/prismpm-native-candidate" \
+            --evidence "$RUNNER_TEMP/native-orchestration" \
+            --output "$RUNNER_TEMP/native-golden" --lane '${{ matrix.arch }}'
+      - name: Start original bounded native diagnostics
+        working-directory: prismpm
+        run: node scripts/ci-observe.mjs start "$RUNNER_TEMP/native-orchestration/observer"
+      - name: Run complete original helper controls
+        working-directory: prismpm
+        run: |
+          set +e
+          node scripts/ci-observe.mjs run "$RUNNER_TEMP/native-orchestration/native-helper-tests" -- node scripts/native-golden.mjs tests
+          code=$?
+          python3 - "$RUNNER_TEMP/native-orchestration/native-helper-tests-command.json" "$code" <<'PY'
+          import json, pathlib, sys
+          pathlib.Path(sys.argv[1]).write_text(json.dumps({'argv': ['node', 'scripts/native-golden.mjs', 'tests'], 'exit_code': int(sys.argv[2])}) + '\n')
+          PY
+          exit "$code"
+      - name: Run unchanged native generation owner
+        working-directory: prismpm
+        env:
+          SOURCE_REVISION: 881df278923ff271fc179703e55ea91c45f2394d
+        run: |
+          set +e
+          node scripts/ci-observe.mjs run "$RUNNER_TEMP/native-orchestration/native-owner-run" -- node scripts/native-golden.mjs run "$SOURCE_REVISION" "$RUNNER_TEMP/native-golden"
+          code=$?
+          python3 - "$RUNNER_TEMP/native-orchestration/native-owner-run-command.json" "$code" "$SOURCE_REVISION" "$RUNNER_TEMP/native-golden" <<'PY'
+          import json, pathlib, sys
+          pathlib.Path(sys.argv[1]).write_text(json.dumps({'argv': ['node', 'scripts/native-golden.mjs', 'run', sys.argv[3], sys.argv[4]], 'exit_code': int(sys.argv[2])}) + '\n')
+          PY
+          exit "$code"
+      - name: Stop original bounded native diagnostics
+        if: always()
+        working-directory: prismpm
+        run: node scripts/ci-observe.mjs stop "$RUNNER_TEMP/native-orchestration/observer"
+      - name: Collect complete originals and game provenance on every outcome
+        if: always()
+        run: |
+          python3 game/scripts/numeric/native-golden-preparation.py collect \
+            --source "$GITHUB_WORKSPACE/prismpm" \
+            --snapshot "$GITHUB_WORKSPACE/game/scripts/numeric/prismpm-native-candidate" \
+            --evidence "$RUNNER_TEMP/native-orchestration" \
+            --output "$RUNNER_TEMP/native-golden" --lane '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: backport-native-golden-${{ matrix.arch }}-881df278923ff271fc179703e55ea91c45f2394d-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-golden/
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: backport-native-orchestration-${{ matrix.arch }}-881df278923ff271fc179703e55ea91c45f2394d-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/native-orchestration/
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14
