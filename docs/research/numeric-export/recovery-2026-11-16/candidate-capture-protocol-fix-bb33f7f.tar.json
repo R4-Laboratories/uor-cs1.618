@@ -1,0 +1,9 @@
+{
+  "source_commit": "bb33f7f86c24e7f4eddb75a48f8ade0a2f8cb702",
+  "scope": "Task1 component fix; independent review pending, actual SDK/capture not qualified",
+  "archive_bytes": 10433,
+  "archive_sha256": "a6f7eca794ecac134f10c8fc4cf084fd9370c2da5cc7f9bcad78d41072ad60f0",
+  "patch_bytes": 26270,
+  "patch_sha256": "023ab7c89cf6ee1b46c929e5da257894c7556352fd10fbfe5cbeb2ec222a1689",
+  "index_sha256": "1f01a6cd2409015248d90f374fa1528bf1bdf7da57a68defe0983c3928033870"
+}

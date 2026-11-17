@@ -1,0 +1,453 @@
+diff --git a/scripts/conditional-capture-candidate.py b/scripts/conditional-capture-candidate.py
+index 69c5643f..3e8f6199 100644
+--- a/scripts/conditional-capture-candidate.py
++++ b/scripts/conditional-capture-candidate.py
+@@ -5,13 +5,16 @@ separate actor-lifecycle implementation is reviewed. Stage admission describes
+ only complete measured input bytes and EOF, never application acceptance.
+ """
+ import hashlib
++from contextlib import contextmanager
+ import importlib.util
+ import os
+ from pathlib import Path, PurePosixPath
+ import re
++import signal
+ import stat
+ import sys
+ import time
++import threading
+ 
+ UTILITY_NAME = "conditional-capture-sdk.py"
+ UTILITY_SHA256 = "ca09b9de3bf57c3e2dc16e11d4d1a527b9b2f1f271566bb7a87846d0a24f8e9a"
+@@ -68,6 +71,130 @@ def tick(deadline):
+     require(time.monotonic() < deadline, "candidate input deadline")
+ 
+ 
++_ACTIVE_DEADLINE = None
++LISTING_REAP_SECONDS = 1
++
++
++def _deadline_expired(_signum, _frame):
++    raise RuntimeError("candidate input deadline")
++
++
++@contextmanager
++def deadline_scope(deadline):
++    """Main-thread POSIX wall-clock guard for synchronous unchanged primitives.
++
++    Only same-owner nesting is admitted. A timed-out legacy Git scan may spend
++    its existing bounded five seconds reaping; listing cleanup is capped below.
++    These are failure cleanup allowances, never additional successful work.
++    """
++    global _ACTIVE_DEADLINE
++    require(threading.current_thread() is threading.main_thread(), "candidate deadline requires main thread")
++    require(signal.SIGALRM not in signal.pthread_sigmask(signal.SIG_BLOCK, set()),
++            "blocked candidate deadline signal")
++    previous = _ACTIVE_DEADLINE
++    handler = signal.getsignal(signal.SIGALRM)
++    timer = signal.getitimer(signal.ITIMER_REAL)
++    if previous is None:
++        require(handler == signal.SIG_DFL and timer == (0.0, 0.0), "foreign alarm handler or timer")
++    else:
++        require(handler is _deadline_expired and timer[1] == 0, "foreign nested alarm handler or timer")
++        deadline = min(deadline, previous)
++    tick(deadline)
++    try:
++        _ACTIVE_DEADLINE = deadline
++        signal.signal(signal.SIGALRM, _deadline_expired)
++        signal.setitimer(signal.ITIMER_REAL, max(0.000001, deadline - time.monotonic()))
++        yield
++        tick(deadline)
++    finally:
++        signal.setitimer(signal.ITIMER_REAL, 0)
++        _ACTIVE_DEADLINE = previous
++        signal.signal(signal.SIGALRM, handler)
++        if previous is not None and previous > time.monotonic():
++            signal.setitimer(signal.ITIMER_REAL, max(0.000001, previous - time.monotonic()))
++
++
++def measured_listing(executable, deadline):
++    """One actual listing, bounded output, retained diagnostics on every failure."""
++    with deadline_scope(deadline):
++        return _measured_listing(executable, deadline)
++
++
++def _measured_listing(executable, deadline):
++    tick(deadline)
++    # Keep a pending work alarm from interrupting Popen after the OS child
++    # exists but before its handle is under our finally/retirement custody.
++    previous_mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGALRM})
++    child = None
++    channels = {}
++    failure, result = None, None
++    try:
++        child = legacy.subprocess.Popen([str(executable), "--list", "--format=terse"],
++                                        stdout=legacy.subprocess.PIPE, stderr=legacy.subprocess.PIPE,
++                                        start_new_session=True)
++        channels = {child.stdout.fileno(): bytearray(), child.stderr.fileno(): bytearray()}
++        active = set(channels)
++        signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
++        while active:
++            tick(deadline)
++            ready = legacy.select.select(list(active), [], [], max(0, deadline - time.monotonic()))[0]
++            require(ready, "candidate listing deadline")
++            for fd in ready:
++                part = os.read(fd, 65536)
++                if not part:
++                    active.remove(fd)
++                else:
++                    available = legacy.MIB - sum(map(len, channels.values()))
++                    channels[fd].extend(part[:available])
++                    require(len(part) <= available, "bounded actual listing output")
++        tick(deadline)
++        status = child.wait(timeout=max(0, deadline - time.monotonic()))
++        require(status == 0, "actual test listing failed")
++        body = bytes(channels[child.stdout.fileno()])
++        legacy.checked_listing(body)
++        lines = body.decode().splitlines()
++        require(len(lines) == len(set(lines)) and all(line.endswith(": test") for line in lines),
++                "closed distinct library test inventory required")
++        result = (sha(body), len(lines))
++    except BaseException as error:
++        failure = error
++    finally:
++        # A work deadline must not interrupt bounded child retirement. Do not
++        # restart the work budget after cleanup or launch a second listing.
++        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGALRM})
++        signal.setitimer(signal.ITIMER_REAL, 0)
++        try:
++            if child is not None and child.poll() is None:
++                try:
++                    os.killpg(child.pid, signal.SIGKILL)
++                except ProcessLookupError:
++                    pass
++                child.wait(timeout=LISTING_REAP_SECONDS)
++        except BaseException as error:
++            failure = RuntimeError("listing child retirement unqualified: " + str(error)
++                                   + ("; original failure: " + str(failure) if failure else ""))
++        finally:
++            stdout, stderr = b"", b""
++            if child is not None:
++                stdout, stderr = (bytes(channels.get(channel.fileno(), b""))
++                                  for channel in (child.stdout, child.stderr))
++                child.stdout.close()
++                child.stderr.close()
++            if signal.SIGALRM in signal.sigpending():
++                signal.sigwait({signal.SIGALRM})
++            signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
++    if failure is None:
++        try:
++            tick(deadline)
++        except BaseException as error:
++            failure = error
++    if failure is not None:
++        failure.stdout, failure.stderr = stdout, stderr
++        failure.listing_pid = child.pid if child is not None else None
++        raise failure
++    return result
++
++
+ def scalar(value):
+     require(isinstance(value, str) and not any(0xD800 <= ord(c) <= 0xDFFF for c in value),
+             "Unicode scalar path required")
+@@ -140,13 +267,16 @@ def validate_source_plan(value):
+                              value["source_root"]), "closed private source owner")
+     require(value["source_root"] != "/workspace/conditional-capture", "compiled root overlaps work")
+     union = union_rows(value["source"], value["fixture_inputs"])
+-    require(value["union"] == union and value["source_sha256"] == digest(value["source"])
++    validate_rows(value["union"])
++    require(encoded(value["union"]) == encoded(union) and value["source_sha256"] == digest(value["source"])
+             and value["fixture_inputs_sha256"] == digest(value["fixture_inputs"])
+-            and value["union_sha256"] == digest(union), "candidate inventory digest/union mismatch")
++            and value["union_sha256"] == digest(value["union"]), "candidate inventory digest/union mismatch")
+     source = {r["path"]: r for r in value["source"]}
+     require(all(name in source and source[name]["kind"] == "file" for name in AUTHORITY),
+             "complete source authority required")
+-    require(value["authority"] == [source[name] for name in AUTHORITY], "closed source authority")
++    require(type(value["authority"]) is list
++            and encoded(value["authority"]) == encoded([source[name] for name in AUTHORITY]),
++            "closed source authority")
+     require(source["scripts/" + UTILITY_NAME]["sha256"] == UTILITY_SHA256,
+             "original utility digest required")
+     for name, maximum in ((BOOTSTRAP_NAME, MAX_BOOTSTRAP), (ENTRY_NAME, MAX_MODULE),
+@@ -167,6 +297,11 @@ def validate_source_plan(value):
+ def measure_inputs(source: Path, executable: Path, remaining_seconds: int) -> dict:
+     require(type(remaining_seconds) is int and 0 < remaining_seconds <= 1980, "bounded measurement seconds")
+     deadline = time.monotonic() + remaining_seconds
++    with deadline_scope(deadline):
++        return _measure_inputs(source, executable, remaining_seconds, deadline)
++
++
++def _measure_inputs(source, executable, remaining_seconds, deadline):
+     executable_before = legacy.identity(os.lstat(executable))
+     source = Path(source)
+     require(source.is_absolute() and source.resolve(strict=True) == source, "unaliased source root required")
+@@ -181,13 +316,14 @@ def measure_inputs(source: Path, executable: Path, remaining_seconds: int) -> di
+     for name in (ENTRY_NAME, BOOTSTRAP_NAME):
+         actual = legacy.read_regular(Path(__file__).with_name(name), MAX_MODULE)
+         require(authority["scripts/" + name]["sha256"] == sha(actual), "current source authority mismatch")
++    listing_sha256, test_count = measured_listing(executable, deadline)
+     value = {"schema": SOURCE_PLAN_SCHEMA, "route": ROUTE, "source_root": str(source),
+              "source_selection": "tracked" if os.path.lexists(source / ".git") else "private",
+              "source": rows, "fixture_inputs": fixtures, "source_sha256": digest(rows),
+              "fixture_inputs_sha256": digest(fixtures), "union": union, "union_sha256": digest(union),
+              "authority": [authority[name] for name in AUTHORITY],
+              "executable_bytes": body["bytes"], "executable_sha256": body["sha256"],
+-             "listing_sha256": legacy.listing(executable), "test_count": legacy.test_count(executable),
++             "listing_sha256": listing_sha256, "test_count": test_count,
+              "remaining_seconds": remaining_seconds, "sdk_image": SDK_IMAGE}
+     require(legacy.identity(os.lstat(executable)) == executable_before, "ELF changed during measurement")
+     tick(deadline)
+@@ -335,6 +471,11 @@ def _capsules(destination, descriptor):
+ 
+ 
+ def verify_materialized(destination, descriptor, deadline):
++    with deadline_scope(deadline):
++        return _verify_materialized(destination, descriptor, deadline)
++
++
++def _verify_materialized(destination, descriptor, deadline):
+     validate_descriptor(descriptor)
+     tick(deadline)
+     require(destination.resolve() == destination and stat.S_ISDIR(os.lstat(destination).st_mode),
+@@ -372,6 +513,11 @@ def verify_materialized(destination, descriptor, deadline):
+ 
+ 
+ def _materialize(reader, destination, descriptor, deadline, *, bootstrapped=False):
++    with deadline_scope(deadline):
++        return _materialize_body(reader, destination, descriptor, deadline, bootstrapped=bootstrapped)
++
++
++def _materialize_body(reader, destination, descriptor, deadline, *, bootstrapped=False):
+     validate_descriptor(descriptor)
+     tick(deadline)
+     reader.deadline = min(reader.deadline, deadline)
+@@ -426,18 +572,28 @@ def materialize_inputs(reader, destination: Path, descriptor: dict, deadline: fl
+     return _materialize(reader, destination, descriptor, deadline)
+ 
+ 
+-def input_identities(source, executable, descriptor):
+-    """Outer owner holds this snapshot across every subsequent send/recheck."""
++def input_identities(source, executable, descriptor, deadline):
++    """Outer owner holds this bounded snapshot across every subsequent send/recheck."""
++    with deadline_scope(deadline):
++        return _input_identities(source, executable, descriptor)
++
++
++def _input_identities(source, executable, descriptor):
+     return {"source_root": legacy.identity(os.lstat(source)),
+             "source": {r["path"]: legacy.identity(os.lstat(source / r["path"])) for r in descriptor["union"]},
+             "executable": legacy.identity(os.lstat(executable))}
+ 
+ 
+ def write_inputs(stream, source, executable, descriptor, deadline, identities):
+-    """Bounded sender; immutable identity snapshot belongs to the outer owner."""
++    """Main-thread bounded sender; identity snapshot belongs to the outer owner."""
++    with deadline_scope(deadline):
++        return _write_inputs(stream, source, executable, descriptor, deadline, identities)
++
++
++def _write_inputs(stream, source, executable, descriptor, deadline, identities):
+     validate_descriptor(descriptor)
+     require(str(source) == descriptor["source_root"] and source.resolve() == source, "exact sender source root")
+-    require(input_identities(source, executable, descriptor) == identities, "input metadata changed before transfer")
++    require(input_identities(source, executable, descriptor, deadline) == identities, "input metadata changed before transfer")
+     require(ordered(legacy.source_rows(source)) == descriptor["source"]
+             and ordered(legacy.fixture_rows(source)) == descriptor["fixture_inputs"], "source changed before transfer")
+     legacy.write_bounded(stream, encoded(descriptor), deadline)
+@@ -461,7 +617,7 @@ def write_inputs(stream, source, executable, descriptor, deadline, identities):
+             require(body.read(1) == b"" and actual.hexdigest() == record["sha256"]
+                     and legacy.identity(os.fstat(body.fileno())) == legacy.identity(before)
+                     and legacy.identity(os.lstat(path)) == legacy.identity(before), "sender input changed")
+-    require(input_identities(source, executable, descriptor) == identities
++    require(input_identities(source, executable, descriptor, deadline) == identities
+             and ordered(legacy.source_rows(source)) == descriptor["source"]
+             and ordered(legacy.fixture_rows(source)) == descriptor["fixture_inputs"], "input changed during transfer")
+     legacy.write_bounded(stream, encoded(completion_marker(descriptor)), deadline)
+@@ -469,6 +625,11 @@ def write_inputs(stream, source, executable, descriptor, deadline, identities):
+ 
+ 
+ def stage(context):
++    with deadline_scope(context["deadline"]):
++        return _stage(context)
++
++
++def _stage(context):
+     require(set(context) == {"mode", "deadline", "descriptor_sha256", "bootstrap", "capsules"}
+             and context["mode"] == "stage-v1", "closed bootstrap stage entry")
+     reader = Reader(sys.stdin.buffer, context["deadline"])
+diff --git a/scripts/conditional-capture-candidate.test.py b/scripts/conditional-capture-candidate.test.py
+index 5f3655af..f444f4c0 100644
+--- a/scripts/conditional-capture-candidate.test.py
++++ b/scripts/conditional-capture-candidate.test.py
+@@ -156,7 +156,7 @@ class ProtocolControls(unittest.TestCase):
+     def test_real_fragmented_pipe_and_sender(self):
+         wire = self.root / "wire"
+         with wire.open("wb", buffering=0) as stream:
+-            identities = candidate.input_identities(self.source, self.executable, self.descriptor)
++            identities = candidate.input_identities(self.source, self.executable, self.descriptor, time.monotonic() + 5)
+             candidate.write_inputs(stream, self.source, self.executable, self.descriptor, time.monotonic() + 5, identities)
+         self.assertEqual(wire.read_bytes(), candidate.encoded(self.descriptor) + self.payload())
+         read_fd, write_fd = os.pipe()
+@@ -320,7 +320,7 @@ class ProtocolControls(unittest.TestCase):
+         try:
+             with os.fdopen(read_fd, "rb", buffering=0) as stream:
+                 deadline = time.monotonic() + 0.2
+-                with self.assertRaisesRegex(RuntimeError, "retirement deadline"):
++                with self.assertRaisesRegex(RuntimeError, "(?:retirement|input) deadline"):
+                     candidate.materialize_inputs(candidate.Reader(stream, deadline), self.destination, self.descriptor, deadline)
+             self.assertFalse((self.destination / candidate.DESCRIPTOR_NAME).exists())
+             self.assertEqual(stat.S_IMODE((self.destination / "current-test-elf").stat().st_mode), 0o400)
+@@ -371,7 +371,7 @@ class ProtocolControls(unittest.TestCase):
+ 
+     def test_sender_persistent_and_write_restore_mutations(self):
+         for restore in (False, True):
+-            identities = candidate.input_identities(self.source, self.executable, self.descriptor)
++            identities = candidate.input_identities(self.source, self.executable, self.descriptor, time.monotonic() + 5)
+             path = self.source / "data"
+             original = path.read_bytes()
+             path.write_bytes(b"changed")
+@@ -509,6 +509,143 @@ class ProtocolControls(unittest.TestCase):
+         with self.assertRaisesRegex(RuntimeError, "bounded singly linked regular"):
+             candidate.measure_inputs(self.source, self.executable, 90)
+ 
++    def test_redundant_row_scalar_substitutions_refuse_before_destination(self):
++        for inventory, name, field, replacement in (
++                ("union", "tool", "executable", 1),
++                ("union", "data", "executable", 0),
++                ("union", "data", "bytes", float((self.source / "data").stat().st_size)),
++                ("authority", candidate.AUTHORITY[0], "executable", 0),
++                ("authority", candidate.AUTHORITY[0], "bytes", float((self.source / candidate.AUTHORITY[0]).stat().st_size))):
++            descriptor = copy.deepcopy(self.descriptor)
++            next(row for row in descriptor[inventory] if row["path"] == name)[field] = replacement
++            destination = self.root / (inventory + "-" + field + "-" + str(replacement))
++            with self.subTest(inventory=inventory, field=field, replacement=replacement):
++                with self.assertRaises(RuntimeError):
++                    self.materialize(payload=self.payload(descriptor), descriptor=descriptor, destination=destination)
++                self.assertFalse(destination.exists())
++
++    def test_actual_slow_listing_has_one_shared_deadline_and_reaped_child(self):
++        source, executable, calls = self.root / "slow.c", self.root / "slow", self.root / "listing-calls"
++        source.write_text('#include <unistd.h>\n#include <stdio.h>\nint main(void) {'
++                          'FILE *f=fopen(' + json.dumps(str(calls)) + ',"a");'
++                          'fprintf(f,"%d\\n",getpid());fclose(f);'
++                          'fputs("slow-listing-started\\n",stderr);fflush(stderr);'
++                          'puts("' + legacy.TEST + ': test");fflush(stdout);sleep(2);return 0;}\n')
++        subprocess.run(["/usr/bin/cc", str(source), "-o", str(executable)], check=True, capture_output=True)
++        started = time.monotonic()
++        with self.assertRaises(RuntimeError) as caught:
++            candidate.measure_inputs(self.source, executable, 1)
++        elapsed = time.monotonic() - started
++        self.assertLess(elapsed, 1.8, "listing work must stop at the one-second budget")
++        pids = calls.read_text().splitlines()
++        self.assertEqual(len(pids), 1, "a second listing must never be launched")
++        with self.assertRaises(ProcessLookupError):
++            os.kill(int(pids[0]), 0)
++        with self.assertRaises(ChildProcessError):
++            os.waitpid(int(pids[0]), os.WNOHANG)
++        self.assertEqual(caught.exception.stdout, (legacy.TEST + ": test\n").encode())
++        self.assertEqual(caught.exception.stderr, b"slow-listing-started\n")
++
++    def test_deadline_guard_restores_nested_timers_and_refuses_foreign_state(self):
++        original_handler = signal.getsignal(signal.SIGALRM)
++        original_timer = signal.getitimer(signal.ITIMER_REAL)
++        self.assertEqual(original_timer, (0.0, 0.0))
++        self.assertEqual(original_handler, signal.SIG_DFL)
++        try:
++            foreign = lambda _signum, _frame: None
++            signal.signal(signal.SIGALRM, foreign)
++            with self.assertRaisesRegex(RuntimeError, "foreign alarm"):
++                with candidate.deadline_scope(time.monotonic() + 1):
++                    self.fail("foreign handler was admitted")
++            self.assertIs(signal.getsignal(signal.SIGALRM), foreign)
++            signal.signal(signal.SIGALRM, original_handler)
++            signal.setitimer(signal.ITIMER_REAL, 5, 7)
++            with self.assertRaisesRegex(RuntimeError, "foreign alarm"):
++                with candidate.deadline_scope(time.monotonic() + 1):
++                    self.fail("foreign timer was admitted")
++            remaining, interval = signal.getitimer(signal.ITIMER_REAL)
++            self.assertGreater(remaining, 4)
++            self.assertEqual(interval, 7)
++            signal.setitimer(signal.ITIMER_REAL, 0)
++            previous_mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGALRM})
++            try:
++                with self.assertRaisesRegex(RuntimeError, "blocked candidate deadline signal"):
++                    with candidate.deadline_scope(time.monotonic() + 1):
++                        self.fail("blocked deadline signal was admitted")
++            finally:
++                signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
++            with self.assertRaisesRegex(RuntimeError, "deadline"):
++                with candidate.deadline_scope(time.monotonic() + 0.15):
++                    with self.assertRaisesRegex(RuntimeError, "deadline"):
++                        with candidate.deadline_scope(time.monotonic() + 0.02):
++                            time.sleep(2)
++                    self.assertIs(signal.getsignal(signal.SIGALRM), candidate._deadline_expired)
++                    self.assertGreater(signal.getitimer(signal.ITIMER_REAL)[0], 0)
++                    time.sleep(2)  # The earlier outer deadline remains active.
++            self.assertEqual(signal.getsignal(signal.SIGALRM), original_handler)
++            self.assertEqual(signal.getitimer(signal.ITIMER_REAL), original_timer)
++            with self.assertRaisesRegex(ValueError, "ordinary failure"):
++                with candidate.deadline_scope(time.monotonic() + 1):
++                    raise ValueError("ordinary failure")
++            with candidate.deadline_scope(time.monotonic() + 1):
++                pass
++            self.assertEqual(signal.getsignal(signal.SIGALRM), original_handler)
++            self.assertEqual(signal.getitimer(signal.ITIMER_REAL), original_timer)
++            errors = []
++            def worker():
++                try:
++                    with candidate.deadline_scope(time.monotonic() + 1):
++                        pass
++                except RuntimeError as error:
++                    errors.append(str(error))
++            thread = threading.Thread(target=worker)
++            thread.start()
++            thread.join(timeout=2)
++            self.assertEqual(errors, ["candidate deadline requires main thread"])
++        finally:
++            signal.setitimer(signal.ITIMER_REAL, 0)
++            signal.signal(signal.SIGALRM, original_handler)
++        self.assertIsNone(candidate._ACTIVE_DEADLINE)
++
++    def test_sender_real_source_scan_obeys_remaining_deadline(self):
++        # A real sparse bounded member makes hashing observably exceed this
++        # tiny deadline without consuming the workspace disk reserve.
++        with (self.source / "a-large-source").open("wb") as stream:
++            stream.truncate(legacy.MAX_FILE)
++        identities = candidate.input_identities(self.source, self.executable, self.descriptor, time.monotonic() + 5)
++        with tempfile.TemporaryFile() as output:
++            started = time.monotonic()
++            with self.assertRaisesRegex(RuntimeError, "deadline"):
++                candidate.write_inputs(output, self.source, self.executable, self.descriptor,
++                                       started + 0.02, identities)
++            self.assertLess(time.monotonic() - started, 0.2)
++            self.assertEqual(output.tell(), 0, "no descriptor after expired pre-transfer source scan")
++        self.assertEqual(signal.getitimer(signal.ITIMER_REAL), (0.0, 0.0))
++        self.assertEqual(signal.getsignal(signal.SIGALRM), signal.SIG_DFL)
++
++    def test_actual_listing_closed_semantics_and_failure_output_cap(self):
++        source, executable = self.root / "listing.c", self.root / "listing-probe"
++        line = legacy.TEST + ": test\n"
++        for name, body, expected in (
++                ("missing", 'fputs("other: test\\n",stdout);return 0;', "original exact capture"),
++                ("duplicate", 'fputs(' + json.dumps(line * 2) + ',stdout);return 0;', "original exact capture"),
++                ("open-line", 'fputs(' + json.dumps(line + "not a test\n") + ',stdout);return 0;', "closed distinct"),
++                ("failed", 'fputs(' + json.dumps(line) + ',stdout);fputs("actual failure",stderr);return 7;', "listing failed"),
++                ("overflow", 'for(int i=0;i<2097152;i++) putchar(120);return 0;', "bounded actual listing output")):
++            source.write_text('#include <stdio.h>\nint main(void){' + body + '}\n')
++            subprocess.run(["/usr/bin/cc", str(source), "-o", str(executable)], check=True, capture_output=True)
++            with self.subTest(name=name):
++                with self.assertRaisesRegex(RuntimeError, expected) as caught:
++                    candidate.measured_listing(executable, time.monotonic() + 2)
++                self.assertLessEqual(len(caught.exception.stdout) + len(caught.exception.stderr), legacy.MIB)
++                self.assertTrue(caught.exception.stdout)
++                if name == "failed":
++                    self.assertEqual(caught.exception.stderr, b"actual failure")
++                with self.assertRaises(ChildProcessError):
++                    os.waitpid(caught.exception.listing_pid, os.WNOHANG)
++                self.assertEqual(signal.getsignal(signal.SIGALRM), signal.SIG_DFL)
++                self.assertEqual(signal.getitimer(signal.ITIMER_REAL), (0.0, 0.0))
++
+     def test_parent_guest_and_direct_stage_refuse_unimplemented_lifecycle(self):
+         for args, message in ((["parent", str(self.source), str(self.executable)], b"lifecycle is not implemented"),
+                               (["stage"], b"authenticated bootstrap"), (["guest"], b"authenticated bootstrap")):
