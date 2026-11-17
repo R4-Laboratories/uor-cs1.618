@@ -1,0 +1,18 @@
+{
+  "schema": "cs1618/host-handoff-design-evidence/1",
+  "actual_failed_run": 44081334047,
+  "game_commit": "128b187d545aae090850bb0aaf1c1517be8db390",
+  "design_status": "ready_for_implementation_not_qualification",
+  "entries": [
+    {
+      "path": "task-4b-host-handoff-diagnosis.md",
+      "bytes": 17635,
+      "sha256": "0da7b550ca6363408688d56b0a68939e420727d2426ac8111039f7a97028d47d"
+    },
+    {
+      "path": "task-4b-host-handoff-design-review.md",
+      "bytes": 8041,
+      "sha256": "df810cac137efa8f5802dd36f202e59320bc8035a564394b79fdf377150ebfb3"
+    }
+  ]
+}
