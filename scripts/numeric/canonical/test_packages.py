@@ -46,6 +46,20 @@ class HarnessTests(unittest.TestCase):
             for path in p.READER['files']:
                 target=self.root/'reader-source'/path;target.parent.mkdir(parents=True,exist_ok=True)
                 target.write_bytes((Path(os.environ['PRISMPM_READER_SOURCE'])/path).read_bytes())
+        inventory_bytes=next(r['inventory_document'].encode() for r in json.loads((p.REPO/'prism/prismpm.lock').read_text())['platforms'] if r['platform']=='linux/amd64')
+        inventory=json.loads(inventory_bytes);commands={r['command']:r for r in inventory['commands']}
+        lean_actual=next(r['digest'][7:] for r in inventory['artifacts'] if r['id']=='lean')
+        elan=commands['lean']['sha256'];rustup=commands['cargo']['sha256']
+        # Original actual-SDK raw file capture (ci-44008985569), separate from
+        # rustup/PATH Cargo; the focused provenance test below checks these bytes.
+        cargo_actual='828980723df339d62434390e9fb8ef8831036583343ae2316b7ab5646b5c1953'
+        tools={}
+        for command in ('lean','lake','cargo'):
+            row=commands[command];tools[command+'-launcher']={'path':'/usr/local/cargo/bin/cargo' if command=='cargo' else row['executable'],'resolved_path':row['executable'],'sha256':row['sha256']}
+        for name,path,sha in [('lean','/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean',lean_actual),('cargo','/usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/cargo',cargo_actual)]:
+            tools[name+'-actual']={'path':path,'resolved_path':path,'sha256':sha}
+        (self.root/'native-inventory.json').write_bytes(inventory_bytes)
+        (self.root/'original-files.sha256').write_text(''.join(r['sha256']+'  '+r['path']+'\n' for r in tools.values()))
         d = p.descriptor(op)
         roots = sorted([d['root'], d['acceptance_root']])
         model = {'library':{'profile':'prismpm/native-library/1','cargo_name':d['cargo_name'],'cargo_version':d['cargo_version'], 'export_roots':roots,'acceptance_roots':[d['acceptance_root']]}}
@@ -76,7 +90,7 @@ class HarnessTests(unittest.TestCase):
                 modules.append(row);done.add(row['name']);pending=[m for m in pending if m['name']!=row['name']]
         lex={'outputs':outputs}; artifact_data['lexlean/build/manifest.json']=canonical(lex)
         artifact_data['lexlean/snapshot.json']=canonical({'modules':[{'lean_module':name,'declarations':[{'lean_name':'synthetic','axiom_policy':{'kind':'none','axioms':[]}}]} for name in names]})
-        frontend={'schema':'prismpm/library-frontend/1','profile':'lean-frontend-lcnf/1','working_directory':'$LIBRARY_WORK','launcher_sha256':'1'*64,'lean_sha256':'1'*64,'environment':{'LC_ALL':'C','LANG':'C','LEAN_PATH':'.lake/build/lib/lean','LEAN_NUM_THREADS':'2'},'modules':modules}
+        frontend={'schema':'prismpm/library-frontend/1','profile':'lean-frontend-lcnf/1','working_directory':'$LIBRARY_WORK','launcher_sha256':elan,'lean_sha256':lean_actual,'environment':{'LC_ALL':'C','LANG':'C','LEAN_PATH':'.lake/build/lib/lean','LEAN_NUM_THREADS':'2'},'modules':modules}
         plan={**frontend,'schema':'prismpm/library-frontend-plan/1'};del plan['lean_sha256'];del plan['launcher_sha256']
         plan['modules']=[{k:v for k,v in m.items() if k!='artifacts'} for m in modules]
         for name in ['coverage.json','kernel.ir','package/Cargo.lock','package/Cargo.toml','package/LICENSE-APACHE','package/LICENSE-MIT','package/README.md','package/generation-manifest.json','package/src/lib.rs',d['cargo_name']+'-'+d['cargo_version']+'.crate','roots.json']:
@@ -95,17 +109,17 @@ class HarnessTests(unittest.TestCase):
         execution={'schema':'prismpm/exporter-execution/1','source_archive_sha256':receipt['archive_sha256'],'acquisition':receipt,'executable':{'sha256':'d'*64,'byte_length':1,'mode':0o755}}
         lean_version='Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)\n'
         def process(tool,argv,sha,stdout=''):
-            return {'tool':tool,'argv':argv,'executable_sha256':sha*64,'exit_code':0,'stdout':stdout,'stderr':''}
-        rows=[process('library-lean-version',['--version'],'1',lean_version)]
+            return {'tool':tool,'argv':argv,'executable_sha256':sha if len(sha)==64 else sha*64,'exit_code':0,'stdout':stdout,'stderr':''}
+        rows=[process('library-lean-version',['--version'],lean_actual,lean_version)]
         for module in modules:
             name=module['name'];stem='.lake/build/lib/lean/'+name.replace('.','/')
-            rows.append(process('library-lean-frontend',['-j2','-R','.','-o',stem+'.olean','-i',stem+'.ilean',name.replace('.','/')+'.lean'],'1'))
+            rows.append(process('library-lean-frontend',['-j2','-R','.','-o',stem+'.olean','-i',stem+'.ilean',name.replace('.','/')+'.lean'],lean_actual))
         argv=['exe','prod-export']+[x for n in names for x in ['--module',n]]+[x for root in roots for x in ['--root',root]]+['--ir-module',d['cargo_name'].replace('-','_'),'--out','$LIBRARY_WORK/export']
-        rows += [process('lean4-prod-build',['build','prod-export'],'2'),{**process('prod-export',argv,'2'),'exporter':execution},process('native-library-package',['package','--locked','--offline','--allow-dirty'],'3')]
+        rows += [process('lean4-prod-build',['build','prod-export'],elan),{**process('prod-export',argv,elan),'exporter':execution},process('native-library-package',['package','--locked','--offline','--allow-dirty'],rustup)]
         phases=[{'phase':phase,'role':'library','model_sha256':model_id,'lexlean_manifest_sha256':hashlib.sha256(canonical(lex)).hexdigest(),'frontend':copy.deepcopy(frontend),'artifacts':copy.deepcopy(artifacts),'processes':copy.deepcopy(rows)} for phase in ['controller-build','replay']]
         att={'spec':'lexlean/attestation/2','status':'verified','build_id':inputs['lexlean_build_id'],'source_id':inputs['lexlean_source_id'],'semantic_id':inputs['lexlean_semantic_id'],'attestation_id':'8'*64,'declarations':[{'name':name+'.synthetic','policy':{'kind':'none','axioms':[]},'observed':[],'result':'ok'} for name in names]}
         acceptance={'schema':'prismpm/library-acceptance/1','build_id':bid,'model_id':model_id,'lexlean_attestation_id':att['attestation_id'],'scope':'native-library-only','status':'passed','regeneration':'byte-identical','executions':[{'mode':mode,'status':'passed','roots':[d['acceptance_root']]} for mode in ['std','no_std']],'export_roots':roots}
-        processes=[process(tool,['--version'],'1' if tool=='lean-version' else '2',lean_version if tool=='lean-version' else '') for tool in ['lean-version','lake-version','rustfmt-version','rustc-version','timeout-version']]+copy.deepcopy(rows)
+        processes=[process(tool,['--version'],elan if tool in ('lean-version','lake-version') else '2',lean_version if tool=='lean-version' else '') for tool in ['lean-version','lake-version','rustfmt-version','rustc-version','timeout-version']]+copy.deepcopy(rows)
         for mode in ['std','no_std']:
             processes += [process('native-library-'+mode+'-lock',[],'3'),process('native-library-'+mode+'-acceptance',[],'4',json.dumps({'roots':[d['acceptance_root']],'status':'passed'}))]
         manifest={'schema':'prismpm/library-verification-manifest/3','build_id':bid,'model_sha256':model_id,'scope':'native-library-only','acceptance_sha256':hashlib.sha256(canonical(acceptance)).hexdigest(),'lexlean_attestation_sha256':hashlib.sha256(canonical(att)).hexdigest(),'artifacts':artifacts,'processes':processes,'exporter_owner':{'schema':'prismpm/library-exporter-owner/2','phases':phases}}
@@ -113,7 +127,7 @@ class HarnessTests(unittest.TestCase):
         write(verified/'manifest.json',manifest);write(verified/'library-acceptance.json',acceptance);write(verified/'lexlean-attestation.json',att)
         write(evidence/'build-result.json',{'schema':'prismpm/build-result/1','build_id':bid,'source_id':'a'*64,'semantic_id':'b'*64,'manifest_path':'.prism/build/'+bid+'/manifest.json','model_path':'.prism/build/'+bid+'/model.prism.json'})
         write(evidence/'verify-result.json',{'schema':'prismpm/verify-result/1','build_id':bid,'attestation_id':aid,'verified_root':'.prism/verified/'+aid})
-        write(self.root/'native-tools.json',{'schema':'cs1618/numeric-native-tools/1','inventory_sha256':p.NATIVE_INVENTORY,'tools':{name:{'sha256':sha*64,'path':'synthetic'} for name,sha in [('lean','1'),('lean-launcher','1'),('lake','2'),('cargo','3')]}})
+        write(self.root/'native-tools.json',{'schema':'cs1618/numeric-native-tools/2','inventory_sha256':p.NATIVE_INVENTORY,'sdk_lock_sha256':p.INPUTS['sdk_lock_sha256'],'tools':tools})
         for phase in ['prepare','build','verify','select','controls']:(evidence/(phase+'.status')).write_text('0\n')
         write(evidence/'reader-controls.json',{'status':'completed-reader-controls-only','original_manifest_sha256':aid,'controls':[{'status':'refused'} for _ in range(15)],'unit-test':'synthetic retention labels only'})
         return project,evidence,build,verified
@@ -123,6 +137,72 @@ class HarnessTests(unittest.TestCase):
         if new != verified: verified.rename(new)
         value=json.loads((ev/'verify-result.json').read_text());value.update(attestation_id=aid,verified_root='.prism/verified/'+aid);write(ev/'verify-result.json',value)
         return new
+
+    def test_original_sdk_launcher_actual_roles_and_independent_refusals(self):
+        parent=self.root
+        cases=('positive','preflight-actual','frontend-launcher','package-actual','swap-lean','swap-cargo',
+               'changed-launcher','changed-actual','changed-original-measurement','changed-cargo-actual',
+               'inventory-artifact','missing-role','old-schema','wrong-lock')
+        for name in cases:
+            with self.subTest(name=name):
+                self.root=parent/name;self.root.mkdir()
+                project,ev,build,verified=self.accepted()
+                capture=json.loads((self.root/'native-tools.json').read_text());tools=capture['tools']
+                m=json.loads((verified/'manifest.json').read_text())
+                if name=='positive':
+                    self.assertEqual(tools['lean-launcher']['sha256'],tools['lake-launcher']['sha256'])
+                    self.assertNotEqual(tools['lean-actual']['sha256'],tools['lean-launcher']['sha256'])
+                    self.assertNotEqual(tools['cargo-actual']['sha256'],tools['cargo-launcher']['sha256'])
+                    p.selection(project,ev);continue
+                if name=='preflight-actual':m['processes'][0]['executable_sha256']=tools['lean-actual']['sha256']
+                elif name in ('frontend-launcher','package-actual'):
+                    for phase in m['exporter_owner']['phases']:
+                        if name=='frontend-launcher':
+                            phase['frontend']['lean_sha256']=tools['lean-launcher']['sha256']
+                            for row in phase['processes'][:len(phase['frontend']['modules'])+1]:row['executable_sha256']=tools['lean-launcher']['sha256']
+                        else:phase['processes'][-1]['executable_sha256']=tools['cargo-actual']['sha256']
+                    m['processes'][5:-4]=copy.deepcopy(m['exporter_owner']['phases'][1]['processes'])
+                elif name in ('swap-lean','swap-cargo'):
+                    tool=name[5:];tools[tool+'-launcher'],tools[tool+'-actual']=tools[tool+'-actual'],tools[tool+'-launcher']
+                elif name in ('changed-launcher','changed-actual','changed-cargo-actual'):
+                    role='cargo-actual' if name=='changed-cargo-actual' else 'lean-'+name[8:]
+                    tools[role]['sha256']='f'*64
+                elif name=='changed-original-measurement':
+                    path=self.root/'original-files.sha256';path.write_text(path.read_text().replace(tools['lean-actual']['sha256'],'f'*64))
+                elif name=='inventory-artifact':
+                    path=self.root/'native-inventory.json';inventory=json.loads(path.read_text())
+                    next(r for r in inventory['artifacts'] if r['id']=='lean')['digest']='sha256:'+'f'*64
+                    write(path,inventory);capture['inventory_sha256']=p.digest(path)
+                elif name=='missing-role':tools.pop('cargo-actual')
+                elif name=='old-schema':capture['schema']='cs1618/numeric-native-tools/1'
+                elif name=='wrong-lock':capture['sdk_lock_sha256']='f'*64
+                write(self.root/'native-tools.json',capture);self.reseal(ev,verified,m)
+                with self.assertRaises(ValueError):p.selection(project,ev)
+        self.root=parent
+
+    @unittest.skipUnless((p.REPO/'artifacts/numeric-task2c/ci-43999834837/14293331679/retained-reader-inputs.tar.gz').is_file(), 'preserved actual SDK reference artifacts required')
+    def test_original_sdk_layout_provenance_from_actual_historical_records(self):
+        project,ev,_,_=self.accepted();tools=p.native_tools(self.root)
+        archive=p.REPO/'artifacts/numeric-task2c/ci-43999834837/14293331679/retained-reader-inputs.tar.gz'
+        self.assertEqual(p.digest(archive),'01628c3ad261b8de86cb6bd4037cb9fd0ab39bd118d91a1de5e55b0e76a9fe23')
+        aid='6e66531b8c58c603a37c94243a7b83a8358711f34f150a37b2e5be0a4f6688b6'
+        with tarfile.open(archive) as original:
+            raw=original.extractfile('projects/default/.prism/verified/'+aid+'/manifest.json').read()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),aid);manifest=json.loads(raw)
+        for command in ('lean','lake'):
+            row=next(r for r in manifest['processes'] if r['tool']==command+'-version')
+            self.assertEqual(row['executable_sha256'],tools[command+'-launcher']['sha256'])
+        packages=[r for r in manifest['processes'] if r['tool'].startswith('application-package-')]
+        self.assertEqual(len(packages),2)
+        self.assertTrue(all(r['executable_sha256']==tools['cargo-launcher']['sha256'] for r in packages))
+        small_archive=p.REPO/'artifacts/numeric-task2c/ci-44008985569/canonical-small-logs.tar.gz'
+        self.assertEqual(p.digest(small_archive),'cc23e217327abc1c1e83fea121a898f3aa33a8ea244496378dd0968f95dd0e2c')
+        with tarfile.open(small_archive) as original:
+            hashes=dict((line.split('  ',1)[1],line.split('  ',1)[0]) for line in original.extractfile('original-files.sha256').read().decode().splitlines())
+        for tool in ('lean-actual','cargo-actual'):
+            self.assertEqual(hashes[tools[tool]['path']],tools[tool]['sha256'])
+        # Historical actual command/file identities only; accepted() remains
+        # synthetic current evidence, never a new actual SDK verification.
 
     def test_metadata_calls_real_root_matches_option_and_sorted_exports(self):
         for op in p.OPS:

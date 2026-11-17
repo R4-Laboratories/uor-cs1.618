@@ -1,9 +1,9 @@
 {
   "schema": "cs1618/numeric-frontend-reader/1",
-  "revision": "e1c32a64fd2a99b438341267e9d005e559ae2506",
-  "tree": "429f6a4e309b9dd52aed254efea60e701f006ab3",
-  "library_generator_sha256": "14c579781935bd4d27a482830eb2233d17274b10a9a29afc3a6e746a94a20f03",
-  "released_library_generator_sha256": "d1d8d00dfe7e69c63004c64fb993c36882e1ffc4a2e7714e0b8cacb4b56fa308",
+  "revision": "324955b6923c1d194d7bc870a2d2a05eb687048c",
+  "tree": "7cf463121cf5dd15b681ce1dfafd5694617cc474",
+  "library_generator_sha256": "00d95a8cc337bc296697c939302929bcefe4e3b9168e6bf577c3682027aa9975",
+  "released_library_generator_sha256": "8a470816a73d944270709ee8d96a95bc4f2ac442715c051c294534c29f5a3992",
   "files": {
     "scripts/library-frontend-reader.mjs": "82c24398e4d8861d4abbc2b6624957b4462fb6fdd6f32e4c09d39227b7dc213e",
     "model/library-frontend-runtime.json": "c213f89ffe649a50d162d65c4fe010475963549b4e30701a722c20261b72c97e"

@@ -199,13 +199,81 @@ def capture_tools(root):
         target.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(source / path, target)
     for name in ('frontend-reader.mjs','reader-source.json','packages.py'):
         shutil.copyfile(Path(__file__).with_name(name), root / 'reader-source' / name)
-    # Independently measured before CLI work, retained with original/final hashes.
-    paths = {'lean':subprocess.check_output(['elan','which','lean']).decode().strip(),
-             'lean-launcher':shutil.which('lean'), 'lake':shutil.which('lake'),
-             'cargo':subprocess.check_output(['rustup','which','cargo']).decode().strip()}
-    document(root / 'native-tools.json', {'schema':'cs1618/numeric-native-tools/1',
-        'inventory_sha256':digest(Path('/opt/prismpm/share/inventory.json')),
-        'tools':{name:{'path':path, 'sha256':digest(Path(path))} for name,path in paths.items()}})
+    # Keep PATH commands and their underlying toolchain binaries distinct.
+    paths = {'lean-launcher':shutil.which('lean'), 'lake-launcher':shutil.which('lake'),
+             'cargo-launcher':shutil.which('cargo'),
+             'lean-actual':'/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean',
+             'cargo-actual':subprocess.check_output(['rustup','which','cargo']).decode().strip()}
+    shutil.copyfile('/opt/prismpm/share/inventory.json', root / 'native-inventory.json')
+    document(root / 'native-tools.json', {'schema':'cs1618/numeric-native-tools/2',
+        'inventory_sha256':digest(root / 'native-inventory.json'), 'sdk_lock_sha256':INPUTS['sdk_lock_sha256'],
+        'tools':{name:{'path':path, 'resolved_path':str(Path(path).resolve()), 'sha256':digest(Path(path))} for name,path in paths.items()}})
+    native_tools(root)
+
+
+def native_tools(root):
+    """Bind original PATH command measurements to locked native authority.
+
+    Actual Cargo has no separate inventory artifact: retain its independent
+    original file measurement rather than assigning its hash to PATH Cargo.
+    """
+    tool_file = regular(root / 'native-tools.json')
+    if tool_file.stat().st_size > 65536:
+        raise ValueError('native tool capture bound exceeded (game harness refusal)')
+    record = json.loads(tool_file.read_text())
+    same(set(record), {'schema','inventory_sha256','sdk_lock_sha256','tools'}, 'closed native tool capture')
+    same(record['schema'], 'cs1618/numeric-native-tools/2', 'native tool role schema')
+    same(record['sdk_lock_sha256'], INPUTS['sdk_lock_sha256'], 'original SDK tool lock mismatch')
+    same(digest(regular(REPO / 'prism/prismpm.lock')), INPUTS['sdk_lock_sha256'], 'original SDK lock bytes')
+    lock = json.loads((REPO / 'prism/prismpm.lock').read_text())
+    platform = [r for r in lock['platforms'] if r['platform']=='linux/amd64']
+    same(len(platform), 1, 'unique original native platform')
+    inventory_file = regular(root / 'native-inventory.json')
+    same(inventory_file.stat().st_size, len(platform[0]['inventory_document'].encode()), 'original SDK inventory byte length')
+    raw = inventory_file.read_bytes()
+    same(hashlib.sha256(raw).hexdigest(), NATIVE_INVENTORY, 'original SDK inventory bytes mismatch')
+    same(record['inventory_sha256'], NATIVE_INVENTORY, 'original SDK inventory mismatch')
+    same(raw, platform[0]['inventory_document'].encode(), 'native inventory differs from original SDK lock')
+    inventory = json.loads(raw)
+    anchors = {}
+    original_file = regular(root / 'original-files.sha256')
+    if original_file.stat().st_size > 1048576:
+        raise ValueError('original file measurement bound exceeded (game harness refusal)')
+    for line in original_file.read_text().splitlines():
+        match = re.fullmatch(r'([0-9a-f]{64})  (.+)', line)
+        if not match:
+            raise ValueError('invalid original file measurement (game harness refusal)')
+        sha, path = match.groups()
+        if path in anchors: same(anchors[path], sha, 'conflicting original file measurements')
+        anchors[path] = sha
+    tools = record['tools']
+    same(set(tools), {'lean-launcher','lake-launcher','cargo-launcher','lean-actual','cargo-actual'}, 'complete native tool roles')
+    for role, row in tools.items():
+        same(set(row), {'path','resolved_path','sha256'}, 'closed native tool measurement')
+        identity(row['sha256'])
+        for field in ('path','resolved_path'):
+            path = Path(row[field])
+            if not path.is_absolute() or '..' in path.parts:
+                raise ValueError('unsafe native tool path (game harness refusal)')
+        same(anchors.get(row['path']), row['sha256'], 'independent original tool file identity: ' + role)
+    for command in ('lean','lake','cargo'):
+        rows = [r for r in inventory['commands'] if r['command']==command]
+        same(len(rows), 1, 'unique original SDK command')
+        tool = tools[command+'-launcher']; expected = rows[0]
+        same(tool['sha256'], expected['sha256'], 'original SDK command identity: ' + command)
+        if expected['executable'] not in (tool['path'], tool['resolved_path']):
+            raise ValueError('original SDK command path mismatch: ' + command)
+    lean = [r for r in inventory['artifacts'] if r['id']=='lean']
+    same(len(lean), 1, 'unique original Lean artifact')
+    same({k:lean[0][k] for k in ('id','kind','version')}, {'id':'lean','kind':'binary','version':'4.32.1'}, 'original Lean artifact metadata')
+    same(lean[0]['digest'], 'sha256:'+tools['lean-actual']['sha256'], 'independent original Lean artifact identity')
+    same(tools['lean-actual']['path'], '/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean', 'fixed SDK actual Lean path')
+    same(tools['cargo-actual']['path'], '/usr/local/rustup/toolchains/1.97.1-x86_64-unknown-linux-gnu/bin/cargo', 'fixed SDK actual Cargo path')
+    for tool in ('lean','cargo'):
+        same(tools[tool+'-actual']['resolved_path'], tools[tool+'-actual']['path'], 'fixed actual tool identity: ' + tool)
+        if tools[tool+'-actual']['sha256'] == tools[tool+'-launcher']['sha256']:
+            raise ValueError('actual tool substituted by launcher: ' + tool + ' (game harness refusal)')
+    return tools
 
 
 def frontend_owner(manifest, build, project, evidence, d):
@@ -213,14 +281,12 @@ def frontend_owner(manifest, build, project, evidence, d):
     same(set(owner), {'schema','phases'}, 'closed owner required')
     same(owner['schema'], 'prismpm/library-exporter-owner/2', 'wrong owner schema')
     same([p['phase'] for p in owner['phases']], ['controller-build','replay'], 'missing actual owner phases')
-    tools = json.loads(regular(evidence.parents[1] / 'native-tools.json').read_text())
-    same(tools['inventory_sha256'], NATIVE_INVENTORY, 'original SDK inventory mismatch')
-    native = tools['tools']
+    native = native_tools(evidence.parents[1])
     preflight = manifest['processes'][:5]
     same([r['tool'] for r in preflight], ['lean-version','lake-version','rustfmt-version','rustc-version','timeout-version'], 'native preflight order')
-    same(preflight[0]['executable_sha256'], native['lean']['sha256'], 'independent Lean preflight identity')
-    same(preflight[1]['executable_sha256'], native['lake']['sha256'], 'independent Lake preflight identity')
-    if native['lean']['sha256'] == native['lake']['sha256']:
+    same(preflight[0]['executable_sha256'], native['lean-launcher']['sha256'], 'independent Lean preflight identity')
+    same(preflight[1]['executable_sha256'], native['lake-launcher']['sha256'], 'independent Lake preflight identity')
+    if native['lean-actual']['sha256'] == native['lake-launcher']['sha256']:
         raise ValueError('Lean identity is Lake (game harness refusal)')
     prior = None
     for phase in owner['phases']:
@@ -232,14 +298,14 @@ def frontend_owner(manifest, build, project, evidence, d):
         # Full module/profile/argv/runtime/source validation is source owned below.
         n = len(f['modules']) + 1
         same([r['tool'] for r in rows], ['library-lean-version'] + ['library-lean-frontend'] * (n-1) + ['lean4-prod-build','prod-export','native-library-package'], 'actual dynamic process closure')
-        same(f['lean_sha256'], native['lean']['sha256'], 'independent frontend Lean identity')
+        same(f['lean_sha256'], native['lean-actual']['sha256'], 'independent frontend Lean identity')
         same(f['launcher_sha256'], native['lean-launcher']['sha256'], 'independent frontend launcher identity')
         same(rows[0]['stdout'], preflight[0]['stdout'], 'frontend version preflight binding')
         tail = rows[n:]
         same(tail[0]['argv'], ['build','prod-export'], 'exporter build arguments')
         same(tail[2]['argv'], ['package','--locked','--offline','--allow-dirty'], 'package arguments')
-        for row in tail[:2]: same(row['executable_sha256'], native['lake']['sha256'], 'original Lake exporter identity')
-        same(tail[2]['executable_sha256'], native['cargo']['sha256'], 'original Cargo package identity')
+        for row in tail[:2]: same(row['executable_sha256'], native['lake-launcher']['sha256'], 'original Lake exporter identity')
+        same(tail[2]['executable_sha256'], native['cargo-launcher']['sha256'], 'original Cargo package identity')
         for row in rows + manifest['processes']:
             same(set(row), {'tool','argv','executable_sha256','exit_code','stdout','stderr'} | ({'exporter'} if row['tool']=='prod-export' else set()), 'closed actual process record')
             if not isinstance(row['argv'], list) or any(not isinstance(a, str) for a in row['argv']):
@@ -418,7 +484,8 @@ def controls(project, evidence):
             b = candidate / '.prism/build' / baseline['build_id']; v = candidate / '.prism/verified' / baseline['attestation_id']
             shutil.copytree(baseline['build'], b); shutil.copytree(baseline['verified'], v)
             for file in ('build-result.json','verify-result.json'): shutil.copyfile(evidence / file, ev / file)
-            shutil.copyfile(evidence.parents[1] / 'native-tools.json', root / 'native-tools.json')
+            for name_input in ('native-tools.json','native-inventory.json','original-files.sha256'):
+                shutil.copyfile(evidence.parents[1] / name_input, root / name_input)
             shutil.copytree(evidence.parents[1] / 'reader-source', root / 'reader-source')
             m = json.loads((v / 'manifest.json').read_text()); phases = m['exporter_owner']['phases']
             if name == 'reordered-phases': phases.reverse()

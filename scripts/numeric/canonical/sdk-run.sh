@@ -10,8 +10,8 @@ finish() {
   trap - EXIT ERR
   sha256sum -c "$root/original-files.sha256" > "$root/final-identities.log" 2>&1 || custody=$?
   {
-    test "$(git rev-parse HEAD)" = e1c32a64fd2a99b438341267e9d005e559ae2506 &&
-    test "$(git rev-parse HEAD^{tree})" = 429f6a4e309b9dd52aed254efea60e701f006ab3 &&
+    test "$(git rev-parse HEAD)" = 324955b6923c1d194d7bc870a2d2a05eb687048c &&
+    test "$(git rev-parse HEAD^{tree})" = 7cf463121cf5dd15b681ce1dfafd5694617cc474 &&
     test -z "$(git status --porcelain --untracked-files=all)"
   } >> "$root/final-identities.log" 2>&1 || custody=$?
   if test -f "$root/verifier.sha256"; then sha256sum -c "$root/verifier.sha256" >> "$root/final-identities.log" 2>&1 || custody=$?; fi
@@ -26,14 +26,15 @@ test "$(cat "$root/host-permissions.txt")" = host-write-ok
 printf '%s\n' container-write-ok > "$root/container-permissions.txt"
 if test "${1:-}" = --permissions-only; then exit 0; fi
 cd /work/prismpm-b1
-test "$(git rev-parse HEAD)" = e1c32a64fd2a99b438341267e9d005e559ae2506
-test "$(git rev-parse HEAD^{tree})" = 429f6a4e309b9dd52aed254efea60e701f006ab3
+test "$(git rev-parse HEAD)" = 324955b6923c1d194d7bc870a2d2a05eb687048c
+test "$(git rev-parse HEAD^{tree})" = 7cf463121cf5dd15b681ce1dfafd5694617cc474
 test -z "$(git status --porcelain --untracked-files=all)"
 sha256sum Cargo.lock vendor/lean4-prod/lean.tar vendor/lean4-prod/backports/numeric-task2c/{lean.tar,descriptor.json} \
   /opt/prismpm/share/inventory.json /opt/prismpm/share/exporter-seed/manifest.json \
-  "$(command -v prismpm)" "$(command -v lexlean)" "$(elan which lean)" \
+  "$(command -v prismpm)" "$(command -v lexlean)" /usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean \
   "$(rustup which rustc)" "$(rustup which cargo)" "$(command -v node)" \
   "$(command -v lean)" "$(command -v lake)" "$(command -v elan)" \
+  "$(command -v cargo)" "$(command -v rustup)" \
   scripts/library-frontend-reader.mjs model/library-frontend-runtime.json \
   /game/prism/prismpm.lock > "$root/original-files.sha256"
 trap finish EXIT
@@ -49,7 +50,7 @@ trap 'printf "ERROR stage=%s line=%s exit=%s\n" "$stage" "$LINENO" "$?" >&2' ERR
   ulimit -s
 } > "$root/environment.txt"
 python3 "$helper" capture-tools "$root"
-sha256sum "$root/native-tools.json" "$root/reader-source/"{frontend-reader.mjs,reader-source.json,packages.py} \
+sha256sum "$root/native-tools.json" "$root/native-inventory.json" "$root/reader-source/"{frontend-reader.mjs,reader-source.json,packages.py} \
   "$root/reader-source/scripts/library-frontend-reader.mjs" "$root/reader-source/model/library-frontend-runtime.json" >> "$root/original-files.sha256"
 stage=build-verifier
 CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 \

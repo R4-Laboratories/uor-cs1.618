@@ -11,7 +11,7 @@ python3 scripts/numeric/canonical/packages.py stage /absolute/pinned-prismpm /ab
 ```
 
 The source fixture is `tests/fixtures/library/native-library/project` at
-`e1c32a64fd2a99b438341267e9d005e559ae2506`; `inputs.json` binds every copied
+`324955b6923c1d194d7bc870a2d2a05eb687048c`; `inputs.json` binds every copied
 fixture file and original kernel file. Each descriptor names one raw arithmetic
 export plus one zero-argument Boolean acceptance export. Eleven representative
 oracle cases match `Option.some` and refuse `Option.none`; these checks are finite
@@ -49,6 +49,13 @@ measurements, source-backport pins, declaration policies, complete artifact
 bytes and std/no_std results are bound before selection. The separately invoked
 source-owned frontend reader and runtime registry are pinned and retained;
 `library-sdk-check.checkAccepted` is fixture-specific and is not used here.
+
+Native tool capture `/2` distinguishes PATH Lean/Lake/Cargo launchers from
+actual Lean/Cargo binaries. Original Lean/Lake launcher equality is permitted;
+frontend Lean binds the separate locked native Lean artifact. Original process
+rows bind their selected commands, including Rustup for native packaging.
+Retained original inventory/lock and initial/final file measurements bind both
+roles; no source-bootstrap authority path substitutes for the actual SDK flow.
 
 Host tests use synthetic receipts and distinguish game harness refusals from
 source-owned frontend-reader refusals. With the source variables set, they run

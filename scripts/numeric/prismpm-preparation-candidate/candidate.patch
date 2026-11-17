@@ -10,8 +10,20 @@ index 5089482eb1407073b7692a29a79a34a810cb8aed..202e27451f57c24861f17197c3f74c82
  
  ## security
  
+diff --git a/Cargo.lock b/Cargo.lock
+index e2b00cd5635337cbcc6372168ae9c5205b009f91..d79df3f9be76479f624a62dbbb569dc3b9bc3227 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1313,6 +1313,7 @@ dependencies = [
+  "prod-codegen",
+  "prod-ir",
+  "repo-model",
++ "rustix",
+  "serde",
+  "serde_json",
+  "sha2",
 diff --git a/SPEC.md b/SPEC.md
-index 006db88bc049126aa1cf5f0013376e4dcf3b6832..628577a9568de2bc8f867e75dfbce9ded2a217a2 100644
+index 006db88bc049126aa1cf5f0013376e4dcf3b6832..a214274ffa29e5b57bc9bb954b9a9d2e0217dc2f 100644
 --- a/SPEC.md
 +++ b/SPEC.md
 @@ -767,6 +767,7 @@ The CLI grammar is:
@@ -88,7 +100,7 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..628577a9568de2bc8f867e75dfbce9de
  Executable byte, mode and file-identity checks run after failed invocations too.
  The complete exporter package is captured before and after execution. Source
  members must still equal the pinned archive; only the private `.lake` build tree
-@@ -1879,20 +1934,63 @@ build, `lake build prod-export`, and actual export. No caller-selected cache,
+@@ -1879,20 +1934,78 @@ build, `lake build prod-export`, and actual export. No caller-selected cache,
  cross-request package, retained generated workspace or acceptance reuse exists.
  Both original phase transcripts, exact model/Lean-manifest digests and complete
  generated artifact rows are retained in closed
@@ -149,9 +161,24 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..628577a9568de2bc8f867e75dfbce9de
 +The exact closed frontend environment is `LANG=C`, `LC_ALL=C`,
 +`LEAN_NUM_THREADS=2`, `LEAN_PATH=.lake/build/lib/lean`. The receipt binds normalized
 +cwd, source/import order, every source/artifact digest and length, and distinct
-+launcher/actual-Lean identities. The source-bootstrap proxy resolves only its
-+fixed pinned released toolchain; installed SDK commands retain independent
-+inventory authority. `model/library-frontend-runtime.json` is generated reader
++launcher/actual-Lean identities. PATH Lean and Lake may both identify the elan
++launcher; neither is the actual frontend binary. The source-bootstrap proxy
++resolves only its fixed pinned released toolchain. Installed SDK frontend work
++uses only `/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean`,
++independent of ambient toolchain selectors, and binds its bytes to the freshly
++verified inventory artifact `lean` / `binary` / `4.32.1`. The original PATH Lean
++preflight and launcher receipt retain command identity. Original launcher, actual
++Lean and verified inventory file custody remain held across the closed frontend
++sequence; substituted bytes or same-byte file replacements fail closed. The
++source SDK reader separately checks launcher command and actual binary artifact
++against its independently bound native inventory document. Current SDK retained
++readback requires that original document and its matching independent binding
++through every public and replay caller. Required source-devcontainer conformance
++uses a distinct `source-bootstrap-only` reader authority, captured before verify
++from the original pinned launcher and fixed actual Lean files and rechecked
++afterward with held-file custody. It is selected only when SDK environment
++verification reports no inventory; it neither constructs an SDK identity nor
++provides an optional fallback in the SDK acceptance reader. `model/library-frontend-runtime.json` is generated reader
 +metadata, checked byte-for-byte against LexLean's runtime API by the Rust gate.
 +The original modeled-library 300-second compilation budget is shared by the
 +entire sequence, including identity measurement; it is never renewed per module.
@@ -166,7 +193,7 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..628577a9568de2bc8f867e75dfbce9de
  Standalone unadvertised builds and
  separate verification requests start cold; only independently authenticated
  installed-SDK seed admission may initialize the new private exporter package.
-@@ -2773,7 +2871,7 @@ this is private gate-internal evidence, not a public SDK or model contract.
+@@ -2773,7 +2886,7 @@ this is private gate-internal evidence, not a public SDK or model contract.
  the original positive, restored-source and `no_std` executions remain mandatory.
  
  Only then are `prismpm/library-acceptance/1` and
@@ -175,11 +202,23 @@ index 006db88bc049126aa1cf5f0013376e4dcf3b6832..628577a9568de2bc8f867e75dfbce9de
  native-code evidence, not a universal semantic proof, standards certification,
  browser profile, `.holo`, or deployed service. Product-release construction and
  source-free product-release replay reject library evidence with `PP6101`.
-@@ -4004,3 +4102,4 @@ Every row below is normative, has the honesty level registered in `model/ids.tom
+@@ -4004,3 +4117,4 @@ Every row below is normative, has the honesty level registered in `model/ids.tom
  | `TM-04` | `template-ci` | Least-privilege jobs build once and pass the exact digest through protected signing, publication, deployment, and verification boundaries. | §17 |
  | `TM-05` | `template-ci` | Template checks are read-only and explicit updates produce reviewable downstream patches or pull requests without hidden branch mutation. | §17 |
  | `TM-06` | `template-ci` | All in-scope UOR and Prism repositories use the common SDK bootstrap while preserving their repository-specific acceptance gates. | §17 |
 +| `DK-39` | `sdk` | Explicit closed compiler-source selection preserves released SDK defaults and binds diagnostic backport acquisition, retained custody and source-free release evidence without seed or SDK release qualification. | §12 |
+diff --git a/crates/conformance/Cargo.toml b/crates/conformance/Cargo.toml
+index 2dda1f98e6a7a2fa2d739fd4fb5efd7c1b8a1115..0bc2569d2744463f4773e3bc49d3d3a911e7728b 100644
+--- a/crates/conformance/Cargo.toml
++++ b/crates/conformance/Cargo.toml
+@@ -16,6 +16,7 @@ prismpm = { workspace = true }
+ prod-codegen = { workspace = true }
+ prod-ir = { workspace = true }
+ repo-model = { workspace = true }
++rustix = { workspace = true }
+ serde = { workspace = true }
+ serde_json = { workspace = true }
+ sha2 = { workspace = true }
 diff --git a/crates/conformance/src/cases/mod.rs b/crates/conformance/src/cases/mod.rs
 index ca4f9bafdd440663496dc22943e27becc83adc26..2d9cb085748d9554ad81a32d6cd4f318362927f9 100644
 --- a/crates/conformance/src/cases/mod.rs
@@ -251,10 +290,140 @@ index ec30dd2f15cb8bb478eba767b7f64f3b0526145a..570132a3a7704059e8653d3b5613775d
      assert_eq!(acceptance["schema"], "prismpm/library-acceptance/1");
      assert_eq!(acceptance["profile"], "prismpm/native-library/1");
 diff --git a/crates/conformance/src/cases/native_library.rs b/crates/conformance/src/cases/native_library.rs
-index 3ba21f290d54896d908f241340cb7f227fc50640..ac4f0e3c49d223e3eeb379819a5524ded283da09 100644
+index 3ba21f290d54896d908f241340cb7f227fc50640..b6165a187b0b7cae858e735b9f671923de7e0d06 100644
 --- a/crates/conformance/src/cases/native_library.rs
 +++ b/crates/conformance/src/cases/native_library.rs
-@@ -139,7 +139,7 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+@@ -4,8 +4,115 @@ use prismpm::controller::{BuildRequest, CheckRequest, ProductBuildRequest, Verif
+ use prismpm::holo::canonical::content_id;
+ use serde_json::{json, Value};
+ use std::collections::{BTreeMap, BTreeSet};
++use std::io::Write;
+ use std::path::Path;
+ 
++// Reuse the unchanged bounded original-file guard in this conformance-only
++// capture. No production API or generated-library identity is changed.
++#[path = "../../../prismpm/src/sdk/executable_file.rs"]
++mod reader_input;
++
++struct HeldReaderInput {
++    selected: std::path::PathBuf,
++    file: reader_input::ExecutableFile,
++}
++impl HeldReaderInput {
++    fn capture(selected: std::path::PathBuf, limit: u64) -> (Self, Vec<u8>, String) {
++        let canonical = selected.canonicalize().expect("original reader input");
++        let mut file = reader_input::ExecutableFile::open(&canonical).unwrap();
++        assert!(
++            file.len() > 0 && file.len() <= limit,
++            "bounded original reader input"
++        );
++        let digest = file.sha256().unwrap();
++        let mut readback = reader_input::ExecutableFile::open(&canonical).unwrap();
++        let bytes = readback.read_exact_bytes(file.len() as usize).unwrap();
++        assert_eq!(content_id(&bytes), digest);
++        readback.verify_reference(&selected).unwrap();
++        file.verify_reference(&selected).unwrap();
++        (Self { selected, file }, bytes, digest)
++    }
++    fn verify(&self) {
++        self.file
++            .verify_reference(&self.selected)
++            .expect("original reader input custody");
++    }
++}
++
++struct ReaderAuthority {
++    held: Vec<HeldReaderInput>,
++    document: Value,
++}
++impl ReaderAuthority {
++    fn capture() -> Self {
++        if let Some(verified) = prismpm::sdk::verify_environment().unwrap() {
++            let fixed = Path::new("/opt/prismpm/share/inventory.json");
++            let path = if fixed.exists() || Path::new("/etc/profile.d/prismpm-sdk.sh").exists() {
++                fixed.to_owned()
++            } else {
++                std::env::var_os("PRISMPM_SDK_INVENTORY")
++                    .expect("verified SDK inventory path")
++                    .into()
++            };
++            let (held, bytes, digest) = HeldReaderInput::capture(path, 8 * 1024 * 1024);
++            assert_eq!(verified["inventory_sha256"], digest);
++            Self {
++                held: vec![held],
++                document: json!({"scope":"installed-sdk",
++                "binding":{"inventory_sha256":digest},"native_inventory":String::from_utf8(bytes).unwrap()}),
++            }
++        } else {
++            let launcher = prismpm::sdk::executable("lean").unwrap();
++            let actual = std::path::PathBuf::from(
++                std::env::var_os("ELAN_HOME").expect("explicit pinned ELAN_HOME"),
++            )
++            .join("toolchains/leanprover--lean4---v4.32.1/bin/lean");
++            let (launcher, _, launcher_sha256) =
++                HeldReaderInput::capture(launcher, 256 * 1024 * 1024);
++            // The same existing source-bootstrap elan pin as native preflight.
++            assert_eq!(
++                launcher_sha256,
++                "840179e70803ef373c2ec53342d6a45ea7d022533e4145489fc1278b4f716385"
++            );
++            let (actual, _, lean_sha256) = HeldReaderInput::capture(actual, 256 * 1024 * 1024);
++            assert_ne!(launcher_sha256, lean_sha256);
++            Self {
++                held: vec![launcher, actual],
++                document: json!({"scope":"source-bootstrap-only",
++                "toolchain":"leanprover/lean4:v4.32.1","launcher_sha256":launcher_sha256,"lean_sha256":lean_sha256}),
++            }
++        }
++    }
++    fn verify(&self) {
++        match prismpm::sdk::verify_environment().unwrap() {
++            Some(verified) => {
++                assert_eq!(self.document["scope"], "installed-sdk");
++                assert_eq!(
++                    verified["inventory_sha256"],
++                    self.document["binding"]["inventory_sha256"]
++                );
++            }
++            None => {
++                assert_eq!(self.document["scope"], "source-bootstrap-only");
++                assert_eq!(
++                    prismpm::sdk::executable("lean").unwrap(),
++                    self.held[0].selected
++                );
++                assert_eq!(
++                    std::path::PathBuf::from(
++                        std::env::var_os("ELAN_HOME").expect("original ELAN_HOME")
++                    )
++                    .join("toolchains/leanprover--lean4---v4.32.1/bin/lean"),
++                    self.held[1].selected
++                );
++            }
++        }
++        for held in &self.held {
++            held.verify();
++        }
++    }
++}
++
+ const ACCEPTANCE: &str = "LibraryProbe.Probe.acceptance";
+ const IDENTITY: &str = "LibraryProbe.Probe.identity";
+ 
+@@ -132,14 +239,20 @@ fn roots<'a>(module: &'a mut Value, name: &str) -> &'a mut Value {
+         .expect("modeled root field")["value"]
+ }
+ 
+-fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyResult) {
++fn accepted(
++    root: &Path,
++    project: &Path,
++    verified: &prismpm::controller::VerifyResult,
++    authority: &ReaderAuthority,
++) {
++    authority.verify();
+     let output = project.join(&verified.verified_root);
+     let manifest = super::json(&output.join("manifest.json"));
+     let acceptance_bytes = std::fs::read(output.join("library-acceptance.json")).unwrap();
      let acceptance: Value = serde_json::from_slice(&acceptance_bytes).unwrap();
      assert_eq!(
          manifest["schema"],
@@ -263,7 +432,7 @@ index 3ba21f290d54896d908f241340cb7f227fc50640..ac4f0e3c49d223e3eeb379819a5524de
      );
      assert_eq!(manifest["scope"], "native-library-only");
      assert_eq!(manifest["build_id"], verified.build_id);
-@@ -174,91 +174,118 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+@@ -174,91 +287,118 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
      );
      let processes = manifest["processes"].as_array().unwrap();
      let owner = &manifest["exporter_owner"];
@@ -417,14 +586,100 @@ index 3ba21f290d54896d908f241340cb7f227fc50640..ac4f0e3c49d223e3eeb379819a5524de
      );
      for process in processes {
          let mut expected = vec![
-@@ -322,7 +349,7 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+@@ -275,10 +415,13 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+         assert_eq!(process.as_object().unwrap().keys().map(String::as_str).collect::<Vec<_>>(), expected,
+             "manifest/2 retains the six original fields and only its authenticated exporter extension");
+     }
+-    assert_eq!(processes[5]["argv"], json!(["build", "PrismGenerated"]));
+-    assert_eq!(processes[6]["argv"], json!(["build", "prod-export"]));
++    assert_eq!(processes[5]["argv"], json!(["--version"]));
+     assert_eq!(
+-        processes[8]["argv"],
++        processes[module_count + 6]["argv"],
++        json!(["build", "prod-export"])
++    );
++    assert_eq!(
++        processes[module_count + 8]["argv"],
+         json!(["package", "--locked", "--offline", "--allow-dirty"])
+     );
+     for mode in ["std", "no_std"] {
+@@ -301,6 +444,9 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+             "manifest.json".to_owned(),
+         ])
+     );
++    let authority_bytes = serde_json::to_vec(&authority.document).unwrap();
++    let mut authority_file = tempfile::NamedTempFile::new().unwrap();
++    authority_file.write_all(&authority_bytes).unwrap();
+     let reader = std::process::Command::new("timeout")
+         .args(["--kill-after=5s", "60s", "node"])
+         .arg(root.join("scripts/library-owner-reader-replay.mjs"))
+@@ -310,6 +456,7 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+             "../../../prismpm/vendor/lean4-prod/lean.tar"
+         )))
+         .arg(include_str!("../../../../lean-toolchain").trim())
++        .arg(authority_file.path())
+         .output()
+         .expect("actual shipped native-library reader execution");
+     assert!(
+@@ -321,13 +468,19 @@ fn accepted(root: &Path, project: &Path, verified: &prismpm::controller::VerifyR
+     assert_eq!(
          serde_json::from_slice::<Value>(&reader.stdout).unwrap(),
          json!({
-             "schema":"prismpm/native-library-reader-regression/1","real_baseline":"passed",
+-            "schema":"prismpm/native-library-reader-regression/1","real_baseline":"passed",
 -            "mutations_rejected":7,"restored_baseline":"passed"
++            "schema":"prismpm/native-library-reader-regression/1","scope":authority.document["scope"],"real_baseline":"passed",
 +            "mutations_rejected":14,"restored_baseline":"passed"
          })
      );
++    assert_eq!(
++        std::fs::read(authority_file.path()).unwrap(),
++        authority_bytes
++    );
++    authority.verify();
+ }
+ 
+ pub(super) fn verify(root: &Path) {
++    let authority = ReaderAuthority::capture();
+     let first = fixture(root);
+     let controller = prismpm::Controller::load(first.path()).unwrap();
+     let before = tree(first.path());
+@@ -338,7 +491,7 @@ pub(super) fn verify(root: &Path) {
+     let verified = controller
+         .verify(VerifyRequest { config_path: None })
+         .unwrap();
+-    accepted(root, first.path(), &verified);
++    accepted(root, first.path(), &verified, &authority);
+     let build = first.path().join(".prism/build").join(&verified.build_id);
+     let document = super::json(&build.join("model.prism.json"));
+     assert_eq!(document["schema"], "prismpm/model-document/3");
+@@ -517,5 +670,27 @@ pub(super) fn verify(root: &Path) {
+         .verify(VerifyRequest { config_path: None })
+         .unwrap();
+     assert_eq!(restored.build_id, verified.build_id);
+-    accepted(root, mutant.path(), &restored);
++    accepted(root, mutant.path(), &restored, &authority);
++}
++
++#[test]
++fn native_reader_authority_captures_actual_context_and_refuses_scope_relabeling() {
++    let mut authority = ReaderAuthority::capture();
++    authority.verify();
++    authority.document["scope"] = json!("foreign");
++    assert!(std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| authority.verify())).is_err());
++}
++
++#[test]
++fn native_reader_authority_holds_original_bounded_files() {
++    let root = tempfile::tempdir().unwrap();
++    let path = root.path().join("measured-tool");
++    std::fs::write(&path, b"original measured bytes").unwrap();
++    let (held, bytes, digest) = HeldReaderInput::capture(path.clone(), 64);
++    assert_eq!(digest, content_id(&bytes));
++    held.verify();
++    std::fs::rename(&path, path.with_extension("original")).unwrap();
++    std::fs::write(&path, bytes).unwrap();
++    assert!(held.file.verify_reference(&held.selected).is_err());
++    assert!(std::panic::catch_unwind(|| HeldReaderInput::capture(path.clone(), 1)).is_err());
  }
 diff --git a/crates/conformance/src/cases/saved_recovery.rs b/crates/conformance/src/cases/saved_recovery.rs
 index 09e88b5cb8468fcf2f382f72e478f81a8ce2dc8c..488cf482d9ae9d7855ffd2e8889c6d157fc56253 100644
@@ -1781,7 +2036,7 @@ index 72787fb3c593dc66e32cd43758fc49e91795526c..63baefda09f19f48c535d9dce229dc39
              }
              self.protect_package(root, snapshot)
 diff --git a/crates/prismpm/src/exporter/owner.rs b/crates/prismpm/src/exporter/owner.rs
-index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d95fc17bb 100644
+index 6315bb4528f4dcdccd3b5c45fb764238ca442528..1c671471f6d6b619a71e5abeaa61df8892bc9df8 100644
 --- a/crates/prismpm/src/exporter/owner.rs
 +++ b/crates/prismpm/src/exporter/owner.rs
 @@ -45,6 +45,9 @@ pub(crate) struct GenerationContext<'a> {
@@ -2564,7 +2819,75 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
              assert!(owner.finish().is_err());
          }
      }
-@@ -1109,6 +1312,24 @@ mod tests {
+@@ -1064,6 +1267,67 @@ mod tests {
+     use super::*;
+     use std::os::unix::fs::PermissionsExt;
+ 
++    #[test]
++    fn sdk_frontend_owner_binds_launcher_preflight_and_independent_actual_artifact() {
++        let lock: Value = serde_json::from_slice(include_bytes!(
++            "../../../../tests/fixtures/exporter-backport/sdk-lock.json"
++        ))
++        .unwrap();
++        for platform in lock["platforms"].as_array().unwrap() {
++            let inventory: Value =
++                serde_json::from_str(platform["inventory_document"].as_str().unwrap()).unwrap();
++            let expected = crate::library_frontend::lean_artifact_digest(&inventory).unwrap();
++            let command = |name| {
++                inventory["commands"]
++                    .as_array()
++                    .unwrap()
++                    .iter()
++                    .find(|r| r["command"] == name)
++                    .unwrap()["sha256"]
++                    .clone()
++            };
++            let lean = json!({"executable_sha256":command("lean"),"stdout":"independent preflight version"});
++            let lake = json!({"executable_sha256":command("lake")});
++            assert_eq!(lean["executable_sha256"], lake["executable_sha256"]);
++            let frontend = json!({"launcher_sha256":command("lean"),"lean_sha256":expected});
++            let version = json!({"stdout":lean["stdout"]});
++            validate_frontend_tool_identity(&frontend, &version, &lean, &lake, Some(&expected))
++                .unwrap();
++            for (field, changed) in [
++                ("launcher_sha256", json!(expected)),
++                ("lean_sha256", command("lean")),
++                ("lean_sha256", json!("f".repeat(64))),
++            ] {
++                let mut foreign = frontend.clone();
++                foreign[field] = changed;
++                assert!(validate_frontend_tool_identity(
++                    &foreign,
++                    &version,
++                    &lean,
++                    &lake,
++                    Some(&expected)
++                )
++                .is_err());
++            }
++            assert!(validate_frontend_tool_identity(
++                &frontend,
++                &json!({"stdout":"changed"}),
++                &lean,
++                &lake,
++                Some(&expected)
++            )
++            .is_err());
++            assert!(validate_frontend_tool_identity(
++                &frontend,
++                &version,
++                &lean,
++                &lake,
++                Some(&"f".repeat(64))
++            )
++            .is_err());
++        }
++    }
++
+     // Unaccepted custody fixture only. No compiler execution or production
+     // acceptance is claimed; its empty transcript must never pass finish().
+     struct Unaccepted(Vec<(String, Vec<u8>)>);
+@@ -1109,6 +1373,24 @@ mod tests {
          owner
      }
  
@@ -2589,7 +2912,34 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
      #[test]
      fn first_cold_phase_retains_actual_post_build_custody_until_completion() {
          let project = tempfile::tempdir().unwrap();
-@@ -1654,6 +1875,8 @@ pub(crate) fn validate_binding(
+@@ -1641,6 +1923,26 @@ mod tests {
+     }
+ }
+ 
++fn validate_frontend_tool_identity(
++    frontend: &Value,
++    version: &Value,
++    lean: &Value,
++    lake: &Value,
++    sdk_lean_sha256: Option<&str>,
++) -> Result<(), PrismError> {
++    if frontend["launcher_sha256"] != lean["executable_sha256"]
++        || sdk_lean_sha256.is_some_and(|expected| frontend["lean_sha256"] != expected)
++        || frontend["lean_sha256"] == lean["executable_sha256"]
++        || frontend["lean_sha256"] == lake["executable_sha256"]
++        || version["stdout"] != lean["stdout"]
++    {
++        return Err(failure(
++            "frontend launcher, actual Lean artifact or native preflight differs",
++        ));
++    }
++    Ok(())
++}
++
+ /// Bind both original generations to independently retained source, products
+ /// and native preflight; replay must also be the original top-level transcript.
+ #[allow(clippy::too_many_arguments)]
+@@ -1654,6 +1956,8 @@ pub(crate) fn validate_binding(
      arguments: &[String],
  ) -> Result<(), PrismError> {
      validate_record(value, model_sha256, role)?;
@@ -2598,9 +2948,15 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
      let phases = value["phases"].as_array().expect("validated owner phases");
      let replay = phases[1]["processes"]
          .as_array()
-@@ -1673,10 +1896,53 @@ pub(crate) fn validate_binding(
+@@ -1672,16 +1976,195 @@ pub(crate) fn validate_binding(
+         .iter()
          .find(|row| row["tool"] == "lake-version")
          .ok_or_else(|| failure("independent native Lake preflight is absent"))?;
++    let sdk_lean = if frontend_library {
++        crate::library_frontend::sdk_lean_authority()?
++    } else {
++        None
++    };
      for phase in phases {
 +        let offset = if frontend_library {
 +            phase["frontend"]["modules"]
@@ -2618,16 +2974,13 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
 +                .iter()
 +                .find(|row| row["tool"] == "lean-version")
 +                .ok_or_else(|| failure("independent Lean preflight absent"))?;
-+            if phase["frontend"]["launcher_sha256"] != lean["executable_sha256"]
-+                || (crate::sdk::inventory_path().is_some()
-+                    && phase["frontend"]["lean_sha256"] != lean["executable_sha256"])
-+                || phase["frontend"]["lean_sha256"] == lake["executable_sha256"]
-+                || phase["processes"][0]["stdout"] != lean["stdout"]
-+            {
-+                return Err(failure(
-+                    "frontend actual Lean differs from native preflight",
-+                ));
-+            }
++            validate_frontend_tool_identity(
++                &phase["frontend"],
++                &phase["processes"][0],
++                lean,
++                lake,
++                sdk_lean.as_ref().map(|a| a.lean_sha256.as_str()),
++            )?;
 +            let manifest: Value =
 +                serde_json::from_slice(lex_manifest).map_err(|e| failure(&e.to_string()))?;
 +            let mut expected = manifest["outputs"].as_array().ok_or_else(|| failure("generated source rows absent"))?.iter()
@@ -2654,10 +3007,14 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
          {
              return Err(failure(
                  "exporter owner source, products, arguments or native tool differ",
-@@ -1685,3 +1951,134 @@ pub(crate) fn validate_binding(
+             ));
+         }
      }
-     Ok(())
- }
++    if let Some(authority) = &sdk_lean {
++        authority.verify()?;
++    }
++    Ok(())
++}
 +
 +fn validate_lake_record(value: &Value, model_sha256: &str, role: &str) -> Result<(), PrismError> {
 +    fn keys(value: &Value, expected: &[&str]) -> Result<(), PrismError> {
@@ -2787,8 +3144,8 @@ index 6315bb4528f4dcdccd3b5c45fb764238ca442528..fa1cd31e227e6dff1bfb7090e225aa3d
 +            return Err(failure("exporter owner complete phase bindings differ"));
 +        }
 +    }
-+    Ok(())
-+}
+     Ok(())
+ }
 diff --git a/crates/prismpm/src/exporter/source.rs b/crates/prismpm/src/exporter/source.rs
 new file mode 100644
 index 0000000000000000000000000000000000000000..a4cb10421065635c87a0d5cb5deec625e6872a87
@@ -3214,10 +3571,10 @@ index 281eb783bd04c6bc4084a5041faa3e09a189a654..1c79bf201a86b98cc03a1adba8d7b4a5
          artifacts,
 diff --git a/crates/prismpm/src/library_frontend.rs b/crates/prismpm/src/library_frontend.rs
 new file mode 100644
-index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d615c1422a0
+index 0000000000000000000000000000000000000000..3a2296eb35a9fb95681f411893bafe075a81448e
 --- /dev/null
 +++ b/crates/prismpm/src/library_frontend.rs
-@@ -0,0 +1,1137 @@
+@@ -0,0 +1,1379 @@
 +//! Native-library-only normal Lean frontend/LCNF profile. No C backend is requested.
 +use crate::library_build::{regular_bytes, sha256, write};
 +use crate::verification::{executable, run_process_closed_limited, ProcessRecord};
@@ -3462,9 +3819,142 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +    Ok(ordered)
 +}
 +
++const SDK_LEAN: &str = "/usr/local/elan/toolchains/leanprover--lean4---v4.32.1/bin/lean";
++
++/// Artifact authority is distinct from PATH command authority: SDK Lean and
++/// Lake commands may both be elan, while this artifact is the actual Lean ELF.
++pub(crate) fn lean_artifact_digest(inventory: &Value) -> Result<String, PrismError> {
++    let rows = inventory["artifacts"]
++        .as_array()
++        .ok_or_else(|| fail("SDK artifacts absent"))?;
++    let rows = rows
++        .iter()
++        .filter(|row| row["id"] == "lean")
++        .collect::<Vec<_>>();
++    if rows.len() != 1
++        || rows[0]["kind"] != "binary"
++        || rows[0]["version"] != "4.32.1"
++        || rows[0].as_object().is_none_or(|row| {
++            row.keys()
++                .map(String::as_str)
++                .ne(["digest", "id", "kind", "version"])
++        })
++    {
++        return Err(fail("exact pinned SDK Lean binary artifact required"));
++    }
++    let hash = rows[0]["digest"]
++        .as_str()
++        .and_then(|s| s.strip_prefix("sha256:"))
++        .filter(|s| {
++            s.len() == 64
++                && s.bytes()
++                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
++        })
++        .ok_or_else(|| fail("SDK Lean artifact digest malformed"))?;
++    Ok(hash.into())
++}
++
++pub(crate) struct SdkLeanAuthority {
++    path: PathBuf,
++    file: crate::sdk::ExecutableFile,
++    pub(crate) lean_sha256: String,
++}
++impl SdkLeanAuthority {
++    pub(crate) fn verify(&self) -> Result<(), PrismError> {
++        if crate::sdk::inventory_path().as_ref() != Some(&self.path) {
++            return Err(fail("original SDK inventory selection changed"));
++        }
++        self.file
++            .verify_reference(&self.path)
++            .map_err(|e| fail(e.to_string()))
++    }
++}
++
++/// Fresh independent inventory verification, followed by a bounded read bound
++/// to that exact verification digest. The opened metadata stays in custody.
++pub(crate) fn sdk_lean_authority() -> Result<Option<SdkLeanAuthority>, PrismError> {
++    let Some(path) = crate::sdk::inventory_path() else {
++        return Ok(None);
++    };
++    let verified =
++        crate::sdk::verify_environment()?.ok_or_else(|| fail("SDK inventory disappeared"))?;
++    let mut file = crate::sdk::ExecutableFile::open(&path).map_err(|e| fail(e.to_string()))?;
++    if file.len() > 8 * 1024 * 1024 {
++        return Err(fail("SDK inventory exceeds original metadata bound"));
++    }
++    let bytes = file
++        .read_exact_bytes(file.len() as usize)
++        .map_err(|e| fail(e.to_string()))?;
++    if verified["inventory_sha256"] != sha256(&bytes) {
++        return Err(fail("SDK inventory changed after independent verification"));
++    }
++    let inventory: Value = serde_json::from_slice(&bytes).map_err(|e| fail(e.to_string()))?;
++    let authority = SdkLeanAuthority {
++        path,
++        file,
++        lean_sha256: lean_artifact_digest(&inventory)?,
++    };
++    authority.verify()?;
++    Ok(Some(authority))
++}
++
++struct LeanTools {
++    launcher: PathBuf,
++    selected_lean: PathBuf,
++    lean: PathBuf,
++    launcher_file: crate::sdk::ExecutableFile,
++    lean_file: crate::sdk::ExecutableFile,
++    launcher_sha256: String,
++    lean_sha256: String,
++}
++impl LeanTools {
++    fn open(
++        launcher: PathBuf,
++        selected_lean: PathBuf,
++        expected: Option<&str>,
++    ) -> Result<Self, PrismError> {
++        let canonical = |p: &Path| p.canonicalize().map_err(|e| fail(e.to_string()));
++        let lean = canonical(&selected_lean)?;
++        let mut launcher_file = crate::sdk::ExecutableFile::open(&canonical(&launcher)?)
++            .map_err(|e| fail(e.to_string()))?;
++        let mut lean_file =
++            crate::sdk::ExecutableFile::open(&lean).map_err(|e| fail(e.to_string()))?;
++        let launcher_sha256 = launcher_file.sha256().map_err(|e| fail(e.to_string()))?;
++        let lean_sha256 = lean_file.sha256().map_err(|e| fail(e.to_string()))?;
++        if launcher_sha256 == lean_sha256 || expected.is_some_and(|hash| hash != lean_sha256) {
++            return Err(fail(
++                "actual Lean differs from independent binary authority or is the launcher",
++            ));
++        }
++        let tools = Self {
++            launcher,
++            selected_lean,
++            lean,
++            launcher_file,
++            lean_file,
++            launcher_sha256,
++            lean_sha256,
++        };
++        tools.verify()?;
++        Ok(tools)
++    }
++    fn verify(&self) -> Result<(), PrismError> {
++        self.launcher_file
++            .verify_reference(&self.launcher)
++            .map_err(|e| fail(e.to_string()))?;
++        self.lean_file
++            .verify_reference(&self.selected_lean)
++            .map_err(|e| fail(e.to_string()))?;
++        self.lean_file
++            .verify_reference(&self.lean)
++            .map_err(|e| fail(e.to_string()))
++    }
++}
++
 +pub(crate) struct Frontend {
 +    workspace: PathBuf,
-+    lean: PathBuf,
++    tools: LeanTools,
++    sdk_authority: Option<SdkLeanAuthority>,
 +    receipt: Receipt,
 +    next: usize,
 +    deadline: Instant,
@@ -3490,23 +3980,29 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +            }
 +        }
 +        let launcher = executable("lean")?;
-+        let launcher_sha256 = sha256(&std::fs::read(&launcher).map_err(|e| fail(e.to_string()))?);
++        let sdk_authority = sdk_lean_authority()?;
 +        // Source bootstrap uses the already pinned elan proxy. Select only its
 +        // fixed released toolchain; never the ambient default or a local override.
-+        let lean = if crate::sdk::inventory_path().is_none() {
++        let lean = if sdk_authority.is_none() {
 +            PathBuf::from(
 +                std::env::var_os("ELAN_HOME")
 +                    .ok_or_else(|| fail("explicit pinned ELAN_HOME required"))?,
 +            )
 +            .join("toolchains/leanprover--lean4---v4.32.1/bin/lean")
 +        } else {
-+            launcher
++            PathBuf::from(SDK_LEAN)
 +        };
-+        let lean = lean.canonicalize().map_err(|e| fail(e.to_string()))?;
-+        let lean_sha256 = sha256(&std::fs::read(&lean).map_err(|e| fail(e.to_string()))?);
++        let tools = LeanTools::open(
++            launcher,
++            lean,
++            sdk_authority.as_ref().map(|a| a.lean_sha256.as_str()),
++        )?;
++        let launcher_sha256 = tools.launcher_sha256.clone();
++        let lean_sha256 = tools.lean_sha256.clone();
 +        Ok(Self {
 +            workspace: workspace.into(),
-+            lean,
++            tools,
++            sdk_authority,
 +            receipt: Receipt {
 +                schema: "prismpm/library-frontend/1".into(),
 +                profile: PROFILE.into(),
@@ -3543,10 +4039,9 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +                }
 +            }
 +        }
-+        if sha256(&std::fs::read(&self.lean).map_err(|e| fail(e.to_string()))?)
-+            != self.receipt.lean_sha256
-+        {
-+            return Err(fail("actual Lean binary changed"));
++        self.tools.verify()?;
++        if let Some(authority) = &self.sdk_authority {
++            authority.verify()?;
 +        }
 +        Ok(())
 +    }
@@ -3582,7 +4077,7 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +            .ok_or_else(|| PrismError::new("PP5007", "native frontend total deadline exhausted"))?;
 +        let result = run_process_closed_limited(
 +            tool,
-+            &self.lean,
++            &self.tools.lean,
 +            &args,
 +            &self.workspace,
 +            &self.receipt.environment,
@@ -3825,6 +4320,109 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +        })).collect::<Vec<_>>())
 +    }
 +    #[test]
++    fn sdk_layout_keeps_launcher_and_actual_lean_distinct_under_real_frontend_execution() {
++        use std::os::unix::fs::symlink;
++        // A private layout fixture using the real pinned bootstrap tools. No
++        // SDK marker, inventory environment variable, PATH or installed file is
++        // changed; this exercises resolution/custody, not installed admission.
++        let layout = tempfile::tempdir().unwrap();
++        let bin = layout.path().join("usr/local/elan/bin");
++        std::fs::create_dir_all(&bin).unwrap();
++        std::fs::copy(executable("lean").unwrap(), bin.join("elan")).unwrap();
++        symlink("elan", bin.join("lean")).unwrap();
++        symlink("elan", bin.join("lake")).unwrap();
++        let actual = layout.path().join(SDK_LEAN.strip_prefix('/').unwrap());
++        std::fs::create_dir_all(actual.parent().unwrap()).unwrap();
++        let original = PathBuf::from(std::env::var_os("ELAN_HOME").unwrap())
++            .join("toolchains/leanprover--lean4---v4.32.1");
++        std::fs::copy(original.join("bin/lean"), &actual).unwrap();
++        symlink(
++            original.join("lib"),
++            actual.parent().unwrap().parent().unwrap().join("lib"),
++        )
++        .unwrap();
++        let lock: Value = serde_json::from_slice(include_bytes!(
++            "../../../tests/fixtures/exporter-backport/sdk-lock.json"
++        ))
++        .unwrap();
++        let platform = match std::env::consts::ARCH {
++            "x86_64" => "linux/amd64",
++            "aarch64" => "linux/arm64",
++            _ => panic!("unsupported native frontend host"),
++        };
++        let row = lock["platforms"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .find(|r| r["platform"] == platform)
++            .unwrap();
++        let inventory: Value =
++            serde_json::from_str(row["inventory_document"].as_str().unwrap()).unwrap();
++        let expected = lean_artifact_digest(&inventory).unwrap();
++        let tools = LeanTools::open(bin.join("lean"), actual.clone(), Some(&expected)).unwrap();
++        assert_ne!(tools.launcher_sha256, tools.lean_sha256);
++        assert_eq!(
++            sha256(&std::fs::read(bin.join("lake")).unwrap()),
++            tools.launcher_sha256
++        );
++        let (work, manifest) = stage(&sources());
++        let mut frontend = Frontend::new(work.path(), &manifest).unwrap();
++        frontend.receipt.launcher_sha256 = tools.launcher_sha256.clone();
++        frontend.receipt.lean_sha256 = tools.lean_sha256.clone();
++        frontend.tools = tools;
++        for _ in 0..frontend.count() {
++            let record = frontend.run(&[]).unwrap();
++            assert_eq!(record.executable_sha256, expected);
++        }
++        frontend.complete().unwrap();
++        assert!(LeanTools::open(bin.join("lean"), actual.clone(), Some(&"f".repeat(64))).is_err());
++        assert!(LeanTools::open(bin.join("lean"), bin.join("elan"), Some(&expected)).is_err());
++        for path in [bin.join("elan"), actual] {
++            let tools = LeanTools::open(
++                bin.join("lean"),
++                frontend.tools.lean.clone(),
++                Some(&expected),
++            )
++            .unwrap();
++            let saved = path.with_extension("original");
++            std::fs::rename(&path, &saved).unwrap();
++            std::fs::copy(&saved, &path).unwrap();
++            assert!(
++                tools.verify().is_err(),
++                "same-byte substitution must fail custody"
++            );
++            std::fs::remove_file(&path).unwrap();
++            std::fs::rename(saved, path).unwrap();
++        }
++        let mut missing = inventory.clone();
++        missing["artifacts"]
++            .as_array_mut()
++            .unwrap()
++            .retain(|r| r["id"] != "lean");
++        assert!(lean_artifact_digest(&missing).is_err());
++        for field in ["id", "kind", "version", "digest", "extra"] {
++            let mut changed = inventory.clone();
++            let row = changed["artifacts"]
++                .as_array_mut()
++                .unwrap()
++                .iter_mut()
++                .find(|r| r["id"] == "lean")
++                .unwrap();
++            row[field] = json!("foreign");
++            assert!(lean_artifact_digest(&changed).is_err(), "changed {field}");
++        }
++        let mut duplicate = inventory.clone();
++        let row = duplicate["artifacts"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .find(|r| r["id"] == "lean")
++            .unwrap()
++            .clone();
++        duplicate["artifacts"].as_array_mut().unwrap().push(row);
++        assert!(lean_artifact_digest(&duplicate).is_err());
++    }
++    #[test]
 +    fn runtime_reader_registry_matches_authoritative_lexlean() {
 +        let path =
 +            Path::new(env!("CARGO_MANIFEST_DIR")).join("model/library-frontend-runtime.json");
@@ -3937,10 +4535,10 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +            receipt.source_plan(),
 +            "source-plan projection cannot hide source drift"
 +        );
-+        let original_lean = frontend.lean.clone();
-+        frontend.lean = PathBuf::from("/bin/false");
++        let original_lean = frontend.tools.lean.clone();
++        frontend.tools.lean = PathBuf::from("/bin/false");
 +        assert!(frontend.complete().is_err());
-+        frontend.lean = original_lean;
++        frontend.tools.lean = original_lean;
 +        let (stale, stale_manifest) = stage(&sources());
 +        let mut stale_frontend = Frontend::new(stale.path(), &stale_manifest).unwrap();
 +        stale_frontend.run(&[]).unwrap();
@@ -4202,11 +4800,12 @@ index 0000000000000000000000000000000000000000..a0bf7bb1533049f47c96614ff7668d61
 +                .is_err());
 +        }
 +
-+        let checker = frontend.lean.parent().unwrap().join("leanchecker");
++        let checker = frontend.tools.lean.parent().unwrap().join("leanchecker");
 +        let mut checker_env = environment();
 +        checker_env.insert(
 +            "PATH".into(),
 +            frontend
++                .tools
 +                .lean
 +                .parent()
 +                .unwrap()
@@ -6232,12 +6831,43 @@ index 0000000000000000000000000000000000000000..d5421e7ce3e97885beda73b43b8d5599
 +
 +export function frontendSourcePlan(frontend){return {schema:'prismpm/library-frontend-plan/1',profile:frontend.profile,working_directory:frontend.working_directory,environment:frontend.environment,modules:frontend.modules.map(({name,source,imports,runtime})=>({name,source,imports,runtime}))};}
 diff --git a/scripts/library-owner-reader-replay.mjs b/scripts/library-owner-reader-replay.mjs
-index aa3a59dfd00bab7f841f11da956cee53f53fd25d..ca3f380df34e82a4b9fa1a63110851302116d490 100644
+index aa3a59dfd00bab7f841f11da956cee53f53fd25d..89a758c398670eb028523f8a60e4e9139ceeb6e3 100644
 --- a/scripts/library-owner-reader-replay.mjs
 +++ b/scripts/library-owner-reader-replay.mjs
-@@ -15,12 +15,19 @@ const original=join(project,receipt.verified_root),bytes=readFileSync(join(origi
+@@ -4,23 +4,47 @@ import assert from 'node:assert/strict';
+ import {createHash} from 'node:crypto';
+ import {copyFileSync,existsSync,mkdirSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
+ import {join} from 'node:path';
+-import {checkAccepted} from './library-sdk-check.mjs';
++import {checkAccepted,readSourceBootstrapLibraryEvidence} from './library-sdk-check.mjs';
++import {pathToFileURL} from 'node:url';
++import {readSmall} from '../sdk/exporter-seed.mjs';
+ 
+-const [project,encodedReceipt,archive,toolchain]=process.argv.slice(2);
++// Explicit caller-held authority, captured before the genuine producer runs.
++export function readReplayEvidence(project,receipt,archive,compiler,authority){
++ assert(authority,'original reader authority required');
++ if(authority.scope==='installed-sdk'){
++  assert.deepEqual(Object.keys(authority).sort(),['binding','native_inventory','scope']);
++  assert.deepEqual(Object.keys(authority.binding).sort(),['inventory_sha256']);
++  return checkAccepted(project,receipt,archive,compiler,'cold',authority.binding,authority.native_inventory);
++ }
++ assert.equal(authority.scope,'source-bootstrap-only','explicit supported reader authority scope required');
++ return readSourceBootstrapLibraryEvidence(project,receipt,archive,compiler,authority);
++}
++
++if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
++const args=process.argv.slice(2);assert.equal(args.length,5,'explicit original reader authority file required');
++const [project,encodedReceipt,archive,toolchain,authorityFile]=args;
++const authority=JSON.parse(readSmall(authorityFile,20*1024*1024));
+ const receipt=JSON.parse(encodedReceipt),compiler={toolchain};
+ const canonical=value=>JSON.stringify(value,(_,item)=>item&&typeof item==='object'&&!Array.isArray(item)
+  ?Object.fromEntries(Object.keys(item).sort().map(key=>[key,item[key]])):item);
+ const hash=value=>createHash('sha256').update(value).digest('hex');
+ const original=join(project,receipt.verified_root),bytes=readFileSync(join(original,'manifest.json'));
  const baseline=JSON.parse(bytes);
- checkAccepted(project,receipt,archive,compiler);
+-checkAccepted(project,receipt,archive,compiler);
++readReplayEvidence(project,receipt,archive,compiler,authority);
  const mutations=[
 - value=>{for(const phase of value.exporter_owner.phases)phase.processes[2].argv.push('--unowned');value.processes[7].argv.push('--unowned');},
 + value=>{value.exporter_owner.phases[0].frontend.profile='legacy-lake';},
@@ -6259,19 +6889,38 @@ index aa3a59dfd00bab7f841f11da956cee53f53fd25d..ca3f380df34e82a4b9fa1a6311085130
   value=>{delete value.exporter_owner;value.schema='prismpm/library-verification-manifest/1';},
  ];
  for(const mutate of mutations){
+@@ -30,9 +54,10 @@ for(const mutate of mutations){
+  try{
+   for(const name of ['lexlean-attestation.json','library-acceptance.json'])copyFileSync(join(original,name),join(directory,name));
+   writeFileSync(join(directory,'manifest.json'),body,{flag:'wx'});
+-  assert.throws(()=>checkAccepted(project,{...receipt,attestation_id:id,verified_root:'.prism/verified/'+id},archive,compiler));
++  assert.throws(()=>readReplayEvidence(project,{...receipt,attestation_id:id,verified_root:'.prism/verified/'+id},archive,compiler,authority));
+  }finally{rmSync(directory,{recursive:true});}
+ }
+ assert(readFileSync(join(original,'manifest.json')).equals(bytes));
+-checkAccepted(project,receipt,archive,compiler);
+-console.log(JSON.stringify({schema:'prismpm/native-library-reader-regression/1',real_baseline:'passed',mutations_rejected:mutations.length,restored_baseline:'passed'}));
++readReplayEvidence(project,receipt,archive,compiler,authority);
++console.log(JSON.stringify({schema:'prismpm/native-library-reader-regression/1',scope:authority.scope,real_baseline:'passed',mutations_rejected:mutations.length,restored_baseline:'passed'}));
++}
 diff --git a/scripts/library-sdk-check.mjs b/scripts/library-sdk-check.mjs
-index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa47488627a50aeef 100644
+index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..fff8dec772ce3fb0b539f37a82571d750cdd6cd2 100644
 --- a/scripts/library-sdk-check.mjs
 +++ b/scripts/library-sdk-check.mjs
 @@ -1,5 +1,6 @@
- // Installed native-profile acceptance only; not SDK release or product acceptance.
+-// Installed native-profile acceptance only; not SDK release or product acceptance.
++// Installed native-profile acceptance and explicit source-bootstrap conformance readback; no release or product admission.
  import { readSemantic, writeSemantic } from './semantic-source.mjs';
 +import {validateFrontend,bindFrontendSources,frontendSourcePlan} from './library-frontend-reader.mjs';
  import assert from 'node:assert/strict';
  import {createHash} from 'node:crypto';
  import {spawnSync} from 'node:child_process';
-@@ -25,7 +26,7 @@ export const sourceRoots=Object.freeze([
-  'crates/prismpm/tests/native_library.rs','crates/conformance/src/cases/native_library.rs',
+@@ -22,10 +23,10 @@ export const sourceRoots=Object.freeze([
+  'crates/prismpm/LICENSE-MIT','crates/prismpm/LICENSE-APACHE','crates/prismpm/vendor',
+  'crates/prismpm/stdlib','crates/prismpm/sdk','crates/prismpm/standards','crates/prismpm/standards.lock',
+  'crates/prismpm/adapters','crates/prismpm/language',
+- 'crates/prismpm/tests/native_library.rs','crates/conformance/src/cases/native_library.rs',
++ 'crates/prismpm/tests/native_library.rs','crates/conformance/Cargo.toml','crates/conformance/src/cases/native_library.rs',
   'model','language','schemas','stdlib','sdk','standards','standards.lock','adapters','LICENSE-MIT','LICENSE-APACHE',
   'tests/fixtures/library/native-library/project','tests/hologram-oracle','vendor',
 - 'scripts/browser-api-sdk-check.mjs','scripts/library-sdk-check.mjs','scripts/library-sdk-check.sh',
@@ -6279,7 +6928,34 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
   'scripts/sdk-command-owner.mjs','scripts/sdk-command-owner.py',
   'scripts/sdk-qualification-trust.mjs',
   'scripts/semantic-source.mjs','crates/conformance/src/bin/prismpm-semantic-source.rs',
-@@ -228,10 +229,10 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
+@@ -210,14 +211,21 @@ export function requireModeledAssertionFailure(value,root){
+ }
+ function document(path){const bytes=regularBytes(path),value=JSON.parse(bytes);assert.ok(bytes.equals(Buffer.from(canonical(value))),'canonical artifact bytes: '+path);return value;}
+ function noVerification(project){const path=join(project,'.prism/verified');assert.ok(!existsSync(path)||readdirSync(path).length===0,'unaccepted source published verification');}
+-export function checkAccepted(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition='cold',binding){
+- return readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,false);
++export function checkAccepted(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition='cold',binding,nativeInventory){
++ return readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,false,nativeInventory);
++}
++// Test-only source-devcontainer reader. Its caller holds independently measured
++// original tools across genuine verification and proves SDK inventory is absent.
++// This is never installed-SDK acceptance and never an implicit fallback.
++export function readSourceBootstrapLibraryEvidence(project,receipt,archive,compiler,authority){
++ validateBootstrapAuthority(authority);
++ return readLibraryEvidence(project,receipt,archive,compiler,'cold',undefined,false,undefined,authority);
+ }
+ // Compatibility parsing is deliberately not the current SDK acceptance API.
+-export function readHistoricalLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition='cold',binding){
+- return readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,true);
++export function readHistoricalLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition='cold',binding,nativeInventory){
++ return readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,true,nativeInventory);
+ }
+-function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,historical){
++function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdentity,requiredAcquisition,binding,historical,nativeInventory,bootstrapAuthority){
+  assert(['cold','sdk-seed'].includes(requiredAcquisition));
+  hex(exporterArchiveSha256);
+  keys(receipt,['schema','build_id','attestation_id','verified_root']);
+@@ -228,10 +236,10 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
   const manifestBytes=regularBytes(join(verified,'manifest.json')),manifest=JSON.parse(manifestBytes);
   const acceptanceBytes=regularBytes(join(verified,'library-acceptance.json')),acceptance=JSON.parse(acceptanceBytes);
   assert.ok(manifestBytes.equals(Buffer.from(canonical(manifest))),'canonical verification manifest');assert.ok(acceptanceBytes.equals(Buffer.from(canonical(acceptance))),'canonical library acceptance');
@@ -6293,7 +6969,7 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
   const lexBytes=regularBytes(join(verified,'lexlean-attestation.json')),lexAttestation=JSON.parse(lexBytes);
   assert.equal(manifest.acceptance_sha256,hash(acceptanceBytes));assert.equal(manifest.lexlean_attestation_sha256,hash(lexBytes));hex(lexAttestation.attestation_id);
   const modelBytes=regularBytes(join(build,'model.prism.json')),model=JSON.parse(modelBytes);
-@@ -246,7 +247,7 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
+@@ -246,7 +254,7 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
   assert.equal(manifest.model_sha256,hash(modelBytes));assert.equal(model.schema,'prismpm/model-document/3');assert.equal(model.application,undefined);assert.equal(model.library.profile,'prismpm/native-library/1');
   same(acceptance,{build_id:receipt.build_id,executions:['std','no_std'].map(mode=>({mode,roots:[acceptanceRoot],status:'passed'})),export_roots:roots,lexlean_attestation_id:lexAttestation.attestation_id,model_id:hash(modelBytes),profile:'prismpm/native-library/1',regeneration:'byte-identical',schema:'prismpm/library-acceptance/1',scope:'native-library-only',status:'passed',unclaimed},'library acceptance scope or execution differs');
   assert.ok(Array.isArray(manifest.processes)&&manifest.processes.length>0);assert.ok(manifest.processes.every(row=>row.exit_code===0),'failed recorded execution');
@@ -6302,7 +6978,7 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
   for(const row of manifest.processes){
    keys(row,['tool','argv','executable_sha256','exit_code','stdout','stderr',...(row.tool==='prod-export'?['exporter']:[])]);
    hex(row.executable_sha256);assert.ok(Array.isArray(row.argv)&&row.argv.every(arg=>typeof arg==='string'));assert.equal(typeof row.stdout,'string');assert.equal(typeof row.stderr,'string');
-@@ -313,12 +314,12 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
+@@ -313,20 +321,22 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
   same(ownedAudits.map(row=>row.name).sort(),names,'complete published declaration audit');
   for(const row of ownedAudits){keys(row,['name','observed','policy','result']);assert.equal(row.result,'ok');same(row.policy,declarations.find(declaration=>declaration.name===row.name).policy,'exact declaration axiom policy');same(row.policy,{axioms:[],kind:'none'},'fixture has no admitted axioms');same(row.observed,[],'fixture has no observed axioms');}
   const library=artifacts.filter(row=>row.path.startsWith('library/'));
@@ -6314,11 +6990,14 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
 + if(owned||legacyOwned){
    assert(compilerIdentity,'independent compiler identity required');
 -  const owner=validateVerificationOwner(manifest,'library',requiredAcquisition,binding,
-+  const owner=(owned?validateVerificationOwner:validateLakeVerificationOwner)(manifest,'library',requiredAcquisition,binding,
-    {archive_sha256:exporterArchiveSha256,toolchain:compilerIdentity.toolchain});
+-   {archive_sha256:exporterArchiveSha256,toolchain:compilerIdentity.toolchain});
++  const sourceAuthority={archive_sha256:exporterArchiveSha256,toolchain:compilerIdentity.toolchain};
++  const owner=owned&&bootstrapAuthority
++   ? validateBootstrapFrontendOwner(manifest,requiredAcquisition,sourceAuthority,bootstrapAuthority)
++   : (owned?validateVerificationOwner:validateLakeVerificationOwner)(manifest,'library',requiredAcquisition,binding,sourceAuthority,nativeInventory);
    const leanManifest=regularBytes(join(build,'lexlean/build/manifest.json')),outputs=JSON.parse(leanManifest).outputs;
    assert(Array.isArray(outputs));const modules=outputs.filter(row=>row.kind==='lean').map(row=>{
-@@ -326,7 +327,7 @@ function readLibraryEvidence(project,receipt,exporterArchiveSha256,compilerIdent
+    assert.match(row.path,/^modules\/[A-Za-z0-9_/]+\.lean$/);return row.path.slice(8,-5).replaceAll('/','.');
    }).sort();assert(modules.length>0&&new Set(modules).size===modules.length);
    const argv=['exe','prod-export',...modules.flatMap(module=>['--module',module]),...roots.flatMap(root=>['--root',root]),
     '--ir-module',model.library.cargo_name.replaceAll('-','_'),'--out','$LIBRARY_WORK/export'];
@@ -6327,22 +7006,97 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
   }
   return {build,model_id:hash(modelBytes)};
  }
-@@ -443,6 +444,10 @@ export function verifyExporterProcess(process,role,mode,binding,sourceAuthority)
+@@ -340,8 +350,10 @@ const rootField=(module,name)=>{const rows=declaration(module,'probeLibrary').bo
+ 
+ export async function run(root,image,lockBytes){
+  assert.equal(process.getuid(),1000,'native SDK gate must run non-root');
++ const nativeInventoryBytes=regularBytes('/opt/prismpm/share/inventory.json');
+  const binding=validateCapturedLock(lockBytes,image,{x64:'amd64',arm64:'arm64'}[process.arch],
+-  regularBytes(join(root,'standards.lock')),regularBytes('/opt/prismpm/share/inventory.json'));
++  regularBytes(join(root,'standards.lock')),nativeInventoryBytes);
++ const nativeInventory=nativeInventoryBytes.toString('utf8');
+  const exporterArchiveSha256=hash(regularBytes(join(root,'vendor/lean4-prod/lean.tar')));
+  const compilerIdentity={revision:compilerRevision(regularBytes(join(root,'model/dependencies.toml')).toString()),toolchain:regularBytes(join(root,'lean-toolchain')).toString().trim(),platform:'linux/'+{x64:'amd64',arm64:'arm64'}[process.arch]};
+  const work=mkdtempSync('/tmp/prismpm-library-sdk-'),source=join(root,'tests/fixtures/library/native-library/project');let sequence=0;
+@@ -358,11 +370,11 @@ export async function run(root,image,lockBytes){
+  const positive=(project,args)=>cli(project,args,{schema:'prismpm/'+args[0]+'-result/1'});
+  try{
+   const first=fixture(),before=tree(first),checked=positive(first,['check']);same(tree(first),before,'check modified source');
+-  const accepted=positive(first,['verify']),evidence=checkAccepted(first,accepted,exporterArchiveSha256,compilerIdentity,'cold',binding);assert.equal(checked.model_id,evidence.model_id);
++  const accepted=positive(first,['verify']),evidence=checkAccepted(first,accepted,exporterArchiveSha256,compilerIdentity,'cold',binding,nativeInventory);assert.equal(checked.model_id,evidence.model_id);
+   retain(first,accepted,'cold');
+   const firstBuild=tree(evidence.build),second=fixture(),secondBuild=positive(second,['build']);assert.equal(secondBuild.build_id,accepted.build_id);
+   same(tree(join(second,'.prism/build',secondBuild.build_id)),firstBuild,'complete build differs across fresh absolute roots');noVerification(second);
+-  const secondVerify=positive(second,['verify']);assert.equal(secondVerify.build_id,accepted.build_id);checkAccepted(second,secondVerify,exporterArchiveSha256,compilerIdentity,'cold',binding);
++  const secondVerify=positive(second,['verify']);assert.equal(secondVerify.build_id,accepted.build_id);checkAccepted(second,secondVerify,exporterArchiveSha256,compilerIdentity,'cold',binding,nativeInventory);
+   retain(second,secondVerify,'cold');
+   const beforeProduct=tree(first);cli(first,['build','--locked','-t','ghcr.io/uor-foundation/prismpm-library-probe:0.1.0'],{code:'PP6101',message:'native-library acceptance is not product-release or deployment acceptance'});same(tree(first),beforeProduct,'product refusal wrote outputs');
+   const descriptor=regularBytes(join(source,'src/Foundation/Library/V1/Model.lex.tex')).toString('utf8');const nominal=readSemantic(descriptor);
+@@ -377,14 +389,14 @@ export async function run(root,image,lockBytes){
+   const changed=positive(mutant,['check']);assert.notEqual(changed.semantic_id,checked.semantic_id);
+   const rejection=cli(mutant,['verify'],{code:'PP5006',assertion:acceptanceRoot});noVerification(mutant);
+   const acceptance_rejection={schema:'prismpm/generated-acceptance-rejection/1',root:acceptanceRoot,result:rejection};
+-  writeFileSync(join(mutant,'src/Probe.lex.tex'),original);const restored=positive(mutant,['verify']);assert.equal(restored.build_id,accepted.build_id);checkAccepted(mutant,restored,exporterArchiveSha256,compilerIdentity,'cold',binding);
++  writeFileSync(join(mutant,'src/Probe.lex.tex'),original);const restored=positive(mutant,['verify']);assert.equal(restored.build_id,accepted.build_id);checkAccepted(mutant,restored,exporterArchiveSha256,compilerIdentity,'cold',binding,nativeInventory);
+   for(let index=0;index<2;index++){
+    const warm=fixture();assert(!existsSync(join(warm,'prismpm.lock')),'warm fixture must not replace a source lock');
+    writeFileSync(join(warm,'prismpm.lock'),lockBytes,{flag:'wx',mode:0o600});
+    const before=tree(warm),checked=positive(warm,['check']);same(tree(warm),before,'warm check modified source');
+    assert.equal(checked.model_id,evidence.model_id);
+    const verified=positive(warm,['verify']);assert.equal(verified.build_id,accepted.build_id);
+-   const warmEvidence=checkAccepted(warm,verified,exporterArchiveSha256,compilerIdentity,'sdk-seed',binding);
++   const warmEvidence=checkAccepted(warm,verified,exporterArchiveSha256,compilerIdentity,'sdk-seed',binding,nativeInventory);
+    retain(warm,verified,'sdk-seed');
+    same(tree(warmEvidence.build),firstBuild,'complete cold/warm artifact closure differs');
+    assert(regularBytes(join(warm,'prismpm.lock')).equals(lockBytes),'warm execution changed its independent lock');
+@@ -401,7 +413,7 @@ export async function run(root,image,lockBytes){
+   const concurrent=await runConcurrentInstalled(projects,temporaries),concurrentRuns=[];
+   for(const [index,{output}] of concurrent.outcomes.entries()){
+    const verified=cliOutput(output,{schema:'prismpm/verify-result/1'});assert.equal(verified.build_id,accepted.build_id);
+-   const evidence=checkAccepted(projects[index],verified,exporterArchiveSha256,compilerIdentity,'sdk-seed',binding);
++   const evidence=checkAccepted(projects[index],verified,exporterArchiveSha256,compilerIdentity,'sdk-seed',binding,nativeInventory);
+    same(tree(evidence.build),firstBuild,'concurrent generated artifact closure differs');
+    assert(regularBytes(join(projects[index],'prismpm.lock')).equals(lockBytes));
+    retain(projects[index],verified,'sdk-seed',concurrentRuns);
+@@ -442,7 +454,11 @@ export function verifyExporterProcess(process,role,mode,binding,sourceAuthority)
+ 
  // Current qualification requires the two original executions. Historical /1
  // parsing remains separate and never qualifies a newly installed SDK.
- export function validateVerificationOwner(manifest,role,mode,binding,sourceAuthority){
-+ if(role==='library')return validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority);
+-export function validateVerificationOwner(manifest,role,mode,binding,sourceAuthority){
++export function validateVerificationOwner(manifest,role,mode,binding,sourceAuthority,nativeInventory){
++ if(role==='library')return validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority,nativeInventory);
 + return validateLakeVerificationOwner(manifest,role,mode,binding,sourceAuthority);
 +}
 +function validateLakeVerificationOwner(manifest,role,mode,binding,sourceAuthority){
   const owner=manifest.exporter_owner;
   keys(owner,['schema','phases']);assert.equal(owner.schema,'prismpm/verification-exporter-owner/1');
   assert(Array.isArray(owner.phases)&&owner.phases.length===2);
-@@ -485,6 +490,33 @@ export function validateVerificationOwner(manifest,role,mode,binding,sourceAutho
+@@ -485,6 +501,54 @@ export function validateVerificationOwner(manifest,role,mode,binding,sourceAutho
   return owner;
  }
  
-+function validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority){
++function validateLibraryFrontendOwner(manifest,mode,binding,sourceAuthority,nativeInventory){
++ assert(typeof nativeInventory==='string','independently captured native inventory required');
++ assert(binding,'independently captured SDK binding required');
++ const inventoryBytes=Buffer.from(nativeInventory);assert.equal(hash(inventoryBytes),binding.inventory_sha256,'independent inventory binding');
++ const inventory=validateInventory(inventoryBytes),artifacts=inventory.artifacts.filter(row=>row.id==='lean');
++ assert.equal(artifacts.length,1,'exact Lean artifact authority required');
++ const actualLean=artifacts[0];same(actualLean,{id:'lean',kind:'binary',version:'4.32.1',digest:actualLean.digest});
++ const actualLeanSha=actualLean.digest.slice(7);hex(actualLeanSha);
++ const launchers=inventory.commands.filter(row=>row.command==='lean');assert.equal(launchers.length,1,'exact Lean launcher authority required');
++ return validateFrontendOwnerWithTools(manifest,mode,binding,sourceAuthority,launchers[0].sha256,actualLeanSha);
++}
++function validateBootstrapAuthority(authority){
++ assert(authority,'independent source-bootstrap tool authority required');
++ keys(authority,['scope','toolchain','launcher_sha256','lean_sha256']);assert.equal(authority.scope,'source-bootstrap-only');
++ assert.equal(authority.toolchain,'leanprover/lean4:v4.32.1');hex(authority.launcher_sha256);hex(authority.lean_sha256);
++ assert.notEqual(authority.launcher_sha256,authority.lean_sha256);
++}
++function validateBootstrapFrontendOwner(manifest,mode,sourceAuthority,authority){
++ validateBootstrapAuthority(authority);assert.equal(mode,'cold');assert.equal(sourceAuthority.toolchain,authority.toolchain);
++ return validateFrontendOwnerWithTools(manifest,mode,undefined,sourceAuthority,authority.launcher_sha256,authority.lean_sha256);
++}
++function validateFrontendOwnerWithTools(manifest,mode,binding,sourceAuthority,launcherSha,actualLeanSha){
 + const owner=manifest.exporter_owner;keys(owner,['schema','phases']);assert.equal(owner.schema,'prismpm/library-exporter-owner/2');
 + assert.equal(manifest.schema,'prismpm/library-verification-manifest/3');assert(Array.isArray(owner.phases)&&owner.phases.length===2);
 + const lake=manifest.processes.find(p=>p.tool==='lake-version'),lean=manifest.processes.find(p=>p.tool==='lean-version');assert(lake&&lean);
@@ -6351,7 +7105,7 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
 +  assert.equal(phase.phase,['controller-build','replay'][index]);assert.equal(phase.role,'library');assert.equal(phase.model_sha256,manifest.model_sha256);hex(phase.lexlean_manifest_sha256);
 +  const n=validateFrontend(phase.frontend,phase.processes);assert.equal(phase.processes.length,n+3);
 +  same(phase.artifacts.find(a=>a.path==='library/frontend.json'),{path:'library/frontend.json',byte_length:Buffer.byteLength(canonical(frontendSourcePlan(phase.frontend))),sha256:hash(canonical(frontendSourcePlan(phase.frontend)))});
-+  assert.equal(phase.frontend.launcher_sha256,lean.executable_sha256);assert.equal(phase.frontend.lean_sha256,lean.executable_sha256);assert.notEqual(phase.frontend.lean_sha256,lake.executable_sha256);same(phase.processes[0].stdout,lean.stdout);
++  assert.equal(phase.frontend.launcher_sha256,lean.executable_sha256);assert.equal(lean.executable_sha256,launcherSha);assert.equal(phase.frontend.lean_sha256,actualLeanSha);assert.notEqual(actualLeanSha,lean.executable_sha256);assert.notEqual(actualLeanSha,lake.executable_sha256);same(phase.processes[0].stdout,lean.stdout);
 +  const tail=phase.processes.slice(n);same(tail.map(p=>p.tool),['lean4-prod-build','prod-export','native-library-package']);
 +  same(tail[0].argv,['build','prod-export']);same(tail[2].argv,['package','--locked','--offline','--allow-dirty']);
 +  verifyExporterProcess(tail[1],'prod-export',mode,binding,sourceAuthority);
@@ -6372,7 +7126,7 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
  export function verifyResult(value,binding,sourceAuthority){
   hex(value.build_id);assert(binding,'independent captured SDK binding required');
   keys(sourceAuthority,['archive_sha256','toolchain']);hex(sourceAuthority.archive_sha256);
-@@ -523,20 +555,20 @@ export function verifyResult(value,binding,sourceAuthority){
+@@ -523,24 +587,24 @@ export function verifyResult(value,binding,sourceAuthority){
    assert(Buffer.byteLength(row.manifest)<=16*1024*1024);assert.equal(hash(Buffer.from(row.manifest)),row.manifest_sha256);
    const manifest=JSON.parse(row.manifest);assert.equal(canonical(manifest),row.manifest);
    keys(manifest,['acceptance_sha256','artifacts','build_id','exporter_owner','lexlean_attestation_sha256','model_sha256','processes','schema','scope']);
@@ -6393,15 +7147,71 @@ index 3ba0e07d0d46b26245a2e24e26689fd120c7f814..9d6c5e5ee5d1c8122de4194fa4748862
     assert.equal(typeof process.stdout,'string');assert.equal(typeof process.stderr,'string');
    }
 -  verifyExporterProcess(manifest.processes[7],'prod-export',row.acquisition,binding,sourceAuthority);
+-  validateVerificationOwner(manifest,'library',row.acquisition,binding,sourceAuthority);
 +  verifyExporterProcess(manifest.processes.find(p=>p.tool==='prod-export'),'prod-export',row.acquisition,binding,sourceAuthority);
-   validateVerificationOwner(manifest,'library',row.acquisition,binding,sourceAuthority);
++  validateVerificationOwner(manifest,'library',row.acquisition,binding,sourceAuthority,concurrency.custody.before.inventory_document);
   }
  }
+-export function testOutput(output){assert.equal(output.error,undefined);assert.equal(output.signal,null);assert.equal(output.status,0);assert.equal(verifyTap(output.stdout,29),29,'complete owning gate test count');}
++export function testOutput(output){assert.equal(output.error,undefined);assert.equal(output.signal,null);assert.equal(output.status,0);assert.equal(verifyTap(output.stdout,30),30,'complete owning gate test count');}
+ 
+ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+  const [mode,...args]=process.argv.slice(2);
 diff --git a/scripts/library-sdk-check.test.mjs b/scripts/library-sdk-check.test.mjs
-index 413b74481a8da4dda44f6cad496bc84acc44adfe..8f13010d967076446389386cc6e71cb4ded7cd37 100644
+index 413b74481a8da4dda44f6cad496bc84acc44adfe..45f2339e956420b2d5e5c632106d396cf06b6d93 100644
 --- a/scripts/library-sdk-check.test.mjs
 +++ b/scripts/library-sdk-check.test.mjs
-@@ -133,27 +133,29 @@ test('outer acceptance refuses absent or partial run results and incomplete or s
+@@ -6,8 +6,10 @@ import {cpSync,mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,renameSyn
+ import {tmpdir} from 'node:os';
+ import {dirname,join,resolve} from 'node:path';
+ import {test} from 'node:test';
+-import {capture,verifySource,sourceRoots,sourceAliases,cli,readHistoricalLibraryEvidence,checkAccepted as checkAcceptedWithAuthority,mutateModule,tree,verifyImage,verifyResult,testOutput,validateCapturedLock} from './library-sdk-check.mjs';
+-import {lockFixture,resultFixture,sourceAuthorityFixture} from './library-sdk-fixture.mjs';
++import {capture,verifySource,sourceRoots,sourceAliases,cli,readHistoricalLibraryEvidence,readSourceBootstrapLibraryEvidence,checkAccepted as checkAcceptedWithAuthority,mutateModule,tree,verifyImage,verifyResult,testOutput,validateCapturedLock,validateVerificationOwner} from './library-sdk-check.mjs';
++import {lockFixture,resultFixture,sourceAuthorityFixture,frontendFixture} from './library-sdk-fixture.mjs';
++import {frontendArguments,frontendSourcePlan} from './library-frontend-reader.mjs';
++import {readReplayEvidence} from './library-owner-reader-replay.mjs';
+ const checkAccepted=(project,receipt)=>readHistoricalLibraryEvidence(project,receipt,'3'.repeat(64));
+ 
+ const revision='a'.repeat(40),image='ghcr.io/uor-foundation/prismpm-sdk@sha256:'+'b'.repeat(64);
+@@ -26,7 +28,7 @@ const error=(code,message)=>({status:code==='PP6101'?5:1,signal:null,stdout:JSON
+ 
+ test('closed shipped-library source binding includes implementation, fixtures, schemas and gate itself',t=>{
+  const root=temporary(t);source(root);const expected=capture(root,revision);verifySource(root,expected);
+- for(const path of ['crates/prismpm/src','crates/prismpm/schemas','tests/fixtures/library/native-library/project','scripts/library-sdk-check.mjs','scripts/library-sdk-check.test.mjs',
++ for(const path of ['crates/conformance/Cargo.toml','crates/prismpm/src','crates/prismpm/schemas','tests/fixtures/library/native-library/project','scripts/library-sdk-check.mjs','scripts/library-sdk-check.test.mjs',
+   'scripts/sdk-command-owner.mjs','scripts/sdk-command-owner.py',
+   'scripts/hologram-source-pins.mjs','scripts/hologram-source-pins.test.mjs','crates/prismpm/tests/hologram_interop.rs',
+   'tests/holo-codec-oracle/Cargo.toml','tests/holo-codec-oracle/Cargo.lock']){
+@@ -111,6 +113,27 @@ test('library evidence cannot be accepted without genuinely published closed art
+ test('outer acceptance refuses absent or partial run results and incomplete or skipped test suites',()=>{
+  const fixture=lockFixture(),binding=fixture.binding('amd64'),value=resultFixture(binding);
+  const verify=(value,authority=binding)=>verifyResult(value,authority,sourceAuthorityFixture);verify(value);
++ const manifest=JSON.parse(value.runs[0].manifest),inventory=fixture.lock.platforms[0].inventory_document;
++ assert.equal(manifest.processes[0].executable_sha256,manifest.processes[1].executable_sha256);
++ assert.notEqual(manifest.processes[0].executable_sha256,manifest.exporter_owner.phases[0].frontend.lean_sha256);
++ const owner=(m=manifest,bytes=inventory,b=binding)=>validateVerificationOwner(m,'library','cold',b,sourceAuthorityFixture,bytes);
++ owner();assert.throws(()=>validateVerificationOwner(manifest,'library','cold',binding,sourceAuthorityFixture),/inventory required/);
++ for(const field of ['launcher_sha256','lean_sha256']){
++  const changed=structuredClone(manifest);
++  for(const phase of changed.exporter_owner.phases){
++   phase.frontend[field]='f'.repeat(64);
++   if(field==='lean_sha256')for(const row of phase.processes)if(row.tool.startsWith('library-lean-'))row.executable_sha256='f'.repeat(64);
++  }
++  for(const row of changed.processes)if(field==='launcher_sha256'?row.tool==='lean-version':row.tool.startsWith('library-lean-'))row.executable_sha256='f'.repeat(64);
++  assert.throws(()=>owner(changed),'coherent receipts cannot replace independent launcher/artifact authority');
++ }
++ for(const mutate of [i=>i.artifacts=i.artifacts.filter(r=>r.id!=='lean'),i=>i.artifacts.push(i.artifacts.find(r=>r.id==='lean')),
++  i=>i.artifacts.find(r=>r.id==='lean').digest='sha256:'+'f'.repeat(64),i=>i.artifacts.find(r=>r.id==='lean').version='4.32.0',
++  i=>i.artifacts.find(r=>r.id==='lean').kind='crate',i=>i.commands.find(r=>r.command==='lean').sha256='f'.repeat(64)]){
++  const changed=JSON.parse(inventory);mutate(changed);const bytes=fixture.encode(changed);
++  assert.throws(()=>owner(manifest,bytes,{...binding,inventory_sha256:fixture.hash(bytes)}));
++ }
++
+  for(const change of [v=>v.checks.pop(),v=>v.checks.reverse(),v=>v.extra=true,v=>v.scope='production-release',v=>v.build_id='mutable',
+   v=>v.runs.pop(),v=>v.runs.reverse(),v=>v.runs[2].acquisition='cold',v=>v.runs[3].root=v.runs[2].root,
+   v=>v.runs[2].manifest+=' ',v=>v.binding.inventory_sha256='f'.repeat(64),
+@@ -133,31 +156,33 @@ test('outer acceptance refuses absent or partial run results and incomplete or s
    v=>v.concurrency.environments[0].LD_PRELOAD='/tmp/injected.so',v=>v.concurrency.environments[0].CARGO_TARGET_DIR='/tmp/reuse']){
    const bad=structuredClone(value);change(bad);assert.throws(()=>verify(bad));
   }
@@ -6440,8 +7250,119 @@ index 413b74481a8da4dda44f6cad496bc84acc44adfe..8f13010d967076446389386cc6e71cb4
 + for(const row of resealed.runs){const manifest=JSON.parse(row.manifest);manifest.processes.find(p=>p.tool==='prod-export').exporter.source_archive_sha256='a'.repeat(64);if(row.acquisition==='sdk-seed')manifest.processes.find(p=>p.tool==='prod-export').exporter.acquisition.archive_sha256='a'.repeat(64);row.manifest=fixture.encode(manifest);row.manifest_sha256=fixture.hash(row.manifest);}
   assert.throws(()=>verify(resealed));assert.throws(()=>verifyResult(value));assert.throws(()=>verify(value,fixture.binding('arm64')));
   assert.throws(()=>verifyResult(value,binding));
-  const tap='TAP version 13\n'+Array.from({length:29},(_,i)=>'ok '+(i+1)+' - gate '+i+'\n').join('')+'1..29\n# tests 29\n# suites 0\n# pass 29\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n';
-@@ -246,16 +248,16 @@ test('closed native evidence parser rejects coherently resealed model, acceptanc
+- const tap='TAP version 13\n'+Array.from({length:29},(_,i)=>'ok '+(i+1)+' - gate '+i+'\n').join('')+'1..29\n# tests 29\n# suites 0\n# pass 29\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n';
+- testOutput({status:0,signal:null,stdout:tap});for(const stdout of ['',tap.replace('# skipped 0','# skipped 1'),tap.replace('# tests 29','# tests 28')])assert.throws(()=>testOutput({status:0,signal:null,stdout}));
++ const tap='TAP version 13\n'+Array.from({length:30},(_,i)=>'ok '+(i+1)+' - gate '+i+'\n').join('')+'1..30\n# tests 30\n# suites 0\n# pass 30\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n';
++ testOutput({status:0,signal:null,stdout:tap});for(const stdout of ['',tap.replace('# skipped 0','# skipped 1'),tap.replace('# tests 30','# tests 29')])assert.throws(()=>testOutput({status:0,signal:null,stdout}));
+ });
+ 
+ test('captured seed lock requires both exact platforms and independently selected native bytes',()=>{
+@@ -212,7 +237,7 @@ test('captured seed lock requires both exact platforms and independently selecte
+ 
+ // Synthetic parser fixtures exercise resealed malformed evidence. These bytes
+ // never enter the installed CLI gate and are not generated execution evidence.
+-function parserFixture(root,change=()=>{}){
++function parserFixture(root,change=()=>{},current=false,finish=()=>{}){
+  const digest=bytes=>createHash('sha256').update(bytes).digest('hex'),encode=value=>JSON.stringify(value,(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(key=>[key,v[key]])):v);
+  const lexId='b'.repeat(64),build='.prism/build/staging';
+  const acceptanceRoot='LibraryProbe.Probe.acceptance',roots=[acceptanceRoot,'LibraryProbe.Probe.identity'];
+@@ -225,19 +250,91 @@ function parserFixture(root,change=()=>{}){
+  const modules=[{lean_module:'LibraryProbe.Foundation.Library.V1.Model',declarations:[{lean_name:'NativeLibrary',axiom_policy:{kind:'none',axioms:[]}}]},{lean_module:'LibraryProbe.Probe',declarations:['acceptance','identity','probeLibrary'].map(lean_name=>({lean_name,axiom_policy:{kind:'none',axioms:[]}}))}];
+  const lex={attestation_id:lexId,build_id:'3'.repeat(64),source_id:model.provenance.source_id,semantic_id:model.provenance.semantic_id,spec:'lexlean/attestation/2',status:'verified',declarations:modules.flatMap(module=>module.declarations.map(row=>({name:module.lean_module+'.'+row.lean_name,observed:[],policy:row.axiom_policy,result:'ok'})))};
+  const inputs={schema:'prismpm/build-inputs/3',application_generator_sha256:'4'.repeat(64),dependency_register_sha256:'5'.repeat(64),emitter_semantics_id:model.provenance.emitter_semantics_id,lexlean_build_id:lex.build_id,lexlean_semantic_id:lex.semantic_id,lexlean_source_id:lex.source_id,library_artifacts_sha256:'',library_generator_sha256:'6'.repeat(64),model_id:'',system_id:null};
++ const sourceBytes=Buffer.from('module\npublic import Init\n'); // Structural header fixture only; no compiler acceptance claim.
++ const frontend=frontendFixture().receipt;
++ frontend.modules=['LibraryProbe.Foundation.Library.V1.Model','LibraryProbe.Probe'].map(name=>({name,runtime:false,imports:['Init'],
++  source:{path:name.replaceAll('.','/')+'.lean',byte_length:sourceBytes.length,sha256:digest(sourceBytes)},
++  artifacts:['olean','olean.private','olean.server','ilean','ir'].map(suffix=>({path:'.lake/build/lib/lean/'+name.replaceAll('.','/')+'.'+suffix,byte_length:12,sha256:digest(suffix)}))}));
++ const leanManifest=encode({outputs:frontend.modules.map(m=>({kind:'lean',path:'modules/'+m.source.path,byte_length:m.source.byte_length,sha256:m.source.sha256}))});
++ if(current){
++  paths.splice(1,0,'frontend.json');manifest.schema='prismpm/library-verification-manifest/3';
++  for(const row of processes)row.executable_sha256=frontend.launcher_sha256;
++  const version='Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)\n';
++  processes[0].stdout=version;
++  const row=(tool,argv,stdout='')=>({tool,argv,executable_sha256:frontend.lean_sha256,exit_code:0,stdout,stderr:''});
++  processes.splice(5,1,row('library-lean-version',['--version'],version),...frontend.modules.map(m=>row('library-lean-frontend',frontendArguments(m.name))));
++  processes.find(p=>p.tool==='lean4-prod-build').argv=['build','prod-export'];
++  processes.find(p=>p.tool==='native-library-package').argv=['package','--locked','--offline','--allow-dirty'];
++  processes.find(p=>p.tool==='prod-export').argv=['exe','prod-export',...frontend.modules.flatMap(m=>['--module',m.name]),...roots.flatMap(r=>['--root',r]),'--ir-module','prism_library_probe','--out','$LIBRARY_WORK/export'];
++ }
+  change({model,acceptance,manifest,paths,lex,inputs});
+  const modelBytes=encode(model);put(root,build+'/model.prism.json',modelBytes);manifest.model_sha256=digest(modelBytes);acceptance.model_id=manifest.model_sha256;
+- for(const path of paths){const bytes=path==='model-binding.json'?encode({acceptance_roots:[acceptanceRoot],export_roots:roots,model_id:manifest.model_sha256,profile:'prismpm/native-library/1',schema:'prismpm/library-build-binding/1',scope:'native-library-only'}):'parser-only '+path;put(root,build+'/library/'+path,bytes);manifest.artifacts.push({path:'library/'+path,byte_length:Buffer.byteLength(bytes),sha256:digest(bytes)});}
+- put(root,build+'/lexlean/build/manifest.json','parser only');put(root,build+'/lexlean/snapshot.json',encode({modules}));
+- for(const name of ['Foundation/Library/V1/Model','Probe'])for(const path of ['coverage/LibraryProbe/'+name+'.coverage.json','lexicons/'+name.replaceAll('/','.')+'.closure.json','maps/LibraryProbe/'+name+'.map.json','modules/LibraryProbe/'+name+'.lean','modules/LibraryProbe/'+name+'.tex'])put(root,build+'/lexlean/build/'+path,'parser only');
++ for(const path of paths){const bytes=current&&path==='frontend.json'?encode(frontendSourcePlan(frontend)):path==='model-binding.json'?encode({acceptance_roots:[acceptanceRoot],export_roots:roots,model_id:manifest.model_sha256,profile:'prismpm/native-library/1',schema:'prismpm/library-build-binding/1',scope:'native-library-only'}):'parser-only '+path;put(root,build+'/library/'+path,bytes);manifest.artifacts.push({path:'library/'+path,byte_length:Buffer.byteLength(bytes),sha256:digest(bytes)});}
++ put(root,build+'/lexlean/build/manifest.json',current?leanManifest:'parser only');put(root,build+'/lexlean/snapshot.json',encode({modules}));
++ for(const name of ['Foundation/Library/V1/Model','Probe'])for(const path of ['coverage/LibraryProbe/'+name+'.coverage.json','lexicons/'+name.replaceAll('/','.')+'.closure.json','maps/LibraryProbe/'+name+'.map.json','modules/LibraryProbe/'+name+'.lean','modules/LibraryProbe/'+name+'.tex'])put(root,build+'/lexlean/build/'+path,current&&path.endsWith('.lean')?sourceBytes:'parser only');
+  const rows=tree(join(root,build)).filter(row=>row.kind==='file').map(row=>({byte_length:row.size,kind:'artifact',path:row.path,sha256:row.sha256}));
+  inputs.model_id=manifest.model_sha256;inputs.library_artifacts_sha256=digest(encode(rows));const buildId=digest(encode(inputs));put(root,build+'/manifest.json',encode({schema:'prismpm/build-manifest/1',files:rows,inputs}));renameSync(join(root,build),join(root,'.prism/build/'+buildId));
+  manifest.build_id=buildId;acceptance.build_id=buildId;const lexBytes=encode(lex);manifest.lexlean_attestation_sha256=digest(lexBytes);
+- const acceptanceBytes=encode(acceptance);manifest.acceptance_sha256=digest(acceptanceBytes);const manifestBytes=encode(manifest),attestation=digest(manifestBytes),verified='.prism/verified/'+attestation;
++ const acceptanceBytes=encode(acceptance);manifest.acceptance_sha256=digest(acceptanceBytes);
++ if(current)manifest.exporter_owner={schema:'prismpm/library-exporter-owner/2',phases:['controller-build','replay'].map(phase=>({phase,role:'library',model_sha256:manifest.model_sha256,lexlean_manifest_sha256:digest(leanManifest),artifacts:structuredClone(manifest.artifacts),frontend:structuredClone(frontend),processes:structuredClone(processes.slice(5,5+frontend.modules.length+4))}))};
++ finish(manifest);const manifestBytes=encode(manifest),attestation=digest(manifestBytes),verified='.prism/verified/'+attestation;
+  put(root,verified+'/manifest.json',manifestBytes);put(root,verified+'/library-acceptance.json',acceptanceBytes);put(root,verified+'/lexlean-attestation.json',lexBytes);
+  return{schema:'prismpm/verify-result/1',build_id:buildId,attestation_id:attestation,verified_root:verified};
+ }
+ 
++test('public current library readback binds original inventory through complete retained artifacts',t=>{
++ const fixture=lockFixture(),native=fixture.lock.platforms[0].inventory_document;
++ const binding=validateCapturedLock(fixture.bytes,fixture.image,'amd64',fixture.standards,Buffer.from(native));
++ const compiler={revision:binding.compiler_revision,toolchain:sourceAuthorityFixture.toolchain,platform:binding.platform};
++ for(const mode of ['cold','sdk-seed']){
++  const make=(mutation=()=>{})=>{
++   const root=temporary(t);put(root,'prismpm.lock',fixture.bytes);
++   const receipt=parserFixture(root,()=>{},true,manifest=>{
++    const rows=[...manifest.processes,...manifest.exporter_owner.phases.flatMap(p=>p.processes)];
++    if(mode==='sdk-seed')for(const row of rows.filter(r=>r.tool==='prod-export')){
++     row.exporter.executable.sha256=binding.exporter_sha256;
++     row.exporter.acquisition={schema:'prismpm/exporter-acquisition/1',mode,platform:binding.platform,
++      inventory_sha256:binding.inventory_sha256,manifest_sha256:binding.seed_manifest_sha256,
++      executable_sha256:binding.exporter_sha256,archive_sha256:sourceAuthorityFixture.archive_sha256,
++      compiler_revision:compiler.revision,toolchain:compiler.toolchain};
++    }
++    mutation(manifest);
++   });
++   return {root,receipt};
++  };
++  const {root,receipt}=make();
++  const read=(inventory=native,authority=binding)=>checkAcceptedWithAuthority(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,mode,authority,inventory);
++  assert.equal(read().build,join(root,'.prism/build',receipt.build_id));
++  const bootstrap={scope:'source-bootstrap-only',toolchain:compiler.toolchain,launcher_sha256:'e'.repeat(64),lean_sha256:'b'.repeat(64)};
++  if(mode==='cold'){
++   assert.deepEqual(readReplayEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,{scope:'installed-sdk',binding:{inventory_sha256:binding.inventory_sha256},native_inventory:native}),read());
++   assert.deepEqual(readSourceBootstrapLibraryEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,bootstrap),read());
++   assert.deepEqual(readReplayEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,bootstrap),read());
++   for(const authority of [undefined,{...bootstrap,scope:'installed-sdk'},{...bootstrap,lean_sha256:'f'.repeat(64)},{...bootstrap,launcher_sha256:'f'.repeat(64)},{...bootstrap,toolchain:'leanprover/lean4:v4.32.0'}]){
++    assert.throws(()=>readSourceBootstrapLibraryEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,authority));
++    assert.throws(()=>readReplayEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,authority));
++   }
++   assert.throws(()=>readReplayEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,{scope:'installed-sdk',binding:{inventory_sha256:binding.inventory_sha256},native_inventory:fixture.lock.platforms[1].inventory_document}));
++  }
++
++  assert.throws(()=>checkAcceptedWithAuthority(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,mode,binding),/inventory required/);
++  assert.throws(()=>readHistoricalLibraryEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,mode,binding),/inventory required/);
++  if(mode==='sdk-seed')assert.throws(()=>readSourceBootstrapLibraryEvidence(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,bootstrap));
++  assert.throws(()=>checkAcceptedWithAuthority(root,receipt,sourceAuthorityFixture.archive_sha256,compiler,mode,undefined,native),/SDK binding required/);
++  assert.throws(()=>read(fixture.lock.platforms[1].inventory_document),/inventory binding/);
++  assert.throws(()=>read(native,{...binding,inventory_sha256:'f'.repeat(64)}),/inventory binding/);
++  for(const field of ['launcher_sha256','lean_sha256']){
++   const changed=make(manifest=>{
++    for(const phase of manifest.exporter_owner.phases)phase.frontend[field]='f'.repeat(64);
++    for(const row of [...manifest.processes,...manifest.exporter_owner.phases.flatMap(p=>p.processes)])
++     if(field==='launcher_sha256'?row.tool==='lean-version':row.tool.startsWith('library-lean-'))row.executable_sha256='f'.repeat(64);
++   });
++   assert.throws(()=>checkAcceptedWithAuthority(changed.root,changed.receipt,sourceAuthorityFixture.archive_sha256,compiler,mode,binding,native));
++   if(mode==='cold')assert.throws(()=>readReplayEvidence(changed.root,changed.receipt,sourceAuthorityFixture.archive_sha256,compiler,bootstrap));
++  }
++ }
++});
++
+ test('closed native evidence parser rejects coherently resealed model, acceptance and process mutations',t=>{
+  const valid=temporary(t),receipt=parserFixture(valid);checkAccepted(valid,receipt);
+  assert.throws(()=>checkAcceptedWithAuthority(valid,receipt,'3'.repeat(64)),/both original exporter phases/);
+@@ -246,16 +343,16 @@ test('closed native evidence parser rejects coherently resealed model, acceptanc
    ({manifest})=>{manifest.processes[0].extra=true;},({manifest})=>{delete manifest.processes[0].argv;},
    ({manifest})=>{manifest.processes[0].argv=[42];},({manifest})=>{manifest.processes.pop();},
    ({manifest})=>{manifest.processes[10].stdout='{}';},({manifest})=>{manifest.processes[0].executable_sha256='invalid';},
@@ -6468,7 +7389,7 @@ index 413b74481a8da4dda44f6cad496bc84acc44adfe..8f13010d967076446389386cc6e71cb4
    ({acceptance})=>{acceptance.extra=true;},({acceptance})=>{acceptance.executions.pop();},
    ({acceptance})=>{acceptance.lexlean_attestation_id=createHash('sha256').update(JSON.stringify({attestation_id:'b'.repeat(64)})).digest('hex');},
    ({model})=>{model.extra=true;},({model})=>{model.application=null;},({model})=>{model.provenance.extra=true;},
-@@ -297,7 +299,7 @@ test('closed native evidence parser rejects coherently resealed model, acceptanc
+@@ -297,7 +394,7 @@ test('closed native evidence parser rejects coherently resealed model, acceptanc
     const fields={inventory:'inventory_sha256',manifest:'manifest_sha256',child:'executable_sha256',source:'archive_sha256',revision:'compiler_revision',toolchain:'toolchain',platform:'platform'};
     if(fields[mutation])acquisition[fields[mutation]]=mutation==='toolchain'?'leanprover/lean4:v1.2.3':mutation==='platform'?'linux/arm64':'f'.repeat(64);
     if(mutation==='unknown')acquisition.extra=true;
@@ -6477,17 +7398,17 @@ index 413b74481a8da4dda44f6cad496bc84acc44adfe..8f13010d967076446389386cc6e71cb4
    });
    const verify=()=>readHistoricalLibraryEvidence(root,warm,'3'.repeat(64),mutation==='missing-authority'?undefined:compiler,'sdk-seed');
    if(mutation===null)verify();else assert.throws(verify,mutation);
-@@ -323,7 +325,7 @@ test('owning CLI test kills a removed process-exit guard',t=>{
+@@ -323,7 +420,7 @@ test('owning CLI test kills a removed process-exit guard',t=>{
   const guard='assert.equal(output.status,expected.code ? exits[expected.code] : 0, "CLI exit class");';assert.equal(module.split(guard).length,2);
   put(root,'scripts/library-sdk-check.mjs',module.replace(guard,''));put(root,'scripts/browser-api-sdk-check.mjs',readFileSync(new URL('./browser-api-sdk-check.mjs',import.meta.url)));put(root,'scripts/library-sdk-check.test.mjs',readFileSync(new URL('./library-sdk-check.test.mjs',import.meta.url)));
   put(root,'scripts/library-sdk-fixture.mjs',readFileSync(new URL('./library-sdk-fixture.mjs',import.meta.url)));
 - for(const name of ['sdk-command-owner.mjs','sdk-command-owner.py','semantic-source.mjs'])
-+ for(const name of ['sdk-command-owner.mjs','sdk-command-owner.py','semantic-source.mjs','library-frontend-reader.mjs'])
++ for(const name of ['sdk-command-owner.mjs','sdk-command-owner.py','semantic-source.mjs','library-frontend-reader.mjs','library-owner-reader-replay.mjs'])
    put(root,'scripts/'+name,readFileSync(new URL('./'+name,import.meta.url)));
   put(root,'scripts/installed-exporter-concurrency.mjs',readFileSync(new URL('./installed-exporter-concurrency.mjs',import.meta.url)));
   cpSync(new URL('../sdk',import.meta.url),join(root,'sdk'),{recursive:true});
 diff --git a/scripts/library-sdk-fixture.mjs b/scripts/library-sdk-fixture.mjs
-index 158b9f39f0afb920b45c19c8e881f1096899cd40..4086b85ca89cd32ea24bcd2a61cd94b91b1c556f 100644
+index 158b9f39f0afb920b45c19c8e881f1096899cd40..5d9dd4eab7a5ad39908d71c314eba58a7007d04b 100644
 --- a/scripts/library-sdk-fixture.mjs
 +++ b/scripts/library-sdk-fixture.mjs
 @@ -1,5 +1,6 @@
@@ -6497,6 +7418,22 @@ index 158b9f39f0afb920b45c19c8e881f1096899cd40..4086b85ca89cd32ea24bcd2a61cd94b9
  import {dirname,join} from 'node:path';
  import {readFileSync} from 'node:fs';
  import {installedEnvironment} from './installed-exporter-concurrency.mjs';
+@@ -28,12 +29,12 @@ export function lockFixture(authority=sourceAuthorityFixture,standards=Buffer.fr
+   const manifest=seedManifestFixture(architecture,authority);
+   const artifacts=['adapter','base-image','binary','crate','dependency-lock','oracle','schema','test-corpus','trust-root','workflow']
+    .map(kind=>({id:'test-'+kind,kind,version:'fixture',digest:'sha256:'+hash(architecture+kind)}));
+-  artifacts.push({id:'lean4-prod-exporter',kind:'binary',version:'a'.repeat(40),digest:'sha256:'+manifest.files.at(-1).sha256},
++  artifacts.push({id:'lean',kind:'binary',version:'4.32.1',digest:'sha256:'+'b'.repeat(64)}, {id:'lean4-prod-exporter',kind:'binary',version:'a'.repeat(40),digest:'sha256:'+manifest.files.at(-1).sha256},
+    {id:'lean4-prod-exporter-seed',kind:'dependency-lock',version:'1',digest:'sha256:'+hash(encode(manifest)+'\n')});
+   artifacts.sort((a,b)=>a.id.localeCompare(b.id));
+   const inventory_document=encode({schema:'prismpm/sdk-inventory/1',artifacts,
+-   commands:['cargo','devcontainer','docker','just','node','prismpm','python3','tar'].map(command=>({command,
+-    executable:command==='node'?'/usr/bin/node':command==='python3'?'/usr/bin/python3.12':command==='tar'?'/usr/bin/tar':'/usr/local/bin/'+command,sha256:hash(architecture+command)}))});
++   commands:['cargo','devcontainer','docker','just','lake','lean','node','prismpm','python3','tar'].map(command=>({command,
++    executable:['lean','lake'].includes(command)?'/usr/local/elan/bin/elan':command==='node'?'/usr/bin/node':command==='python3'?'/usr/bin/python3.12':command==='tar'?'/usr/bin/tar':'/usr/local/bin/'+command,sha256:['lean','lake'].includes(command)?'e'.repeat(64):hash(architecture+command)}))});
+   platforms.push({platform:'linux/'+architecture,inventory_digest:'sha256:'+hash(inventory_document),inventory_document,inventory:artifacts});
+  }
+  const cleanup=[];
 @@ -74,21 +75,24 @@ export function qualificationFixture(binding,authority=sourceAuthorityFixture) {
  }
  export function resultFixture(binding,sourceAuthority=sourceAuthorityFixture){
@@ -6512,7 +7449,7 @@ index 158b9f39f0afb920b45c19c8e881f1096899cd40..4086b85ca89cd32ea24bcd2a61cd94b9
 -  processes[7].exporter={schema:'prismpm/exporter-execution/1',source_archive_sha256:sourceAuthority.archive_sha256,
 +  processes[5].argv=['--version'];processes[6].argv=frontendFixture().argv;processes[7].argv=['build','prod-export'];
 +  processes[0].stdout=processes[5].stdout='Lean (version 4.32.1, x86_64-unknown-linux-gnu, commit f054605aea4b840552cca2e725580bffd1e1b704, Release)\n';
-+  processes[0].executable_sha256=processes[5].executable_sha256=processes[6].executable_sha256='b'.repeat(64);
++  processes[5].executable_sha256=processes[6].executable_sha256='b'.repeat(64);
 +  processes[9].argv=['package','--locked','--offline','--allow-dirty'];
 +  processes[8].argv=['exe','prod-export'];
 +  processes[8].exporter={schema:'prismpm/exporter-execution/1',source_archive_sha256:sourceAuthority.archive_sha256,
@@ -6546,7 +7483,7 @@ index 158b9f39f0afb920b45c19c8e881f1096899cd40..4086b85ca89cd32ea24bcd2a61cd94b9
 +export function frontendFixture(){
 + const module='LibraryProbe.Probe',path=module.replaceAll('.','/'),output='.lake/build/lib/lean';
 + return {argv:['-j2','-R','.','-o',output+'/'+path+'.olean','-i',output+'/'+path+'.ilean',path+'.lean'],
-+ receipt:{schema:'prismpm/library-frontend/1',profile:'lean-frontend-lcnf/1',working_directory:'$LIBRARY_WORK',launcher_sha256:'b'.repeat(64),lean_sha256:'b'.repeat(64),environment:{LC_ALL:'C',LANG:'C',LEAN_PATH:output,LEAN_NUM_THREADS:'2'},modules:[{name:module,runtime:false,imports:['Init'],source:{path:path+'.lean',byte_length:12,sha256:hash('synthetic-source')},artifacts:['olean','olean.private','olean.server','ilean','ir'].map(s=>({path:output+'/'+path+'.'+s,byte_length:12,sha256:hash(s)}))}]}};
++ receipt:{schema:'prismpm/library-frontend/1',profile:'lean-frontend-lcnf/1',working_directory:'$LIBRARY_WORK',launcher_sha256:'e'.repeat(64),lean_sha256:'b'.repeat(64),environment:{LC_ALL:'C',LANG:'C',LEAN_PATH:output,LEAN_NUM_THREADS:'2'},modules:[{name:module,runtime:false,imports:['Init'],source:{path:path+'.lean',byte_length:12,sha256:hash('synthetic-source')},artifacts:['olean','olean.private','olean.server','ilean','ir'].map(s=>({path:output+'/'+path+'.'+s,byte_length:12,sha256:hash(s)}))}]}};
 +}
 diff --git a/scripts/native-golden.mjs b/scripts/native-golden.mjs
 index cb2beb1f3372a28836106746cb7c92306e29f623..b50f2fc750a53408080a01ce201c4129f8fcb008 100644
