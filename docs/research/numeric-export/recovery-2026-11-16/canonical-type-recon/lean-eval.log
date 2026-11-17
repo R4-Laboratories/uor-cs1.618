@@ -1,0 +1,13 @@
+def TypeRecon.Main.narrowedIsZero : UInt64 → Bool :=
+fun a =>
+  have narrowed :=
+    match LexLeanRuntime.checkedConvert a with
+    | some b => b
+    | none => 0;
+  LexLeanRuntime.equal narrowed 0
+def LexLeanRuntime.checkedConvert : {α β : Type} →
+  [LexLeanRuntime.ToMathInt α] → [LexLeanRuntime.Fixed β] → α → Option β :=
+fun {α β} [LexLeanRuntime.ToMathInt α] [LexLeanRuntime.Fixed β] value =>
+  LexLeanRuntime.checkedFromInt (LexLeanRuntime.ToMathInt.toInt value)
+[(0, true), (1, false), (255, false), (256, true), (257, true), (2147483647, true), (2147483648, true),
+  (4294967296, true), (18446744073709551615, true)]

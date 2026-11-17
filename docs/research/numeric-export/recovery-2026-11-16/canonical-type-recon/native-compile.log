@@ -1,0 +1,14 @@
+error[E0790]: cannot call associated function on trait without specifying the corresponding `impl` type
+  --> /workspace/diagnostic-tools/type-recon/package/src/lib.rs:17:19
+   |
+17 |     { let _x_11 = core::convert::TryFrom::try_from(a).ok(); match _x_11 {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot call associated function of trait
+   |
+help: use a fully-qualified path to a specific available implementation
+   |
+17 |     { let _x_11 = </* self type */ as core::convert::TryFrom>::try_from(a).ok(); match _x_11 {
+   |                   +++++++++++++++++++                       +
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0790`.
