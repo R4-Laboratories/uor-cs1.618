@@ -36,12 +36,21 @@
       "sha256": "526db125215e0d2eae9f2cf2d29f17da3c441b677f878d4f26f1995b097eade3"
     },
     "browser-results.json": {
-      "bytes": 1025,
-      "sha256": "bf8ce6dd9af9a5b92d12f8cf6cd451dbb2d29c6ab6fa1e09ae59383ece243b28"
+      "bytes": 6336,
+      "sha256": "80a44748a4ced6575acd81db609451a98954cb49530ce575da6f10bf221f86e2"
     },
     "objective-browser-results.json": {
       "bytes": 889,
       "sha256": "050de50f2844186d290786b86d661bb11dc789923c315bcbd60fd43408ff6c28"
+    },
+    "after-objective-390x667-defusing.png": {
+      "bytes": 138141,
+      "sha256": "3967b24552811d9d9a4c3966fae8e00fa1cafde979dbd41e2defd81ea195598f"
+    },
+    "after-objective-667x375-defusing.png": {
+      "bytes": 155008,
+      "sha256": "9fa2ced921e1ff1e4afe52b84965605226224d25ceb61e305df7266d31dc17b8"
     }
-  }
+  },
+  "responsiveFixCommit": "1a8595e49ac6cea913d3a98f9a3f37ed1ee36950"
 }

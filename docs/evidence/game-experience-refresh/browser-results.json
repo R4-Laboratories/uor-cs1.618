@@ -22,9 +22,280 @@
     "progressHidden": true
   },
   "narrow": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "mode": "cover",
+    "card": {
+      "left": 48,
+      "top": 250,
+      "right": 342,
+      "bottom": 356
+    },
+    "radar": {
+      "left": 12,
+      "top": 105,
+      "right": 122,
+      "bottom": 241
+    },
+    "aim": {
+      "left": 159,
+      "right": 231,
+      "top": 390,
+      "bottom": 454
+    },
+    "progress": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "readable": true,
     "fits": true,
-    "clearOfRadar": true
+    "clearOfRadar": true,
+    "clearOfClock": true,
+    "clearOfSession": true,
+    "clearOfAim": true,
+    "clearOfProgress": true,
+    "progressVisible": false
   },
+  "responsive": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "defusing",
+      "card": {
+        "left": 48,
+        "top": 250,
+        "right": 342,
+        "bottom": 383
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 159,
+        "right": 231,
+        "top": 390,
+        "bottom": 454
+      },
+      "progress": {
+        "left": 55,
+        "top": 497.953125,
+        "right": 335,
+        "bottom": 549.953125
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "cover",
+      "card": {
+        "left": 48,
+        "top": 250,
+        "right": 342,
+        "bottom": 356
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 159,
+        "right": 231,
+        "top": 390,
+        "bottom": 454
+      },
+      "progress": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": false
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 667
+      },
+      "mode": "defusing",
+      "card": {
+        "left": 134,
+        "top": 105,
+        "right": 378,
+        "bottom": 236
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 159,
+        "right": 231,
+        "top": 301.5,
+        "bottom": 365.5
+      },
+      "progress": {
+        "left": 55,
+        "top": 393.515625,
+        "right": 335,
+        "bottom": 445.515625
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": true
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 667
+      },
+      "mode": "cover",
+      "card": {
+        "left": 134,
+        "top": 105,
+        "right": 378,
+        "bottom": 209
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 159,
+        "right": 231,
+        "top": 301.5,
+        "bottom": 365.5
+      },
+      "progress": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": false
+    },
+    {
+      "viewport": {
+        "width": 667,
+        "height": 375
+      },
+      "mode": "defusing",
+      "card": {
+        "left": 395,
+        "top": 12,
+        "right": 655,
+        "bottom": 143
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 297.5,
+        "right": 369.5,
+        "top": 155.5,
+        "bottom": 219.5
+      },
+      "progress": {
+        "left": 193.5,
+        "top": 221.25,
+        "right": 473.5,
+        "bottom": 273.25
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": true
+    },
+    {
+      "viewport": {
+        "width": 667,
+        "height": 375
+      },
+      "mode": "cover",
+      "card": {
+        "left": 395,
+        "top": 12,
+        "right": 655,
+        "bottom": 116
+      },
+      "radar": {
+        "left": 12,
+        "top": 105,
+        "right": 122,
+        "bottom": 241
+      },
+      "aim": {
+        "left": 297.5,
+        "right": 369.5,
+        "top": 155.5,
+        "bottom": 219.5
+      },
+      "progress": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "readable": true,
+      "fits": true,
+      "clearOfRadar": true,
+      "clearOfClock": true,
+      "clearOfSession": true,
+      "clearOfAim": true,
+      "clearOfProgress": true,
+      "progressVisible": false
+    }
+  ],
   "feedback": {
     "rest": -0.10615384615384615,
     "reload": 0.44
