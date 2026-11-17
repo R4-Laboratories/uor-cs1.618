@@ -1,0 +1,42 @@
+image	Retain actual source image and cleanliness	﻿2026-11-17T12:18:59.9598806Z ##[group]Run sudo mkdir -p evidence
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9599105Z [36;1msudo mkdir -p evidence[0m
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9599320Z [36;1msudo chown -R 1000:1000 evidence[0m
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9599815Z [36;1msudo -u '#1000' -g "#$(stat -c '%g' /var/run/docker.sock)" python3 -I -B game/scripts/numeric/candidate-capture-qualification.py host-collect --phase image[0m
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9671231Z shell: /usr/bin/bash -e {0}
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9671474Z env:
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9671697Z   ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE: /opt/actionarchivecache
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9671993Z   ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED: 1
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9672481Z   ACTIONS_RUNTIME_URL: https://pipelinesghubeus15.actions.githubusercontent.com/tvXLlwXN2yGuRL7tvJIOQQQLM7oVaj2rLE2vvIM55YEIIh0Lz2/
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9712275Z   ACTIONS_RUNTIME_TOKEN: ***
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9712717Z   ACTIONS_CACHE_URL: https://artifactcache.actions.githubusercontent.com/tvXLlwXN2yGuRL7tvJIOQQQLM7oVaj2rLE2vvIM55YEIIh0Lz2/
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9713322Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9713636Z   ACTIONS_CACHE_SERVICE_V2: True
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9713827Z   ACTIONS_CACHE_MODE: write
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9714104Z   ACTIONS_ORCHESTRATION_ID: 7dc9b56a-102c-8c25-86b3-4fb59bf915fd.image.__default
+image	Retain actual source image and cleanliness	2026-11-17T12:18:59.9714392Z ##[endgroup]
+image	Retain actual source image and cleanliness	2026-11-17T12:19:00.0032430Z sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+image	Retain actual source image and cleanliness	2026-11-17T12:19:00.0033330Z sudo: a password is required
+image	Retain actual source image and cleanliness	2026-11-17T12:19:00.0045572Z ##[error]Process completed with exit code 1.
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	﻿2026-11-17T12:19:00.0121643Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0121948Z with:
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0122156Z   name: candidate-capture-source-image-44081334047-1
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0122415Z   path: evidence/metadata-upload/
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0122619Z   if-no-files-found: error
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0122799Z   retention-days: 30
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0122975Z   compression-level: 6
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0123143Z   overwrite: false
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0123314Z   include-hidden-files: false
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0123493Z env:
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0123705Z   ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE: /opt/actionarchivecache
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0123978Z   ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED: 1
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0124469Z   ACTIONS_RUNTIME_URL: https://pipelinesghubeus15.actions.githubusercontent.com/tvXLlwXN2yGuRL7tvJIOQQQLM7oVaj2rLE2vvIM55YEIIh0Lz2/
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0164407Z   ACTIONS_RUNTIME_TOKEN: ***
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0164840Z   ACTIONS_CACHE_URL: https://artifactcache.actions.githubusercontent.com/tvXLlwXN2yGuRL7tvJIOQQQLM7oVaj2rLE2vvIM55YEIIh0Lz2/
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0165424Z   ACTIONS_RESULTS_URL: https://results-receiver.actions.githubusercontent.com/
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0165738Z   ACTIONS_CACHE_SERVICE_V2: True
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0165937Z   ACTIONS_CACHE_MODE: write
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0166212Z   ACTIONS_ORCHESTRATION_ID: 7dc9b56a-102c-8c25-86b3-4fb59bf915fd.image.__default
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.0166498Z ##[endgroup]
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.1384967Z (node:5170) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.1385518Z (Use `node --trace-deprecation ...` to show where the warning was created)
+image	Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02	2026-11-17T12:19:00.1408856Z ##[error]No files were found with the provided path: evidence/metadata-upload/. No artifacts will be uploaded.
