@@ -1,0 +1,28 @@
+{
+  "schema": "cs1618/retained-host-socket-component/1",
+  "game_commit": "a37db958cbed291f215cf034069ffddfbd1fee44",
+  "review_at_retention": "pending",
+  "SDK_qualification": "not_run",
+  "local_tests": {
+    "passed": 56,
+    "skipped_privileged": 1
+  },
+  "evidence_index_sha256": "475581fd049dc1e89337798e4cff03ab26fcace253a04f9abfe8d3e26cd48697",
+  "entries": [
+    {
+      "path": "candidate-capture-host-socket-a37db95.tar.gz",
+      "bytes": 29257,
+      "sha256": "b6c237959858a12d1eb1ad307a167797a314365f06fddbd0e68b00945ffe820d"
+    },
+    {
+      "path": "candidate-capture-qualification-report-a37db95.md",
+      "bytes": 46790,
+      "sha256": "2e1b5eb2a380e343ceeb723dcdfe5f86905ffd52e3b79d027c297fb6994db68f"
+    },
+    {
+      "path": "candidate-capture-host-socket-a37db95.patch",
+      "bytes": 21469,
+      "sha256": "06ba3f31bf19f2e38ab2004da0a81c9ec849a3d333c9cf81193d05255f5f6031"
+    }
+  ]
+}
