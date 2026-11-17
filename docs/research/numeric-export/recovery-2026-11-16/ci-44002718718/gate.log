@@ -1,0 +1,464 @@
+./scripts/vv.sh vv-part gates
+{"schema":"prismpm/browser-environment/1","engines":[{"engine":"chromium","version":"157.0.8099.0","evaluated":true},{"engine":"firefox","version":"153.0","evaluated":true},{"engine":"webkit","version":"26.5","evaluated":true}]}
+TAP version 13
+# Subtest: credential-helper runtime and kernel capabilities are available before expensive VV
+ok 1 - credential-helper runtime and kernel capabilities are available before expensive VV
+  ---
+  duration_ms: 65.533827
+  type: 'test'
+  ...
+# Subtest: devcontainer lifecycle waits before attach and wraps the actual fetch command
+ok 2 - devcontainer lifecycle waits before attach and wraps the actual fetch command
+  ---
+  duration_ms: 1.164676
+  type: 'test'
+  ...
+# Subtest: real Docker socket (image remote user): stale shell, fresh shell, restart and bounded failure
+    # Subtest: actual stale process fails without refresh and succeeds with it, retaining UID and argv
+    ok 1 - actual stale process fails without refresh and succeeds with it, retaining UID and argv
+      ---
+      duration_ms: 276.930993
+      type: 'test'
+      ...
+    # Subtest: fresh process and restart remain non-root and Docker-ready
+    ok 2 - fresh process and restart remain non-root and Docker-ready
+      ---
+      duration_ms: 1617.097365
+      type: 'test'
+      ...
+    # Subtest: group visibility before shadow authorization cannot execute the user command
+    ok 3 - group visibility before shadow authorization cannot execute the user command
+      ---
+      duration_ms: 3744.507737
+      type: 'test'
+      ...
+    # Subtest: missing shadow authorization times out without executing the command or prompting
+    ok 4 - missing shadow authorization times out without executing the command or prompting
+      ---
+      duration_ms: 30049.197437
+      type: 'test'
+      ...
+    # Subtest: missing initialization fails within its deadline without executing the command
+    ok 5 - missing initialization fails within its deadline without executing the command
+      ---
+      duration_ms: 29466.902638
+      type: 'test'
+      ...
+    1..5
+ok 3 - real Docker socket (image remote user): stale shell, fresh shell, restart and bounded failure
+  ---
+  duration_ms: 65790.715598
+  type: 'test'
+  ...
+# Subtest: missing mounted socket fails closed (image remote user)
+ok 4 - missing mounted socket fails closed (image remote user)
+  ---
+  duration_ms: 446.959711
+  type: 'test'
+  ...
+# Subtest: real Docker socket (remapped remote user): stale shell, fresh shell, restart and bounded failure
+    # Subtest: actual stale process fails without refresh and succeeds with it, retaining UID and argv
+    ok 1 - actual stale process fails without refresh and succeeds with it, retaining UID and argv
+      ---
+      duration_ms: 283.547554
+      type: 'test'
+      ...
+    # Subtest: fresh process and restart remain non-root and Docker-ready
+    ok 2 - fresh process and restart remain non-root and Docker-ready
+      ---
+      duration_ms: 1618.171892
+      type: 'test'
+      ...
+    # Subtest: group visibility before shadow authorization cannot execute the user command
+    ok 3 - group visibility before shadow authorization cannot execute the user command
+      ---
+      duration_ms: 3739.872306
+      type: 'test'
+      ...
+    # Subtest: missing shadow authorization times out without executing the command or prompting
+    ok 4 - missing shadow authorization times out without executing the command or prompting
+      ---
+      duration_ms: 30151.739944
+      type: 'test'
+      ...
+    # Subtest: missing initialization fails within its deadline without executing the command
+    ok 5 - missing initialization fails within its deadline without executing the command
+      ---
+      duration_ms: 30083.435646
+      type: 'test'
+      ...
+    1..5
+ok 5 - real Docker socket (remapped remote user): stale shell, fresh shell, restart and bounded failure
+  ---
+  duration_ms: 66575.372863
+  type: 'test'
+  ...
+# Subtest: missing mounted socket fails closed (remapped remote user)
+ok 6 - missing mounted socket fails closed (remapped remote user)
+  ---
+  duration_ms: 570.123267
+  type: 'test'
+  ...
+# Subtest: tree manifest closes package bytes including the crate archive
+ok 7 - tree manifest closes package bytes including the crate archive
+  ---
+  duration_ms: 6.732478
+  type: 'test'
+  ...
+# Subtest: dependency update changes only the lexlean identity fields
+ok 8 - dependency update changes only the lexlean identity fields
+  ---
+  duration_ms: 1.480806
+  type: 'test'
+  ...
+# Subtest: an earlier registered version moves to the selected version and crate path
+ok 9 - an earlier registered version moves to the selected version and crate path
+  ---
+  duration_ms: 1.593537
+  type: 'test'
+  ...
+# Subtest: already selected dependency is byte-identical on repeated reconciliation
+ok 10 - already selected dependency is byte-identical on repeated reconciliation
+  ---
+  duration_ms: 0.534879
+  type: 'test'
+  ...
+# Subtest: missing malformed and duplicated identities cannot become reconciliation no-ops
+ok 11 - missing malformed and duplicated identities cannot become reconciliation no-ops
+  ---
+  duration_ms: 2.176777
+  type: 'test'
+  ...
+# Subtest: manifest contains actual file SHA-256, not a literal expression
+ok 12 - manifest contains actual file SHA-256, not a literal expression
+  ---
+  duration_ms: 1.040684
+  type: 'test'
+  ...
+# Subtest: manifest excludes only its root output and includes nested manifest source bytes
+ok 13 - manifest excludes only its root output and includes nested manifest source bytes
+  ---
+  duration_ms: 2.349019
+  type: 'test'
+  ...
+# Subtest: manifest rejects an absent archive or a symlink
+ok 14 - manifest rejects an absent archive or a symlink
+  ---
+  duration_ms: 2.499423
+  type: 'test'
+  ...
+# Subtest: validation command exists in the real dispatcher and includes dependency auditing
+ok 15 - validation command exists in the real dispatcher and includes dependency auditing
+  ---
+  duration_ms: 1.412569
+  type: 'test'
+  ...
+# Subtest: validation CLI actually invokes supported offline xtask in its repository
+ok 16 - validation CLI actually invokes supported offline xtask in its repository
+  ---
+  duration_ms: 70.659231
+  type: 'test'
+  ...
+# Subtest: validation CLI propagates a real child-process failure
+ok 17 - validation CLI propagates a real child-process failure
+  ---
+  duration_ms: 71.922471
+  type: 'test'
+  ...
+# Subtest: unsupported-command mutation is rejected by the subprocess boundary
+ok 18 - unsupported-command mutation is rejected by the subprocess boundary
+  ---
+  duration_ms: 75.118592
+  type: 'test'
+  ...
+# Subtest: reconciliation workflow pins selected source and has no repository writer
+ok 19 - reconciliation workflow pins selected source and has no repository writer
+  ---
+  duration_ms: 8.303393
+  type: 'test'
+  ...
+# Subtest: normal generation exports only an unaccepted proposal before the mandatory complete audit
+ok 20 - normal generation exports only an unaccepted proposal before the mandatory complete audit
+  ---
+  duration_ms: 10.257083
+  type: 'test'
+  ...
+# Subtest: every locked consumer including the checksum-mutation baseline is normally relocked
+ok 21 - every locked consumer including the checksum-mutation baseline is normally relocked
+  ---
+  duration_ms: 2.41923
+  type: 'test'
+  ...
+# Subtest: real offline Cargo metadata refuses a fresh empty input cache before any build
+ok 22 - real offline Cargo metadata refuses a fresh empty input cache before any build
+  ---
+  duration_ms: 105.593645
+  type: 'test'
+  ...
+# Subtest: owning package boundary rejects untracked and tracked source, allowing ignored outputs
+ok 23 - owning package boundary rejects untracked and tracked source, allowing ignored outputs
+  ---
+  duration_ms: 43.162342
+  type: 'test'
+  ...
+# Subtest: transaction retains prior vendor register and Cargo lock on actual dependency-write failure
+ok 24 - transaction retains prior vendor register and Cargo lock on actual dependency-write failure
+  ---
+  duration_ms: 4.762187
+  type: 'test'
+  ...
+# Subtest: transaction restores all prior bytes after real metadata and check child failures
+ok 25 - transaction restores all prior bytes after real metadata and check child failures
+  ---
+  duration_ms: 92.081443
+  type: 'test'
+  ...
+# Subtest: transaction removes only its own partial preparation and preserves preexisting foreign paths
+ok 26 - transaction removes only its own partial preparation and preserves preexisting foreign paths
+  ---
+  duration_ms: 6.824721
+  type: 'test'
+  ...
+# Subtest: transaction refuses rollback over a foreign path and retains its primary failure and backup
+ok 27 - transaction refuses rollback over a foreign path and retains its primary failure and backup
+  ---
+  duration_ms: 5.386233
+  type: 'test'
+  ...
+# Subtest: transaction commits only after validation and removes its retired backup
+ok 28 - transaction commits only after validation and removes its retired backup
+  ---
+  duration_ms: 2.142623
+  type: 'test'
+  ...
+# Subtest: transaction refuses aliased parents and nonregular or shared inputs before staging
+ok 29 - transaction refuses aliased parents and nonregular or shared inputs before staging
+  ---
+  duration_ms: 12.839808
+  type: 'test'
+  ...
+# Subtest: SDK launcher supplies a bounded 64 MiB stack to the actual requested process
+ok 30 - SDK launcher supplies a bounded 64 MiB stack to the actual requested process
+  ---
+  duration_ms: 10.953703
+  type: 'test'
+  ...
+# Subtest: SDK launcher refuses an insufficient hard stack limit before executing the command
+ok 31 - SDK launcher refuses an insufficient hard stack limit before executing the command
+  ---
+  duration_ms: 2.720703
+  type: 'test'
+  ...
+# Subtest: SDK launcher preserves requested argv and nonzero exit status
+ok 32 - SDK launcher preserves requested argv and nonzero exit status
+  ---
+  duration_ms: 9.349197
+  type: 'test'
+  ...
+1..32
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 133523.885988
+Pinned bootstrap source f378fd3a8dc5711cb4b22cec9ee2f874353628c3 is available (source preflight only).
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling cfg-if v1.0.4
+   Compiling libc v0.2.189
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling syn v2.0.119
+   Compiling synstructure v0.13.2
+   Compiling memchr v2.8.3
+   Compiling autocfg v1.5.1
+   Compiling num-traits v0.2.19
+   Compiling version_check v0.9.5
+   Compiling serde v1.0.229
+   Compiling zerofrom-derive v0.1.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling yoke v0.8.3
+   Compiling zerovec-derive v0.11.6
+   Compiling zerovec v0.11.8
+   Compiling num-integer v0.1.47
+   Compiling bitflags v2.13.1
+   Compiling zmij v1.0.23
+   Compiling smallvec v1.15.2
+   Compiling generic-array v0.14.7
+   Compiling getrandom v0.3.4
+   Compiling serde_json v1.0.151
+   Compiling num-bigint v0.4.8
+   Compiling tinystr v0.8.4
+   Compiling itoa v1.0.18
+   Compiling foldhash v0.2.0
+   Compiling equivalent v1.0.2
+   Compiling litemap v0.8.3
+   Compiling minimal-lexical v0.2.1
+   Compiling allocator-api2 v0.2.21
+   Compiling scopeguard v1.2.0
+   Compiling typenum v1.20.1
+   Compiling writeable v0.6.4
+   Compiling icu_locale_core v2.3.0
+   Compiling hashbrown v0.17.1
+   Compiling nom v7.1.3
+   Compiling potential_utf v0.1.6
+   Compiling zerotrie v0.2.5
+   Compiling once_cell v1.21.4
+   Compiling zerocopy v0.8.56
+   Compiling rustversion v1.0.23
+   Compiling icu_properties_data v2.3.0
+   Compiling heck v0.5.0
+   Compiling icu_normalizer_data v2.3.0
+   Compiling rustix v1.1.4
+   Compiling utf8_iter v1.0.4
+   Compiling icu_collections v2.3.0
+   Compiling icu_provider v2.3.1
+   Compiling ahash v0.8.12
+   Compiling thiserror v2.0.20
+   Compiling num-conv v0.2.2
+   Compiling anstyle v1.0.14
+   Compiling parking_lot_core v0.9.12
+   Compiling time-core v0.1.9
+   Compiling ref-cast v1.0.27
+   Compiling regex-syntax v0.8.11
+   Compiling linux-raw-sys v0.12.1
+   Compiling time-macros v0.2.32
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling num-rational v0.4.2
+   Compiling num-iter v0.1.46
+   Compiling num-complex v0.4.6
+   Compiling aho-corasick v1.1.5
+   Compiling thiserror-impl v2.0.20
+   Compiling ref-cast-impl v1.0.27
+   Compiling deranged v0.5.8
+   Compiling utf8parse v0.2.2
+   Compiling powerfmt v0.2.0
+   Compiling anstyle-parse v1.0.0
+   Compiling regex-automata v0.4.18
+   Compiling time v0.3.55
+   Compiling num v0.4.3
+   Compiling digest v0.10.7
+   Compiling icu_normalizer v2.3.0
+   Compiling icu_properties v2.3.0
+   Compiling encoding_rs v0.8.42
+   Compiling rusticata-macros v4.1.0
+   Compiling indexmap v2.14.1
+   Compiling lock_api v0.4.14
+   Compiling toml_datetime v0.6.11
+   Compiling serde_spanned v0.6.9
+   Compiling asn1-rs-derive v0.6.0
+   Compiling asn1-rs-impl v0.2.0
+   Compiling cfg_aliases v0.2.2
+   Compiling colorchoice v1.0.5
+   Compiling find-msvc-tools v0.1.11
+   Compiling cpufeatures v0.2.17
+   Compiling anstyle-query v1.1.5
+   Compiling shlex v2.0.1
+   Compiling tinyvec_macros v0.1.1
+   Compiling unicode-general-category v1.1.0
+   Compiling winnow v0.7.15
+   Compiling borrow-or-share v0.2.4
+   Compiling bit-vec v0.8.0
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling toml_write v0.1.2
+   Compiling anstream v1.0.0
+   Compiling bit-set v0.8.0
+   Compiling fluent-uri v0.4.1
+   Compiling toml_edit v0.22.27
+   Compiling cc v1.4.4
+   Compiling tinyvec v1.12.0
+   Compiling asn1-rs v0.7.2
+   Compiling nix v0.31.3
+   Compiling parking_lot v0.12.5
+   Compiling idna_adapter v1.2.2
+   Compiling fraction v0.16.0
+   Compiling strum_macros v0.28.0
+   Compiling errno v0.3.14
+   Compiling multiversion_no_op v1.0.0
+   Compiling simdutf8 v0.1.5
+   Compiling signal-hook v0.3.18
+   Compiling bytecount v0.6.9
+   Compiling core_detect v1.0.0
+   Compiling camino v1.2.5
+   Compiling percent-encoding v2.3.2
+   Compiling clap_lex v1.1.0
+   Compiling strsim v0.11.1
+   Compiling outref v0.5.2
+   Compiling vsimd v0.8.0
+   Compiling micromap v0.3.0
+   Compiling data-encoding v2.11.1
+   Compiling num-cmp v0.1.0
+   Compiling oid-registry v0.8.1
+   Compiling jsonschema-value v0.50.1
+   Compiling uuid-simd v0.8.0
+   Compiling referencing v0.50.1
+   Compiling strum v0.28.0
+   Compiling clap_builder v4.6.6
+   Compiling signal-hook-registry v1.4.8
+   Compiling idna v1.1.0
+   Compiling unicode-normalization v0.1.25
+   Compiling toml v0.8.23
+   Compiling blake3 v1.5.5
+   Compiling fancy-regex v0.19.0
+   Compiling sha2 v0.10.9
+   Compiling regex v1.13.1
+   Compiling jsonschema-regex v0.50.1
+   Compiling clap_derive v4.6.4
+   Compiling email_address v0.2.9
+   Compiling arraydeque v0.5.1
+   Compiling unicode-width v0.2.2
+   Compiling fastrand v2.5.0
+   Compiling lexlean v0.4.0 (/workspaces/prismpm/vendor/lexlean)
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling clap v4.6.6
+   Compiling tempfile v3.27.0
+   Compiling annotate-snippets v0.12.17
+   Compiling granit-parser v2.0.0
+   Compiling jsonschema v0.50.1
+   Compiling encoding_rs_io v0.1.8
+   Compiling der-parser v10.0.0
+   Compiling xattr v1.6.1
+   Compiling fs4 v0.13.1
+   Compiling prod-ir v0.1.0 (/workspaces/prismpm/vendor/lean4-prod/rust/prod-ir)
+   Compiling wasmparser v0.245.1
+   Compiling filetime v0.2.29
+   Compiling arrayvec v0.7.8
+   Compiling constant_time_eq v0.3.1
+   Compiling semver v1.0.28
+   Compiling arrayref v0.3.9
+   Compiling lazy_static v1.5.0
+   Compiling crc32fast v1.5.2
+   Compiling x509-parser v0.18.0
+   Compiling tar v0.4.46
+   Compiling prod-codegen v0.1.0 (/workspaces/prismpm/vendor/lean4-prod/rust/prod-codegen)
+   Compiling serde-saphyr v2.0.0
+   Compiling ctrlc v3.5.2
+   Compiling sha1 v0.10.7
+   Compiling prism-stdlib v0.2.0 (/workspaces/prismpm/stdlib/generated/package)
+   Compiling adler2 v2.0.1
+   Compiling simd-adler32 v0.3.10
+   Compiling base64 v0.22.1
+   Compiling miniz_oxide v0.8.9
+   Compiling repo-model v0.4.0 (/workspaces/prismpm/crates/model)
+   Compiling flate2 v1.1.9
+   Compiling prismpm v0.4.0 (/workspaces/prismpm/crates/prismpm)
+   Compiling repo-conformance v0.4.0 (/workspaces/prismpm/crates/conformance)
+   Compiling xtask v0.4.0 (/workspaces/prismpm/xtask)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 13s
+     Running `target/debug/xtask vv-part gates`
+VV gate 7/15: feature, conformance, and negative fixtures
+gate failed: /workspaces/prismpm/tests/fixtures/controller/ct-02-prism-code-model: observed exit/diagnostics/artifacts differ from case.toml
+exit: 3
+diagnostics: [ExpectedDiagnostic { code: "PP2101", message: "system release binds application model \"sha256:f6274f7e39fe374edbc453002099c268a554ed590017d929c15ed34792bc692d\", but the imported application model is sha256:bde664ad933ee9952eaa71f5478494fabc7d30952232a490af0f5dac7274d03c", primary: "none", labels: [], notes: [], help: [] }]
+artifacts: []
+error: recipe `vv-part` failed on line 12 with exit code 1
