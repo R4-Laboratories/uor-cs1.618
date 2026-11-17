@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import tempfile
+import tarfile
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -129,6 +130,35 @@ class HarnessTests(unittest.TestCase):
         self.assertEqual(bounded['status'],'incomplete')
         self.assertFalse((dest/'canonical-reader-inputs.tar.gz').exists())
         self.assertTrue((dest/'canonical-small-logs.tar.gz').is_file())
+
+    def test_replay_failure_fallback_survives_primary_archive_refusal(self):
+        replay=self.root/'replay'; replay.mkdir()
+        diagnostic=b'x'*140000+b'\nerror: original rustc replay failure\n'
+        log=replay/'mul32-native.log'; log.write_bytes(diagnostic)
+        command={'argv':['rustc','emitted/src/lib.rs'],'exit_code':1}
+        status=replay/'mul32-native.log.status.json'; write(status,command)
+        (replay/'numeric.wasm').write_bytes(b'wasm artifact')
+        (replay/'libnumeric_mul32_native.rlib').write_bytes(b'rlib artifact')
+        cache=replay/'target/cache'; cache.mkdir(parents=True)
+        (cache/'excluded.log').write_text('cache log')
+        dest=self.root/'retained'
+        for bound in ('MAX_RAW','MAX_ARCHIVE'):
+            with self.subTest(bound=bound):
+                with mock.patch.object(p,bound,1):
+                    retained=p.retain(self.root,dest)
+                self.assertEqual(retained['status'],'incomplete')
+                self.assertFalse((dest/'canonical-reader-inputs.tar.gz').exists())
+                with tarfile.open(dest/'canonical-small-logs.tar.gz','r:gz') as archive:
+                    self.assertIn('replay/mul32-native.log',archive.getnames())
+                    self.assertEqual(archive.extractfile('replay/mul32-native.log').read(),diagnostic[-131072:])
+                    self.assertEqual(json.load(archive.extractfile('replay/mul32-native.log.status.json')),command)
+                    self.assertFalse(any(name.endswith(('.wasm','.rlib')) or '/target/' in name for name in archive.getnames()))
+                small=json.loads((dest/'small-logs-status.json').read_text())
+                rows={row['path']:row for row in small['files']}
+                self.assertEqual(rows['replay/mul32-native.log'],{'path':'replay/mul32-native.log','original_sha256':p.digest(log),'original_bytes':len(diagnostic),'retained_bytes':131072,'truncated':True})
+                self.assertEqual(rows['replay/mul32-native.log.status.json']['original_sha256'],p.digest(status))
+                self.assertEqual(rows['replay/mul32-native.log.status.json']['original_bytes'],status.stat().st_size)
+                self.assertFalse(rows['replay/mul32-native.log.status.json']['truncated'])
 
     @unittest.skipUnless(os.environ.get('PRISMPM_SOURCE'),'set PRISMPM_SOURCE for actual pinned fixture staging test')
     def test_actual_fixture_stage_is_deterministic_single_source_and_pinned(self):

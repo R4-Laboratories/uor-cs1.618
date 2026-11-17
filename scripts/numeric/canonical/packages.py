@@ -233,7 +233,13 @@ def retain(root, dest):
     if replay.exists():
         chosen.update(p for p in files(replay) if 'target' not in p.relative_to(replay).parts)
     small, small_rows = [], []
-    for p in files(root, ('projects','replay','retained','small-logs')):
+    small_inputs = list(files(root, ('projects','replay','retained','small-logs')))
+    # Replay commands write flat log/status files here. Keep their diagnostics
+    # independently of the primary archive, without binaries, rlibs or caches.
+    if replay.exists():
+        small_inputs.extend(regular(p) for p in sorted(replay.iterdir())
+                            if p.name.endswith(('.log', '.status.json')))
+    for p in small_inputs:
         if dest in p.parents: continue
         size_bytes = p.stat().st_size
         with p.open('rb') as stream:

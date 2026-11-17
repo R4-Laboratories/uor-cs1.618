@@ -168,3 +168,36 @@ Local free disk remained approximately 21 GiB, above the 8 GiB floor.
 Parent can review this concrete checkpoint, publish the owned commit, and let
 the narrow workflow run. Failed SDK gates must retain their original evidence
 and be resolved without changing SDK pins, source arithmetic, guards or timeouts.
+
+## Review round 1 retention fix
+
+Independent review of implementation `d7e2ac9` identified one P2: command-level
+replay compiler/native/Wasm/mutation logs and their status JSON were inside the
+primary reader archive but absent from the independent small archive. If the
+primary archive was refused at its bound, only the top-level replay traceback
+would survive. The focused regression reproduced this loss before the fix.
+
+The small collector now additionally takes direct `replay/*.log` and
+`replay/*.status.json` command diagnostics. It applies the same bounded-tail,
+original-size/SHA256 and explicit-truncation accounting as other small logs.
+Replay binaries, rlibs and nested caches remain outside the small archive.
+The focused control plants an original failing rustc log and argv/exit-status
+JSON, forces each primary raw/compressed bound to refuse publication, then
+checks that the fallback archive still contains the exact retained diagnostic
+tail and complete status, with correct size/digest/truncation metadata and no
+Wasm, rlib or target-cache files.
+
+Validation on parent base `924627d`:
+
+```sh
+python3 scripts/numeric/canonical/test_packages.py HarnessTests.test_replay_failure_fallback_survives_primary_archive_refusal -v
+PRISMPM_SOURCE=/workspace/scratch/prismpm-numeric python3 scripts/numeric/canonical/test_packages.py -v
+python3 -m py_compile scripts/numeric/canonical/{packages,test_packages}.py
+git diff --check
+```
+
+The focused control passes for both bounds, the full **eight-test** host suite
+passes, Python compilation and whitespace checks pass. This fix changes only
+fallback evidence retention and its tests; no arithmetic, pins, gates, guards,
+timeouts or generated code changed. Actual SDK and production claims above
+remain pending and parent-owned.
