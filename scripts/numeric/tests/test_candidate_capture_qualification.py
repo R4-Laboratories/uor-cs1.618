@@ -1147,10 +1147,68 @@ class HostAccessControls(unittest.TestCase):
                    *['game/scripts/numeric/'+name for name in
                      ('candidate-capture-qualification.py','candidate-capture-probe.py','candidate-capture-subject.mjs')]]
             for name in files:
-                p=root/name;p.parent.mkdir(parents=True,exist_ok=True,mode=0o755);p.write_bytes(b'component bytes\n');p.chmod(0o400)
+                p=root/name;p.parent.mkdir(parents=True,exist_ok=True,mode=0o755);p.write_bytes(b'component bytes\n')
+                p.chmod(0o644 if name.startswith('game/') else 0o400)
             for name in ('prismpm/.git/objects','game/.git/objects'):(root/name).mkdir(mode=0o755)
+            # Public game ancestry must retain its intended mode under umask077.
+            for path in [root/'game',*(root/'game').rglob('*')]:
+                if path.is_dir():path.chmod(0o755)
             (root/'prismpm/target/candidate-qualification-driver').chmod(0o700)
             yield namespace,root
+
+    def prepare_restricted_ancestor(self,namespace,root):
+        namespace.chmod(0o755);root.chmod(0o750);os.chown(root,1001,1001)
+        for tree,uid in [('game',1001),('prismpm',1000)]:
+            for path in [root/tree,*(root/tree).rglob('*')]:os.chown(path,uid,uid)
+
+    def test_restricted_fixture_planned_owners_and_real_modes_allow_required_reads(self):
+        import stat,time
+        d=self.api()
+        with self.filesystem() as (namespace,root):
+            owners={}
+            # Run the privileged fixture's exact setup, recording its proposed
+            # chowns only. Real modes plus planned owners are not a cross-UID witness.
+            with patch.object(os,'chown',side_effect=lambda path,uid,gid:owners.update({path:(uid,gid)})):
+                self.prepare_restricted_ancestor(namespace,root)
+            self.assertEqual(set(owners),{root,*root.rglob('*')})
+            for path,owner in owners.items():
+                expected=1001 if path==root or path.is_relative_to(root/'game') else 1000
+                self.assertEqual(owner,(expected,expected))
+            self.assertEqual(stat.S_IMODE(namespace.stat().st_mode),0o755)
+            self.assertEqual(stat.S_IMODE(root.stat().st_mode),0o750)
+            value=d.bridge_access_record('qualification-collect',root,os.getuid(),os.getgid(),None)
+            d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace)
+            value['runner']={'uid':1001,'gid':1001}
+            rows={pathlib.Path(d.bridge_access_path(value,i)):row for i,row in enumerate(value['rows'])}
+            self.assertEqual(set(rows),{namespace,*owners})
+            for path,row in rows.items():
+                if path in owners:row['identity'][2:4]=owners[path]
+            d.bridge_access_choose(value)
+            self.assertEqual([path for path,row in rows.items() if not d.bridge_access_permission(row,[])[1]],[root])
+            self.assertEqual(value['planned']['groups'],[1001]);self.assertEqual(value['planned']['traversal'],1001)
+            self.assertIsNone(value['actual'])
+            private=root/'prismpm/target/candidate-qualification-driver'
+            self.assertEqual(rows[private]['identity'][2:], [1000,1000,stat.S_IFDIR|0o700])
+            public={root/'game'/name for name in ('.git/HEAD','.git/config',
+                'scripts/numeric/candidate-capture-qualification.py','scripts/numeric/candidate-capture-probe.py',
+                'scripts/numeric/candidate-capture-subject.mjs')}
+            self.assertEqual({path for path in rows if path.is_relative_to(root/'game') and path.is_file()},public)
+            for path,row in rows.items():
+                if path.is_file():
+                    self.assertEqual(row['identity'][2:],[1001,1001,stat.S_IFREG|0o644] if path in public
+                                     else [1000,1000,stat.S_IFREG|0o400])
+                elif path.is_relative_to(root/'game'):
+                    self.assertEqual(row['identity'][2:],[1001,1001,stat.S_IFDIR|0o755])
+            # Each original 0400 public-leaf contradiction must still be refused.
+            for path,mode in [(path,stat.S_IFREG|0o400) for path in sorted(public)]+[(root,stat.S_IFDIR|0o700)]:
+                with self.subTest(denied=str(path)):
+                    denied=copy.deepcopy(value)
+                    index=next(i for i in range(len(denied['rows'])) if d.bridge_access_path(denied,i)==str(path))
+                    denied['rows'][index]['identity'][4]=mode
+                    with self.assertRaises(d.HostAccessError) as caught:d.bridge_access_choose(denied)
+                    self.assertEqual(caught.exception.record['failure']['predicate'],'permission_denied')
+                    self.assertEqual(caught.exception.record['failure']['path'],str(path))
+                    self.assertIsNone(caught.exception.record['actual'])
 
     def test_real_measurement_rechecks_replaced_inode_and_refuses_alias_or_unknown_acl(self):
         import time,errno
@@ -1332,9 +1390,7 @@ class HostAccessControls(unittest.TestCase):
         import time
         d=self.api()
         with self.filesystem() as (namespace,root):
-            namespace.chmod(0o755);root.chmod(0o750);os.chown(root,1001,1001)
-            for tree,uid in [('game',1001),('prismpm',1000)]:
-                for path in [root/tree,*(root/tree).rglob('*')]:os.chown(path,uid,uid)
+            self.prepare_restricted_ancestor(namespace,root)
             leaf=root/'prismpm/target/candidate-qualification-driver/preparation-partial.json'
             value=d.bridge_access_record('qualification-collect',root,1001,1001,None)
             plan=d._bridge_access_measure(root,value,time.monotonic()+3,namespace=namespace);d.bridge_access_choose(value)
