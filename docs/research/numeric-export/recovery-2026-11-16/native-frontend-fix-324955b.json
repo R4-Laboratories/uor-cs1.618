@@ -7,7 +7,8 @@
   "patch": "native-frontend-fix-324955b.patch",
   "patch_sha256": "177fd8c778a917630d123fe8e0300580b24e582e2264637e6b81806384387a51",
   "patch_bytes": 50166,
-  "scope": "Complete SDK retained-reader inventory threading and distinct source-bootstrap replay; independent source review pending",
+  "scope": "SDK retained-reader and distinct required source-bootstrap replay independently reviewed; ready for subsequent diagnostic gates, not admission",
   "production_admission": false,
-  "upstream_published": false
+  "upstream_published": false,
+  "review": "native-frontend-review-324955b.md"
 }
