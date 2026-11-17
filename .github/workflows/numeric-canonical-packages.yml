@@ -1,0 +1,102 @@
+name: Numeric canonical native-library packages
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/numeric-canonical-packages.yml'
+      - 'scripts/numeric/canonical/**'
+      - 'prism/numeric/packages/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-library:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          path: prismpm
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Restore reviewed exact verifier snapshot
+        run: |
+          set -euo pipefail
+          umask 022
+          mkdir -m 755 evidence
+          python3 game/scripts/numeric/restore-prismpm-candidate.py game/scripts/numeric/prismpm-candidate prismpm > evidence/candidate.json
+          printf '%s\n' "$GITHUB_SHA" > evidence/game-commit.txt
+          df -h > evidence/disk-before.txt
+          docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
+          sudo chown -R 1000:1000 prismpm
+          sudo chgrp 1000 evidence
+          chmod 2770 evidence
+          printf '%s\n' host-write-ok > evidence/host-permissions.txt
+      - name: Pull unchanged pinned SDK on hosted runner
+        run: docker pull --platform linux/amd64 ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c
+      - name: Build and verify four frozen canonical packages
+        run: |
+          set -euo pipefail
+          run_sdk() {
+            docker run --rm --platform linux/amd64 --user 1000:1000 \
+              --tmpfs /tmp:rw,exec,nosuid,nodev,size=1g,mode=1777 --shm-size=1g \
+              -v "$GITHUB_WORKSPACE/prismpm:/work/prismpm-b1" \
+              -v "$GITHUB_WORKSPACE/game:/game:ro" \
+              -v "$GITHUB_WORKSPACE/evidence:/evidence" \
+              -w /work/prismpm-b1 \
+              ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c \
+              bash /game/scripts/numeric/canonical/sdk-run.sh "$@"
+          }
+          run_sdk --permissions-only
+          test "$(cat evidence/container-permissions.txt)" = container-write-ok
+          if run_sdk 2>&1 | tee evidence/run.log; then
+            statuses=("${PIPESTATUS[@]}")
+          else
+            statuses=("${PIPESTATUS[@]}")
+          fi
+          write_status=0
+          printf '%s\n' "${statuses[0]}" > evidence/container-exit-code.txt || write_status=$?
+          printf '%s\n' "${statuses[1]}" > evidence/log-capture-exit-code.txt || write_status=$?
+          if test "${statuses[0]}" -ne 0; then exit "${statuses[0]}"; fi
+          if test "${statuses[1]}" -ne 0; then exit "${statuses[1]}"; fi
+          exit "$write_status"
+      - name: Retain exact reader inputs and final host statuses
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p evidence/retained
+          df -h > evidence/disk-after.txt
+          python3 game/scripts/numeric/canonical/packages.py retain evidence evidence/retained
+      - name: Upload bounded complete or explicitly incomplete reader archive
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: numeric-canonical-reader-inputs-${{ github.run_id }}
+          path: evidence/retained/canonical-reader-inputs.tar.gz
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Upload bounded status independently
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: numeric-canonical-status-${{ github.run_id }}
+          path: evidence/retained/retention-status.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded logs even if reader retention is incomplete
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: numeric-canonical-small-logs-${{ github.run_id }}
+          path: |
+            evidence/retained/canonical-small-logs.tar.gz
+            evidence/retained/small-logs-status.json
+          if-no-files-found: error
+          retention-days: 30

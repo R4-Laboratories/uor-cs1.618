@@ -1,0 +1,67 @@
+{
+  "schema": "cs1618/numeric-native-package/1",
+  "operation": "mul32",
+  "width": 32,
+  "root": "BoundedNumeric.Float.mul32",
+  "acceptance_root": "BoundedNumeric.NumericPackage.acceptance",
+  "cargo_name": "cs-numeric-mul32",
+  "cargo_version": "0.1.0",
+  "repository": "https://github.com/R4-Laboratories/uor-cs1.618",
+  "acceptance_cases": [
+    [
+      0,
+      1065353216,
+      0
+    ],
+    [
+      2147483648,
+      1065353216,
+      2147483648
+    ],
+    [
+      1065353216,
+      1065353216,
+      1065353216
+    ],
+    [
+      1065353216,
+      1073741824,
+      1073741824
+    ],
+    [
+      8388607,
+      1065353217,
+      8388608
+    ],
+    [
+      1,
+      1065353215,
+      1
+    ],
+    [
+      2139095047,
+      1065353216,
+      2143289351
+    ],
+    [
+      0,
+      2139095040,
+      2143289344
+    ],
+    [
+      2139095040,
+      2139095040,
+      2139095040
+    ],
+    [
+      1065353216,
+      0,
+      0
+    ],
+    [
+      1065353217,
+      1065353217,
+      1065353218
+    ]
+  ]
+}

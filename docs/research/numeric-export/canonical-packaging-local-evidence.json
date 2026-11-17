@@ -1,0 +1,108 @@
+{
+  "scope": "local component-only; no governed Prism CLI verification or SDK admission",
+  "base_commit": "4d7e03a",
+  "fixture_revision": "2a31ad07fd0b3ea0ef63f22f165d98e310eb89ec",
+  "source_prior": "453dc1bd8c46c374bbd40745d3204be62cc972ba4ae0971f66b997fbf625153d",
+  "inputs_manifest_sha256": "fbaf4633ecd7d3c9049ea457a8a6073b2196397929744345c9788494d3173116",
+  "operations": [
+    {
+      "operation": "mul32",
+      "local_source_id": "9741ba5f633e2b8a2a259c3879e8e103be4d0caa3b77445a190004ce7d5d63ee",
+      "local_semantic_id": "d0b384c57fc4200a68f5535244467feb3a23357464083a919cc0bcae220b2c73",
+      "local_build_id": "1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9",
+      "frozen_manifest_sha256": "9d4f3ea693b461b1feac4f2642c3724add265aa753bbb4f272cbfdd4f2934a41",
+      "descriptor_sha256": "180bf894620407716a1a94e9c7f5ea079b3a2c4bc0a27165d3a87bf3b6358d51",
+      "generated_module_files": {
+        ".lexlean/build/1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9/modules/BoundedNumeric/Bounds.lean": "3ca7f1c6687ad9a361e3cc3bd35e4a299835bc89cc05a924e45d70bc7189dd59",
+        ".lexlean/build/1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9/modules/BoundedNumeric/Float.lean": "c508f4f655c9191cb69938ce5ac2388166b56db1a1aac87bd4162bf24950550a",
+        ".lexlean/build/1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9/modules/BoundedNumeric/Foundation/Library/V1/Model.lean": "dade606ac547191262c9e0bbaff37c88665139f33ce60d21e956d67869cd86bb",
+        ".lexlean/build/1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9/modules/BoundedNumeric/NumericPackage.lean": "3d55c2293a4b6dfd1ee63815f38455f682bf8643aa235d43d4f4f96821d7c4d9",
+        ".lexlean/build/1656e206f104436c26952399bfbaa73a5f55226c00ba34fdc7146f539f1e3cf9/modules/BoundedNumeric/Wide.lean": "977fe97e73fb14d5d39415fd5f1a2ce17a93d9f1ec85eeeb5aa90c24b9ff42c1"
+      },
+      "combined_component_files": {
+        "export/kernel.ir": "b3c000034887e67cde0d1434e77b49d7046775f6dbc11c5c3ef794e65fbf09bf",
+        "export/roots.json": "8890d3e7ba84df05d3714aaad1ee0c2dc60926e66ad32380cd5b9c6fa188298b",
+        "export/coverage.json": "f6a2a9524943ce4761340ac355fecbd77f06404cdbc1b165c3d291d4ab9bf530",
+        "package/src/lib.rs": "f00c6161efe52dde536b6f38f7ece8a6e40566548672bdb28e41791ccf008953"
+      }
+    },
+    {
+      "operation": "mul64",
+      "local_source_id": "ed5d08572f47dacf1dcad7317ba3ded2c29f069e7de8bb72d87c35965cfaff59",
+      "local_semantic_id": "1d0837dbb228783fec7b9e77119c79b6e3a9e25473f5643289ba60b80f9ce5b6",
+      "local_build_id": "b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8",
+      "frozen_manifest_sha256": "560e45b6f828e2a2fad9b8e9ba3030aa5420db7190d8e5a944e39e61dc71de5f",
+      "descriptor_sha256": "16055532804049ba2a7c0a61feb4de08b8233d9ecc626381668cca575964cbc0",
+      "generated_module_files": {
+        ".lexlean/build/b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8/modules/BoundedNumeric/Bounds.lean": "3ca7f1c6687ad9a361e3cc3bd35e4a299835bc89cc05a924e45d70bc7189dd59",
+        ".lexlean/build/b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8/modules/BoundedNumeric/Float.lean": "c508f4f655c9191cb69938ce5ac2388166b56db1a1aac87bd4162bf24950550a",
+        ".lexlean/build/b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8/modules/BoundedNumeric/Foundation/Library/V1/Model.lean": "dade606ac547191262c9e0bbaff37c88665139f33ce60d21e956d67869cd86bb",
+        ".lexlean/build/b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8/modules/BoundedNumeric/NumericPackage.lean": "220c2fb8cb41c0269c906d2468b4707ab688bba86a075327e465651787dd38da",
+        ".lexlean/build/b1fa603eb12c4fe3ae1dd1fe3fabe7d13a3bd0e64a413207698b691a741890e8/modules/BoundedNumeric/Wide.lean": "977fe97e73fb14d5d39415fd5f1a2ce17a93d9f1ec85eeeb5aa90c24b9ff42c1"
+      },
+      "combined_component_files": {
+        "export/kernel.ir": "39491c7b4864559d03ccecbaa24c1f4b5e082dab2ef3221ab85bb7fa9d4abfe5",
+        "export/roots.json": "ab8a7c179d539b60eceb58b0489f4a88b3a4da6a042801acd12b9902e7b7b0b8",
+        "export/coverage.json": "718cbacc88e90e711406b573b9299c839c2c6d4c6a66552a68ed0db4f814f196",
+        "package/src/lib.rs": "0f35183442ce0ae8cb7b74d873f68a253c4c84dc260be38ed0dc82500db8bbf8"
+      }
+    },
+    {
+      "operation": "div32",
+      "local_source_id": "e43b1c1ec380383e48958ab37d0008d9f9390639af95cda4d1d687e542005dd9",
+      "local_semantic_id": "b61cc45e6707caaa46c62a66f32940ed19a313d0cef0d7ed9fd71e2b17b8dc32",
+      "local_build_id": "acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471",
+      "frozen_manifest_sha256": "5d0fa32610822a16452b01179880fe88048159f323377634289477a1799b0ee9",
+      "descriptor_sha256": "3d188eee6494badad388bea6c7968ad534511fe2adbbf09602df56e054eb7b8b",
+      "generated_module_files": {
+        ".lexlean/build/acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471/modules/BoundedNumeric/Bounds.lean": "3ca7f1c6687ad9a361e3cc3bd35e4a299835bc89cc05a924e45d70bc7189dd59",
+        ".lexlean/build/acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471/modules/BoundedNumeric/Float.lean": "c508f4f655c9191cb69938ce5ac2388166b56db1a1aac87bd4162bf24950550a",
+        ".lexlean/build/acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471/modules/BoundedNumeric/Foundation/Library/V1/Model.lean": "dade606ac547191262c9e0bbaff37c88665139f33ce60d21e956d67869cd86bb",
+        ".lexlean/build/acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471/modules/BoundedNumeric/NumericPackage.lean": "e5ed8a74cf73b94f0523545b7682e6fe93b96cbeda5ec3aeef7a1caef95625e1",
+        ".lexlean/build/acb6b3d35571961905b0171e7ff05f3096ea4cef01defa09bd628fcd7616d471/modules/BoundedNumeric/Wide.lean": "977fe97e73fb14d5d39415fd5f1a2ce17a93d9f1ec85eeeb5aa90c24b9ff42c1"
+      },
+      "combined_component_files": {
+        "export/kernel.ir": "631404167d02cec4357fc6ce6bc0fd7ba50056675f8a1c21715268c7f7172218",
+        "export/roots.json": "30d50ec2e2c98a749bd437f31fc3d1c5a951b2ae6360f2679656b00317301df6",
+        "export/coverage.json": "b546bdace3eb1f31f4bf1097f69bda420c5a5d06e8dc0258bb539f0b86436576",
+        "package/src/lib.rs": "5e1b45c69ed4704f86dbeb8a007a4486c869c27fc9af125ee792d4339b747fac"
+      }
+    },
+    {
+      "operation": "div64",
+      "local_source_id": "373096c25214c5abdaf92b39f320568c3e871a158788e48b76190a1d4538c052",
+      "local_semantic_id": "1a9064cd7956f3909d6b60bc9524c1ca1a1e56c132910945e3b7ca6c6cf2770e",
+      "local_build_id": "c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06",
+      "frozen_manifest_sha256": "37eb85570b545454900979e0256d3c9c8e06bb6fca1335f75b6cf4f0410ab3da",
+      "descriptor_sha256": "9ed144f664377e3457a48d22070ed70ac30dff4b9579e9cfb8722a0a49dd0026",
+      "generated_module_files": {
+        ".lexlean/build/c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06/modules/BoundedNumeric/Bounds.lean": "3ca7f1c6687ad9a361e3cc3bd35e4a299835bc89cc05a924e45d70bc7189dd59",
+        ".lexlean/build/c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06/modules/BoundedNumeric/Float.lean": "c508f4f655c9191cb69938ce5ac2388166b56db1a1aac87bd4162bf24950550a",
+        ".lexlean/build/c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06/modules/BoundedNumeric/Foundation/Library/V1/Model.lean": "dade606ac547191262c9e0bbaff37c88665139f33ce60d21e956d67869cd86bb",
+        ".lexlean/build/c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06/modules/BoundedNumeric/NumericPackage.lean": "705107f2b4cd0a219092e6367dfc72fa32e0b6db413a73319de546ed79126b22",
+        ".lexlean/build/c7f286a3e2403653e0ec255bd5393f84ac6e351f775b9e909e3003d89b96ce06/modules/BoundedNumeric/Wide.lean": "977fe97e73fb14d5d39415fd5f1a2ce17a93d9f1ec85eeeb5aa90c24b9ff42c1"
+      },
+      "combined_component_files": {
+        "export/kernel.ir": "3ca349b4f9a82b4c9631b8baccf2e57398ae9a0ed1c165778f84dcb2328c4f6f",
+        "export/roots.json": "375dc8e4b7eddfe8811ccc04cdcc20f7aae8e27893f5f4e51c8712f0d95a6417",
+        "export/coverage.json": "d8770f993287c56935fafee0ffbe646108566948bf3c8b8fd26f4ce7c693c071",
+        "package/src/lib.rs": "a778949793d2e4699157a89085742099f1abd2d85cb1145198ad3f516eeb2ba6"
+      }
+    }
+  ],
+  "lexlean_identity_path": "/workspace/diagnostic-tools/lexlean-identity.json",
+  "lexlean_identity_sha256": "132640197592efa4a58e19b7a3290e2939ea8a8302146a0c155a252fe991fa4c",
+  "combined_component_results_path": "/workspace/diagnostic-tools/canonical-packaging-combined-runtime-scope/results.json",
+  "combined_component_results_sha256": "4111a37700ef963a5aa683521c0c7f2a4d5c5f2573d41dfb6e5374b74c3e07d1",
+  "component_replay_manifest_path": "/workspace/diagnostic-tools/canonical-packaging-component-replay/manifest.json",
+  "component_replay_manifest_sha256": "2183a9ad8ad05032c0376242c2f97a72fc14cff0b45ac5bfc5f1e96f82db1f40",
+  "fresh_complete_runtime_failure_path": "/workspace/diagnostic-tools/canonical-packaging-combined-v3/results.json",
+  "fresh_complete_runtime_failure_sha256": "5fdf9763e091e0f8d3cd96544a4f9c3f9cbf0d83f4d9a558e9ab7a07f45e8483",
+  "pending": [
+    "actual unchanged-d6 SDK build/verify all four packages",
+    "actual package std/no_std regeneration acceptance and custody receipts",
+    "exact actual CLI emitted package native/Wasm 44648 replay and ABI controls",
+    "actual bundle-reader source/root/archive/child/output negatives",
+    "full applicable upstream validation; production admission; Task3 integration"
+  ]
+}
