@@ -1,0 +1,10 @@
+{
+  "source_commit": "0c3fa37b598e0ded05fdfd7437ef8b9ae379f94a",
+  "source_tree": "36b095c44de929e12d5b1bb00dd7c53f8e8b60cb",
+  "scope": "Task2 component implementation; independent review pending, no actual SDK/daemon qualification",
+  "archive_bytes": 28977,
+  "archive_sha256": "eeef89befa5f2624c70cb796ec58f287ae7bc5c7cd5e3064a65ecf6b66c7bd31",
+  "patch_bytes": 80967,
+  "patch_sha256": "a3a24b29dc5de6b82d7a6a0480e4a35a85fef1821b23afea3cbdb544681fd408",
+  "index_sha256": "5cd09b11bd4eee217a4731be5249e9513d7e07b31c6a83798cb8192301eb7d2a"
+}

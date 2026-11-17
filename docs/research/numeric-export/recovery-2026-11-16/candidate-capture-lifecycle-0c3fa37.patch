@@ -1,0 +1,1393 @@
+diff --git a/scripts/conditional-capture-bootstrap.py b/scripts/conditional-capture-bootstrap.py
+index f81aed06..4f57d5bb 100644
+--- a/scripts/conditional-capture-bootstrap.py
++++ b/scripts/conditional-capture-bootstrap.py
+@@ -147,7 +147,7 @@ def main():
+             require(record == {key: authority["scripts/" + name][key] for key in ("bytes", "sha256")},
+                     "mounted capsule descriptor mismatch")
+         namespace["verify_materialized"](root, descriptor, context["deadline"])
+-        namespace["guest"](context)
++        namespace["guest"](descriptor, context["deadline"])
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/scripts/conditional-capture-candidate-command.mjs b/scripts/conditional-capture-candidate-command.mjs
+new file mode 100644
+index 00000000..ac42557a
+--- /dev/null
++++ b/scripts/conditional-capture-candidate-command.mjs
+@@ -0,0 +1,33 @@
++// Test-only exact ELF execution. Reuse the qualified per-command supervisor;
++// neither this result nor the conditional capture is installed SDK acceptance.
++import assert from 'node:assert/strict';
++import {writeFileSync, lstatSync, realpathSync} from 'node:fs';
++import {join} from 'node:path';
++import {executeOwnedSdkCommand} from './sdk-command-owner.mjs';
++
++assert.equal(process.argv.length, 5);
++const [executable, work, seconds] = process.argv.slice(2);
++assert.equal(executable, '/candidate-input/current-test-elf');
++assert.match(work, /^\/workspace\/conditional-capture$/);
++assert.equal(realpathSync(work), work);
++assert(lstatSync(work).isDirectory());
++assert.match(seconds, /^[0-9]+$/);
++const timeout = Number(seconds) * 1000;
++assert(Number.isSafeInteger(timeout) && timeout > 0 && timeout <= 2400000);
++let result;
++try {
++  result = await executeOwnedSdkCommand(executable,
++    ['--exact', 'oci::publication_context::capture_tests::actual_source_free_capture_constructs_complete_conditional_context', '--nocapture'],
++    {profile:'qualification', environment:process.env, timeout, limit:32*1024*1024,
++      aggregate:true, interruptions:true});
++} catch (error) {
++  result = error.result;
++  if (!result) throw error;
++}
++for (const stream of ['stdout', 'stderr'])
++  writeFileSync(join(work, stream), result[stream], {flag:'wx', mode:0o600});
++writeFileSync(join(work, 'command-result.json'), JSON.stringify({
++  status:result.status, signal:result.signal, timedOut:result.timedOut,
++  overflow:result.overflow, aborted:result.aborted, orphaned:result.orphaned,
++  close_observed:result.close_observed, retirement:result.retirement
++})+'\n', {flag:'wx', mode:0o600});
+diff --git a/scripts/conditional-capture-candidate-command.test.mjs b/scripts/conditional-capture-candidate-command.test.mjs
+new file mode 100644
+index 00000000..cb6dcee6
+--- /dev/null
++++ b/scripts/conditional-capture-candidate-command.test.mjs
+@@ -0,0 +1,87 @@
++// Local launcher logic/process controls; not actual SDK supervisor qualification.
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {spawnSync} from 'node:child_process';
++import {fileURLToPath} from 'node:url';
++import test from 'node:test';
++
++const path = fileURLToPath(new URL('./conditional-capture-candidate-command.mjs', import.meta.url));
++const source = readFileSync(path, 'utf8');
++const exactTest = 'oci::publication_context::capture_tests::actual_source_free_capture_constructs_complete_conditional_context';
++const result = {status: 0, signal: null, timedOut: false, overflow: false, aborted: false,
++  orphaned: false, close_observed: true, retirement: {unitFixture: true},
++  stdout: Buffer.from('original stdout'), stderr: Buffer.from('original stderr')};
++let sequence = 0;
++async function unitLauncher({argv = ['/candidate-input/current-test-elf', '/workspace/conditional-capture', '12'],
++  original = result, throwResult = false, directory = true, realpath = '/workspace/conditional-capture'} = {}) {
++  const saved = process.argv;
++  const calls = [], writes = [];
++  const key = `candidateLauncherUnit${++sequence}`;
++  globalThis[key] = {writeFileSync: (...args) => writes.push(args),
++    lstatSync: () => ({isDirectory: () => directory}), realpathSync: () => realpath,
++    executeOwnedSdkCommand: async (...args) => {
++      calls.push(args);
++      if (throwResult) throw Object.assign(Error('fixture failure'), {result: original});
++      return original;
++    }};
++  // Only the test's in-memory copy substitutes dependencies. The on-disk
++  // launcher and both supervisor authority files remain unchanged.
++  const fsImport = "import {writeFileSync, lstatSync, realpathSync} from 'node:fs';";
++  const ownerImport = "import {executeOwnedSdkCommand} from './sdk-command-owner.mjs';";
++  assert(source.includes(fsImport) && source.includes(ownerImport));
++  const unit = source.replace(fsImport, `const {writeFileSync,lstatSync,realpathSync} = globalThis.${key};`)
++    .replace(ownerImport, `const {executeOwnedSdkCommand} = globalThis.${key};`);
++  process.argv = ['node', path, ...argv];
++  try {
++    await import(`data:text/javascript;base64,${Buffer.from(unit).toString('base64')}#${sequence}`);
++    return {calls, writes};
++  } finally {
++    process.argv = saved;
++    delete globalThis[key];
++  }
++}
++
++test('fixed candidate ELF, original exact case and entire original supervisor profile', async () => {
++  const {calls, writes} = await unitLauncher();
++  assert.equal(calls.length, 1);
++  assert.equal(calls[0][0], '/candidate-input/current-test-elf');
++  assert.deepEqual(calls[0][1], ['--exact', exactTest, '--nocapture']);
++  assert.deepEqual(calls[0][2], {profile: 'qualification', environment: process.env,
++    timeout: 12000, limit: 32 * 1024 * 1024, aggregate: true, interruptions: true});
++  assert.deepEqual(writes.map(w => w[0]), ['/workspace/conditional-capture/stdout',
++    '/workspace/conditional-capture/stderr', '/workspace/conditional-capture/command-result.json']);
++  assert(writes.every(w => w[2].flag === 'wx' && w[2].mode === 0o600));
++  assert.equal(writes[0][1], result.stdout);
++  assert.equal(writes[1][1], result.stderr);
++  assert.deepEqual(JSON.parse(writes[2][1]), {status: 0, signal: null, timedOut: false,
++    overflow: false, aborted: false, orphaned: false, close_observed: true, retirement: {unitFixture: true}});
++});
++
++test('failed supervisor result retains exact stdout, stderr and failure fields', async () => {
++  const failed = {...result, status: null, timedOut: true, overflow: true, aborted: true,
++    orphaned: true, close_observed: false, retirement: {unitFixture: 'unqualified'}};
++  const {writes} = await unitLauncher({original: failed, throwResult: true});
++  assert.equal(writes[0][1], result.stdout);
++  assert.equal(writes[1][1], result.stderr);
++  assert.equal(JSON.parse(writes[2][1]).retirement.unitFixture, 'unqualified');
++  assert.equal(JSON.parse(writes[2][1]).timedOut, true);
++});
++
++test('refuses alternative ELF/work/timeout/arity and aliased or missing directory', async () => {
++  for (const argv of [[], ['/workspace/conditional-capture/current-test-elf', '/workspace/conditional-capture', '1'],
++    ['/candidate-input/current-test-elf', '/other', '1'],
++    ...['0', '-1', '1.5', '2401', 'Infinity'].map(seconds =>
++      ['/candidate-input/current-test-elf', '/workspace/conditional-capture', seconds])]) {
++    await assert.rejects(unitLauncher({argv}));
++  }
++  await assert.rejects(unitLauncher({directory: false}));
++  await assert.rejects(unitLauncher({realpath: '/aliased'}));
++});
++
++test('actual Node process refuses wrong ELF before starting supervisor', () => {
++  const child = spawnSync(process.execPath, [path, '/wrong-elf', '/workspace/conditional-capture', '1'],
++    {timeout: 5000, maxBuffer: 1024 * 1024});
++  assert.equal(child.status, 1);
++  assert.match(child.stderr.toString(), /AssertionError/);
++  assert.equal(child.stdout.length, 0);
++});
+diff --git a/scripts/conditional-capture-candidate.py b/scripts/conditional-capture-candidate.py
+index 3e8f6199..4b18cb92 100644
+--- a/scripts/conditional-capture-candidate.py
++++ b/scripts/conditional-capture-candidate.py
+@@ -1,8 +1,8 @@
+ """Closed candidate-source-v1 transport components; never SDK acceptance.
+ 
+-Parent orchestration and guest execution are deliberately unavailable until the
+-separate actor-lifecycle implementation is reviewed. Stage admission describes
+-only complete measured input bytes and EOF, never application acceptance.
++The source parent owns inspected actors and read-only candidate views. Stage
++admission describes complete measured bytes and EOF, never SDK or production
++acceptance. Actual Docker enforcement requires separate platform qualification.
+ """
+ import hashlib
+ from contextlib import contextmanager
+@@ -647,12 +647,764 @@ def _stage(context):
+     legacy.write_bounded(sys.stdout.buffer, encoded(result), context["deadline"])
+ 
+ 
+-def guest(context):
+-    raise RuntimeError("candidate guest lifecycle is not implemented; no SDK execution admitted")
++# The envelope is host evidence. A guest can never assert daemon retirement.
++ENVELOPE_NAME = "candidate-transport-evidence.json"
++ENVELOPE_SCHEMA = "prismpm/conditional-candidate-transport-evidence/1"
++ROLE_LABEL = "org.prismpm.conditional-capture-role"
++IMAGE_LAUNCHER_SHA256 = "ac11aadd31f0a3e40df7866cc7690be8e7c8c252120146d718471358840ed6dd"
++TMPFS = {"/tmp": "rw,exec,nosuid,nodev,size=8g,mode=1777",
++         "/workspaces": "rw,noexec,nosuid,nodev,size=16m,mode=1777"}
+ 
+ 
+-def parent(source, executable):
+-    raise RuntimeError("candidate parent lifecycle is not implemented; no Docker operation admitted")
++def remaining_seconds(deadline, reserve=0):
++    seconds = int(deadline - time.monotonic() - reserve)
++    require(seconds > 0, "candidate lifecycle deadline")
++    return min(1980, seconds)
++
++
++def protected_root(value):
++    root = legacy.alias_root(value)
++    require(root.parts[1] != "workspace", "compiled root requires protected ancestors outside writable workspace")
++    return root
++
++
++def original_descriptor(descriptor):
++    return legacy.checked_descriptor({key: descriptor[key] for key in (
++        "source_root", "source", "fixture_inputs", "executable_bytes", "executable_sha256",
++        "listing_sha256", "test_count", "sdk_image")} | {
++        "inventory_sha256": descriptor["runtime"]["inventory_sha256"],
++        "capture_seconds": descriptor["remaining_seconds"]})
++
++
++def stage_admission(descriptor):
++    return {"schema": STAGE_SCHEMA, "route": ROUTE, "descriptor_sha256": digest(descriptor),
++            **{key: descriptor[key] for key in ("source_sha256", "union_sha256", "fixture_inputs_sha256",
++                                               "authority", "executable_sha256")},
++            "transfer_manifest_sha256": digest(transfer_manifest(descriptor)), "input_eof_observed": True}
++
++
++def checked_candidate_response(value, descriptor):
++    require(type(value) is dict and set(value) == {"schema", "route", "descriptor_sha256",
++        "source_sha256", "union_sha256", "fixture_inputs_sha256", "authority", "sdk_tree",
++        "sdk_tree_sha256", "image_authority", "readonly_views", "payload"}, "closed candidate response")
++    require(value["schema"] == RESPONSE_SCHEMA and value["route"] == ROUTE
++            and value["descriptor_sha256"] == digest(descriptor), "candidate response descriptor differs")
++    for key in ("source_sha256", "union_sha256", "fixture_inputs_sha256", "authority"):
++        require(encoded(value[key]) == encoded(descriptor[key]), "candidate response binding differs: " + key)
++    validate_rows(value["sdk_tree"])
++    require(value["sdk_tree_sha256"] == digest(value["sdk_tree"])
++            and encoded(value["image_authority"]) == encoded(descriptor["runtime"]["image_authority"]),
++            "separate SDK baseline differs")
++    require(encoded(value["readonly_views"]) == encoded({"input": "/candidate-input", "compiled_root": descriptor["source_root"],
++            "subpath": "candidate-source", "same_directory": True, "readonly": True,
++            "protected_ancestors": True}), "actual readonly views required")
++    legacy.checked_response(value["payload"], original_descriptor(descriptor))
++    require(not any(r["path"] == ENVELOPE_NAME for r in value["payload"]["records"]),
++            "guest cannot publish host transport envelope")
++    require(len(encoded(value)) <= legacy.MAX_JSON, "candidate response JSON bound")
++    return value
++
++
++def response_wrapper(descriptor, baseline, views, payload):
++    return checked_candidate_response({"schema": RESPONSE_SCHEMA, "route": ROUTE,
++        "descriptor_sha256": digest(descriptor), **{k: descriptor[k] for k in (
++            "source_sha256", "union_sha256", "fixture_inputs_sha256", "authority")},
++        "sdk_tree": baseline, "sdk_tree_sha256": digest(baseline),
++        "image_authority": descriptor["runtime"]["image_authority"], "readonly_views": views,
++        "payload": payload}, descriptor)
++
++
++def mount_rows(body):
++    require(len(body) <= legacy.MIB, "mount graph bound")
++    rows = []
++    for line in body.decode("utf-8", "strict").splitlines():
++        fields = line.split()
++        require(len(fields) >= 10 and "-" in fields, "actual mountinfo grammar")
++        # All admitted paths are ASCII without mountinfo escape characters.
++        rows.append({"device": fields[2], "root": fields[3], "target": fields[4],
++                     "options": fields[5].split(",")})
++    return rows
++
++
++def verify_views(descriptor, deadline):
++    root = protected_root(descriptor["source_root"])
++    fixed = Path("/candidate-input")
++    with open("/proc/self/mountinfo", "rb") as stream:
++        mounts = mount_rows(stream.read(legacy.MIB + 1))
++    selected = []
++    for path in (fixed, root):
++        require(path.resolve() == path and stat.S_ISDIR(os.lstat(path).st_mode)
++                and os.statvfs(path).f_flag & os.ST_RDONLY, "actual readonly candidate view required")
++        rows = [r for r in mounts if r["target"] == str(path)]
++        require(len(rows) == 1 and "ro" in rows[0]["options"] and "rw" not in rows[0]["options"],
++                "exact readonly candidate mount required")
++        require(not any(r["target"].startswith(str(path) + "/") for r in mounts),
++                "nested candidate mount refused")
++        selected.append(rows[0])
++    require(selected[0]["device"] == selected[1]["device"]
++            and selected[1]["root"] == selected[0]["root"].rstrip("/") + "/candidate-source",
++            "actual candidate subpath mount relation")
++    source = fixed / "candidate-source"
++    require((os.lstat(source).st_dev, os.lstat(source).st_ino) ==
++            (os.lstat(root).st_dev, os.lstat(root).st_ino), "candidate views are not the same directory")
++    for parent in root.parents:
++        info = os.lstat(parent)
++        require(stat.S_ISDIR(info.st_mode) and info.st_uid == 0 and parent.resolve() == parent,
++                "compiled-root ancestor is not protected")
++        # Root-owned sticky top-level tmpfs protects its root-owned child.
++        sticky_anchor = str(parent) in ("/tmp", "/workspaces") and bool(info.st_mode & stat.S_ISVTX)
++        require(sticky_anchor or (not info.st_mode & 0o022 and info.st_uid != os.getuid()),
++                "writable compiled-root ancestor")
++    verify_materialized(fixed, descriptor, deadline)
++    require(complete_tree(root, deadline) == descriptor["union"], "compiled view source differs")
++    return {"input": str(fixed), "compiled_root": str(root), "subpath": "candidate-source",
++            "same_directory": True, "readonly": True, "protected_ancestors": True}
++
++
++def sdk_baseline(descriptor, deadline):
++    root = legacy.SDK_ROOT
++    require(root.resolve() == root and os.statvfs(root).f_flag & os.ST_RDONLY,
++            "immutable installed SDK root required")
++    require(legacy.INVENTORY.resolve() == legacy.INVENTORY
++            and Path("/etc/profile.d/prismpm-sdk.sh").is_file(), "fixed installed SDK marker required")
++    inventory = legacy.read_regular(legacy.INVENTORY, 8 * legacy.MIB)
++    require(sha(inventory) == descriptor["runtime"]["inventory_sha256"], "independent installed inventory differs")
++    rows = complete_tree(root, deadline)
++    observed = []
++    for record in descriptor["runtime"]["image_authority"]:
++        body = legacy.read_regular(Path(record["path"]), legacy.MAX_FILE)
++        observed.append({"path": record["path"], "bytes": len(body), "sha256": sha(body)})
++    require(encoded(observed) == encoded(descriptor["runtime"]["image_authority"]),
++            "independent image authority differs")
++    return rows
++
++
++def guest(descriptor: dict, deadline: float) -> dict:
++    with deadline_scope(deadline):
++        return _guest(descriptor, deadline)
++
++
++def _guest(descriptor, deadline):
++    validate_descriptor(descriptor)
++    require(sys.version_info[:3] == (3, 12, 3) and os.getuid() == 1000 and os.getgid() == 1000,
++            "actual pinned SDK guest required")
++    require(os.environ.get("PRISMPM_TEST_SDK_IMAGE") == SDK_IMAGE, "actual SDK guest environment")
++    views = verify_views(descriptor, deadline)
++    baseline = sdk_baseline(descriptor, deadline)
++    bindings = {"executable_sha256": descriptor["executable_sha256"],
++                "inventory_sha256": descriptor["runtime"]["inventory_sha256"],
++                "source_sha256": descriptor["source_sha256"]}
++    # Ensure a bounded diagnostic response fits before executing the test. The
++    # placeholder result only sizes framing; it is never emitted or admitted.
++    sizing = response_wrapper(descriptor, baseline, views,
++        {**bindings, "result": {}, "stdout_bytes": 0, "stderr_bytes": 0, "records": []})
++    require(len(encoded(sizing)) + 8192 <= legacy.MAX_JSON, "SDK baseline leaves no response diagnostic headroom")
++    executable = Path("/candidate-input/current-test-elf")
++    require(measured_listing(executable, deadline) == (descriptor["listing_sha256"], descriptor["test_count"]),
++            "immutable candidate listing/count differs")
++    work = Path("/workspace/conditional-capture")
++    info = os.lstat(work.parent)
++    require(work.parent.resolve() == work.parent and stat.S_ISDIR(info.st_mode) and info.st_uid == 1000
++            and info.st_mode & 0o200 and legacy.shutil.disk_usage(work.parent).free >= 10 * 1024**3,
++            "owned execution volume requires 10 GiB actual free space")
++    work.mkdir(mode=0o700)
++    output, temporary, cargo, elan = (work / name for name in ("capture", "tmp", "cargo", "elan"))
++    output.mkdir(mode=0o700)
++    temporary.mkdir(mode=0o700)
++    custody = legacy.copy_private_cargo_cache(Path("/opt/prismpm/cargo-home"), cargo)
++    custody["protoc"] = legacy.run_vendored_protoc(cargo, custody)
++    elan.mkdir(mode=0o700)
++    os.symlink("/usr/local/elan/toolchains", elan / "toolchains")
++    environment = {**os.environ, "CARGO_HOME": str(cargo), "ELAN_HOME": str(elan), "TMPDIR": str(temporary),
++                   "PRISMPM_OC10_CAPTURE_OUTPUT": str(output), "PRISMPM_OC10_SDK_CHILD": "sealed-current-test-elf"}
++    seconds = remaining_seconds(deadline, 30)
++    command = legacy.run_bounded(["/usr/local/bin/node",
++        "/candidate-input/candidate-source/scripts/conditional-capture-candidate-command.mjs",
++        str(executable), str(work), str(seconds)], cwd=descriptor["source_root"], env=environment,
++        timeout=min(seconds + 10, deadline - time.monotonic() - 5), limit=legacy.MIB)
++    require(command.returncode == 0, "candidate command supervisor failed: " + command.stderr.decode(errors="replace"))
++    result = legacy.json.loads(legacy.read_regular(work / "command-result.json", legacy.MIB))
++    stdout = legacy.read_regular(work / "stdout", 32 * legacy.MIB)
++    stderr = legacy.read_regular(work / "stderr", 32 * legacy.MIB)
++    secondary = None
++    payload = {**bindings, "result": result, "stdout_bytes": len(stdout), "stderr_bytes": len(stderr), "records": []}
++    try:
++        try:
++            legacy.checked_result(result)
++        except RuntimeError:
++            pass  # Failed commands still return their original bounded streams.
++        else:
++            legacy.verify_private_cargo_tools(cargo, custody)
++            _exclusive(output / "cargo-cache-custody.json", encoded(custody), 0o600)
++        require(verify_views(descriptor, deadline) == views and sdk_baseline(descriptor, deadline) == baseline,
++                "candidate or separate SDK baseline changed")
++        payload["records"] = legacy.capture_records(output, result)
++        response = response_wrapper(descriptor, baseline, views, payload)
++    except Exception as error:
++        # Match original transport_capture: preserve BOTH streams under their
++        # original channel names even when secondary retained evidence fails.
++        # Empty evidence plus failed guest completion can never be accepted.
++        secondary = error
++        payload["records"] = []
++        response = response_wrapper(descriptor, baseline, views, payload)
++    for body in (encoded(response), stdout, stderr):
++        legacy.write_bounded(sys.stdout.buffer, body, deadline)
++    if secondary is not None:
++        raise secondary
++    for record in payload["records"]:
++        if record["kind"] == "file":
++            body = legacy.read_regular(output / record["path"], record["bytes"])
++            require(sha(body) == record["sha256"] and len(body) == record["bytes"], "capture member changed")
++            legacy.write_bounded(sys.stdout.buffer, body, deadline)
++    reader = Reader(sys.stdin.buffer, deadline)
++    require(reader.line() == {"retire": True}, "candidate retirement acknowledgement required")
++    reader.exhausted()
++    return response
++
++
++
++class Lifecycle:
++    """Single-deadline actor custody; fake transcripts test policy, never Docker."""
++    def __init__(self, deadline, image, environment, token=None):
++        self.deadline = deadline
++        # Six seconds covers Task1's failure-only listing/Git reap; all other
++        # run_bounded failure reaps are charged inside their per-call cap.
++        self.work_deadline = deadline - legacy.RETIREMENT_RESERVE_SECONDS - 6
++        self.image, self.environment = image, environment
++        self.token = token or legacy.uuid.uuid4().hex
++        self.prefix = "prismpm-candidate-" + self.token
++        self.actors, self.volumes, self.attachments = {}, {}, []
++        self.cleanup_calls, self.cleanup_mode = 0, False
++        self.stage_retired = False
++        self.inspection_retired = False
++
++    def call(self, *arguments, limit=legacy.MAX_JSON):
++        if self.cleanup_mode:
++            require(self.cleanup_calls < 18, "candidate reconciliation daemon-call bound")
++            self.cleanup_calls += 1
++        deadline = self.deadline if self.cleanup_mode else self.work_deadline
++        # Immutable run_bounded may reap its failed child for five seconds.
++        # Include that inside the 15-second daemon allowance, not after it.
++        timeout = min(10, deadline - time.monotonic() - 5)
++        require(timeout > 0, "candidate daemon cleanup deadline")
++        blocked = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGHUP, signal.SIGINT, signal.SIGTERM})
++        try:
++            result = legacy.run_bounded(["docker", "--host", "unix:///var/run/docker.sock", *arguments],
++                timeout=timeout, limit=limit,
++                env={k: v for k, v in os.environ.items() if not k.startswith("DOCKER_")})
++        finally:
++            signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
++        require(result.returncode == 0, "candidate Docker control failed: " + result.stderr.decode(errors="replace"))
++        return result
++
++    def inspect(self, cid):
++        values = legacy.json.loads(self.call("container", "inspect", cid).stdout)
++        require(type(values) is list and len(values) == 1, "one actual actor inspection required")
++        return values[0]
++
++    def image_file(self, cid, path, limit):
++        # Same stopped-image tar grammar as immutable image_file; substitute
++        # only the deadline-aware daemon adapter, never an ambient helper.
++        import io
++        body = self.call("container", "cp", cid + ":" + str(path), "-", limit=limit + legacy.MIB).stdout
++        with legacy.tarfile.open(fileobj=io.BytesIO(body), mode="r:") as archive:
++            members = archive.getmembers()
++            require(len(members) == 1 and members[0].isfile() and members[0].size <= limit
++                    and members[0].name == path.name, "exact stopped-image file required")
++            return archive.extractfile(members[0]).read(limit + 1)
++
++    def volume(self, role):
++        name = self.prefix + "-" + role
++        self.volumes[role] = name  # Record pending creation before daemon call.
++        require(self.call("volume", "create", "--label", legacy.LABEL + "=" + self.token,
++            "--label", ROLE_LABEL + "=" + role, name).stdout.decode().strip() == name,
++            "fresh labelled candidate volume required")
++        return name
++
++    def spec(self, role, argv, source_root=None, socket_gid=None):
++        require(role in ("inspect", "stage", "execute"), "closed candidate actor role")
++        if role == "inspect":
++            require(argv == ["-I", "-B", "-c", "pass"], "fixed never-started inspection argv")
++            return {"role": role, "name": self.prefix + "-" + role, "argv": argv,
++                    "mounts": [], "groups": [], "tmpfs": {**TMPFS,
++                    "/workspace": "rw,noexec,nosuid,nodev,size=16m,mode=1777"}}
++        require(self.inspection_retired, "inspection absence required before stage creation")
++        if role == "execute":
++            require(self.stage_retired, "stage absence required before execution creation")
++            protected_root(source_root)
++        mounts = [{"Type": "volume", "Source": self.volumes["input"],
++                   "Target": "/workspace" if role == "stage" else "/candidate-input",
++                   "ReadOnly": role == "execute"}]
++        if role == "execute":
++            mounts.extend([{"Type": "volume", "Source": self.volumes["input"], "Target": source_root,
++                "ReadOnly": True, "VolumeOptions": {"Subpath": "candidate-source"}},
++                {"Type": "volume", "Source": self.volumes["work"], "Target": "/workspace", "ReadOnly": False},
++                {"Type": "bind", "Source": "/var/run/docker.sock", "Target": "/var/run/docker.sock", "ReadOnly": False}])
++        return {"role": role, "name": self.prefix + "-" + role, "argv": argv,
++                "mounts": mounts, "groups": [] if role == "stage" else [str(socket_gid)], "tmpfs": TMPFS}
++
++    def authenticate(self, actor, spec):
++        require(actor["Id"] and re.fullmatch(r"[0-9a-f]{64}", actor["Id"])
++            and actor["Image"] == self.image and actor["Name"] == "/" + spec["name"]
++            and actor["Config"]["Labels"].get(legacy.LABEL) == self.token
++            and actor["Config"]["Labels"].get(ROLE_LABEL) == spec["role"], "candidate actor ownership differs")
++        known = self.actors[spec["role"]].get("id")
++        require(known is None or known == actor["Id"], "candidate actor identity replaced")
++        return actor["Id"]
++
++    def validate_actor(self, actor, spec):
++        self.authenticate(actor, spec)
++        config, host = actor["Config"], actor["HostConfig"]
++        require(config["Entrypoint"] == ["/usr/bin/python3"] and config["Cmd"] == spec["argv"]
++            and config["User"] == "1000:1000" and config["WorkingDir"] == "/workspace"
++            and config["OpenStdin"] is True and config["Tty"] is False
++            and sorted(config["Env"]) == sorted(self.environment), "actual actor argv/environment differs")
++        require(host["ReadonlyRootfs"] is True and host["NetworkMode"] == "none"
++            and host["AutoRemove"] is False and host["Memory"] == 8 * 1024**3
++            and host["MemorySwap"] == 8 * 1024**3 and host["NanoCpus"] == 2 * 10**9
++            and host["PidsLimit"] == 256 and host["CapDrop"] == ["ALL"] and not host.get("CapAdd")
++            and host["SecurityOpt"] == ["no-new-privileges:true"] and host["Privileged"] is False
++            and not host.get("Devices") and not host.get("Binds") and not host.get("VolumesFrom")
++            and not host.get("PidMode") and host.get("IpcMode") in ("", "private", "none")
++            and not host.get("UsernsMode") and host["Tmpfs"] == spec["tmpfs"]
++            and (host.get("GroupAdd") or []) == spec["groups"], "actual actor resource policy differs")
++        actual_requests = []
++        for mount in host.get("Mounts") or []:
++            require(set(mount) <= {"Type", "Source", "Target", "ReadOnly", "VolumeOptions",
++                    "BindOptions", "Consistency"}, "unexpected mount option")
++            normalized = {k: mount[k] for k in ("Type", "Source", "Target")}
++            normalized["ReadOnly"] = mount.get("ReadOnly", False)
++            if "VolumeOptions" in mount:
++                options = mount["VolumeOptions"]
++                require(set(options) <= {"Subpath", "NoCopy"} and not options.get("NoCopy"), "volume initialization policy")
++                if options.get("Subpath"):
++                    normalized["VolumeOptions"] = {"Subpath": options["Subpath"]}
++            require(not mount.get("BindOptions") and not mount.get("Consistency"), "unexpected mount propagation")
++            actual_requests.append(normalized)
++        require(encoded(actual_requests) == encoded(spec["mounts"]), "exact readonly subpath mount request differs")
++        actual = []
++        for mount in actor["Mounts"]:
++            actual.append((mount["Type"], mount["Name"] if mount["Type"] == "volume" else mount["Source"],
++                           mount["Destination"], mount["RW"]))
++        expected = [(m["Type"], m["Source"], m["Target"], not m["ReadOnly"]) for m in spec["mounts"]]
++        require(sorted(actual) == sorted(expected), "actual actor mount graph differs")
++        return actor
++
++    def create(self, spec):
++        role = spec["role"]
++        require(role in ("inspect", "stage", "execute"), "closed candidate creation role")
++        require(not any(not item["retired"] for item in self.actors.values()),
++                "preceding candidate actor retirement required")
++        require(role == "inspect" or self.inspection_retired, "inspection absence required before creation")
++        require(role != "execute" or self.stage_retired, "stage absence required before execution creation")
++        require(role not in self.actors, "candidate actor recreation refused")
++        self.actors[role] = {"spec": spec, "id": None, "retired": False}
++        args = ["create", "--name", spec["name"], "--label", legacy.LABEL + "=" + self.token,
++                "--label", ROLE_LABEL + "=" + role, "--interactive", "--read-only", "--network", "none",
++                "--user", "1000:1000", "--cap-drop", "ALL", "--security-opt", "no-new-privileges:true",
++                "--memory", "8g", "--memory-swap", "8g", "--cpus", "2", "--pids-limit", "256"]
++        for group in spec["groups"]:
++            args += ["--group-add", group]
++        for path, options in spec["tmpfs"].items():
++            args += ["--tmpfs", path + ":" + options]
++        for mount in spec["mounts"]:
++            text = "type=" + mount["Type"] + ",source=" + mount["Source"] + ",target=" + mount["Target"]
++            if mount["ReadOnly"]:
++                text += ",readonly"
++            if mount.get("VolumeOptions"):
++                text += ",volume-subpath=candidate-source"
++            args += ["--mount", text]
++        args += ["--env", "PRISMPM_TEST_SDK_IMAGE=" + SDK_IMAGE, "--entrypoint", "/usr/bin/python3",
++                 self.image, *spec["argv"]]
++        cid = self.call(*args).stdout.decode().strip()
++        require(re.fullmatch(r"[0-9a-f]{64}", cid), "complete candidate actor ID required")
++        self.actors[role]["id"] = cid
++        actor = self.validate_actor(self.inspect(cid), spec)
++        require(actor["State"]["Status"] == "created" and actor["State"]["Running"] is False
++                and actor["State"]["Pid"] == 0 and actor["State"]["StartedAt"] == "0001-01-01T00:00:00Z",
++                "actor started before policy inspection")
++        return cid
++
++    def references(self, expected=None):
++        names = self.call("container", "ls", "--all", "--no-trunc", "--filter",
++                          "volume=" + self.volumes["input"], "--format", "{{.ID}}").stdout.decode().splitlines()
++        require(names == ([] if expected is None else [expected]), "additional candidate input volume reference")
++
++    def attach(self, role, diagnostics):
++        require(role in ("stage", "execute") and len(self.attachments) < 2,
++                "only two executable candidate attachments")
++        actor = self.actors[role]
++        actual = self.validate_actor(self.inspect(actor["id"]), actor["spec"])
++        require(actual["State"]["Status"] == "created" and actual["State"]["Running"] is False
++                and actual["State"]["Pid"] == 0
++                and actual["State"]["StartedAt"] == "0001-01-01T00:00:00Z", "actor started before attachment")
++        # Do not install a work alarm across Popen's ownership handoff.
++        tick(self.work_deadline)
++        blocked = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGHUP, signal.SIGINT, signal.SIGTERM})
++        try:
++            child = legacy.subprocess.Popen(["docker", "--host", "unix:///var/run/docker.sock", "start",
++                "--attach", "--interactive", actor["id"]], stdin=legacy.subprocess.PIPE,
++                stdout=legacy.subprocess.PIPE, stderr=diagnostics, preexec_fn=legacy.bound_diagnostic_file,
++                env={k: v for k, v in os.environ.items() if not k.startswith("DOCKER_")})
++            self.attachments.append(child)
++        finally:
++            signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
++        return child
++
++    def retire_actor(self, role):
++        item = self.actors[role]
++        if item["retired"]:
++            return
++        spec = item["spec"]
++        ids = self.call("container", "ls", "--all", "--no-trunc", "--filter",
++            "name=^/" + spec["name"] + "$", "--format", "{{.ID}}").stdout.decode().splitlines()
++        require(len(ids) <= 1, "ambiguous candidate actor reconciliation")
++        if ids:
++            actor = self.inspect(ids[0])
++            item["id"] = self.authenticate(actor, spec)
++            self.call("container", "rm", "--force", item["id"])
++        else:
++            require(item["id"] is not None, "pending candidate creation is uncertain")
++        require(self.call("container", "ls", "--all", "--no-trunc", "--filter",
++            "name=^/" + spec["name"] + "$", "--format", "{{.ID}}").stdout == b"", "candidate actor name absence unproven")
++        require(self.call("container", "ls", "--all", "--no-trunc", "--filter", "id=" + item["id"],
++            "--format", "{{.ID}}").stdout == b"", "candidate actor ID absence unproven")
++        item["retired"] = True
++        if role == "stage":
++            self.stage_retired = True
++        if role == "inspect":
++            self.inspection_retired = True
++
++    def wait_attachment(self, child, successful=False):
++        limit = self.work_deadline if successful else self.deadline
++        # At most 30 normal seconds + five forced-reap seconds; both absolute.
++        left = min(30, limit - time.monotonic() - 5)
++        require(left > 0, "candidate attachment retirement deadline")
++        try:
++            status = child.wait(timeout=left)
++        except legacy.subprocess.TimeoutExpired:
++            child.kill()
++            remaining = min(5, limit - time.monotonic())
++            require(remaining > 0, "candidate attachment forced-reap deadline")
++            child.wait(timeout=remaining)
++            raise RuntimeError("candidate attachment force retirement")
++        if successful:
++            require(status == 0, "candidate attachment failed")
++        return status
++
++    def finish(self, completed):
++        self.cleanup_mode = True
++        errors = []
++        for child in self.attachments:
++            if child.stdin and not child.stdin.closed:
++                try:
++                    child.stdin.close()
++                except OSError as error:
++                    errors.append(str(error))
++        # Creation barriers mean at most ONE actor is not already retired.
++        # Worst success: actor 5 + input refs 1 + both volumes 6 = 12 calls.
++        # Early failures never create later actors; pending inspection uses 5.
++        # The hard global cap remains 18, including failed control calls.
++        for role in self.actors:
++            try:
++                self.retire_actor(role)
++            except Exception as error:
++                errors.append(role + " actor: " + str(error))
++        for child in self.attachments:
++            try:
++                if child.poll() is None:
++                    self.wait_attachment(child)
++                if child.stdout:
++                    child.stdout.close()
++            except Exception as error:
++                errors.append("attachment: " + str(error))
++        if completed and not errors and "input" in self.volumes:
++            try:
++                self.references()
++            except Exception as error:
++                errors.append("input references: " + str(error))
++        # Authenticate BOTH volumes before deleting either; ambiguity retains both.
++        owned = []
++        for role, name in self.volumes.items():
++            try:
++                rows = legacy.json.loads(self.call("volume", "inspect", name).stdout)
++                require(type(rows) is list and len(rows) == 1 and rows[0]["Name"] == name
++                        and rows[0]["Labels"].get(legacy.LABEL) == self.token
++                        and rows[0]["Labels"].get(ROLE_LABEL) == role, "candidate volume ownership differs")
++                owned.append(name)
++            except Exception as error:
++                errors.append(role + " volume: " + str(error))
++        if completed and not errors:
++            for name in owned:
++                try:
++                    self.call("volume", "rm", name)
++                    require(self.call("volume", "ls", "--filter", "name=^" + name + "$", "--format",
++                        "{{.Name}}").stdout == b"", "candidate volume absence unproven")
++                except Exception as error:
++                    errors.append("volume retirement: " + str(error))
++                    break
++        else:
++            print("Candidate failure; owned volumes retained; nested-oracle retirement unqualified: "
++                  + legacy.json.dumps(self.volumes, sort_keys=True), file=sys.stderr)
++        require(not errors, "candidate reconciliation unqualified: " + "; ".join(errors))
++        return {"actors": [{"role": role, "name": item["spec"]["name"], "id": item["id"], "absent": True}
++                           for role, item in self.actors.items()],
++                "volumes": [{"role": role, "name": name, "absent": completed} for role, name in self.volumes.items()],
++                "attachment_eof_observed": completed, "cleanup_daemon_calls": self.cleanup_calls}
++
++
++def inspect_runtime(owner):
++    spec = owner.spec("inspect", ["-I", "-B", "-c", "pass"])
++    cid = owner.create(spec)
++    bodies = []
++    for path, limit in ((legacy.INVENTORY, 8 * legacy.MIB),
++                        (legacy.SDK_ROOT / "scripts" / UTILITY_NAME, MAX_MODULE),
++                        (legacy.SDK_ROOT / "scripts/conditional-capture-command.mjs", MAX_MODULE)):
++        actor = owner.validate_actor(owner.inspect(cid), spec)
++        state = actor["State"]
++        require(state["Status"] == "created" and state["Running"] is False and state["Pid"] == 0
++                and state["StartedAt"] == "0001-01-01T00:00:00Z", "image inspection actor must never start")
++        bodies.append(owner.image_file(cid, path, limit))
++    inventory = legacy.json.loads(bodies[0])
++    require(type(inventory) is dict and set(inventory) == {"schema", "commands", "artifacts"}
++            and inventory["schema"] == "prismpm/sdk-inventory/1", "fixed installed SDK inventory required")
++    # Independent reviewed image identities, NOT equality to caller bytes.
++    require(sha(bodies[1]) == UTILITY_SHA256 and sha(bodies[2]) == IMAGE_LAUNCHER_SHA256,
++            "reviewed image authority identity differs")
++    owner.retire_actor("inspect")
++    return {"inventory_sha256": sha(bodies[0]), "image_authority": [
++        {"path": str(legacy.SDK_ROOT / "scripts" / name), "bytes": len(body), "sha256": sha(body)}
++        for name, body in zip((UTILITY_NAME, "conditional-capture-command.mjs"), bodies[1:])]}
++
++
++def bootstrap_argv(source, descriptor, mode, deadline):
++    code = legacy.read_regular(source / "scripts" / BOOTSTRAP_NAME, MAX_BOOTSTRAP)
++    rows = {r["path"]: r for r in descriptor["authority"]}
++    require(sha(code) == rows["scripts/" + BOOTSTRAP_NAME]["sha256"], "bootstrap source custody changed")
++    capsules = [rows["scripts/" + name] for name in (UTILITY_NAME, ENTRY_NAME)]
++    return ["-I", "-B", "-c", code.decode("utf-8", "strict"), mode,
++            str(remaining_seconds(deadline)), digest(descriptor),
++            *[str(r[k]) for r in capsules for k in ("bytes", "sha256")]]
++
++
++def recheck_inputs(source, executable, descriptor, identities, deadline):
++    with deadline_scope(deadline):
++        require(input_identities(source, executable, descriptor, deadline) == identities
++                and ordered(legacy.source_rows(source)) == descriptor["source"]
++                and ordered(legacy.fixture_rows(source)) == descriptor["fixture_inputs"]
++                and measure_regular(executable, legacy.MAX_ELF, deadline, elf=True) == {
++                    "bytes": descriptor["executable_bytes"], "sha256": descriptor["executable_sha256"]},
++                "outer source/fixture/authority/ELF custody changed")
++
++
++def receive_log(reader, length, target):
++    require(type(length) is int and 0 <= length <= 32 * legacy.MIB, "original response stream bound")
++    body = bytearray()
++    while len(body) < length:
++        tick(reader.deadline)
++        if not reader.buffer:
++            reader.fill()
++        count = min(length - len(body), len(reader.buffer))
++        part = bytes(reader.buffer[:count])
++        del reader.buffer[:count]
++        body.extend(part)
++        target.write(part)
++        target.flush()
++    return bytes(body)
++
++
++def receive_capture(reader, response, output):
++    payload = response["payload"]
++    require(payload["stdout_bytes"] + payload["stderr_bytes"] <= 64 * legacy.MIB, "combined original response log bound")
++    stdout = receive_log(reader, payload["stdout_bytes"], sys.stdout.buffer)
++    stderr = receive_log(reader, payload["stderr_bytes"], sys.stderr.buffer)
++    rows = payload["records"]
++    for record in rows:
++        target = output / record["path"]
++        if record["kind"] == "directory":
++            target.mkdir(mode=0o700)
++        elif record["kind"] == "file":
++            body = reader.exact(record["bytes"])
++            require(sha(body) == record["sha256"], "retained original capture bytes differ")
++            _exclusive(target, body, 0o700 if record["executable"] else 0o600)
++    for record in rows:
++        if record["kind"] == "link":
++            os.symlink(record["target"], output / record["path"])
++    require(legacy.tree(output) == rows, "complete original capture readback differs")
++    return stdout, stderr
++
++
++def publish_envelope(output, body, deadline):
++    """Atomic local publication after retirement; remove only our partial file."""
++    pending, final = output / ".candidate-transport-pending.json", output / ENVELOPE_NAME
++    owned = None
++    try:
++        with deadline_scope(deadline):
++            require(not os.path.lexists(final), "occupied transport envelope")
++            _exclusive(pending, body, 0o600)
++            info = os.lstat(pending)
++            owned = (info.st_dev, info.st_ino)
++            require(legacy.read_regular(pending, legacy.MAX_JSON) == body, "transport envelope readback differs")
++            tick(deadline)
++            os.rename(pending, final)
++    except BaseException:
++        for path in (pending, final):
++            if os.path.lexists(path):
++                info = os.lstat(path)
++                if owned is not None and (info.st_dev, info.st_ino) == owned:
++                    os.unlink(path)
++        raise
++
++
++def parent(source: Path, executable: Path) -> int:
++    complete_deadline = time.monotonic() + legacy.DEADLINE_SECONDS
++    require(threading.current_thread() is threading.main_thread(), "candidate parent requires main thread")
++    previous = {s: signal.getsignal(s) for s in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)}
++    def interrupted(_signal, _frame):
++        raise RuntimeError("candidate capture interrupted")
++    try:
++        for signum in previous:
++            signal.signal(signum, interrupted)
++        return _parent(source, executable, complete_deadline)
++    finally:
++        for signum, handler in previous.items():
++            signal.signal(signum, handler)
++
++
++def _parent(source, executable, complete_deadline):
++    source = protected_root(str(source))  # This refusal precedes every Docker call.
++    require(os.environ.get("PRISMPM_TEST_SDK_IMAGE") == SDK_IMAGE, "exact pinned candidate SDK image required")
++    owner = Lifecycle(complete_deadline, None, [])
++    with deadline_scope(owner.work_deadline):
++        plan = measure_inputs(source, executable, remaining_seconds(owner.work_deadline))
++        identities = input_identities(source, executable, plan, owner.work_deadline)
++    output = Path(os.environ["PRISMPM_OC10_CAPTURE_OUTPUT"]) if "PRISMPM_OC10_CAPTURE_OUTPUT" in os.environ \
++        else Path(legacy.tempfile.mkdtemp(prefix="prismpm-conditional-capture-"))
++    held_output = os.lstat(output)
++    require(output.is_absolute() and output.resolve() == output and stat.S_ISDIR(held_output.st_mode)
++            and held_output.st_uid == os.getuid() and held_output.st_mode & 0o077 == 0
++            and not any(output.iterdir()), "fresh unaliased capture output required")
++    image_rows = legacy.json.loads(owner.call("image", "inspect", SDK_IMAGE).stdout)
++    require(type(image_rows) is list and len(image_rows) == 1, "one actual immutable SDK image required")
++    image = image_rows[0]
++    architecture = {"x86_64": "amd64", "aarch64": "arm64"}.get(os.uname().machine)
++    require(image["Os"] == "linux" and architecture is not None and image["Architecture"] == architecture
++            and re.fullmatch(r"sha256:[0-9a-f]{64}", image["Id"]) and SDK_IMAGE in image["RepoDigests"],
++            "actual local pinned SDK config/platform differs")
++    require(set(image["Config"].get("Volumes") or {}) <= {"/workspace"},
++            "unsupported image-declared anonymous volume")
++    image_environment = image["Config"]["Env"]
++    require(type(image_environment) is list and len({e.split("=", 1)[0] for e in image_environment}) == len(image_environment)
++            and "PATH=/usr/local/elan/bin:/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/bin" in image_environment
++            and not any(e.startswith("PRISMPM_TEST_SDK_IMAGE=") for e in image_environment), "pinned image environment differs")
++    owner.image = image["Id"]
++    owner.environment = image_environment + ["PRISMPM_TEST_SDK_IMAGE=" + SDK_IMAGE]
++    completed, retirement, response, descriptor = False, None, None, None
++    diagnostics = legacy.ExitStack()
++    previous_signals = {s: signal.getsignal(s) for s in (signal.SIGHUP, signal.SIGINT, signal.SIGTERM)}
++    def interrupted(_signal, _frame):
++        raise RuntimeError("candidate capture interrupted")
++    for signum in previous_signals:
++        signal.signal(signum, interrupted)
++    print("Candidate capture infrastructure owner " + legacy.json.dumps({"token": owner.token,
++          "prefix": owner.prefix, "config_digest": owner.image}, sort_keys=True), file=sys.stderr, flush=True)
++    try:
++        socket = os.stat("/var/run/docker.sock")
++        require(stat.S_ISSOCK(socket.st_mode), "actual Docker transport required")
++        observations = inspect_runtime(owner)
++        plan["remaining_seconds"] = remaining_seconds(owner.work_deadline)
++        descriptor = bind_runtime(plan, {"sdk_image": SDK_IMAGE, "config_digest": owner.image,
++            "os": image["Os"], "architecture": image["Architecture"], **observations})
++        owner.volume("input")
++        stage_spec = owner.spec("stage", bootstrap_argv(source, descriptor, "stage-v1", owner.work_deadline))
++        stage_id = owner.create(stage_spec)
++        owner.references(stage_id)
++        stage_errors = diagnostics.enter_context(legacy.infrastructure_diagnostics())
++        attached = owner.attach("stage", stage_errors)
++        for name in (UTILITY_NAME, ENTRY_NAME):
++            body = legacy.read_regular(source / "scripts" / name, MAX_MODULE)
++            row = next(r for r in descriptor["authority"] if r["path"] == "scripts/" + name)
++            require(len(body) == row["bytes"] and sha(body) == row["sha256"], "capsule source changed")
++            legacy.write_bounded(attached.stdin, body, owner.work_deadline)
++        write_inputs(attached.stdin, source, executable, descriptor, owner.work_deadline, identities)
++        attached.stdin.close()
++        reader = Reader(attached.stdout, owner.work_deadline)
++        stage_result = reader.line()
++        require(encoded(stage_result) == encoded(stage_admission(descriptor)), "actual stage admission differs")
++        reader.exhausted()
++        owner.wait_attachment(attached, successful=True)
++        owner.retire_actor("stage")
++        owner.references()
++        recheck_inputs(source, executable, descriptor, identities, owner.work_deadline)
++        owner.volume("work")
++        execution_spec = owner.spec("execute", bootstrap_argv(source, descriptor, "execute-v1", owner.work_deadline),
++                                    str(source), socket.st_gid)
++        execution_id = owner.create(execution_spec)
++        owner.references(execution_id)
++        execution_errors = diagnostics.enter_context(legacy.infrastructure_diagnostics())
++        attached = owner.attach("execute", execution_errors)
++        reader = Reader(attached.stdout, owner.work_deadline)
++        response = checked_candidate_response(reader.line(), descriptor)
++        with deadline_scope(owner.work_deadline):
++            stdout, _stderr = receive_capture(reader, response, output)
++            legacy.checked_result(response["payload"]["result"])
++            legacy.checked_summary(stdout, descriptor["test_count"])
++            receipt = legacy.json.loads(legacy.read_regular(output / "capture-evidence.json", legacy.MAX_JSON))
++            legacy.checked_receipt(receipt, original_descriptor(descriptor), output)
++            recheck_inputs(source, executable, descriptor, identities, owner.work_deadline)
++            current = os.lstat(output)
++            require((current.st_dev, current.st_ino) == (held_output.st_dev, held_output.st_ino), "capture output owner changed")
++        owner.references(execution_id)
++        legacy.write_bounded(attached.stdin, encoded({"retire": True}), owner.work_deadline)
++        attached.stdin.close()
++        reader.exhausted()
++        owner.wait_attachment(attached, successful=True)
++        completed = True
++    except BaseException as error:
++        for name in ("stdout", "stderr"):
++            body = getattr(error, name, b"")
++            if body:
++                getattr(sys, name).buffer.write(body)
++                getattr(sys, name).buffer.flush()
++        raise
++    finally:
++        for signum in previous_signals:
++            signal.signal(signum, signal.SIG_IGN)
++        try:
++            retirement = owner.finish(completed)
++        finally:
++            try:
++                diagnostics.close()
++            finally:
++                for signum, handler in previous_signals.items():
++                    signal.signal(signum, handler)
++    with deadline_scope(complete_deadline):
++        tick(complete_deadline)
++        # This is the only publication site, reached after all actual retirements.
++        envelope = {"schema": ENVELOPE_SCHEMA, "route": ROUTE, "complete_application_accepted": False,
++            "scope": "current exact-source conditional capture in immutable SDK; not installed-controller acceptance",
++            "descriptor": descriptor, "stage_admission": stage_result,
++            "inspection": {"role": "inspect", "never_started": True, "retired_before_stage": True,
++                           "anonymous_volumes_absent": True},
++            "stage_retired_before_execution": True, "execution_mounts": execution_spec["mounts"],
++            "readonly_views": response["readonly_views"], "sdk_tree": response["sdk_tree"],
++            "sdk_tree_sha256": response["sdk_tree_sha256"],
++            "candidate_matches_sdk_tree": encoded(descriptor["union"]) == encoded(response["sdk_tree"]),
++            "image_authority": response["image_authority"],
++            "candidate_utility_matches_image": descriptor["authority"][3]["sha256"] == observations["image_authority"][0]["sha256"],
++            "capture_receipt_sha256": sha(legacy.read_regular(output / "capture-evidence.json", legacy.MAX_JSON)),
++            "capture_records_sha256": digest(response["payload"]["records"]),
++            "result": response["payload"]["result"], "owner_token": owner.token, "retirement": retirement}
++        require(len(encoded(envelope)) <= legacy.MAX_JSON, "transport envelope JSON bound")
++        body = encoded(envelope)
++        records = response["payload"]["records"]
++        require(len(records) < 100000 and sum(r.get("bytes", 0) for r in records) + len(body) <= legacy.MAX_TREE,
++                "complete retained tree including envelope exceeds original bound")
++    publish_envelope(output, body, complete_deadline)
++
++    print("PASS complete candidate-source conditional capture and measured actor/volume retirement: " + str(output))
++    return 0
++
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/scripts/conditional-capture-candidate.test.py b/scripts/conditional-capture-candidate.test.py
+index f444f4c0..aa5955a3 100644
+--- a/scripts/conditional-capture-candidate.test.py
++++ b/scripts/conditional-capture-candidate.test.py
+@@ -15,6 +15,7 @@ import tempfile
+ import threading
+ import time
+ import unittest
++from unittest.mock import patch
+ 
+ HERE = Path(__file__).resolve().parent
+ 
+@@ -646,16 +647,446 @@ class ProtocolControls(unittest.TestCase):
+                 self.assertEqual(signal.getsignal(signal.SIGALRM), signal.SIG_DFL)
+                 self.assertEqual(signal.getitimer(signal.ITIMER_REAL), (0.0, 0.0))
+ 
+-    def test_parent_guest_and_direct_stage_refuse_unimplemented_lifecycle(self):
+-        for args, message in ((["parent", str(self.source), str(self.executable)], b"lifecycle is not implemented"),
++
++    def test_closed_response_binds_source_runtime_views_and_keeps_original_result_gate(self):
++        # Structural payload only; this result deliberately cannot pass admission.
++        descriptor = self.descriptor
++        payload = {"result": {}, "executable_sha256": descriptor["executable_sha256"],
++                   "inventory_sha256": descriptor["runtime"]["inventory_sha256"],
++                   "source_sha256": descriptor["source_sha256"], "stdout_bytes": 0, "stderr_bytes": 0, "records": []}
++        response = {"schema": candidate.RESPONSE_SCHEMA, "route": candidate.ROUTE,
++                    "descriptor_sha256": candidate.digest(descriptor), **{k: descriptor[k] for k in
++                    ("source_sha256", "union_sha256", "fixture_inputs_sha256", "authority")},
++                    "sdk_tree": descriptor["source"], "sdk_tree_sha256": descriptor["source_sha256"],
++                    "image_authority": descriptor["runtime"]["image_authority"], "payload": payload,
++                    "readonly_views": {"input": "/candidate-input", "compiled_root": descriptor["source_root"],
++                        "subpath": "candidate-source", "same_directory": True, "readonly": True, "protected_ancestors": True}}
++        candidate.checked_candidate_response(response, descriptor)
++        with self.assertRaisesRegex(RuntimeError, "closed actual command result"):
++            legacy.checked_result(response["payload"]["result"])
++        for key in ("schema", "route", "descriptor_sha256", "source_sha256", "union_sha256",
++                    "fixture_inputs_sha256", "sdk_tree_sha256"):
++            changed = copy.deepcopy(response)
++            changed[key] = "substituted"
++            with self.subTest(key=key), self.assertRaises(RuntimeError):
++                candidate.checked_candidate_response(changed, descriptor)
++        for key, value in (("readonly", False), ("readonly", 1), ("protected_ancestors", False),
++                           ("subpath", "other"), ("compiled_root", "/workspace/source")):
++            changed = copy.deepcopy(response)
++            changed["readonly_views"][key] = value
++            with self.subTest(key=key, value=value), self.assertRaises(RuntimeError):
++                candidate.checked_candidate_response(changed, descriptor)
++        changed = copy.deepcopy(response)
++        changed["payload"]["records"] = [{"path": candidate.ENVELOPE_NAME, "kind": "file",
++            "bytes": 0, "sha256": legacy.sha(b""), "executable": False}]
++        with self.assertRaisesRegex(RuntimeError, "guest cannot publish"):
++            candidate.checked_candidate_response(changed, descriptor)
++
++    def test_real_partial_response_stream_survives_early_close(self):
++        child = subprocess.Popen([sys.executable, "-I", "-B", "-c",
++            "import os;os.write(1,b'original partial stdout')"], stdout=subprocess.PIPE)
++        try:
++            reader = candidate.Reader(child.stdout, time.monotonic() + 2)
++            retained = io.BytesIO()
++            with self.assertRaisesRegex(RuntimeError, "closed early"):
++                candidate.receive_log(reader, 100, retained)
++            self.assertEqual(retained.getvalue(), b"original partial stdout")
++            self.assertEqual(child.wait(timeout=2), 0)
++        finally:
++            if child.poll() is None:
++                child.kill()
++                child.wait(timeout=2)
++            child.stdout.close()
++
++    def test_atomic_envelope_publication_expiry_and_occupied_output(self):
++        # Publication mechanics only; these are explicitly non-envelope bytes.
++        output = self.root / "publication-component"
++        output.mkdir()
++        with self.assertRaisesRegex(RuntimeError, "deadline"):
++            candidate.publish_envelope(output, b"unit fixture", time.monotonic() - 1)
++        self.assertEqual(list(output.iterdir()), [])
++        candidate.publish_envelope(output, b"unit fixture", time.monotonic() + 2)
++        self.assertEqual((output / candidate.ENVELOPE_NAME).read_bytes(), b"unit fixture")
++        with self.assertRaisesRegex(RuntimeError, "occupied"):
++            candidate.publish_envelope(output, b"replacement", time.monotonic() + 2)
++        self.assertEqual((output / candidate.ENVELOPE_NAME).read_bytes(), b"unit fixture")
++        self.assertEqual([p.name for p in output.iterdir()], [candidate.ENVELOPE_NAME])
++
++    def test_lifecycle_policy_primitives_exist(self):
++        self.assertEqual(candidate.ENVELOPE_NAME, "candidate-transport-evidence.json")
++        with self.assertRaisesRegex(RuntimeError, "protected"):
++            candidate.protected_root("/workspace/source")
++        with self.assertRaisesRegex(RuntimeError, "deadline"):
++            candidate.remaining_seconds(time.monotonic() - 1)
++        with self.assertRaisesRegex(RuntimeError, "closed candidate response"):
++            candidate.checked_candidate_response({}, self.descriptor)
++
++    def test_parent_guest_and_direct_stage_refuse_unbound_lifecycle(self):
++        for args, message in ((["parent", str(self.source), str(self.executable)], b"exact pinned candidate SDK image required"),
+                               (["stage"], b"authenticated bootstrap"), (["guest"], b"authenticated bootstrap")):
+             result = subprocess.run(["/usr/bin/python3", "-I", "-B", str(HERE / candidate.ENTRY_NAME)] + args,
+                                     capture_output=True, timeout=5)
+             self.assertNotEqual(result.returncode, 0)
+             self.assertIn(message, result.stderr)
+             self.assertEqual(result.stdout, b"")
+-        with self.assertRaisesRegex(RuntimeError, "guest lifecycle is not implemented"):
+-            candidate.guest({})
++        with self.assertRaisesRegex(RuntimeError, "runtime-bound candidate descriptor"):
++            candidate.guest({}, time.monotonic() + 2)
++
++
++class LifecycleControls(unittest.TestCase):
++    """Explicit fake daemon transcript: order/refusal unit evidence ONLY."""
++    def setUp(self):
++        actual_popen = legacy.subprocess.Popen
++        def local_process_only(arguments, *args, **kwargs):
++            if arguments[0] == "docker":
++                raise AssertionError("real Docker forbidden in structural lifecycle controls")
++            return actual_popen(arguments, *args, **kwargs)
++        guard = patch.object(legacy.subprocess, "Popen", side_effect=local_process_only)
++        guard.start()
++        self.addCleanup(guard.stop)
++        self.owner = candidate.Lifecycle(time.monotonic() + 2400, "sha256:" + "1" * 64,
++            ["PATH=/pinned", "PRISMPM_TEST_SDK_IMAGE=" + candidate.SDK_IMAGE], token="2" * 32)
++        self.owner.volumes = {"input": "owned-input", "work": "owned-work"}
++        self.owner.inspection_retired = True
++        self.owner.stage_retired = True
++
++    def actor(self, spec, cid="3" * 64):
++        return {"Id": cid, "Image": self.owner.image, "Name": "/" + spec["name"],
++            "Config": {"Labels": {legacy.LABEL: self.owner.token, candidate.ROLE_LABEL: spec["role"]},
++                "Entrypoint": ["/usr/bin/python3"], "Cmd": spec["argv"], "User": "1000:1000",
++                "WorkingDir": "/workspace", "OpenStdin": True, "Tty": False, "Env": self.owner.environment},
++            "HostConfig": {"ReadonlyRootfs": True, "NetworkMode": "none", "AutoRemove": False,
++                "Memory": 8 * 1024**3, "MemorySwap": 8 * 1024**3, "NanoCpus": 2 * 10**9,
++                "PidsLimit": 256, "CapDrop": ["ALL"], "SecurityOpt": ["no-new-privileges:true"],
++                "Privileged": False, "Tmpfs": spec["tmpfs"], "GroupAdd": spec["groups"],
++                "Mounts": spec["mounts"], "IpcMode": "private"},
++            "Mounts": [{"Type": m["Type"], "Name": m["Source"], "Source": m["Source"],
++                        "Destination": m["Target"], "RW": not m["ReadOnly"]} for m in spec["mounts"]],
++            "State": {"Status": "created", "Running": False, "Pid": 0, "StartedAt": "0001-01-01T00:00:00Z"}}
++
++    def bind(self, role="execute"):
++        spec = self.owner.spec(role, ["fixed-unit-fixture"], "/workspaces/source", 999)
++        actor = self.actor(spec)
++        self.owner.actors[role] = {"spec": spec, "id": actor["Id"], "retired": False}
++        return spec, actor
++
++    def test_exact_actor_spec_and_negative_policy_matrix(self):
++        spec, original = self.bind()
++        self.assertEqual(self.owner.validate_actor(original, spec), original)
++        mutations = [
++            ("Image", None, "sha256:" + "0" * 64), ("Name", None, "/other"),
++            ("Config", "User", "0:0"), ("Config", "WorkingDir", "/tmp"),
++            ("Config", "Entrypoint", ["/bin/sh"]), ("Config", "Cmd", ["substitute"]),
++            ("Config", "Env", ["PATH=/other"]), ("Config", "Labels", {legacy.LABEL: self.owner.token}),
++            ("HostConfig", "ReadonlyRootfs", False), ("HostConfig", "Memory", 16 * 1024**3),
++            ("HostConfig", "MemorySwap", -1), ("HostConfig", "NanoCpus", 3 * 10**9),
++            ("HostConfig", "PidsLimit", 1024), ("HostConfig", "NetworkMode", "host"),
++            ("HostConfig", "Privileged", True), ("HostConfig", "CapDrop", []),
++            ("HostConfig", "SecurityOpt", []), ("HostConfig", "Tmpfs", {}),
++            ("HostConfig", "GroupAdd", ["0"]), ("HostConfig", "VolumesFrom", ["other"]),
++            ("HostConfig", "IpcMode", "container:other"), ("HostConfig", "Mounts", []),
++            ("Mounts", None, original["Mounts"] + [{"Type": "bind", "Source": "/host",
++                "Destination": "/extra", "RW": True}])]
++        for section, key, value in mutations:
++            with self.subTest(section=section, key=key):
++                changed = copy.deepcopy(original)
++                if key is None:
++                    changed[section] = value
++                else:
++                    changed[section][key] = value
++                with self.assertRaises(RuntimeError):
++                    self.owner.validate_actor(changed, spec)
++        for index in (0, 1):
++            changed = copy.deepcopy(original)
++            changed["Mounts"][index]["RW"] = True
++            with self.assertRaisesRegex(RuntimeError, "mount graph"):
++                self.owner.validate_actor(changed, spec)
++        changed = copy.deepcopy(original)
++        changed["HostConfig"]["Mounts"][1]["VolumeOptions"]["Subpath"] = "other"
++        with self.assertRaisesRegex(RuntimeError, "subpath"):
++            self.owner.validate_actor(changed, spec)
++
++    def test_phase_barriers_and_inspection_never_attached(self):
++        self.owner.inspection_retired = False
++        with self.assertRaisesRegex(RuntimeError, "inspection absence"):
++            self.owner.spec("stage", [])
++        self.owner.inspection_retired = True
++        self.owner.stage_retired = False
++        with self.assertRaisesRegex(RuntimeError, "stage absence"):
++            self.owner.spec("execute", [], "/workspaces/source", 999)
++        with self.assertRaisesRegex(RuntimeError, "attachments"):
++            self.owner.attach("inspect", None)
++        with self.assertRaisesRegex(RuntimeError, "protected"):
++            candidate.parent(Path("/workspace/source"), Path("/unused"))
++
++    def test_exact_create_inspect_attach_order(self):
++        spec = self.owner.spec("stage", ["fixed-unit-fixture"])
++        actor = self.actor(spec)
++        events = []
++        def call(*args, **kwargs):
++            events.append(args[:2])
++            body = (actor["Id"] + "\n").encode() if args[0] == "create" else legacy.encoded([actor])
++            return subprocess.CompletedProcess(args, 0, body, b"")
++        self.owner.call = call
++        self.owner.create(spec)
++        def fake_attach(arguments, **kwargs):
++            events.append(("attachment", "Popen"))
++            self.assertEqual(arguments, ["docker", "--host", "unix:///var/run/docker.sock", "start",
++                                        "--attach", "--interactive", actor["Id"]])
++            return object()
++        with patch.object(legacy.subprocess, "Popen", side_effect=fake_attach):
++            self.owner.attach("stage", None)
++        self.assertEqual(events, [("create", "--name"), ("container", "inspect"),
++                                  ("container", "inspect"), ("attachment", "Popen")])
++
++    def test_real_interruption_during_attachment_handoff_keeps_child_custody(self):
++        spec, actor = self.bind("stage")
++        self.owner.inspect = lambda cid: actor
++        local_popen = subprocess.Popen
++        children = []
++        def interrupted(_signum, _frame):
++            raise RuntimeError("real handoff interruption")
++        previous = signal.signal(signal.SIGTERM, interrupted)
++        def local_attachment(_arguments, **kwargs):
++            child = local_popen([sys.executable, "-I", "-B", "-c", "import time;time.sleep(60)"],
++                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++            children.append(child)
++            os.kill(os.getpid(), signal.SIGTERM)
++            return child
++        try:
++            with patch.object(legacy.subprocess, "Popen", side_effect=local_attachment):
++                with self.assertRaisesRegex(RuntimeError, "real handoff interruption"):
++                    self.owner.attach("stage", None)
++            self.assertEqual(self.owner.attachments, children)
++            self.assertEqual(len(children), 1)
++        finally:
++            signal.signal(signal.SIGTERM, previous)
++            for child in children:
++                child.kill()
++                child.wait(timeout=2)
++                child.stdin.close()
++                child.stdout.close()
++                child.stderr.close()
++        with self.assertRaises(ChildProcessError):
++            os.waitpid(children[0].pid, os.WNOHANG)
++
++    def test_started_actor_refused_before_attachment(self):
++        spec, actor = self.bind("stage")
++        actor["State"].update(Status="running", Running=True, Pid=123)
++        self.owner.inspect = lambda cid: actor
++        with patch.object(legacy.subprocess, "Popen", side_effect=AssertionError("real Docker forbidden in unit transcript")):
++            with self.assertRaisesRegex(RuntimeError, "started before attachment"):
++                self.owner.attach("stage", None)
++
++    def test_extra_input_volume_reference_refuses(self):
++        self.owner.call = lambda *args, **kwargs: subprocess.CompletedProcess(args, 0, b"unexpected-writer\n", b"")
++        with self.assertRaisesRegex(RuntimeError, "additional candidate input"):
++            self.owner.references()
++        with self.assertRaisesRegex(RuntimeError, "additional candidate input"):
++            self.owner.references("3" * 64)
++
++    def test_pending_creation_requires_authentication_and_both_absences(self):
++        spec, actor = self.bind("stage")
++        self.owner.actors["stage"]["id"] = None
++        transcript = []
++        answers = [actor["Id"].encode() + b"\n", legacy.encoded([actor]), b"removed\n", b"", b""]
++        def call(*args, **kwargs):
++            transcript.append(args)
++            return subprocess.CompletedProcess(args, 0, answers.pop(0), b"")
++        self.owner.call = call
++        self.owner.retire_actor("stage")
++        self.assertEqual([x[:2] for x in transcript], [("container", "ls"), ("container", "inspect"),
++            ("container", "rm"), ("container", "ls"), ("container", "ls")])
++        self.assertTrue(self.owner.stage_retired)
++        self.assertEqual(self.owner.actors["stage"]["id"], actor["Id"])
++        self.assertEqual(answers, [])
++
++    def test_pending_absence_wrong_role_and_failed_removal_block_execution(self):
++        for defect in ("absent", "role", "remove", "name-remains", "id-remains"):
++            with self.subTest(defect=defect):
++                self.setUp()
++                self.owner.stage_retired = False
++                spec, actor = self.bind("stage")
++                self.owner.actors["stage"]["id"] = None
++                if defect == "role":
++                    actor["Config"]["Labels"][candidate.ROLE_LABEL] = "other"
++                calls = []
++                def call(*args, **kwargs):
++                    calls.append(args)
++                    n = len(calls)
++                    if n == 1:
++                        body = b"" if defect == "absent" else actor["Id"].encode() + b"\n"
++                    elif n == 2:
++                        body = legacy.encoded([actor])
++                    elif n == 3:
++                        if defect == "remove":
++                            raise RuntimeError("injected daemon removal failure")
++                        body = b"removed\n"
++                    else:
++                        body = b"still-present\n" if (n == 4 and defect == "name-remains") or (n == 5 and defect == "id-remains") else b""
++                    return subprocess.CompletedProcess(args, 0, body, b"")
++                self.owner.call = call
++                with self.assertRaises(RuntimeError):
++                    self.owner.retire_actor("stage")
++                self.assertFalse(self.owner.stage_retired)
++                with self.assertRaisesRegex(RuntimeError, "stage absence"):
++                    self.owner.spec("execute", [], "/workspaces/source", 999)
++                if defect in ("absent", "role"):
++                    self.assertFalse(any(x[:2] == ("container", "rm") for x in calls))
++
++    def test_failure_retains_both_volumes_and_finite_cleanup(self):
++        spec, actor = self.bind()
++        calls = []
++        def call(*args, **kwargs):
++            calls.append(args)
++            if args[:2] == ("container", "ls"):
++                body = actor["Id"].encode() + b"\n" if len(calls) == 1 else b""
++            elif args[:2] == ("container", "inspect"):
++                body = legacy.encoded([actor])
++            elif args[:2] == ("volume", "inspect"):
++                role = "input" if args[2] == "owned-input" else "work"
++                body = legacy.encoded([{"Name": args[2], "Labels": {legacy.LABEL: self.owner.token,
++                                        candidate.ROLE_LABEL: role}}])
++            else:
++                body = b""
++            return subprocess.CompletedProcess(args, 0, body, b"")
++        self.owner.call = call
++        result = self.owner.finish(False)
++        self.assertEqual(len(calls), 7)
++        self.assertFalse(any(x[:2] == ("volume", "rm") for x in calls))
++        self.assertTrue(all(r["absent"] is False for r in result["volumes"]))
++        self.assertFalse(result["attachment_eof_observed"])
++
++    def test_insufficient_cleanup_budget_and_call_cap_before_process(self):
++        self.owner.cleanup_mode = True
++        self.owner.deadline = time.monotonic() + 4
++        with self.assertRaisesRegex(RuntimeError, "deadline"):
++            self.owner.call("never-executed")
++        self.owner.deadline = time.monotonic() + 2400
++        self.owner.cleanup_calls = 18
++        with self.assertRaisesRegex(RuntimeError, "daemon-call bound"):
++            self.owner.call("never-executed")
++
++    def test_real_attachment_timeout_kills_and_reaps_owned_leader(self):
++        child = subprocess.Popen([sys.executable, "-I", "-B", "-c", "import time;time.sleep(60)"],
++                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
++        self.addCleanup(child.stdin.close)
++        self.addCleanup(child.stdout.close)
++        self.addCleanup(child.stderr.close)
++        self.owner.deadline = time.monotonic() + 5.1
++        started = time.monotonic()
++        with self.assertRaisesRegex(RuntimeError, "force retirement"):
++            self.owner.wait_attachment(child)
++        self.assertLess(time.monotonic() - started, 1)
++        self.assertIsNotNone(child.poll())
++        with self.assertRaises(ChildProcessError):
++            os.waitpid(child.pid, os.WNOHANG)
++
++    def test_inspection_spec_has_no_mount_and_fixed_workspace_tmpfs(self):
++        spec = self.owner.spec("inspect", ["-I", "-B", "-c", "pass"])
++        self.assertEqual(spec["mounts"], [])
++        self.assertEqual(spec["groups"], [])
++        self.assertEqual(spec["tmpfs"]["/workspace"], "rw,noexec,nosuid,nodev,size=16m,mode=1777")
++        self.owner.actors["inspect"] = {"spec": spec, "id": None, "retired": False}
++        actor = self.actor(spec)
++        self.owner.validate_actor(actor, spec)
++        actor["Mounts"].append({"Type": "volume", "Name": "anonymous", "Destination": "/workspace", "RW": True})
++        with self.assertRaisesRegex(RuntimeError, "mount graph"):
++            self.owner.validate_actor(actor, spec)
++
++
++    def test_create_inspect_before_start_and_fixed_neverstarted_reads(self):
++        self.owner.actors = {}
++        self.owner.volumes = {}
++        self.owner.inspection_retired = False
++        events, actors, removed = [], {}, set()
++        def call(*args, **kwargs):
++            events.append(args)
++            if args[0] == "create":
++                spec = self.owner.actors["inspect"]["spec"]
++                actor = self.actor(spec)
++                actors[actor["Id"]] = actor
++                body = actor["Id"].encode() + b"\n"
++            elif args[:2] == ("container", "inspect"):
++                body = legacy.encoded([actors[args[2]]])
++            elif args[:2] == ("container", "ls"):
++                body = b"" if removed else ("3" * 64 + "\n").encode()
++            elif args[:2] == ("container", "rm"):
++                removed.add(args[2])
++                body = b""
++            else:
++                raise AssertionError("unexpected structural daemon operation: " + repr(args))
++            return subprocess.CompletedProcess(args, 0, body, b"")
++        self.owner.call = call
++        def image_file(cid, path, limit):
++            self.assertEqual(events[-1], ("container", "inspect", cid))
++            events.append(("fixed-file-read", str(path)))
++            return legacy.encoded({"schema": "prismpm/sdk-inventory/1", "commands": {}, "artifacts": {}}) \
++                if path == legacy.INVENTORY else (HERE / path.name).read_bytes()
++        self.owner.image_file = image_file
++        observed = candidate.inspect_runtime(self.owner)
++        self.assertTrue(self.owner.inspection_retired)
++        self.assertEqual(len([e for e in events if e[0] == "fixed-file-read"]), 3)
++        self.assertFalse(any(e[0] == "start" for e in events))
++        self.assertEqual(observed["image_authority"][0]["sha256"], candidate.UTILITY_SHA256)
++        self.assertEqual(events[0][0], "create")
++        self.assertEqual(events[1][:2], ("container", "inspect"))
++        self.assertEqual(events[-2][:2], ("container", "ls"))
++        self.assertEqual(events[-1][:2], ("container", "ls"))
++
++    def test_inspection_running_actor_refuses_before_file_read(self):
++        spec = self.owner.spec("inspect", ["-I", "-B", "-c", "pass"])
++        actor = self.actor(spec)
++        self.owner.actors["inspect"] = {"spec": spec, "id": actor["Id"], "retired": False}
++        self.owner.create = lambda actual_spec: actor["Id"]
++        actor["State"]["StartedAt"] = "2026-01-01T00:00:00Z"
++        self.owner.inspect = lambda cid: actor
++        self.owner.image_file = lambda *args: self.fail("started inspection actor read image bytes")
++        with self.assertRaisesRegex(RuntimeError, "must never start"):
++            candidate.inspect_runtime(self.owner)
++
++    def test_success_cleanup_call_count_and_volume_authentication_before_removal(self):
++        spec, actor = self.bind()
++        self.owner.cleanup_mode = True
++        calls = []
++        def call(*args, **kwargs):
++            calls.append(args)
++            if args[:2] == ("container", "ls"):
++                body = (actor["Id"] + "\n").encode() if len(calls) == 1 else b""
++            elif args[:2] == ("container", "inspect"):
++                body = legacy.encoded([actor])
++            elif args[:2] == ("volume", "inspect"):
++                role = "input" if args[2] == "owned-input" else "work"
++                body = legacy.encoded([{"Name": args[2], "Labels": {legacy.LABEL: self.owner.token,
++                                        candidate.ROLE_LABEL: role}}])
++            else:
++                body = b""
++            return subprocess.CompletedProcess(args, 0, body, b"")
++        self.owner.call = call
++        result = self.owner.finish(True)
++        self.assertEqual(len(calls), 12)
++        self.assertEqual([x[:2] for x in calls[6:8]], [("volume", "inspect"), ("volume", "inspect")])
++        self.assertTrue(all(r["absent"] for r in result["actors"] + result["volumes"]))
++
++    def test_wrong_second_volume_owner_preserves_both_volumes(self):
++        self.owner.actors = {}
++        calls = []
++        def call(*args, **kwargs):
++            calls.append(args)
++            if args[:2] == ("container", "ls"):
++                body = b""
++            elif args[:2] == ("volume", "inspect"):
++                role = "input" if args[2] == "owned-input" else "work"
++                body = legacy.encoded([{"Name": args[2], "Labels": {legacy.LABEL:
++                    self.owner.token if role == "input" else "unknown", candidate.ROLE_LABEL: role}}])
++            else:
++                self.fail("volume removal before both ownership checks")
++            return subprocess.CompletedProcess(args, 0, body, b"")
++        self.owner.call = call
++        with self.assertRaisesRegex(RuntimeError, "ownership differs"):
++            self.owner.finish(True)
++        self.assertFalse(any(x[:2] == ("volume", "rm") for x in calls))
++
+ 
+ 
+ if __name__ == "__main__":
