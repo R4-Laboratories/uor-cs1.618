@@ -180,8 +180,8 @@ export class Match {
   let action='',duration=0,site='';
   if(p.input.use&&p.grounded&&Math.hypot(p.vx,p.vz)<0.25){
    if(b.state==='carried'&&b.carrier===p.id){const s=MAP.sites.find(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius);if(s){action='PLANTING';duration=R.plantSeconds;site=s.id;}}
-   if(b.state==='planted'&&p.team==='defend'&&(!b.defuser||b.defuser===p.id)&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<2.3){
-    const dx=b.x-p.x,dy=b.y+0.2-(p.y+0.5),dz=b.z-p.z,len=Math.hypot(dx,dy,dz);if(len<0.05||this.engine.ray(p.x,p.y+0.5,p.z,dx/len,dy/len,dz/len,len)>=len-0.05){action='DEFUSING';duration=p.kit?R.kitDefuseSeconds:R.defuseSeconds;}
+   if(b.state==='planted'&&p.team==='defend'&&(!b.defuser||b.defuser===p.id)&&this.canReachDevice(p,b)){
+    action='DEFUSING';duration=p.kit?R.kitDefuseSeconds:R.defuseSeconds;
    }
   }
   if(action!==p.action){this.cancelInteraction(p);p.action=action;if(action)this.emit({type:'interaction-start',actor:p.id,action:action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});}
@@ -193,6 +193,23 @@ export class Match {
    if(action==='PLANTING'){b.state='planted';b.carrier=null;b.site=site;b.remaining=R.bombSeconds;p.money=Math.min(R.maxMoney,p.money+300);this.emit({type:'plant',actor:p.id,text:`Device planted at ${site}`,x:p.x,y:p.y,z:p.z});}
    else{b.terminal='defused';b.defuser=null;this.emit({type:'defuse',actor:p.id,text:'Device defused',x:b.x,y:b.y,z:b.z});const decision=this.roundKernel.decide({bomb:'defused',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:1});if(decision!=='continue')this.endRound(decision,'Device defused');}
   }
+ }
+ private canReachDevice(p:{x:number;y:number;z:number},b:Bomb){
+  if(Math.hypot(p.x-b.x,p.y-b.y,p.z-b.z)>=2.3)return false;
+  const dx=b.x-p.x,dy=b.y+0.2-(p.y+0.5),dz=b.z-p.z,len=Math.hypot(dx,dy,dz);
+  return len<0.05||this.engine.ray(p.x,p.y+0.5,p.z,dx/len,dy/len,dz/len,len)>=len-0.05;
+ }
+ private defusePath(p:Player,b:Bomb){
+  const start=this.nav.nearest(p.x,p.z);
+  const candidates=this.nav.nodes.map((n,id)=>({n,id})).filter(({n})=>Math.hypot(n.x-b.x,n.z-b.z)<2.3&&this.canReachDevice({x:n.x,y:this.engine.support(n.x,n.z,0,R.radius*.8),z:n.z},b));
+  candidates.sort((a,c)=>Math.hypot(a.n.x-p.x,a.n.z-p.z)-Math.hypot(c.n.x-p.x,c.n.z-p.z));
+  for(const {n,id} of candidates){
+   const path=this.nav.path(p.x,p.z,n.x,n.z);
+   // A same-node route still needs its endpoint: snapping does not imply reach.
+   if(id===start)return [id];
+   if(path.length)return path;
+  }
+  return [];
  }
  endRound(team:Team,reason:string){
   if(this.phase!=='live')return;
@@ -228,7 +245,7 @@ export class Match {
   else if(p.team==='defend')goal={x:p.id.charCodeAt(p.id.length-1)%2?-17:17,z:-11};
   const facts:BotFacts={enemy:!!enemy,empty:p.inventory[p.slot].ammo===0,lowAmmo:p.inventory[p.slot].ammo<8,
    canPlant:b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5),
-   canDefuse:b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&Math.hypot(b.x-p.x,b.z-p.z)<1.8,
+   canDefuse:b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&this.canReachDevice(p,b),
    urgent:b?.state==='planted'&&b.remaining<=(p.kit?R.kitDefuseSeconds:R.defuseSeconds)+1.5,
    carrier:b?.carrier===p.id,attacker:p.team==='attack',planted:b?.state==='planted',dropped:b?.state==='dropped'};
   const tactic=this.tacticDecider(facts);
@@ -247,11 +264,13 @@ export class Match {
   if(b?.state==='carried'&&b.carrier===p.id){const site=MAP.sites[this.round%2];const candidates=this.nav.nodes.filter(n=>Math.hypot(n.x-site.x,n.z-site.z)<site.radius-1);candidates.sort((a,c)=>Math.hypot(a.x-p.x,a.z-p.z)-Math.hypot(c.x-p.x,c.z-p.z));if(candidates[0])goal=candidates[0];}
   const dist=Math.hypot(goal.x-p.x,goal.z-p.z);
   const canPlant=b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5);
-  const canDefuse=b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&dist<1.8;
+  const canDefuse=facts.canDefuse;
   if(canPlant||canDefuse){i.use=true;p.input=i;return;}
-  if(dist>1.2){
-   if(p.botPlan<=0){p.botPath=this.nav.path(p.x,p.z,goal.x,goal.z);p.botPlan=1+this.random();}
-   let next=this.nav.point(p.botPath[0]);if(next&&Math.hypot(next.x-p.x,next.z-p.z)<0.7){p.botPath.shift();next=this.nav.point(p.botPath[0]);}
+  const approachingDevice=b?.state==='planted'&&p.team==='defend'&&assigned===p.id;
+  if(dist>1.2||approachingDevice){
+   if(p.botPlan<=0){p.botPath=approachingDevice?this.defusePath(p,b):this.nav.path(p.x,p.z,goal.x,goal.z);p.botPlan=1+this.random();}
+   // Keep the final defuse waypoint until interaction geometry becomes valid.
+   let next=this.nav.point(p.botPath[0]);if(next&&Math.hypot(next.x-p.x,next.z-p.z)<0.7&&(!approachingDevice||p.botPath.length>1)){p.botPath.shift();next=this.nav.point(p.botPath[0]);}
    if(next){i.yaw=Math.atan2(-(next.x-p.x),-(next.z-p.z));i.forward=1;}
   }
   if(p.inventory[p.slot].ammo===0||(p.inventory[p.slot].ammo<8&&!enemy))i.reload=true;
