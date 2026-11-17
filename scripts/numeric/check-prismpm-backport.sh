@@ -13,14 +13,10 @@ finish() {
   if test -f /evidence/verifier.sha256; then
     sha256sum -c /evidence/verifier.sha256 >> /evidence/final-identities.log 2>&1 || cleanup=$?
   fi
-  # Run as the project owner: the host artifact collector cannot enter projects/.
-  # tar preserves the private tree's bytes and modes without changing raw evidence.
+  # Retain complete reader inputs, excluding unrelated compilation caches.
   if test -d /evidence/projects; then
-    {
-      tar -czf /evidence/retained-projects.tar.gz.tmp -C /evidence projects &&
-        chmod 644 /evidence/retained-projects.tar.gz.tmp &&
-        mv /evidence/retained-projects.tar.gz.tmp /evidence/retained-projects.tar.gz
-    } > /evidence/archive.log 2>&1 || archive=$?
+    python3 /game/scripts/numeric/retain-backport-evidence.py compact /evidence /evidence \
+      > /evidence/archive.log 2>&1 || archive=$?
     if test "$cleanup" -eq 0; then cleanup=$archive; fi
   fi
   if test "$status" -eq 0; then status=$cleanup; fi
@@ -32,6 +28,10 @@ finish() {
 trap finish EXIT
 cd /work/prismpm-b1
 test "$(id -u)" = 1000
+test "$(cat /evidence/host-permissions.txt)" = host-write-ok
+printf '%s\n' container-write-ok > /evidence/container-permissions.txt
+test "$(cat /evidence/container-permissions.txt)" = container-write-ok
+if test "${1:-}" = --permissions-only; then trap - EXIT; exit 0; fi
 test -z "$(git status --porcelain --untracked-files=all)"
 mkdir -p /evidence/gates
 sha256sum Cargo.lock tests/fixtures/exporter-backport/sdk-lock.json \

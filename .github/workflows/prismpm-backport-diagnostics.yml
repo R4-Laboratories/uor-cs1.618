@@ -9,6 +9,7 @@ on:
       - 'scripts/numeric/prismpm-candidate/candidate.patch'
       - 'scripts/numeric/restore-prismpm-candidate.py'
       - 'scripts/numeric/check-prismpm-backport.sh'
+      - 'scripts/numeric/retain-backport-evidence.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,6 +33,7 @@ jobs:
       - name: Restore the explicit diagnostic verifier source
         run: |
           set -euo pipefail
+          umask 022
           mkdir -m 755 evidence
           python3 game/scripts/numeric/restore-prismpm-candidate.py \
             game/scripts/numeric/prismpm-candidate prismpm > evidence/candidate.json
@@ -39,7 +41,12 @@ jobs:
           df -h > evidence/disk-before.txt
           docker info --format '{{.Driver}}' > evidence/docker-storage-driver.txt
           printf '%s\n' "${ImageOS:-unknown}" "${ImageVersion:-unknown}" > evidence/runner-image.txt
-          sudo chown -R 1000:1000 prismpm evidence
+          sudo chown -R 1000:1000 prismpm
+          # Host retains ownership; only the container's group gets shared access.
+          sudo chgrp 1000 evidence
+          chmod 2770 evidence
+          printf '%s\n' host-write-ok > evidence/host-permissions.txt
+          test "$(cat evidence/host-permissions.txt)" = host-write-ok
       - name: Pull the unchanged pinned SDK
         run: |
           set -euo pipefail
@@ -47,6 +54,15 @@ jobs:
       - name: Exercise both authorities with the same new verifier
         run: |
           set -euo pipefail
+          docker run --rm --platform linux/amd64 --user 1000:1000 \
+            --tmpfs /tmp:rw,exec,nosuid,nodev,size=1g,mode=1777 --shm-size=1g \
+            -v "$GITHUB_WORKSPACE/prismpm:/work/prismpm-b1" \
+            -v "$GITHUB_WORKSPACE/game:/game:ro" \
+            -v "$GITHUB_WORKSPACE/evidence:/evidence" \
+            -w /work/prismpm-b1 \
+            ghcr.io/uor-foundation/prismpm-sdk@sha256:d6c263a733a6bc36e0458c3f5b9a1f5ea9c14dfbe8c257d3f650a960b5fe633c \
+            bash /game/scripts/numeric/check-prismpm-backport.sh --permissions-only
+          test "$(cat evidence/container-permissions.txt)" = container-write-ok
           if docker run --rm --platform linux/amd64 --user 1000:1000 \
             --tmpfs /tmp:rw,exec,nosuid,nodev,size=1g,mode=1777 --shm-size=1g \
             -v "$GITHUB_WORKSPACE/prismpm:/work/prismpm-b1" \
@@ -59,10 +75,12 @@ jobs:
           else
             run_status=("${PIPESTATUS[@]}")
           fi
-          printf '%s\n' "${run_status[0]}" > evidence/container-exit-code.txt
-          printf '%s\n' "${run_status[1]}" > evidence/log-capture-exit-code.txt
+          write_status=0
+          printf '%s\n' "${run_status[0]}" > evidence/container-exit-code.txt || write_status=$?
+          printf '%s\n' "${run_status[1]}" > evidence/log-capture-exit-code.txt || write_status=$?
           if test "${run_status[0]}" -ne 0; then exit "${run_status[0]}"; fi
-          exit "${run_status[1]}"
+          if test "${run_status[1]}" -ne 0; then exit "${run_status[1]}"; fi
+          exit "$write_status"
       - name: Retain generated file changes
         if: always()
         run: |
@@ -71,35 +89,51 @@ jobs:
             git -c safe.directory="$GITHUB_WORKSPACE/prismpm" -C prismpm diff --binary > evidence/generated-changes.patch
           fi
           df -h > evidence/disk-after.txt
+      - name: Prepare bounded small diagnostics
+        if: always()
+        run: python3 game/scripts/numeric/retain-backport-evidence.py logs evidence evidence/small-logs
       - name: Retain diagnostics even on failure
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: prismpm-backport-${{ github.run_id }}
+          name: prismpm-backport-logs-${{ github.run_id }}
           # Explicit files avoid upload-artifact's implicit directory recursion
           # into the UID1000-owned mode0700 projects/ tree.
           path: |
-            evidence/candidate.json
-            evidence/game-commit.txt
-            evidence/disk-before.txt
-            evidence/docker-storage-driver.txt
-            evidence/runner-image.txt
-            evidence/run.log
-            evidence/container-exit-code.txt
-            evidence/log-capture-exit-code.txt
-            evidence/generated-changes.patch
-            evidence/disk-after.txt
-            evidence/original-files.sha256
-            evidence/verifier.sha256
-            evidence/final-identities.log
-            evidence/runner-exit-code.txt
-            evidence/environment.txt
-            evidence/build.log
-            evidence/gates/retained-reader.log
-            evidence/gates/authority-controls.log
-            evidence/completion.txt
-            evidence/archive.log
-            evidence/retained-projects.tar.gz
+            evidence/small-logs/candidate.json
+            evidence/small-logs/game-commit.txt
+            evidence/small-logs/disk-before.txt
+            evidence/small-logs/docker-storage-driver.txt
+            evidence/small-logs/runner-image.txt
+            evidence/small-logs/run.log
+            evidence/small-logs/container-exit-code.txt
+            evidence/small-logs/log-capture-exit-code.txt
+            evidence/small-logs/generated-changes.patch
+            evidence/small-logs/disk-after.txt
+            evidence/small-logs/original-files.sha256
+            evidence/small-logs/verifier.sha256
+            evidence/small-logs/final-identities.log
+            evidence/small-logs/runner-exit-code.txt
+            evidence/small-logs/environment.txt
+            evidence/small-logs/build.log
+            evidence/small-logs/gates--retained-reader.log
+            evidence/small-logs/gates--authority-controls.log
+            evidence/small-logs/completion.txt
+            evidence/small-logs/archive.log
+            evidence/small-logs/host-permissions.txt
+            evidence/small-logs/container-permissions.txt
+            evidence/small-logs/retention-status.json
+            evidence/small-logs/reader-input-manifest.json
+            evidence/small-logs/small-logs-status.json
+            evidence/small-logs/retained-reader-basics.tar.gz
           include-hidden-files: true
           if-no-files-found: error
+          retention-days: 30
+      - name: Retain bounded complete reader inputs separately
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prismpm-backport-reader-inputs-${{ github.run_id }}
+          path: evidence/retained-reader-inputs.tar.gz
+          if-no-files-found: warn
           retention-days: 30

@@ -1,0 +1,74 @@
+name: Recover fixed PrismPM diagnostic artifact
+on:
+  workflow_dispatch:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-backport-recovery.yml'
+      - 'scripts/numeric/recover-backport-artifact.py'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Validate fixed original run and artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/numeric/recover-backport-artifact.py recovered
+      - name: Download only the fixed original diagnostic artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          repository: R4-Laboratories/uor-cs1.618
+          run-id: 43986399997
+          artifact-ids: 14288310173
+          path: original
+      - name: Stream complete reader inputs without extracting compilation caches
+        run: |
+          set -euo pipefail
+          test -f original/retained-projects.tar.gz
+          test ! -L original/retained-projects.tar.gz
+          python3 scripts/numeric/retain-backport-evidence.py recover \
+            original/retained-projects.tar.gz recovered > recovered/archive.log 2>&1
+      - name: Prepare bounded historical logs and recovery summaries
+        if: always()
+        run: |
+          set +e
+          python3 scripts/numeric/retain-backport-evidence.py logs original recovered/original-small
+          original_status=$?
+          python3 scripts/numeric/retain-backport-evidence.py logs recovered recovered/recovery-small
+          recovery_status=$?
+          if test "$original_status" -ne 0; then exit "$original_status"; fi
+          exit "$recovery_status"
+      - name: Upload small historical logs and recovery scope
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prismpm-backport-recovered-original-logs-43986399997
+          path: recovered/original-small/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 30
+      - name: Upload small recovery metadata and summaries separately
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prismpm-backport-recovered-summaries-43986399997
+          path: recovered/recovery-small/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 30
+      - name: Upload bounded complete historical reader inputs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prismpm-backport-recovered-reader-inputs-43986399997
+          path: recovered/retained-reader-inputs.tar.gz
+          if-no-files-found: warn
+          retention-days: 30
