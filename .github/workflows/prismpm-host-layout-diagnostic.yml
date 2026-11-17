@@ -1,0 +1,55 @@
+name: PrismPM host layout diagnostic only
+on:
+  push:
+    branches: [numeric-kernels]
+    paths:
+      - '.github/workflows/prismpm-host-layout-diagnostic.yml'
+      - 'scripts/numeric/host-layout-diagnostic.py'
+      - 'scripts/numeric/tests/test_host_layout_diagnostic.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  diagnostic-only:
+    name: Host layout diagnostic only
+    if: ${{ github.repository == 'R4-Laboratories/uor-cs1.618' && github.ref == 'refs/heads/numeric-kernels' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Start absolute diagnostic job clock
+        run: |
+          umask 022
+          mkdir -p evidence
+          python3 -c 'import json,time; print(json.dumps({"monotonic":time.monotonic()}))' > evidence/job-start.json
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: game
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: UOR-Foundation/prismpm
+          ref: 3666dc0f9da56fcf066d96ec01cd9e14ec9a2974
+          path: prismpm
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Restore exact reviewed source and bind game authorities
+        run: |
+          set -euo pipefail
+          umask 022
+          python3 -I -B game/scripts/numeric/candidate-capture-qualification.py prepare --phase image
+          sudo chown -R 1000:1000 prismpm
+      - name: Observe host layout diagnostic only (always nonacceptance)
+        id: observe
+        run: python3 -I -B game/scripts/numeric/host-layout-diagnostic.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: ${{ always() && steps.observe.outputs.artifact_safe == 'true' }}
+        with:
+          name: prismpm-host-layout-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/host-layout-diagnostic/
+          if-no-files-found: error
+          retention-days: 30
