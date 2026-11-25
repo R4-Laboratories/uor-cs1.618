@@ -10,6 +10,7 @@ const distance = (a:Point,b:Point) => Math.hypot(a.x-b.x,a.z-b.z);
 /** Each slot has a distinct destination. Only same-team positions and public
  * objective information enter this planner. Sight and reactions stay local. */
 export class BotDirector {
+ private recovered?:{bomb:Bomb;site:typeof MAP.sites[number]};
  private ringKey='';
  private ring = new Map<string,Point>();
  constructor(private nav:BotNavigator){}
@@ -33,6 +34,21 @@ export class BotDirector {
    this.ring.set(role,point);
   }
   return point;
+ }
+
+ recover(b:Bomb){
+  // A new carrier can pick the device up anywhere along either site's routes.
+  // Compare actual walking routes from the drop before assigning the squad.
+  let best=Infinity;
+  this.recovered=undefined;
+  const start=this.nav.nearest(b.x,b.z);
+  for(const site of MAP.sites){
+   const goal=this.nav.nearest(site.x,site.z);
+   const path=this.nav.path(b.x,b.z,site.x,site.z);
+   if(!path.length&&start!==goal)continue;
+   const cost=this.nav.routeLength(b,path);
+   if(cost<best){best=cost;this.recovered={bomb:b,site};}
+  }
  }
 
  goal(p:Player,team:Player[],b:Bomb|null,round:number,assignedDefuser:string|null,tactic:TacticAction|null):Point {
@@ -61,8 +77,9 @@ export class BotDirector {
   const carrier=team.find(member=>member.id===b?.carrier);
   const carrierIndex=carrier?team.indexOf(carrier):0;
   const rank=(team.indexOf(p)-carrierIndex+team.length)%team.length;
-  const site=MAP.sites[round%2];
-  const other=MAP.sites[(round+1)%2];
+  const recovered=this.recovered?.bomb===b?this.recovered:undefined;
+  const site=recovered?.site??MAP.sites[round%2];
+  const other=MAP.sites.find(s=>s!==site)!;
   const mainLanes=MAP_LANES.filter(l=>l.site===site.id);
   const otherLanes=MAP_LANES.filter(l=>l.site===other.id);
   const primary=Math.floor((round-1)/2)%mainLanes.length;
@@ -78,6 +95,7 @@ export class BotDirector {
    :mainLanes[(primary+(rank===2?1:0))%mainLanes.length];
   if(p.botLane!==lane.id){p.botLane=lane.id;p.botLeg=0;}
   const legs=[lane.entry,lane.contact];
+  if(recovered&&carrier===p)p.botLeg=legs.length;
   while(p.botLeg<legs.length&&distance(p,legs[p.botLeg])<2.5)p.botLeg++;
   if(p.botLeg<legs.length)return legs[p.botLeg];
   if(p.id===carrier?.id){

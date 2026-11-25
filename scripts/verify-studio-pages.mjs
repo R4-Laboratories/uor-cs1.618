@@ -64,6 +64,10 @@ try {
   assert(game.tick > 0 && game.assets.loaded >= 15 && !game.assets.failed.length);
   assert(game.staging.storedBytes > 0 && game.staging.storedBytes < game.staging.logicalBytes);
   await page.screenshot({path:output + '/practice.png'});
+  await page.keyboard.press('KeyT');
+  await page.locator('#chat-input').fill('Practice chat check');
+  await page.keyboard.press('Enter');
+  await page.locator('#chat-feed .chat-line').filter({hasText:'Practice chat check'}).waitFor({state:'attached'});
   await page.goto(base + 'evolution-studio.html');
   const inspector = page.locator('#material-inspector[data-state="ready"]');
   await inspector.waitFor();

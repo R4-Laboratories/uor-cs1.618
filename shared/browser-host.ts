@@ -1,7 +1,8 @@
 import {PacketBudget} from './packet-budget';
+import {SeatChat} from './room-chat';
 import {Match} from '../server/match';
 import {RULES,WEAPONS} from './config';
-interface Session {joined:boolean;opened:number;last:number;budget:PacketBudget;lastKills:number;lastDeaths:number;}
+interface Session {joined:boolean;opened:number;last:number;budget:PacketBudget;chat:SeatChat;lastKills:number;lastDeaths:number;}
 /** Authority boundary shared by the worker and its tests. IDs come only from transport. */
 export class BrowserMatchHost {
  private sessions=new Map<string,Session>();
@@ -13,7 +14,7 @@ export class BrowserMatchHost {
   // Repeated transport notifications must not drop a player or renew join deadlines.
   if(this.sessions.has(id))return true;
   if(this.sessions.size>=RULES.maxPlayers){this.drop(id,'Room full.');return false;}
-  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,budget:new PacketBudget(),lastKills:0,lastDeaths:0});return true;
+  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,budget:new PacketBudget(),chat:new SeatChat(),lastKills:0,lastDeaths:0});return true;
  }
  private reject(id:string,reason:string){this.leave(id);this.drop(id,reason);}
  message(id:string,value:unknown){
@@ -30,7 +31,6 @@ export class BrowserMatchHost {
    if(m.type!=='join'||m.token!==this.token||typeof m.name!=='string'||!['auto','attack','defend'].includes(m.team)){
     this.reject(id,'Invalid invitation or join request.');return;
    }
-   if(this.match.players.size>=RULES.maxPlayers)this.match.evictBot(m.team);
    const player=this.match.join(id,m.name,m.team);
    if(!player){this.reject(id,'Room full.');return;}
    session.joined=true;session.last=now;
@@ -41,6 +41,10 @@ export class BrowserMatchHost {
   }
   session.last=now;
   if(m.type==='input')this.match.input(id,m.input);
+  else if(m.type==='chat'){
+   const delivery=session.chat.route(this.match.players,id,m,now);
+   if(delivery)for(const recipient of delivery.recipients)this.send(recipient,delivery.message,false);
+  }
   else if(m.type==='ping'&&Number.isFinite(m.at))this.send(id,{type:'pong',at:m.at},false);
   else if(m.type==='buy'&&typeof m.item==='string'){
    const valid=Object.hasOwn(WEAPONS,m.item)||['armor','kit','ammo'].includes(m.item);

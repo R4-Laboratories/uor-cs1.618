@@ -49,6 +49,22 @@ try{
   return {rigs:f.world.characters.diagnostics, visible:['ember','tidal'].every(id=>f.world.players.get(id)?.visible), cameraError:f.world.cameraError};
  });
  assert(operators.visible && operators.rigs.poseUpdates>0 && !operators.cameraError);
+ if(!baseline){
+  const swapped=await page.evaluate(()=>{
+   const f=(window as any).fixture;
+   const before=f.world.characters.rigs.get('ember');
+   const defenderMaterial=f.world.characters.rigs.get('tidal').mesh.material;
+   for(const p of f.snapshot.players)p.team=p.team==='attack'?'defend':'attack';
+   f.draw();
+   const after=f.world.characters.rigs.get('ember');
+   const result={updated:after.mesh.material===defenderMaterial,retired:before.group.parent===null,
+    visible:after.group.visible,roster:f.world.characters.rigs.size};
+   for(const p of f.snapshot.players)p.team=p.team==='attack'?'defend':'attack';
+   f.draw();
+   return result;
+  });
+  assert.deepEqual(swapped,{updated:true,retired:true,visible:true,roster:3});
+ }
  await page.evaluate(()=>{const s=(window as any).fixture.snapshot;s.players=[s.self];});
  await page.evaluate(()=>{const f=(window as any).fixture,s=f.snapshot;s.self.x=-17;s.self.z=-8;s.self.pitch=-.28;s.self.weapon='sidearm';s.bomb={state:'planted',carrier:null,x:-16,y:0,z:-12,site:'A',remaining:17};f.draw();});
  await page.screenshot({path:`${out}/${prefix}-site.png`});

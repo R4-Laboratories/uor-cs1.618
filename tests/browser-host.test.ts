@@ -12,7 +12,7 @@ async function fixture(){
  const match=new Match('PEERTEST',await createEngine(engineBytes),kernel);
  const sent:{id:string;message:any;realtime:boolean}[]=[],closed:string[]=[];let clock=0;
  const host=new BrowserMatchHost(match,'secret',(id,message,realtime)=>sent.push({id,message,realtime}),id=>closed.push(id),()=>clock);
- const join=(id:string,bots=false)=>{assert.ok(host.open(id));host.message(id,{type:'join',token:'secret',name:id,team:'auto',bots});};
+ const join=(id:string,bots=false,team='auto')=>{assert.ok(host.open(id));host.message(id,{type:'join',token:'secret',name:id,team,bots});};
  return {match,host,sent,closed,join,setClock:(v:number)=>clock=v};
 }
 test('browser authority authenticates before bot eviction and binds identity to transport',async()=>{
@@ -63,4 +63,48 @@ test('queued movement delivered after a render stall keeps the guest connected a
  assert(f.match.players.get('guest')!.acceptedSeq<155);
  f.setClock(20);f.host.message('guest',{type:'input',input:{...neutralInput(),seq:156}});
  assert.equal(f.match.players.get('guest')!.acceptedSeq,156);
+});
+
+test('browser-host chat uses the reliable channel, current teammates, and the joined seat',async()=>{
+ const f=await fixture();
+ f.join('host',false,'attack');f.join('enemy',false,'defend');f.join('ally',false,'attack');
+ f.host.open('pending');
+ f.host.message('pending',{type:'chat',text:'before join',channel:'all'});
+ assert(f.closed.includes('pending'));
+ const teamMessage={type:'chat',channel:'team',text:'  one\ntwo  ',senderId:'enemy',name:'Spoof',team:'defend'};
+ f.sent.length=0;
+ f.host.message('host',teamMessage);
+ assert.deepEqual(f.sent.map(entry=>entry.id),['host','ally']);
+ for(const entry of f.sent){
+  assert.equal(entry.realtime,false);
+  assert.deepEqual(entry.message,{type:'chat',channel:'team',text:'one two',senderId:'host',name:'host',team:'attack'});
+ }
+ f.match.players.get('ally')!.team='defend';
+ f.sent.length=0;
+ f.host.message('host',teamMessage);
+ assert.deepEqual(f.sent.map(entry=>entry.id),['host']);
+ f.sent.length=0;
+ f.host.message('host',{type:'chat',channel:'all',text:'hello'});
+ assert.deepEqual(f.sent.map(entry=>entry.id),['host','enemy','ally']);
+ f.sent.length=0;
+ f.join('late');
+ assert.deepEqual(f.sent.map(entry=>entry.message.type),['welcome','snapshot']);
+ assert(!JSON.stringify(f.sent).includes('one two'));
+});
+
+test('browser-host chat cooldown is per seat and leaves movement and ping responsive',async()=>{
+ const f=await fixture();f.join('host');f.join('guest');f.sent.length=0;
+ const request={type:'chat',channel:'all',text:'hello'};
+ for(let n=0;n<10;n++)f.host.message('guest',request);
+ assert.equal(f.sent.filter(entry=>entry.id==='host'&&entry.message.type==='chat').length,4);
+ assert.deepEqual(f.sent.filter(entry=>entry.message.type==='chat-error').map(entry=>[entry.id,entry.realtime]),[['guest',false]]);
+ f.host.message('guest',{type:'input',input:{...neutralInput(),seq:1}});
+ f.host.message('guest',{type:'ping',at:123});
+ assert.equal(f.match.players.get('guest')!.acceptedSeq,1);
+ assert(f.sent.some(entry=>entry.id==='guest'&&entry.message.type==='pong'&&entry.message.at===123));
+ f.sent.length=0;f.host.message('host',request);
+ assert.deepEqual(f.sent.map(entry=>entry.message.type),['chat','chat']);
+ f.setClock(5000);f.sent.length=0;f.host.message('guest',request);
+ assert.deepEqual(f.sent.map(entry=>entry.message.type),['chat','chat']);
+ assert.equal(f.closed.length,0);
 });

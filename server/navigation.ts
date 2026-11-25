@@ -18,6 +18,15 @@ export class BotNavigator{
  }
  point(i:number|undefined){return i===undefined?undefined:this.nodes[i];}
  nearest(x:number,z:number){let best=0,d=Infinity;this.nodes.forEach((p,i)=>{const n=(p.x-x)**2+(p.z-z)**2;if(n<d){d=n;best=i;}});return best;}
+ routeLength(start:{x:number;z:number},path:number[]){
+  let length=0,previous=start;
+  for(const id of path){
+   const next=this.nodes[id];
+   length+=Math.hypot(next.x-previous.x,next.z-previous.z);
+   previous=next;
+  }
+  return length;
+ }
  path(x:number,z:number,gx:number,gz:number){
   const start=this.nearest(x,z),goal=this.nearest(gx,gz),queue=[start],parents=new Map<number,number>([[start,-1]]);
   for(let k=0;k<queue.length;k++){const id=queue[k];if(id===goal)break;for(const n of this.nodes[id].links)if(!parents.has(n)){parents.set(n,id);queue.push(n);}}

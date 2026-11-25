@@ -1,4 +1,5 @@
 import {GAME_PROTOCOL} from '../shared/protocol';
+import {SeatChat} from '../shared/room-chat';
 import http from 'node:http';
 import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
@@ -31,6 +32,7 @@ export async function createGameServer({dev=false,port=3000,host='0.0.0.0'}={}){
  wss.on('connection',ws=>{
   if(connections.size>=200){ws.close(1013,'Server full');return;}
   const c={id:randomUUID(),room:null as Match|null,joined:false,messages:0,window:Date.now(),alive:true};connections.set(ws,c);
+  const chat=new SeatChat();
   const timeout=setTimeout(()=>{if(!c.joined)ws.close(1008,'Join timeout');},10000);
   ws.on('pong',()=>{c.alive=true;});
   ws.on('error',()=>{});
@@ -51,12 +53,20 @@ export async function createGameServer({dev=false,port=3000,host='0.0.0.0'}={}){
      if(!rooms.has(room))rooms.set(room,new Match(room,engine,roundKernel));
     }
     const match=rooms.get(room)!;
-    if(match.players.size>=RULES.maxPlayers)match.evictBot(m.team);
     const p=match.join(c.id,m.name,m.team);if(!p){c.joined=false;ws.send(JSON.stringify({type:'error',code:'room-full',message:'This room is full.'}));return;}
     c.room=match;clearTimeout(timeout);if(m.bots)match.enableBots();
     ws.send(JSON.stringify({type:'welcome',protocol:GAME_PROTOCOL,id:c.id,room,team:p.team,tickRate:RULES.tickRate}));ws.send(JSON.stringify(match.snapshot(c.id)));return;
    }
    if(!c.room)return;
+   if(m.type==='chat'){
+    const delivery=chat.route(c.room.players,c.id,m);
+    if(!delivery)return;
+    const packet=JSON.stringify(delivery.message);
+    for(const [peer,seat] of connections){
+     if(seat.room===c.room&&delivery.recipients.includes(seat.id)&&peer.readyState===WebSocket.OPEN)peer.send(packet);
+    }
+    return;
+   }
    if(m.type==='input'){if(!c.room.input(c.id,m.input))ws.send(JSON.stringify({type:'error',code:'input',message:'Input rejected.'}));}
    if(m.type==='buy'&&typeof m.item==='string'){const error=c.room.buy(c.id,m.item);ws.send(JSON.stringify({type:'buy-result',item:m.item,error}));}
   });

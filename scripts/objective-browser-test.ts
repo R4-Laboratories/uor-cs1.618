@@ -2,6 +2,7 @@ import {chromium,type Page} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {createGameServer} from '../server/index';
+import {RULES} from '../shared/config';
 const game=await createGameServer({port:0,host:'127.0.0.1'});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--enable-unsafe-swiftshader']});
 const contexts=await Promise.all([0,1].map(()=>browser.newContext({viewport:{width:1100,height:760},deviceScaleFactor:.5})));
@@ -50,8 +51,20 @@ try{
  await d.keyboard.press('Escape');await a.waitForFunction(()=>(window as any).cs1618.snapshot.phase==='freeze');match.phase='live';match.phaseLeft=90;
  await plant();await deploy(d);Object.assign(pa,{x:-16,z:-11});Object.assign(pd,{x:0,z:-23});
  await d.waitForFunction(()=>/DEFUSE.*A/.test(document.getElementById('context-hint')!.textContent!));
+ match.score.attack=RULES.matchWin-1;
  match.bomb!.remaining=.1;await d.waitForFunction(()=>(window as any).cs1618.snapshot.bomb?.terminal==='exploded');
- await d.waitForFunction(()=>document.getElementById('banner-detail')!.textContent==='Device detonated');
- assert.equal(match.winner,'attack');assert.equal(match.score.attack,1);assert.equal(pa.alive,false);assert.equal(pd.health,100);assert.equal(match.events.filter(e=>e.type==='explode').length,1);passed.push('Host expiry fixture detonates once, kills nearby planter, spares distant defender and displays compiled-kernel attacker result; exact40s timing is unit-tested');
- assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});await d.screenshot({scale:'css',path:'artifacts/objective-result.png'});await writeFile('artifacts/objective-browser-results.json',JSON.stringify({passed,errors,timing:'Late-progress/expiry host fixtures after real input observations; exact3s/5s/10s/40s lifecycle timings are verified by real-engine unit tests',rendering:'HUD-only: document.hidden override pauses software 3D rendering; normal keyboard, WebSocket and host ticks remain active'},null,2)+'\n');console.log(passed.join('\n'));
+ await d.waitForFunction(()=>document.getElementById('banner-detail')!.textContent?.includes('Device detonated · Next set you attack.'));
+ assert.equal(match.winner,'attack');assert.equal(match.score.attack,RULES.matchWin);assert.equal(pa.alive,false);assert.equal(pd.health,100);assert.equal(match.events.filter(e=>e.type==='explode').length,1);passed.push('Host expiry fixture detonates once, kills nearby planter, spares distant defender and displays compiled-kernel attacker result; exact40s timing is unit-tested');
+ await d.screenshot({scale:'css',path:'artifacts/objective-result.png'});
+ assert.equal(match.phase,'matchEnd');match.phaseLeft=.1;
+ await Promise.all([a.waitForFunction(()=>(window as any).cs1618.snapshot.self.team==='defend'),
+  d.waitForFunction(()=>(window as any).cs1618.snapshot.self.team==='attack')]);
+ assert.deepEqual(match.score,{attack:0,defend:0});assert.equal(match.round,1);
+ assert.equal(match.bomb?.carrier,pd.id);assert.equal(pd.kit,false);
+ await d.waitForFunction(()=>document.querySelector('#deploy-description')?.textContent?.includes('Ember'));
+ await d.keyboard.press('KeyT');await d.locator('#chat-input').fill('New set · Ember here');
+ await d.keyboard.press('Enter');
+ await a.locator('#chat-feed .chat-line').filter({hasText:'New set · Ember here'}).waitFor({state:'attached'});
+ passed.push('The result announces the next side, both clients swap on rematch, the new attacker carries the device and WebSocket chat crosses sides');
+ assert.deepEqual(errors,[]);await mkdir('artifacts',{recursive:true});await writeFile('artifacts/objective-browser-results.json',JSON.stringify({passed,errors,timing:'Late-progress/expiry host fixtures after real input observations; exact3s/5s/10s/40s lifecycle timings are verified by real-engine unit tests',rendering:'HUD-only: document.hidden override pauses software 3D rendering; normal keyboard, WebSocket and host ticks remain active'},null,2)+'\n');console.log(passed.join('\n'));
 }catch(error){console.log('Objective failure',JSON.stringify({host:[...game.rooms.values()].map(m=>({phase:m.phase,bomb:m.bomb,players:[...m.players.values()].map(p=>({id:p.id,x:p.x,y:p.y,z:p.z,progress:p.progress,inputAge:p.inputAge,input:p.input}))})),a:await a.evaluate(()=>({self:(window as any).cs1618?.snapshot?.self,bomb:(window as any).cs1618?.snapshot?.bomb,cameraError:(window as any).cs1618?.cameraError,locked:(window as any).cs1618?.locked,hint:document.getElementById('context-hint')?.textContent})).catch(()=>null)}));throw error;}finally{await browser.close();await game.close();}

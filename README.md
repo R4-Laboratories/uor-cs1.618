@@ -4,7 +4,7 @@
 
 An original, playable tactical multiplayer FPS inspired by the round-based defusal play of Counter-Strike 1.4/1.5, built on **Verdant Engine** and modeled with the **Prism** toolchain. The repository is `uor-cs1.618`; the game is **cs1.618**.
 
-Two teams of five play for two objective sites on **Meridian**, an original coastal customs quarter. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. Meridian combines original architecture, operators, weapons and synthesized audio with locally packaged CC0 surface scans and a coastal panorama. [Art sources](public/art/meridian/SOURCES.md)
+Two teams of five play for two objective sites on **Meridian**, an original coastal customs quarter. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. Everyone switches sides when the next set begins. Meridian combines original architecture, operators, weapons and synthesized audio with locally packaged CC0 surface scans and a coastal panorama. [Art sources](public/art/meridian/SOURCES.md)
 
 ![Customs Arcade in the expanded Meridian arena](docs/evidence/field-update/customs.webp)
 
@@ -56,7 +56,9 @@ The shipped Wasm binaries are committed. Rust and the Prism SDK are needed only 
 - Freeze/buy, live, planted, round-end and match-end phases. Equipment and money persist for survivors; eliminations reset equipment. Win, loss, kill and plant rewards.
 - Eight original weapons across two inventory slots, including the Rivet heavy pistol, Tern carbine and Breaker scattergun. The host resolves game damage from range, hit zone, armor remaining and the weapon’s own profile. Hold right mouse to aim and press Q to switch equipped weapons.
 - Prism career profiles retain separate practice and multiplayer K/D across visits. Export a signed backup to merge it on another device linked to the same identity. [Career profile](https://r4-laboratories.github.io/uor-cs1.618/identity.html#career)
-- Hold-to-plant and hold-to-defuse with persistent objective directions, countdowns and interruption feedback. Single-defuser bot coordination, carrier escort, bounded reaction and burst fire. Dropped-device pickup, defusal kits, blast damage, elimination/timeout/detonation outcomes and scoreboard.
+- Press **T** to chat with the room or **Y** for teammates. Bind either shortcut in the in-game menu. Chat stays within the current room.
+- Auto Assign balances human players across the two sides and breaks ties at random. You can also select a side in the lobby.
+- Hold-to-plant and hold-to-defuse with persistent objective directions, countdowns and interruption feedback. The carrier rotates through attacking seats. Defenders choose a reachable teammate to defuse and hand off the job if that player dies, gets stuck, or breaks contact. A completed defuse ends the round immediately. Dropped-device pickup, defusal kits, blast damage, elimination/timeout/detonation outcomes and scoreboard.
 - Five original procedural weapon finishes, reload/switch motion, readable site wayfinding and a stable planted device, with distinct spatial objective and round audio.
 - Browser-local 5v5 practice in a worker; online bot fill. Static hosting can run practice without a server.
 - Verdant Core's BVH, ray/AABB intersection, vector mathematics and occluded binaural audio execute in the same custom Wasm bridge on client and server. The latest engine also supplies the visible 22-joint operator meshes, skeletal animation and flat-support foot IK, rendered with GPU skinning. See the [3D integration notes](docs/VERDANT-3D.md).
@@ -77,6 +79,8 @@ This is a playable first release, not a feature-complete recreation of Counter-S
 | 1 / 2 | Primary / sidearm |
 | B | Buy menu near spawn during the buy window |
 | Hold E | Plant at a site / defuse nearby; stand still |
+| T / Y | Open match chat / team chat |
+| Enter / Escape while chatting | Send / discard the draft and return to play |
 | Tab | Scoreboard |
 | Escape | Pause menu, sensitivity, volume, leave |
 | Left / right arrow | Alternative horizontal look |

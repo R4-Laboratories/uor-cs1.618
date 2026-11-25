@@ -1,9 +1,8 @@
 // Generated creative decision program. Edit the model, not this file.
 import type {BotFacts,TacticAction} from './creative-program';
-export const tacticsProgram = {"version":1,"rules":[{"when":{"all":[{"fact":"canDefuse"},{"fact":"urgent"}]},"action":"interact"},{"when":{"all":[{"any":[{"fact":"canDefuse"},{"fact":"canPlant"}]},{"not":{"fact":"enemy"}}]},"action":"interact"},{"when":{"fact":"empty"},"action":"reload"},{"when":{"fact":"enemy"},"action":"engage"},{"when":{"all":[{"fact":"lowAmmo"},{"not":{"fact":"enemy"}}]},"action":"reload"},{"when":{"fact":"planted"},"action":"advance"},{"when":{"all":[{"fact":"attacker"},{"fact":"dropped"}]},"action":"advance"},{"when":{"all":[{"fact":"attacker"},{"not":{"fact":"carrier"}}]},"action":"escort"},{"when":{"not":{"fact":"attacker"}},"action":"guard"}],"fallback":"advance"};
+export const tacticsProgram = {"version":1,"rules":[{"when":{"any":[{"fact":"canPlant"},{"fact":"canDefuse"}]},"action":"interact"},{"when":{"fact":"empty"},"action":"reload"},{"when":{"fact":"enemy"},"action":"engage"},{"when":{"all":[{"fact":"lowAmmo"},{"not":{"fact":"enemy"}}]},"action":"reload"},{"when":{"fact":"planted"},"action":"advance"},{"when":{"all":[{"fact":"attacker"},{"fact":"dropped"}]},"action":"advance"},{"when":{"all":[{"fact":"attacker"},{"not":{"fact":"carrier"}}]},"action":"escort"},{"when":{"not":{"fact":"attacker"}},"action":"guard"}],"fallback":"advance"};
 export function decideTactic(f:BotFacts):TacticAction|null {
- if((f.canDefuse && f.urgent))return "interact";
- if(((f.canDefuse || f.canPlant) && !(f.enemy)))return "interact";
+ if((f.canPlant || f.canDefuse))return "interact";
  if(f.empty)return "reload";
  if(f.enemy)return "engage";
  if((f.lowAmmo && !(f.enemy)))return "reload";

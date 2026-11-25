@@ -2,10 +2,12 @@ import {Match} from '../server/match';
 import {createEngine} from '../shared/engine';
 import {RULES} from '../shared/config';
 import {createRoundKernel} from '../shared/round-kernel';
+import {SeatChat} from '../shared/room-chat';
 
 let match:Match|null=null;
 let playing=false;
 const id='local-operator';
+const chat=new SeatChat();
 self.onmessage=async({data:m})=>{
  if(m.type==='init'){
   const engine=await createEngine(m.bytes);
@@ -34,6 +36,9 @@ self.onmessage=async({data:m})=>{
   // During pre-deployment shopping the game clock is stopped and no snapshots are ticking.
   const selfState=!playing && !error?match.snapshot(id).self:undefined;
   self.postMessage({type:'buy-result',item:m.item,error,selfState});
+ }else if(m.type==='chat'&&match){
+  const delivery=chat.route(match.players,id,m);
+  if(delivery)self.postMessage(delivery.message);
  }else if(m.type==='ping'){
   self.postMessage({type:'pong',at:m.at});
  }

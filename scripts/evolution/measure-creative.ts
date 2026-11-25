@@ -17,7 +17,7 @@ function cases(heldOut:boolean){
   const scenario=i%12;
   if(scenario===0){Object.assign(facts,{attacker:false,planted:true,canDefuse:true,urgent:true,enemy:true});}
   if(scenario===1){Object.assign(facts,{empty:true,lowAmmo:true,enemy:true});}
-  if(scenario===2){Object.assign(facts,{attacker:true,carrier:true,canPlant:true,enemy:false});}
+  if(scenario===2){Object.assign(facts,{attacker:true,carrier:true,canPlant:true,enemy:heldOut});}
   if(scenario===3){Object.assign(facts,{attacker:false,planted:true,canDefuse:true,enemy:false});}
   if(scenario===4){facts.enemy=true;}
   if(scenario===5){Object.assign(facts,{attacker:true,enemy:false});}
@@ -28,7 +28,7 @@ function cases(heldOut:boolean){
   if(scenario===10){Object.assign(facts,{lowAmmo:true,enemy:false});}
   if(scenario===11){Object.assign(facts,{attacker:false,canDefuse:true,planted:true,urgent:false,enemy:true});}
   if(heldOut){if(scenario===0||scenario===3)Object.assign(facts,{empty:true,lowAmmo:true});if(scenario===2||scenario===11)facts.lowAmmo=true;if(scenario===10)facts.empty=true;}
-  const expected=['interact','reload','interact','interact','engage','escort','guard','advance','advance','advance','reload','engage'][scenario];rows.push({facts,expected});
+  const expected=['interact','reload','interact','interact','engage','escort','guard','advance','advance','advance','reload','interact'][scenario];rows.push({facts,expected});
  }return rows;
 }
 function legacy(f:BotFacts){if(f.enemy)return 'engage';if(f.canPlant||f.canDefuse)return 'interact';if(f.empty||f.lowAmmo)return 'reload';return !f.attacker&&!f.planted?'guard':'advance';}
@@ -38,6 +38,15 @@ export async function measureTactics(candidate:Candidate,incumbent:Configuration
   const exports:any={};runInNewContext(ts.transpileModule(compileTactics(program),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports},{timeout:1000});const decide=exports.decideTactic as (f:BotFacts)=>ReturnType<typeof decideProgram>;
 
   const errorSet=(held:boolean)=>cases(held).flatMap((c,i)=>{const requested=decide(c.facts)??legacy(c.facts);const effective=requested==='engage'&&c.facts.enemy&&c.facts.empty?'reload':requested;return effective!==c.expected?[i]:[];});
+  // Every eligible carrier or assigned defuser should commit, including with an empty magazine.
+  let objectiveErrors=0;
+  for(const carrier of [true,false])for(const enemy of [true,false])for(const urgent of [true,false]){
+   for(const ammo of ['empty','low','stocked']){
+    const facts:BotFacts={attacker:carrier,carrier,canPlant:carrier,canDefuse:!carrier,planted:!carrier,
+     dropped:false,enemy,urgent,empty:ammo==='empty',lowAmmo:ammo!=='stocked'};
+    if((decide(facts)??legacy(facts))!=='interact')objectiveErrors++;
+   }
+  }
   let completed=0,invalidInputs=0;const outcomes:string[]=[];
   // A separate actual simulation corpus proves that the program affects authoritative use inputs.
   for(const x of [-2,0,2])for(const kit of [true,false]){
@@ -47,11 +56,11 @@ export async function measureTactics(candidate:Candidate,incumbent:Configuration
    for(let n=0;n<(kit?7:12)*60&&m.phase==='live';n++){m.step(1/60);if(![p.x,p.y,p.z,p.input.yaw,p.input.pitch].every(Number.isFinite)||Math.abs(p.input.forward)>1)invalidInputs++;}
    outcomes.push(m.reason);if(m.reason==='Device defused')completed++;
   }
-  return {trainingErrors:errorSet(false).length,holdoutErrors:errorSet(true).length,trainingFailed:errorSet(false),holdoutFailed:errorSet(true),completed,invalidInputs,outcomes};
+  return {objectiveErrors,trainingErrors:errorSet(false).length,holdoutErrors:errorSet(true).length,trainingFailed:errorSet(false),holdoutFailed:errorSet(true),completed,invalidInputs,outcomes};
  }
  const before=run(incumbent.tactics),after=run(candidate.config.tactics);
  const noRegression=after.trainingFailed.every(i=>before.trainingFailed.includes(i))&&after.holdoutFailed.every(i=>before.holdoutFailed.includes(i));
- return {family:'tactics',candidate:candidate.id,configHash:hash(candidate.config),metric:'tactical decision errors + failed emergency objective scenarios (lower is better)',baselineWork:1+before.trainingErrors+before.holdoutErrors+(6-before.completed)*16,candidateWork:1+after.trainingErrors+after.holdoutErrors+(6-after.completed)*16,fidelity:noRegression&&after.completed>=before.completed,samples:198,checks:false,bounds:after.invalidInputs===0,reference:{metricVersion:2,training:96,heldOut:96,realMatches:6,scope:'Fixed scenario corpus; not general match win rate'},before,after};
+ return {family:'tactics',candidate:candidate.id,configHash:hash(candidate.config),metric:'tactical decision errors + failed emergency objective scenarios (lower is better)',baselineWork:1+before.trainingErrors+before.holdoutErrors+(6-before.completed)*16,candidateWork:1+after.trainingErrors+after.holdoutErrors+(6-after.completed)*16,fidelity:noRegression&&after.objectiveErrors===0&&after.completed>=before.completed,samples:222,checks:false,bounds:after.invalidInputs===0,reference:{metricVersion:3,objectiveCases:24,training:96,heldOut:96,realMatches:6,scope:'Fixed scenario corpus; not general match win rate'},before,after};
 }
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {chromium} from 'playwright';

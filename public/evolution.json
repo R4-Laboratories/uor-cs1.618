@@ -168,34 +168,12 @@
       "rules": [
         {
           "when": {
-            "all": [
+            "any": [
+              {
+                "fact": "canPlant"
+              },
               {
                 "fact": "canDefuse"
-              },
-              {
-                "fact": "urgent"
-              }
-            ]
-          },
-          "action": "interact"
-        },
-        {
-          "when": {
-            "all": [
-              {
-                "any": [
-                  {
-                    "fact": "canDefuse"
-                  },
-                  {
-                    "fact": "canPlant"
-                  }
-                ]
-              },
-              {
-                "not": {
-                  "fact": "enemy"
-                }
               }
             ]
           },

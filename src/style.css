@@ -130,3 +130,89 @@ prism-frame{position:fixed;inset:0 0 auto;z-index:50}prism-frame[hidden]{display
 .weapon-card footer{margin-top:10px}
 .weapon-card:disabled{opacity:.72}
 @media(max-width:600px){.weapon-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.weapon-card .armory-spec{font-size:10px;flex-wrap:wrap}}
+
+.match-chat {
+  position: absolute;
+  left: 30px;
+  bottom: 158px;
+  width: min(360px, calc(50vw - 48px));
+  color: #f2f5ed;
+  font: 500 14px/1.4 'Barlow', sans-serif;
+}
+#chat-feed {
+  max-height: min(16vh, 92px);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.chat-line {
+  width: fit-content;
+  max-width: 100%;
+  padding: 2px 8px;
+  background: #0a181de6;
+}
+.chat-audience {
+  margin-right: 3px;
+  font: 500 9px 'IBM Plex Mono', monospace;
+  letter-spacing: .5px;
+  color: #b7c8bf;
+}
+.chat-sender { color: var(--cs-tidal); font-weight: 600; }
+.chat-line[data-team="attack"] .chat-sender { color: #f0b78d; }
+.match-chat:not(.composing) .expired,
+.match-chat:not(.composing) .chat-line:nth-last-child(n+4) { display: none; }
+.match-chat.composing {
+  pointer-events: auto;
+  user-select: text;
+  background: #0b1b20ed;
+  border-left: 2px solid var(--cs-mint);
+}
+.match-chat.composing #chat-feed {
+  max-height: min(24vh, 192px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.match-chat.composing .chat-line { background: transparent; }
+#chat-form {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 8px;
+}
+#chat-channel, #chat-form button {
+  color: var(--cs-mint);
+  font: 500 10px 'IBM Plex Mono', monospace;
+}
+#chat-channel { text-transform: uppercase; }
+#chat-input {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 4px 6px;
+  border: 1px solid var(--cs-line);
+  background: #17292d;
+  color: #fff;
+  font: 14px 'Barlow', sans-serif;
+}
+#chat-input:focus { outline: 1px solid var(--cs-mint); outline-offset: -1px; }
+#chat-input::placeholder { color: #b3c4bc; }
+#chat-form button { padding: 4px; background: transparent; border: 0; }
+.chat-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.chat-bindings { display: flex; gap: 16px; }
+.chat-bindings label { flex: 1; margin: 16px 0 0; }
+.chat-bindings select {
+  padding: 6px;
+  border: 1px solid var(--cs-line);
+  background: #17292d;
+  color: #fff;
+  font: 12px 'IBM Plex Mono', monospace;
+}
+@media (max-width: 1000px) { .match-chat { left: 18px; } }
+@media (max-width: 700px) {
+  .match-chat { left: 12px; bottom: 96px; width: min(65vw, 290px); font-size: 12px; }
+  .match-chat.composing { width: min(calc(100vw - 24px), 360px); }
+}
+@media (max-height: 550px) and (orientation: landscape) {
+  .match-chat { bottom: 85px; font-size: 12px; }
+  #chat-feed { max-height: 12vh; }
+}

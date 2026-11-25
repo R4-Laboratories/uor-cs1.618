@@ -19,19 +19,38 @@ export interface Player extends Motion {
  botSlot:number;botLane:string;botLeg:number;botPath:number[];botPlan:number;botGoal:number;botShoot:number;botTarget:string|null;botReaction:number;botBurst:number;
 }
 export type BuyError='unknown'|'dead'|'phase'|'zone'|'team'|'funds'|'owned'|null;
+const plantSite=(p:{x:number;z:number})=>MAP.sites.find(site=>Math.hypot(p.x-site.x,p.z-site.z)<site.radius);
 const gun=(id:string):Gun=>({id,ammo:WEAPONS[id].mag,reserve:WEAPONS[id].reserve});
+const oppositeSide=(team:Team):Team=>team==='attack'?'defend':'attack';
 export class Match {
  players=new Map<string,Player>();phase:Phase='waiting';phaseLeft:number=R.freezeSeconds;time=0;tick=0;round=0;
  score={attack:0,defend:0};bomb:Bomb|null=null;winner:Team|null=null;reason='Waiting for both teams';events:GameEvent[]=[];
  private eventId=0;private randomState=1618;nav:BotNavigator;private botDirector:BotDirector;botsEnabled=false;
+ // Keep one runner until they finish, lose their claim or stop making progress along the route.
+ private retake?:{bomb:Bomb;runner:string|null;checkAt:number;routeLeft:number;tried:Set<string>};
  constructor(public room:string,public engine:VerdantEngine,private roundKernel:RoundKernel,private tacticDecider:TacticDecider=decideTactic){this.nav=new BotNavigator(engine);this.botDirector=new BotDirector(this.nav);}
  random(){let x=this.randomState;x^=x<<13;x^=x>>>17;x^=x<<5;this.randomState=x;return (x>>>0)/4294967296;}
  emit(e:Omit<GameEvent,'id'>){this.events.push({id:++this.eventId,at:this.time,...e});if(this.events.length>80)this.events.shift();return this.eventId;}
  join(id:string,name:string,wanted:Team|'auto',bot=false){
-  if(this.players.size>=R.maxPlayers)return null;
-  const counts={attack:0,defend:0};for(const p of this.players.values())counts[p.team]++;
-  let team:Team=wanted==='auto'?(counts.attack<=counts.defend?'attack':'defend'):wanted;
-  if(counts[team]>=5)team=team==='attack'?'defend':'attack';
+  const roster=[...this.players.values()];
+  // A human can take a bot seat. Count humans when assigning sides so a
+  // room prefilled with bots balances its first guests like an empty room.
+  const seats=bot?roster:roster.filter(p=>!p.bot);
+  if(seats.length>=R.maxPlayers||this.players.has(id))return null;
+  const counts={attack:0,defend:0};for(const p of seats)counts[p.team]++;
+  let team=wanted;
+  if(team==='auto'){
+   // Combat and bot simulations have a fixed seed. Each real tie needs a fresh draw.
+   if(counts.attack===counts.defend)team=Math.random()<.5?'attack':'defend';
+   else team=counts.attack<counts.defend?'attack':'defend';
+  }
+  const capacity=R.maxPlayers/2;
+  if(counts[team]>=capacity)team=oppositeSide(team);
+  const squad=roster.filter(p=>p.team===team);
+  if(squad.length===capacity){
+   const replacement=squad.find(p=>p.bot&&p.id!==this.bomb?.carrier)??squad.find(p=>p.bot)!;
+   this.leave(replacement.id);
+  }
   const occupied=new Set([...this.players.values()].filter(member=>member.team===team).map(member=>member.botSlot));
   let seat=0;while(occupied.has(seat))seat++;
   const careerSeat=bot?'':Array.from(crypto.getRandomValues(new Uint8Array(16)),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -49,9 +68,8 @@ export class Match {
    const used=[...this.players.values()].filter(p=>p.team===team).length;this.join(id,names[used%5],team,true);
   }
  }
- evictBot(team:Team|'auto'){const p=[...this.players.values()].find(p=>p.bot&&(team==='auto'||p.team===team))??[...this.players.values()].find(p=>p.bot);if(p)this.leave(p.id);}
  hasBothTeams(){return [...this.players.values()].some(p=>p.team==='attack')&&[...this.players.values()].some(p=>p.team==='defend');}
- leave(id:string){const p=this.players.get(id);if(!p)return;this.cancelInteraction(p);this.dropBomb(p);this.players.delete(id);if(!this.hasBothTeams()){this.phase='waiting';this.reason='Waiting for both teams';this.bomb=null;}}
+ leave(id:string){const p=this.players.get(id);if(!p)return;this.cancelInteraction(p);this.dropBomb(p);this.players.delete(id);if(this.phase!=='matchEnd'&&!this.hasBothTeams()){this.phase='waiting';this.reason='Waiting for both teams';this.bomb=null;}}
  spawn(p:Player,index:number){
   const pos=MAP.spawns[p.team][index%5];p.x=pos[0];p.y=0;p.z=pos[1];p.vx=p.vy=p.vz=0;p.grounded=true;p.crouch=false;
   if(!p.alive){p.inventory=[gun('sidearm'),gun('sidearm')];p.armor=0;p.kit=false;}
@@ -59,12 +77,16 @@ export class Match {
   p.alive=true;p.health=100;p.yaw=p.team==='attack'?0:Math.PI;p.pitch=0;p.input={...neutralInput(),yaw:p.yaw,seq:p.acceptedSeq};p.queue=[];p.processedSeq=p.acceptedSeq;p.inputAge=0;p.slot=p.inventory[0].id==='sidearm'?1:0;p.input.slot=p.slot;p.cooldown=p.reloadLeft=p.progress=p.recoil=0;p.burst=0;p.shotIdle=10;p.action='';p.previousFire=false;p.previousJump=false;p.botSlot=index;p.botLane='';p.botLeg=0;p.botPath=[];p.botPlan=0;p.botGoal=-1;p.botTarget=null;p.botReaction=0;p.botBurst=0;p.botShoot=0;
  }
  beginRound(){
-  this.round++;this.phase='freeze';this.phaseLeft=R.freezeSeconds;this.winner=null;this.reason='Buy equipment. Prepare to deploy.';
+  const rematch=this.phase==='matchEnd';
+  this.round++;this.phase='freeze';this.phaseLeft=R.freezeSeconds;this.winner=null;
+  this.reason=rematch?'Sides switched. Buy equipment for the new match.':'Buy equipment. Prepare to deploy.';
   const counts={attack:0,defend:0};for(const p of this.players.values())this.spawn(p,counts[p.team]++);
-  const attackers=[...this.players.values()].filter(p=>p.team==='attack');const carrier=attackers.find(p=>!p.bot)??attackers[(this.round-1)%attackers.length];
+  const attackers=[...this.players.values()].filter(p=>p.team==='attack');
+  const firstCarrier=Math.max(0,attackers.findIndex(p=>!p.bot));
+  const carrier=attackers[(firstCarrier+this.round-1)%attackers.length];
   this.bomb=carrier?{state:'carried',carrier:carrier.id,x:carrier.x,y:0,z:carrier.z,site:null,remaining:R.bombSeconds}:null;
   for(const p of this.players.values())if(p.bot)this.equipBot(p);
-  this.emit({type:'round',text:`Round ${this.round} · buy phase`});
+  this.emit({type:'round',text:rematch?'Sides switched · round 1 buy phase':`Round ${this.round} · buy phase`});
  }
  private equipBot(p:Player){
   // Priorities rotate between rounds. Buy through the normal authority so
@@ -112,13 +134,24 @@ export class Match {
   this.phaseLeft-=dt;
   if(this.phase==='freeze'&&this.phaseLeft<=0){this.phase='live';this.phaseLeft=R.roundSeconds;this.reason='Ember: plant the device. Tidal: defend the relay.';this.emit({type:'round',text:'Round live'});}
   if((this.phase==='ended'||this.phase==='matchEnd')&&this.phaseLeft<=0){
-   if(this.phase==='matchEnd'){this.score={attack:0,defend:0};this.round=0;for(const p of this.players.values()){p.money=R.startMoney;p.alive=false;p.previousKills+=p.kills;p.previousDeaths+=p.deaths;p.kills=p.deaths=0;}}
-   if(this.hasBothTeams())this.beginRound();else this.phase='waiting';return;
+   if(this.phase==='matchEnd'){
+    this.score={attack:0,defend:0};this.round=0;this.winner=null;this.bomb=null;
+    for(const p of this.players.values()){
+     p.team=oppositeSide(p.team);p.money=R.startMoney;p.alive=false;
+     p.previousKills+=p.kills;p.previousDeaths+=p.deaths;p.kills=p.deaths=0;
+    }
+   }
+   if(this.hasBothTeams())this.beginRound();
+   else{
+    this.phase='waiting';this.phaseLeft=R.freezeSeconds;this.reason='Waiting for both teams';
+    for(const p of this.players.values())this.spawn(p,p.botSlot);
+   }
+   return;
   }
   if(this.phase==='ended'||this.phase==='matchEnd')return;
   if(this.phase==='live'&&this.phaseLeft<=1e-9&&this.bomb?.state!=='planted'){
-   const decision=this.roundKernel.decide({bomb:'absent',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:0});
-   if(decision!=='continue'){this.endRound(decision,'Time expired');return;}
+   this.resolveRound();
+   if(this.phase!=='live')return;
   }
   // Expiry wins a fixed-tick tie with completion; resolve it before interactions,
   // independent of player iteration order. A newly planted device gets a full timer.
@@ -126,7 +159,7 @@ export class Match {
    this.bomb.remaining=Math.max(0,this.bomb.remaining-dt);
    if(this.bomb.remaining<=1e-9){this.detonate();return;}
    const defuser=this.players.get(this.bomb.defuser??'');
-   if(defuser&&!defuser.alive)this.cancelInteraction(defuser);
+   if(defuser&&(!defuser.alive||!this.canReachDevice(defuser,this.bomb)))this.cancelInteraction(defuser);
   }
   for(const p of this.players.values()){
    if((this.phase as Phase)==='ended'||(this.phase as Phase)==='matchEnd')break;
@@ -151,14 +184,15 @@ export class Match {
    }
    p.previousFire=i.fire;
   }
-  if(this.phase==='live'){
-   let bombState:'absent'|'planted'|'exploded'='absent';
-   if(this.bomb?.state==='planted'&&!this.bomb.terminal)bombState='planted';
-   const decision=this.roundKernel.decide({bomb:bombState,attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:this.phaseLeft>0?1:0});
-   if(decision!=='continue'){
-    this.endRound(decision,this.phaseLeft<=0&&bombState==='absent'?'Time expired':'Opposition eliminated');
-   }
-  }
+  if(this.phase==='live')this.resolveRound();
+ }
+ private resolveRound(){
+  const bomb=this.bomb?.terminal??(this.bomb?.state==='planted'?'planted':'absent');
+  const decision=this.roundKernel.decide({bomb,attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:this.phaseLeft>1e-9?1:0});
+  if(decision==='continue')return;
+  const reason=bomb==='defused'?'Device defused':bomb==='exploded'?'Device detonated'
+   :bomb==='absent'&&this.phaseLeft<=1e-9?'Time expired':'Opposition eliminated';
+  this.endRound(decision,reason);
  }
  aliveCount(team:Team){return [...this.players.values()].filter(p=>p.team===team&&p.alive).length;}
  fire(p:Player){
@@ -202,25 +236,32 @@ export class Match {
  cancelReload(p:Player){if(p.reloadLeft>0)this.emit({type:'reload-cancel',actor:p.id,weapon:p.inventory[p.slot].id,x:p.x,y:p.y,z:p.z});p.reloadLeft=0;}
  cancelInteraction(p:Player){
   if(p.action)this.emit({type:'interaction-cancel',actor:p.id,action:p.action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});
-  p.progress=0;p.action='';if(this.bomb?.defuser===p.id)this.bomb.defuser=null;
+  p.progress=0;p.action='';
+  if(this.bomb?.defuser===p.id){
+   this.bomb.defuser=null;
+   if(this.retake?.bomb===this.bomb){
+    this.retake.tried.add(p.id);
+    this.retake.runner=null;
+    this.retake.checkAt=this.time;
+   }
+  }
  }
  dropBomb(p:Player){if(this.bomb?.carrier===p.id){this.cancelInteraction(p);this.bomb={...this.bomb,state:'dropped',carrier:null,x:p.x,y:p.y,z:p.z};this.emit({type:'bomb-drop',actor:p.id,x:p.x,y:p.y,z:p.z});}}
- detonate(){
-  const b=this.bomb;if(!b||b.terminal)return;b.terminal='exploded';b.remaining=0;b.defuser=null;
+ private detonate(){
+  const b=this.bomb;if(this.phase!=='live'||b?.state!=='planted'||b.terminal)return;b.terminal='exploded';b.remaining=0;b.defuser=null;
   // Original radial blast: 140 at the device, linear to zero at 16m; no wall
   // attenuation or armor reduction. Maximum ten players, one authoritative pass.
   for(const p of this.players.values())if(p.alive){const damage=Math.max(0,Math.round(140*(1-Math.hypot(p.x-b.x,p.y-b.y,p.z-b.z)/16)));p.health=Math.max(0,p.health-damage);if(p.health===0){p.alive=false;p.deaths++;this.cancelInteraction(p);this.emit({type:'kill',target:p.id,text:'Device blast'});}}
   this.emit({type:'explode',x:b.x,y:b.y,z:b.z});
-  const decision=this.roundKernel.decide({bomb:'exploded',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:this.phaseLeft>0?1:0});
-  if(decision!=='continue')this.endRound(decision,'Device detonated');
+  this.resolveRound();
  }
  objective(p:Player,dt:number){
   const b=this.bomb;if(!b||b.terminal||this.phase!=='live'||!p.alive){this.cancelInteraction(p);return;}
-  if(b.state==='dropped'&&p.team==='attack'&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<1.5){b.state='carried';b.carrier=p.id;this.emit({type:'bomb-pickup',actor:p.id,x:p.x,y:p.y,z:p.z});}
+  if(b.state==='dropped'&&p.team==='attack'&&Math.hypot(p.x-b.x,p.z-b.z,p.y-b.y)<1.5){b.state='carried';b.carrier=p.id;this.botDirector.recover(b);this.emit({type:'bomb-pickup',actor:p.id,x:p.x,y:p.y,z:p.z});}
   if(b.carrier===p.id){b.x=p.x;b.y=p.y;b.z=p.z;}
   let action='',duration=0,site='';
   if(p.input.use&&p.grounded&&Math.hypot(p.vx,p.vz)<0.25){
-   if(b.state==='carried'&&b.carrier===p.id){const s=MAP.sites.find(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius);if(s){action='PLANTING';duration=R.plantSeconds;site=s.id;}}
+   if(b.state==='carried'&&b.carrier===p.id){const s=plantSite(p);if(s){action='PLANTING';duration=R.plantSeconds;site=s.id;}}
    if(b.state==='planted'&&p.team==='defend'&&(!b.defuser||b.defuser===p.id)&&this.canReachDevice(p,b)){
     action='DEFUSING';duration=p.kit?R.kitDefuseSeconds:R.defuseSeconds;
    }
@@ -232,7 +273,11 @@ export class Match {
    this.emit({type:'interaction-complete',actor:p.id,action:action==='PLANTING'?'plant':'defuse',x:p.x,y:p.y,z:p.z});
    p.progress=0;p.action='';
    if(action==='PLANTING'){b.state='planted';b.carrier=null;b.site=site;b.remaining=R.bombSeconds;p.money=Math.min(R.maxMoney,p.money+300);this.emit({type:'plant',actor:p.id,text:`Device planted at ${site}`,x:p.x,y:p.y,z:p.z});}
-   else{b.terminal='defused';b.defuser=null;this.emit({type:'defuse',actor:p.id,text:'Device defused',x:b.x,y:b.y,z:b.z});const decision=this.roundKernel.decide({bomb:'defused',attackers:this.aliveCount('attack'),defenders:this.aliveCount('defend'),clock:1});if(decision!=='continue')this.endRound(decision,'Device defused');}
+   else{
+    b.terminal='defused';b.defuser=null;
+    this.emit({type:'defuse',actor:p.id,text:'Device defused',x:b.x,y:b.y,z:b.z});
+    this.resolveRound();
+   }
   }
  }
  private canReachDevice(p:{x:number;y:number;z:number},b:Bomb){
@@ -258,25 +303,49 @@ export class Match {
   for(const p of this.players.values()){this.cancelInteraction(p);this.cancelReload(p);p.money=Math.min(R.maxMoney,p.money+(p.team===team?R.winReward:R.lossReward));}
   this.emit({type:'round',team,text:reason});
  }
+ private defuseRouteLength(p:Player,b:Bomb){
+  if(this.canReachDevice(p,b))return 0;
+  const path=this.defusePath(p,b);
+  return path.length?this.nav.routeLength(p,path):Infinity;
+ }
  botDefuser(){
-  const b=this.bomb;if(!b||b.state!=='planted'||b.terminal)return null;
-  const active=this.players.get(b.defuser??'');if(active?.alive)return active.id;
-  return [...this.players.values()].filter(p=>p.alive&&p.team==='defend'&&p.bot).sort((a,c)=>{
-   const cost=(p:Player)=>Math.hypot(p.x-b.x,p.z-b.z)/R.runSpeed+(p.kit?R.kitDefuseSeconds:R.defuseSeconds);
-   return cost(a)-cost(c)||a.id.localeCompare(c.id);
-  })[0]?.id??null;
+  const b=this.bomb;
+  if(b?.state!=='planted'||b.terminal)return null;
+  const active=this.players.get(b.defuser??'');
+  if(active?.alive&&active.team==='defend')return active.id;
+  if(this.retake?.bomb!==b)this.retake={bomb:b,runner:null,checkAt:0,routeLeft:Infinity,tried:new Set()};
+  const plan=this.retake;
+  const runner=this.players.get(plan.runner??'');
+  if(runner?.alive&&runner.bot&&runner.team==='defend'){
+   if(this.time<plan.checkAt)return runner.id;
+   const left=this.defuseRouteLength(runner,b);
+   if(left<plan.routeLeft-.5){
+    plan.routeLeft=left;plan.checkAt=this.time+1.5;
+    return runner.id;
+   }
+   plan.tried.add(runner.id);
+  }else if(!plan.runner&&this.time<plan.checkAt)return null;
+
+  const candidates=[...this.players.values()].filter(p=>p.alive&&p.bot&&p.team==='defend').map(p=>{
+   const distance=this.defuseRouteLength(p,b);
+   return {p,distance,seconds:distance/R.runSpeed+(p.kit?R.kitDefuseSeconds:R.defuseSeconds)};
+  }).filter(candidate=>Number.isFinite(candidate.seconds));
+  const inTime=candidates.filter(candidate=>candidate.seconds<b.remaining);
+  const pool=inTime.length?inTime:candidates;
+  if(pool.every(({p})=>plan.tried.has(p.id)))plan.tried.clear();
+  const chosen=pool.filter(({p})=>!plan.tried.has(p.id))
+   .sort((a,c)=>a.seconds-c.seconds||a.p.id.localeCompare(c.p.id))[0];
+  plan.runner=chosen?.p.id??null;
+  plan.routeLeft=chosen?.distance??Infinity;
+  plan.checkAt=this.time+1.5;
+  if(chosen)chosen.p.botPlan=0;
+  return plan.runner;
  }
  botInput(p:Player,dt:number){
   p.botPlan-=dt;p.botShoot-=dt;
   const i={...neutralInput(),yaw:p.yaw,slot:p.slot,seq:++p.processedSeq};
   if(this.phase!=='live'){p.input=i;return;}
   const magazine=p.inventory[p.slot];
-  if(magazine.ammo===0&&magazine.reserve===0){
-   const alternate=p.slot===0?1:0,spare=p.inventory[alternate];
-   if((alternate===1||spare.id!=='sidearm')&&spare.ammo+spare.reserve>0){
-    i.slot=alternate;p.input=i;return;
-   }
-  }
   const eye=p.y+(p.crouch?R.crouchEye:R.eyeHeight);
   const enemies=[...this.players.values()].filter(e=>e.alive&&e.team!==p.team).map(e=>{const dx=e.x-p.x,dy=e.y+(e.crouch?0.75:1.2)-eye,dz=e.z-p.z;return {e,dx,dy,dz,d:Math.hypot(dx,dy,dz)};}).sort((a,b)=>a.d-b.d);
   const weapon=WEAPONS[p.inventory[p.slot].id],acquisitionRange=weapon.id==='scout'?38:weapon.slot===1?26:32;
@@ -291,12 +360,18 @@ export class Match {
   const b=this.bomb,assigned=this.botDefuser();
   const team=[...this.players.values()].filter(member=>member.team===p.team);
   const facts:BotFacts={enemy:!!enemy,empty:magazine.ammo===0,lowAmmo:magazine.ammo<Math.min(8,Math.ceil(weapon.mag*.35)),
-   canPlant:b?.carrier===p.id&&MAP.sites.some(s=>Math.hypot(p.x-s.x,p.z-s.z)<s.radius-0.5),
+   canPlant:b?.carrier===p.id&&!!plantSite(p),
    canDefuse:b?.state==='planted'&&p.team==='defend'&&assigned===p.id&&this.canReachDevice(p,b),
    urgent:b?.state==='planted'&&b.remaining<=(p.kit?R.kitDefuseSeconds:R.defuseSeconds)+1.5,
    carrier:b?.carrier===p.id,attacker:p.team==='attack',planted:b?.state==='planted',dropped:b?.state==='dropped'};
   const tactic=this.tacticDecider(facts);
   if((tactic==='interact'||p.action==='PLANTING'||p.action==='DEFUSING')&&(facts.canPlant||facts.canDefuse)){i.use=true;p.input=i;return;}
+  if(magazine.ammo===0&&magazine.reserve===0){
+   const alternate=p.slot===0?1:0,spare=p.inventory[alternate];
+   if((alternate===1||spare.id!=='sidearm')&&spare.ammo+spare.reserve>0){
+    i.slot=alternate;p.input=i;return;
+   }
+  }
   const engaging=!!enemy&&(tactic===null||tactic==='engage');
   const goal=this.botDirector.goal(p,team,b,this.round,assigned,tactic);
   if(enemy&&engaging){

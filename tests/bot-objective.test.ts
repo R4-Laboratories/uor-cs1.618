@@ -44,3 +44,142 @@ for(const {plant,start,sameNode,close} of [
  for(let n=0;n<30;n++)m.step(dt);
  assert.equal(m.score.defend,1);assert.equal(m.events.filter(e=>e.type==='defuse').length,1);
 });
+
+test('a carrier plants at the edge of a site with a visible opponent, and the selected defender finishes under contact',()=>{
+ const {m,a,d}=setup();
+ Object.assign(a,{bot:true,x:-16,y:0,z:-10.2,yaw:0});
+ Object.assign(d,{bot:false,x:-16,y:0,z:-16,yaw:Math.PI});
+ m.step(dt);
+ assert.equal(a.botTarget,d.id);
+ assert.equal(a.input.use,true);
+ for(let n=1;n<180;n++)m.step(dt);
+ assert.equal(m.bomb?.state,'planted');
+ // Keep the same opponent in view at the site throughout the retake.
+ Object.assign(a,{bot:false,x:-16,z:-7,input:neutralInput()});
+ Object.assign(d,{bot:true,x:-15,z:-12,yaw:Math.PI,kit:true});
+ m.step(dt);
+ assert.equal(d.botTarget,a.id);
+ assert.equal(d.input.use,true);
+ for(let n=1;n<300;n++)m.step(dt);
+ assert.equal(m.reason,'Device defused');
+ assert.equal(m.score.defend,1);
+});
+
+test('a disconnected kit holder yields to a defender with a route to the planted device',()=>{
+ const {m,a,d}=setup();
+ const backup=m.join('backup','Backup','defend',true)!;
+ Object.assign(a,{x:0,z:23});
+ Object.assign(d,{x:-15,z:-17,kit:true});
+ Object.assign(backup,{alive:true,x:-15,z:-5,kit:false});
+ m.bomb={state:'planted',carrier:null,x:-16,y:0,z:-11,site:'A',remaining:14};
+ m.nav.nodes=[
+  {x:-15,z:-17,links:[]}, {x:-15,z:-5,links:[2]},
+  {x:-15,z:-7,links:[1,3]}, {x:-15,z:-9,links:[2]},
+ ];
+ assert.equal(m.botDefuser(),backup.id);
+ for(let n=0;n<14*60&&m.phase==='live';n++)m.step(dt);
+ assert.equal(m.winner,'defend');
+ assert.equal(m.events.find(e=>e.type==='defuse')?.actor,backup.id);
+});
+
+for(const interrupted of ['moved','dead'] as const)test('a '+interrupted+' primary hands a partial defuse to a teammate who starts from zero',()=>{
+ const {m,a,d}=setup();
+ const backup=m.join('backup','Backup','defend',true)!;
+ Object.assign(a,{x:0,z:23});
+ Object.assign(d,{x:-15,z:-11,kit:true});
+ Object.assign(backup,{alive:true,x:-15,z:-7,kit:false});
+ m.bomb={state:'planted',carrier:null,x:-16,y:0,z:-11,site:'A',remaining:20};
+ for(let n=0;n<60;n++)m.step(dt);
+ assert.equal(m.bomb.defuser,d.id);
+ assert.ok(d.progress>0);
+ if(interrupted==='dead')d.alive=false;
+ else Object.assign(d,{x:-15,z:-14.5,vx:0,vz:0});
+ for(let n=0;n<180&&m.bomb.defuser!==backup.id;n++)m.step(dt);
+ assert.equal(m.bomb.defuser,backup.id);
+ assert.equal(d.progress,0);
+ assert.ok(backup.progress<=dt/10+1e-9);
+ for(let n=0;n<600&&m.phase==='live';n++)m.step(dt);
+ assert.equal(m.winner,'defend');
+ assert.equal(m.events.find(e=>e.type==='defuse')?.actor,backup.id);
+});
+
+test('a route stalled on solid map geometry hands off before the fuse expires',()=>{
+ const {m,a,d}=setup();
+ const backup=m.join('backup','Backup','defend',true)!;
+ Object.assign(a,{x:0,z:23});
+ Object.assign(d,{x:-20,z:-14,kit:true});
+ Object.assign(backup,{alive:true,x:-15,z:-6,kit:false});
+ m.bomb={state:'planted',carrier:null,x:-16,y:0,z:-14,site:'A',remaining:16};
+ // The first graph edge crosses the real site crate. Verdant stops that runner,
+ // while the second runner's route skirts it on the eastern side.
+ m.nav.nodes=[
+  {x:-20,z:-14,links:[1]}, {x:-16,z:-14,links:[0,2]},
+  {x:-15,z:-12,links:[1,3]}, {x:-15,z:-10,links:[2,4]},
+  {x:-15,z:-8,links:[3,5]}, {x:-15,z:-6,links:[4]},
+ ];
+ assert.equal(m.botDefuser(),d.id);
+ for(let n=0;n<60;n++)m.step(dt);
+ assert.equal(m.botDefuser(),d.id);
+ assert.ok(d.x< -19.8);
+ for(let n=0;n<15*60&&m.phase==='live';n++)m.step(dt);
+ assert.equal(m.winner,'defend');
+ assert.equal(m.events.find(e=>e.type==='defuse')?.actor,backup.id);
+});
+
+test('a completed bot defuse survives the original fuse deadline and the next round reset',()=>{
+ const {m,a,d}=setup();
+ Object.assign(a,{x:0,z:23});
+ Object.assign(d,{x:-16,z:-11,kit:true});
+ m.bomb={state:'planted',carrier:null,x:-16,y:0,z:-11,site:'A',remaining:12};
+ m.phaseLeft=1;
+ const original=m.bomb;
+ for(let n=0;n<300;n++)m.step(dt);
+ assert.equal(m.phase,'ended');
+ assert.equal(original.terminal,'defused');
+ const remaining=original.remaining;
+ assert.ok(remaining>0);
+ const result=m.events.find(e=>e.type==='round'&&e.text==='Device defused');
+ assert.equal(result?.team,'defend');
+ for(let n=0;n<Math.ceil(remaining/dt)+2;n++)m.step(dt);
+ assert.equal(m.round,2);
+ assert.equal(m.bomb?.state,'carried');
+ assert.equal(m.bomb?.terminal,undefined);
+ assert.equal(original.remaining,remaining);
+ assert.deepEqual(m.score,{attack:0,defend:1});
+ assert.equal(m.events.filter(e=>e.type==='defuse').length,1);
+ assert.equal(m.events.filter(e=>e.type==='explode').length,0);
+});
+
+test('a bot recovering the device near the opposite site plants there without retracing the opening route',()=>{
+ const {m,a,d}=setup();
+ const runner=m.join('runner','Runner','attack',true)!;
+ // Round one normally opens at B. A pickup on A's approach is already
+ // past the entry waypoint and should reach A well inside this deadline.
+ Object.assign(a,{x:0,z:22});
+ Object.assign(d,{bot:false,x:0,z:-24});
+ Object.assign(runner,{alive:true,x:-16,z:-7});
+ m.bomb={state:'dropped',carrier:null,x:runner.x,y:0,z:runner.z,site:null,remaining:40};
+ m.step(dt);
+ assert.equal(m.bomb.carrier,runner.id);
+ for(let n=0;n<7*60&&m.bomb.state==='carried';n++)m.step(dt);
+ assert.equal(m.bomb.site,'A');
+ assert.equal(m.events.find(e=>e.type==='plant')?.actor,runner.id);
+});
+
+test('an interrupted kit runner reclaims when the backup cannot finish before expiry',()=>{
+ const {m,a,d}=setup();
+ const backup=m.join('backup','Backup','defend',true)!;
+ Object.assign(a,{x:0,z:23});
+ Object.assign(d,{x:-16,z:-11,kit:true});
+ Object.assign(backup,{alive:true,x:-15,z:-10,kit:false});
+ m.bomb={state:'planted',carrier:null,x:-16,y:0,z:-11,site:'A',remaining:7};
+ for(let n=0;n<30;n++)m.step(dt);
+ assert.equal(m.bomb.defuser,d.id);
+ m.cancelInteraction(d);
+ m.step(dt);
+ assert.equal(m.bomb.defuser,d.id);
+ assert.ok(d.progress<=dt/5+1e-9);
+ for(let n=0;n<300&&m.phase==='live';n++)m.step(dt);
+ assert.equal(m.winner,'defend');
+ assert.equal(m.events.find(e=>e.type==='defuse')?.actor,d.id);
+});

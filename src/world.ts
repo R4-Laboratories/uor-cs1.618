@@ -217,13 +217,21 @@ export class WorldView{
   ctx.fillStyle='#081b1b';ctx.fillRect(0,0,256,128);ctx.strokeStyle=color;ctx.lineWidth=3;ctx.strokeRect(4,4,248,120);ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 18px monospace';ctx.fillText(state.toUpperCase(),128,25);ctx.font='bold 61px monospace';ctx.fillText(planted?`00:${String(seconds).padStart(2,'0')}`:'--:--',128,78);this.bombDisplay.needsUpdate=true;
  }
 
+ private removePlayer(id:string,group:T.Group){
+  this.characters?.remove(id);
+  group.userData.release?.();
+  this.scene.remove(group);
+  this.players.delete(id);
+ }
  makePlayer(p:PublicPlayer){
-  if(this.characters){const g=this.characters.create(p);this.scene.add(g);this.players.set(p.id,g);return g;}
+  if(this.characters){const g=this.characters.create(p);g.userData.side=p.team;this.scene.add(g);this.players.set(p.id,g);return g;}
   const g=new T.Group();const outfit=new T.MeshStandardMaterial({color:p.team==='attack'?0x9a6842:0x416f7d,roughness:.8});const vest=new T.MeshStandardMaterial({color:p.team==='attack'?0x453d33:0x263c43,roughness:.8});const skin=new T.MeshStandardMaterial({color:0xc39b75,roughness:.8});
   this.mesh(0,1.04,0,.52,.63,.33,outfit,g);this.mesh(0,1.08,-.07,.56,.46,.32,vest,g);
   const head=new T.Mesh(new T.SphereGeometry(.2,8,6),skin);head.position.y=1.57;head.scale.set(.9,1.12,.95);head.castShadow=true;g.add(head);this.mesh(0,1.65,.02,.37,.18,.37,vest,g);this.mesh(0,1.56,-.17,.32,.07,.06,this.mats.dark,g);
   for(const sign of [-1,1]){const leg=this.mesh(sign*.15,.39,0,.2,.72,.22,outfit,g);leg.name=sign===-1?'legL':'legR';this.mesh(sign*.15,.08,-.06,.23,.16,.36,vest,g);const arm=this.mesh(sign*.33,1.06,-.16,.18,.5,.18,outfit,g);arm.rotation.x=-.9;}
-  this.mesh(.16,1.15,-.5,.12,.14,.75,this.mats.dark,g);this.mesh(.16,1.2,-.91,.06,.06,.2,this.mats.metal,g);g.userData.pos=new T.Vector3(p.x,p.y,p.z);this.scene.add(g);this.players.set(p.id,g);return g;
+  this.mesh(.16,1.15,-.5,.12,.14,.75,this.mats.dark,g);this.mesh(.16,1.2,-.91,.06,.06,.2,this.mats.metal,g);g.userData.side=p.team;
+  g.userData.release=()=>{outfit.dispose();vest.dispose();skin.dispose();head.geometry.dispose();};
+  g.userData.pos=new T.Vector3(p.x,p.y,p.z);this.scene.add(g);this.players.set(p.id,g);return g;
  }
  setWeapon(id:string){
   if(this.gunId===id)return;
@@ -276,7 +284,7 @@ export class WorldView{
   // Even a slower renderer must display a newly confirmed shot at least once.
   this.flash.visible=this.flashPending||this.recoil>.7;
   this.flashPending=false;
-  if(!snapshot){this.bomb.visible=false;this.cameraError='';this.characters?.clear();for(const g of this.players.values())this.scene.remove(g);this.players.clear();const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
+  if(!snapshot){this.bomb.visible=false;this.cameraError='';for(const [id,g] of this.players)this.removePlayer(id,g);const t=this.elapsed*.025;this.camera.position.set(30*Math.cos(t+.8),19,30*Math.sin(t+.8));this.camera.lookAt(0,0,-6);}
   else{
    const self=snapshot.self;const view=self.alive&&position?position:spectating??{x:0,y:14,z:20,crouch:false};
    this.camera.position.set(view.x,view.y+('crouch'in view&&view.crouch?RULES.crouchEye:RULES.eyeHeight),view.z);
@@ -287,7 +295,8 @@ export class WorldView{
    const sighted=scoped&&self.alive&&self.reloadLeft<=0;
    const fov=sighted?(self.weapon==='scout'?32:65):76;this.camera.fov=T.MathUtils.lerp(this.camera.fov,fov,Math.min(1,dt*15));this.camera.updateProjectionMatrix();
    if(this.engine){try{const p=this.camera.position;const frame=this.engine.cameraFrame(p.x,p.y,p.z,this.camera.rotation.y,this.camera.rotation.x,this.camera.fov,this.camera.aspect);this.camera.position.set(frame.x,frame.y,frame.z);this.cameraGuard=frame;this.cameraError='';}catch(error){this.cameraGuard=null;this.cameraError=String(error);return;}}
-   const ids=new Set(snapshot.players.map(p=>p.id));for(const[id,g]of this.players)if(!ids.has(id)){this.characters?.remove(id);this.scene.remove(g);this.players.delete(id);}
+   const sides=new Map(snapshot.players.map(p=>[p.id,p.team]));
+   for(const [id,g] of this.players)if(sides.get(id)!==g.userData.side)this.removePlayer(id,g);
    for(const p of snapshot.players){const g=this.players.get(p.id)??this.makePlayer(p);g.visible=p.id!==self.id&&p.alive&&p.id!==spectating?.id;g.position.set(p.x,p.y,p.z);g.rotation.y=p.yaw;g.scale.y=p.crouch?.65:1;if(g.visible)this.characters?.update(p,dt,this.elapsed);const walking=Math.hypot(p.vx,p.vz)>1;for(const side of ['legL','legR']){const leg=g.getObjectByName(side);if(leg)leg.rotation.x=walking?Math.sin(this.elapsed*12+(side==='legL'?0:Math.PI))*.35:0;}}
    const b=snapshot.bomb;this.updateBombDisplay(b);this.bomb.visible=!!b&&!b.terminal&&b.state!=='carried';if(b){this.bomb.position.set(b.x,b.y,b.z);this.bomb.rotation.y=0;const led=this.bomb.getObjectByName('bomb-led');if(led)led.visible=b.state==='dropped'||Math.sin(this.elapsed*(b.remaining<10?18:6))>0;}
    if(self.alive){

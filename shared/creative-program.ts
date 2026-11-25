@@ -42,8 +42,7 @@ export const baselineTactics:TacticsProgram={version:1,rules:[],fallback:'advanc
 export function synthesizeTactics(seed:number):TacticsProgram{
  const fact=(fact:typeof factNames[number]):Expr=>({fact});const quiet:Expr={not:fact('enemy')};
  const rules:TacticsProgram['rules']=[
-  {when:{all:[fact('canDefuse'),fact('urgent')]},action:'interact'},
-  {when:{all:[{any:[fact('canDefuse'),fact('canPlant')]},quiet]},action:'interact'},
+  {when:{any:[fact('canPlant'),fact('canDefuse')]},action:'interact'},
   {when:fact('empty'),action:'reload'},
   {when:fact('enemy'),action:'engage'},
   {when:{all:[fact('lowAmmo'),quiet]},action:'reload'},
@@ -52,6 +51,6 @@ export function synthesizeTactics(seed:number):TacticsProgram{
   {when:{all:[fact('attacker'),{not:fact('carrier')}]},action:'escort'},
   {when:{not:fact('attacker')},action:'guard'}];
  // Ordering independent rules explores new decision trees without changing facts or authority.
- if(seed%2)[rules[2],rules[3]]=[rules[3],rules[2]];
+ if(seed%2)[rules[1],rules[2]]=[rules[2],rules[1]];
  return {version:1,rules,fallback:'advance'};
 }

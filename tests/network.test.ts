@@ -33,7 +33,33 @@ test('a different map and equipment protocol cannot enter the room',async()=>{
   const client=new WebSocket(`ws://127.0.0.1:${game.port}/socket`);
   await new Promise<void>(resolve=>client.once('open',resolve));
   const closed=new Promise<number>(resolve=>client.once('close',resolve));
-  client.send(JSON.stringify({type:'join',protocol:'cs1618-v2',name:'Legacy',room:'OLD',team:'auto',bots:true}));
+  client.send(JSON.stringify({type:'join',protocol:'cs1618-v3',name:'Legacy',room:'OLD',team:'auto',bots:true}));
   assert.equal(await closed,1002);assert.equal(game.rooms.size,0);
+ }finally{await game.close();}
+});
+
+test('dedicated chat isolates teams and rooms and ignores claimed identity and recipients',async()=>{
+ const game=await createGameServer({port:0,host:'127.0.0.1'});
+ try{
+  const [alpha,bravo,foxtrot,other]=await Promise.all([
+   client(game.port,'Alpha','attack'),client(game.port,'Bravo','attack'),
+   client(game.port,'Foxtrot','defend'),client(game.port,'Other','attack','OTHER')
+  ]);
+  alpha.ws.send(JSON.stringify({type:'chat',channel:'team',text:'team only',room:'OTHER',team:'defend',name:'Other',senderId:other.id,recipients:[other.id]}));
+  const team=await bravo.wait(m=>m.type==='chat');
+  assert.deepEqual(team,{type:'chat',channel:'team',text:'team only',name:'Alpha',senderId:alpha.id,team:'attack'});
+  assert.deepEqual(await alpha.wait(m=>m.type==='chat'),team);
+  alpha.ws.send(JSON.stringify({type:'chat',channel:'all',text:'whole room'}));
+  await foxtrot.wait(m=>m.type==='chat'&&m.channel==='all');
+  // The reliable echoes bracket every preceding chat delivery on each socket.
+  other.ws.send(JSON.stringify({type:'chat',channel:'all',text:'other room'}));
+  await other.wait(m=>m.type==='chat'&&m.text==='other room');
+  assert.deepEqual(foxtrot.received.filter(m=>m.type==='chat').map(m=>m.text),['whole room']);
+  assert.deepEqual(other.received.filter(m=>m.type==='chat').map(m=>m.text),['other room']);
+  alpha.ws.send(JSON.stringify({type:'chat',channel:'all',text:' '}));
+  await alpha.wait(m=>m.type==='chat-error');
+  const late=await client(game.port,'Late','attack');
+  late.ws.send(JSON.stringify({type:'ping',at:42}));await late.wait(m=>m.type==='pong'&&m.at===42);
+  assert(!late.received.some(m=>m.type==='chat'||JSON.stringify(m).includes('team only')));
  }finally{await game.close();}
 });

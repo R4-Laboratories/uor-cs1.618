@@ -147,7 +147,7 @@ export class PeerRoom {
    if(realtime&&message.type!=='snapshot')return;
    if(message.type==='error'&&message.code==='peer'){this.fail(message.message);return;}
    if(message.type==='welcome'&&!this.joined){this.joined=true;this.diagnostics.mode='guest';clearTimeout(this.startup);clearTimeout(link.timer);this.resolve();}
-   if(this.joined&&['welcome','snapshot','pong','buy-result','error'].includes(message.type))this.options.receive(message);
+   if(this.joined&&['welcome','snapshot','pong','buy-result','chat','chat-error','error'].includes(message.type))this.options.receive(message);
   }
  }
  private signaling(){const s=this.options.network.signaling;return s?new URL(`${s.secure?'https':'http'}://${s.host}:${s.port}${s.path}`).href:'peerjs-cloud';}

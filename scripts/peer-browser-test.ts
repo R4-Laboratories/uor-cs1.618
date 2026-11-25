@@ -20,7 +20,7 @@ for(const context of [hostContext,guestContext])await context.addInitScript('Obj
 const a=await hostContext.newPage(),b=await guestContext.newPage();
 for(const page of [a,b]){
  page.setDefaultTimeout(30000);page.on('pageerror',e=>errors.push(e.message));
- page.on('websocket',ws=>{const inspect=(frame:{payload:string|Buffer})=>{try{const p=JSON.parse(String(frame.payload));if(['input','snapshot','buy'].includes(p.type))gamePacketsInSignaling.push(p.type);}catch{}};ws.on('framesent',inspect);ws.on('framereceived',inspect);});
+ page.on('websocket',ws=>{const inspect=(frame:{payload:string|Buffer})=>{try{const p=JSON.parse(String(frame.payload));if(['input','snapshot','buy','chat'].includes(p.type))gamePacketsInSignaling.push(p.type);}catch{}};ws.on('framesent',inspect);ws.on('framereceived',inspect);});
 }
 async function setup(page:Page,name:string,team:string){
  await page.goto(url,{waitUntil:'domcontentloaded'});await page.waitForSelector('#lobby:not(.hidden)');
@@ -57,11 +57,31 @@ try{
  for(const client of signalingClients)client.getSocket()?.close();
  await b.waitForFunction(t=>(window as any).cs1618.snapshot.tick>t+30,tick);
  checks.push('Established gameplay continues when signaling sockets disconnect');
+ console.log('Testing reliable in-game chat and shortcut settings');
+ await b.keyboard.press('KeyY');await b.locator('#chat-input').fill('Private squad message');
+ await b.keyboard.press('Enter');await b.locator('#chat-feed .chat-line').filter({hasText:'Private squad message'}).waitFor({state:'attached'});
+ await b.keyboard.press('KeyT');await b.locator('#chat-input').fill('Everyone sees <b>literal text</b>');
+ await b.keyboard.press('Enter');await a.locator('#chat-feed .chat-line').filter({hasText:'Everyone sees <b>literal text</b>'}).waitFor({state:'attached'});
+ assert.equal(await a.locator('#chat-feed .chat-line').filter({hasText:'Private squad message'}).count(),0);
+ assert.equal(await a.locator('#chat-feed b').filter({hasText:'literal text'}).count(),0);
+ await b.keyboard.press('KeyT');await b.locator('#chat-input').fill('Discard this draft');
+ await b.keyboard.press('Escape');await b.locator('#chat-input').waitFor({state:'hidden'});
+ assert.equal(await b.locator('#pause').isVisible(),false);
+ assert.equal(await b.locator('#chat-feed').getByText('Discard this draft').count(),0);
+ await b.keyboard.press('Escape');await b.locator('#chat-key-all').selectOption('KeyH');await b.click('#resume');
+ await b.keyboard.press('KeyT');assert.equal(await b.locator('#chat-input').isVisible(),false);
+ await b.keyboard.press('KeyH');await b.locator('#chat-input').fill('New shortcut works');
+ await b.keyboard.press('Enter');await a.locator('#chat-feed .chat-line').filter({hasText:'New shortcut works'}).waitFor({state:'attached'});
+ checks.push('A live WebRTC guest can send all-chat, keep team chat private, cancel a draft and rebind T without pausing');
  assert.equal(gameServerRequests,0);assert.deepEqual(gamePacketsInSignaling,[]);
  checks.push('No dedicated game-server endpoint or gameplay payload through signaling');
  console.log('Testing host departure');await a.close();
  await b.waitForSelector('#lobby:not(.hidden)');assert.equal((await state(b)).snapshot,null);
  checks.push('Host departure closes the match and restores a usable guest lobby');
+ await b.reload({waitUntil:'domcontentloaded'});await b.waitForSelector('#lobby:not(.hidden)');
+ assert.equal(await b.locator('#chat-key-all').inputValue(),'KeyH');
+ assert.equal(await b.locator('#chat-feed .chat-line').count(),0);
+ checks.push('Chat key settings survive reload, while room messages stay in the previous match');
  assert.deepEqual(errors,[]);checks.push('No uncaught browser errors');
  await mkdir('artifacts',{recursive:true});await writeFile('artifacts/peer-browser-results.json',JSON.stringify({passed:checks,errors},null,2)+'\n');console.log(checks.join('\n'));
 }catch(error){console.error('Peer failure',JSON.stringify({lobbyA:await a.locator('#lobby-status').textContent(),lobbyB:await b.locator('#lobby-status').textContent(),a:await state(a).catch(()=>null),b:await state(b).catch(()=>null)}));throw error;}

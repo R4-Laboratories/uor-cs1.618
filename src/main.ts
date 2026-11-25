@@ -21,6 +21,7 @@ import {DEFAULT_STUN,newInvitation,parseInvitation,networkConfig} from './peer-c
 import {RemoteMotion} from './remote-motion';
 import {WorldView} from './world';
 import {UI,$} from './ui';
+import {MatchChat} from './chat';
 import {createEngine} from '../shared/engine';
 import {GameAudio} from './audio';
 import {GAME_PROTOCOL,neutralInput,type Input,type Motion,type Snapshot,type PublicPlayer} from '../shared/protocol';
@@ -28,6 +29,11 @@ import {movePlayer} from '../shared/movement';
 import {WEAPONS,type Team} from '../shared/config';
 const remoteMotion=new RemoteMotion();
 const ui=new UI(),canvas=$<HTMLCanvasElement>('world');
+canvas.tabIndex = -1;
+const chat = new MatchChat(setting, saveSetting, send, returnFromChat);
+let restoreChatLock = false;
+let returningFromChat = false;
+let heldChatShortcut: string | null = null;
 let view:WorldView;
 try{view=new WorldView(canvas);}catch(error){$('load-detail').textContent='WebGL2 is unavailable. Enable hardware acceleration and reload.';throw error;}
 let bytes:ArrayBuffer;
@@ -86,19 +92,39 @@ view.artwork.setEnabled($<HTMLInputElement>('procedural-art').checked);
 $<HTMLInputElement>('procedural-art').onchange=e=>{const enabled=(e.target as HTMLInputElement).checked;view.artwork.setEnabled(enabled);try{localStorage.setItem('cs1618-art',enabled?'on':'off');}catch{}};
 void fetch(`${import.meta.env.BASE_URL}evolution.json`).then(r=>r.ok?r.json():null).then(data=>{$('evolution-generation').textContent=data&&Number.isSafeInteger(data.generation)?`generation ${data.generation}`:'unavailable';}).catch(()=>{$('evolution-generation').textContent='unavailable';});
 function send(message:unknown){if(peerRoom)peerRoom.send(message);else if(worker)worker.postMessage(message);else if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify(message));}
+function clearControls() { keys.clear(); fire = false; scope = false; }
+
+async function returnFromChat() {
+ clearControls();
+ canvas.focus({preventScroll: true});
+ if (!restoreChatLock) return;
+ restoreChatLock = false;
+ returningFromChat = true;
+ try { await canvas.requestPointerLock(); }
+ catch { if (snapshot) ui.toast('Click the game to resume mouse look.'); }
+ finally { returningFromChat = false; }
+}
+
 function spectator():PublicPlayer|null{if(!snapshot||snapshot.self.alive)return null;const list=snapshot.players.filter(p=>p.team===snapshot!.self.team&&p.alive);return list[spectatorIndex%Math.max(1,list.length)]??null;}
 function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);
  if(worker){worker.postMessage({type:'practice-playing',playing:!open&&$('deploy-overlay').classList.contains('hidden')});}
- $('pause-timing').textContent=worker?'Practice is paused. Resume when you’re ready.':'The online match continues while this menu is open.';keys.clear();fire=false;scope=false;}
+ $('pause-timing').textContent=worker?'Practice is paused. Resume when you’re ready.':'The online match continues while this menu is open.';clearControls();}
 async function capture(){await audio.start();try{await canvas.requestPointerLock();}catch{ui.toast('Click the game again to capture your mouse.');}ui.show('deploy-overlay',false);setPaused(false);}
+function roleBriefing(side:Team){return side==='attack'?'Ember · attack and plant the device.':'Tidal · defend the sites and defuse the device.';}
 function receive(m:any){
  if(m.type==='welcome'&&socket&&m.protocol!==GAME_PROTOCOL){disconnect();ui.status('The server uses a different game version. Rejoin a compatible server.');return;}
- if(m.type==='welcome'){ui.show('ready-loadout',!!worker);connecting=false;seq=0;lastEvent=0;pending=[];ui.show('lobby',false);ui.show('hud',true);ui.show('deploy-overlay',true);$('deploy-description').textContent=`You joined ${m.team==='attack'?'Ember — attackers':'Tidal — defenders'}. Click to deploy.`;ui.status('');return;}
+ if(m.type==='welcome'){ui.show('ready-loadout',!!worker);connecting=false;seq=0;lastEvent=0;pending=[];ui.show('lobby',false);ui.show('hud',true);ui.show('deploy-overlay',true);$('deploy-description').textContent=`You joined ${roleBriefing(m.team)} Click to deploy.`;ui.status('');return;}
  if(m.type==='snapshot'){
   const s=m as Snapshot,previous=snapshot;
   if(previous&&s.tick<=previous.tick)return;
-  if(!previous||s.round!==previous.round)view.clearRoundEffects();
-  if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){ui.resetCombat(s.self.health);yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
+  const switchedSides=previous!=null&&previous.self.team!==s.self.team;
+  if(switchedSides){
+   const briefing=`Sides switched. You’re now ${roleBriefing(s.self.team)}`;
+   $('deploy-description').textContent=briefing;
+   ui.toast(briefing);
+  }
+  if(!previous||s.round!==previous.round||switchedSides)view.clearRoundEffects();
+  if(!previous||s.round!==previous.round||switchedSides||!previous.self.alive&&s.self.alive){ui.resetCombat(s.self.health);yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
   if(previous&&previous.self.weapon!==s.self.weapon)audio.event({id:s.tick,type:'equip',weapon:s.self.weapon},{...s.self,yaw},s.self.id);
   snapshot=s;lastSnapshot=performance.now();career?.observe(s.self.career);remoteMotion.receive(s,lastSnapshot);
   pending=pending.filter(p=>p.input.seq>s.self.seq);
@@ -114,6 +140,8 @@ function receive(m:any){
   if(!s.self.alive&&ui.buyOpen)ui.setBuy(false,s);
   return;
  }
+ if(m.type==='chat'){chat.receive(m);return;}
+ if(m.type==='chat-error'){ui.toast(m.message);return;}
  if(m.type==='pong'){ping=performance.now()-m.at;return;}
  if(m.type==='buy-result'){
   const messages:Record<string,string>={funds:'Not enough credits.',team:'This item is issued to the other team.',phase:'The buy window is closed.',zone:'Return to your spawn to buy.',dead:'You can buy when you respawn.',owned:'You already have this item.',unknown:'Unknown equipment.'};
@@ -124,7 +152,7 @@ function receive(m:any){
  }
  if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;busy(false);}return;}
 }
-function disconnect(){remoteMotion.clear();audio.stop();void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
+function disconnect(){restoreChatLock=false;chat.reset();remoteMotion.clear();audio.stop();void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
 async function joinPeer(host:boolean,listing?:MatchListing){
  if(connecting)return;
  let invite,network;try{
@@ -191,21 +219,45 @@ const quality=setting('quality','auto');view.setQuality(quality==='low'||quality
 $<HTMLSelectElement>('render-quality').onchange=e=>{const value=(e.target as HTMLSelectElement).value;view.setQuality(value==='low'||value==='native'?value:'auto');saveSetting('quality',view.qualityMode);};
 $<HTMLInputElement>('sensitivity').oninput=e=>{sensitivity=Number((e.target as HTMLInputElement).value);saveSetting('sensitivity',String(sensitivity));};
 $<HTMLInputElement>('volume').oninput=e=>{audio.setVolume(Number((e.target as HTMLInputElement).value));saveSetting('volume',String(audio.volume));};
-document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;if(!locked&&snapshot&&!ui.buyOpen&&!ui.scoreOpen&&$('deploy-overlay').classList.contains('hidden'))setPaused(true);if(locked)setPaused(false);});
-document.addEventListener('mousemove',e=>{if(!locked||ui.buyOpen||ui.pauseOpen||!snapshot?.self.alive)return;const factor=.002*sensitivity*(scope?.5:1);yaw-=e.movementX*factor;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));pitch=Math.max(-1.5,Math.min(1.5,pitch-e.movementY*factor));});
-document.addEventListener('mousedown',e=>{if(!locked||ui.buyOpen||ui.pauseOpen)return;if(e.button===0){
+document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;if(!locked&&snapshot&&!chat.composing&&!returningFromChat&&!ui.buyOpen&&!ui.scoreOpen&&$('deploy-overlay').classList.contains('hidden'))setPaused(true);if(locked)setPaused(false);});
+document.addEventListener('mousemove',e=>{if(!locked||chat.composing||ui.buyOpen||ui.pauseOpen||!snapshot?.self.alive)return;const factor=.002*sensitivity*(scope?.5:1);yaw-=e.movementX*factor;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));pitch=Math.max(-1.5,Math.min(1.5,pitch-e.movementY*factor));});
+document.addEventListener('mousedown',e=>{if(!locked||chat.composing||ui.buyOpen||ui.pauseOpen)return;if(e.button===0){
  const self=snapshot?.self;
  if(!fire&&self?.alive&&snapshot?.phase==='live'&&!self.reloadLeft&&self.inventory[self.slot]?.ammo===0)
   audio.event({id:self.seq,type:'dry-trigger',weapon:self.weapon},self,self.id);
  fire=true;
 }if(e.button===2)scope=true;});document.addEventListener('mouseup',e=>{if(e.button===0)fire=false;if(e.button===2)scope=false;});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
+canvas.addEventListener('mousedown', e => {
+ if (chat.composing) e.preventDefault(); // Keep the draft focused when clicking the arena.
+});
+canvas.addEventListener('click', () => {
+ if (!locked && !chat.composing && snapshot && !ui.buyOpen && !ui.pauseOpen && $('deploy-overlay').classList.contains('hidden')) void capture();
+});
 document.addEventListener('keydown',e=>{
- if(!snapshot)return;if((e.target as HTMLElement).tagName==='INPUT')return;
+ if(!snapshot)return;
+ if(chat.composing){
+  if(e.repeat&&e.code===heldChatShortcut){e.preventDefault();return;}
+  if(e.key==='Escape'&&!e.isComposing&&e.keyCode!==229){e.preventDefault();chat.close();}
+  return;
+ }
+ if((e.target as Element | null)?.closest?.('input,select,textarea,[contenteditable=true]'))return;
+ const channel=chat.shortcut(e.code);
+ if(channel&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&!ui.buyOpen&&!ui.pauseOpen&&!ui.scoreOpen&&$('deploy-overlay').classList.contains('hidden')){
+  e.preventDefault();
+  if(!e.repeat){
+   clearControls();
+   restoreChatLock=document.pointerLockElement===canvas;
+   heldChatShortcut=e.code;
+   chat.open(channel);
+   if(restoreChatLock)document.exitPointerLock();
+  }
+  return;
+ }
  if(['Tab','Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
  if(e.code==='Tab'){ui.scoreOpen=true;ui.show('scoreboard',true);return;}
  if(e.code==='Escape'&&ui.buyOpen&&!$('deploy-overlay').classList.contains('hidden')){closeBuy();return;}
- if(e.code==='Escape'){ui.setBuy(false,snapshot);document.exitPointerLock();setPaused(true);return;}
+ if(e.code==='Escape'&&!e.repeat){ui.setBuy(false,snapshot);document.exitPointerLock();setPaused(true);return;}
  if(e.repeat)return;
  if(e.code==='KeyB'&&snapshot.self.alive){
   if(ui.buyOpen)closeBuy();else{ui.setBuy(true,snapshot);setPaused(false);document.exitPointerLock();}
@@ -216,12 +268,12 @@ document.addEventListener('keydown',e=>{
  if(e.code==='Space'&&!snapshot.self.alive)spectatorIndex++;
  keys.add(e.code);
 });
-document.addEventListener('keyup',e=>{keys.delete(e.code);if(e.code==='Tab'){ui.scoreOpen=false;ui.show('scoreboard',false);}});
-window.addEventListener('blur',()=>{keys.clear();fire=false;scope=false;});
+document.addEventListener('keyup',e=>{keys.delete(e.code);if(e.code===heldChatShortcut)heldChatShortcut=null;if(e.code==='Tab'){ui.scoreOpen=false;ui.show('scoreboard',false);}});
+window.addEventListener('blur',clearControls);
 let previousJump=false,lastRender=0;
 function tick(){
  if(!snapshot||!position||worker&&(ui.pauseOpen||!$('deploy-overlay').classList.contains('hidden')))return;
- const active=locked&&!ui.buyOpen&&!ui.pauseOpen&&snapshot.self.alive&&!view.cameraError;
+ const active=locked&&!chat.composing&&!ui.buyOpen&&!ui.pauseOpen&&snapshot.self.alive&&!view.cameraError;
  if(active){if(keys.has('ArrowLeft'))yaw+=.025;if(keys.has('ArrowRight'))yaw-=.025;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));}
  const i:Input={...neutralInput(),seq:++seq,yaw,pitch,slot,forward:active?(Number(keys.has('KeyW'))-Number(keys.has('KeyS'))):0,strafe:active?(Number(keys.has('KeyD'))-Number(keys.has('KeyA'))):0,jump:active&&keys.has('Space'),crouch:active&&(keys.has('ControlLeft')||keys.has('KeyC')),walk:active&&keys.has('ShiftLeft'),fire:active&&fire,reload:active&&keys.has('KeyR'),use:active&&keys.has('KeyE'),scope:active&&scope};
  send({type:'input',input:i});
