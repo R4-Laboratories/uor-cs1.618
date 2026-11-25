@@ -261,88 +261,45 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-25T18:54:36.448Z",
-    "base": "affbdd4cb091fe3e50f8cd585983e70915571bff",
+    "at": "2026-11-25T20:06:47.868Z",
+    "base": "d8e2c07d222a8819ef4dea1588168cf8b5c5d258",
     "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
-    "previous": "d0aa92ba15918ba0f656eff0440bf7d97d3a02280ab1c533a81484d49c68c98c",
+    "previous": "b73969301126609aa9cff8382fb5a0190e01c29294208f1cc0aad3589810cf6f",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "navigation-6",
-        "family": "navigation",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "8e16848d6384643a36261e333843fb58aca082694ec6e3cc410dfa4805e07e8a",
-        "baselineWork": 4938,
-        "candidateWork": 18096,
-        "fidelity": true,
-        "bounds": true,
-        "samples": 1950,
-        "comparisons": null,
-        "reference": {
-          "pairs": 308505,
-          "elapsed": 72.35440500000004,
-          "nodes": 786,
-          "graph": "930a8e7d8052702b6f08a30fe696e102a1353d39b53fef4dd8bb1dc1751cebc5",
-          "routes": "a60f275620bf0af63e34f95187e4aff2ce7710317865f045184eb46adcbd1f27",
-          "samples": 1950,
-          "legacySamples": 480,
-          "expandedSamples": 1470
-        },
-        "before": {
-          "pairs": 4938,
-          "elapsed": 44.783190000000104,
-          "nodes": 786,
-          "graph": "930a8e7d8052702b6f08a30fe696e102a1353d39b53fef4dd8bb1dc1751cebc5",
-          "routes": "a60f275620bf0af63e34f95187e4aff2ce7710317865f045184eb46adcbd1f27",
-          "samples": 1950,
-          "legacySamples": 480,
-          "expandedSamples": 1470
-        },
-        "after": {
-          "pairs": 18096,
-          "elapsed": 43.916337999999996,
-          "nodes": 786,
-          "graph": "930a8e7d8052702b6f08a30fe696e102a1353d39b53fef4dd8bb1dc1751cebc5",
-          "routes": "a60f275620bf0af63e34f95187e4aff2ce7710317865f045184eb46adcbd1f27",
-          "samples": 1950,
-          "legacySamples": 480,
-          "expandedSamples": 1470
-        }
-      },
-      {
-        "candidate": "art-synth-0",
+        "candidate": "art-synth-1",
         "family": "art",
         "author": "seeded-synthesis",
         "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-        "configHash": "c1fea79c12523dbf31917b214a7d871c987bd69c63914c2a6698ccf17bd737cd",
+        "configHash": "730d08ec9d3e1711e5d5e16498a317e5afff8b2ee727a92f032cbacb6216b243",
         "baselineWork": 0.23252706850815388,
-        "candidateWork": 0.2654726298363671,
+        "candidateWork": 0.2623553946884114,
         "fidelity": true,
         "bounds": true,
         "samples": 4,
         "comparisons": [
           {
-            "mean": 0.008089588439542484,
-            "changed": 0.02652734375
+            "mean": 0.007084395424836601,
+            "changed": 0.0235703125
           },
           {
-            "mean": 0.008621992442810457,
-            "changed": 0.02494921875
+            "mean": 0.007564797794117647,
+            "changed": 0.0223046875
           },
           {
-            "mean": 0.013355335988562091,
-            "changed": 0.03601171875
+            "mean": 0.011870552491830066,
+            "changed": 0.0331796875
           },
           {
-            "mean": 0.014277129289215686,
-            "changed": 0.03543359375
+            "mean": 0.012700919117647059,
+            "changed": 0.03276171875
           }
         ],
         "reference": {
           "protectedEqual": true,
           "separation": 0.6347007638190333,
-          "evidence": "artifacts/evolution/art/art-synth-0-*.png"
+          "evidence": "artifacts/evolution/art/art-synth-1-*.png"
         },
         "before": {
           "textures": [
@@ -361,43 +318,7 @@
             {
               "calls": 191,
               "triangles": 27976,
-              "frameMs": 3.6000000000058208
-            },
-            {
-              "calls": 185,
-              "triangles": 30200,
-              "frameMs": 2.300000000046566
-            },
-            {
-              "calls": 49,
-              "triangles": 20968,
-              "frameMs": 1.599999999976717
-            },
-            {
-              "calls": 39,
-              "triangles": 13286,
-              "frameMs": 0.7000000000116415
-            }
-          ]
-        },
-        "after": {
-          "textures": [
-            {
-              "site": "A",
-              "contrast": 11.900942897165983,
-              "coverage": 0.2026880505985995
-            },
-            {
-              "site": "B",
-              "contrast": 11.900942897165983,
-              "coverage": 0.2002032979444319
-            }
-          ],
-          "frames": [
-            {
-              "calls": 191,
-              "triangles": 27976,
-              "frameMs": 2.1000000000349246
+              "frameMs": 3.8000000000174623
             },
             {
               "calls": 185,
@@ -407,137 +328,165 @@
             {
               "calls": 49,
               "triangles": 20968,
-              "frameMs": 1.2000000000116415
+              "frameMs": 1.5
             },
             {
               "calls": 39,
               "triangles": 13286,
-              "frameMs": 0.6000000000349246
+              "frameMs": 0.8999999999941792
+            }
+          ]
+        },
+        "after": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 11.900942897165983,
+              "coverage": 0.1993901061667043
+            },
+            {
+              "site": "B",
+              "contrast": 11.900942897165983,
+              "coverage": 0.19726677208041563
+            }
+          ],
+          "frames": [
+            {
+              "calls": 191,
+              "triangles": 27976,
+              "frameMs": 2.099999999976717
+            },
+            {
+              "calls": 185,
+              "triangles": 30200,
+              "frameMs": 2.1000000000058208
+            },
+            {
+              "calls": 49,
+              "triangles": 20968,
+              "frameMs": 0.6000000000058208
+            },
+            {
+              "calls": 39,
+              "triangles": 13286,
+              "frameMs": 0.5
+            }
+          ]
+        }
+      },
+      {
+        "candidate": "art-synth-2",
+        "family": "art",
+        "author": "seeded-synthesis",
+        "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+        "configHash": "7fc09e065fb2fff0e4fc42c11358e824e1df557009a820aee9df23669fca4768",
+        "baselineWork": 0.23252706850815388,
+        "candidateWork": 0.23088651639913835,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 4,
+        "comparisons": [
+          {
+            "mean": 0.009081546160130719,
+            "changed": 0.02768359375
+          },
+          {
+            "mean": 0.009524433210784314,
+            "changed": 0.02697265625
+          },
+          {
+            "mean": 0.01534170241013072,
+            "changed": 0.0374296875
+          },
+          {
+            "mean": 0.01614168198529412,
+            "changed": 0.03882421875
+          }
+        ],
+        "reference": {
+          "protectedEqual": true,
+          "separation": 0.6362254127708514,
+          "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+        },
+        "before": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 11.900942897165983,
+              "coverage": 0.17115428055116333
+            },
+            {
+              "site": "B",
+              "contrast": 11.900942897165983,
+              "coverage": 0.1658459453354416
+            }
+          ],
+          "frames": [
+            {
+              "calls": 191,
+              "triangles": 27976,
+              "frameMs": 4
+            },
+            {
+              "calls": 185,
+              "triangles": 30200,
+              "frameMs": 2.5
+            },
+            {
+              "calls": 49,
+              "triangles": 20968,
+              "frameMs": 1
+            },
+            {
+              "calls": 39,
+              "triangles": 13286,
+              "frameMs": 1.1000000000058208
+            }
+          ]
+        },
+        "after": {
+          "textures": [
+            {
+              "site": "A",
+              "contrast": 12.834688787207531,
+              "coverage": 0.17549130336571042
+            },
+            {
+              "site": "B",
+              "contrast": 12.834688787207531,
+              "coverage": 0.1704540320758979
+            }
+          ],
+          "frames": [
+            {
+              "calls": 191,
+              "triangles": 27976,
+              "frameMs": 2.3000000000174623
+            },
+            {
+              "calls": 185,
+              "triangles": 30200,
+              "frameMs": 2.5
+            },
+            {
+              "calls": 49,
+              "triangles": 20968,
+              "frameMs": 0.5999999999767169
+            },
+            {
+              "calls": 39,
+              "triangles": 13286,
+              "frameMs": 0.3000000000174623
             }
           ]
         }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "b73969301126609aa9cff8382fb5a0190e01c29294208f1cc0aad3589810cf6f"
+    "hash": "32cd9b5f8ea6d2fbe9b6dbd2750c8cc95d08440fb0c05e6943348cd90cb34e47"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 8,
-      "author": null,
-      "at": "2026-11-16T11:21:16.830Z",
-      "base": "06d9753d3fc6231b4f437e327140362a3a057a7b",
-      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-      "previous": "982c69186164f0acad654739283af1eced4d41a11275e602452f1c45422cef40",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "experience-2-5",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "d50f9fba8753a49913d65e2f52c383b5752a9922d9d6b0a51f2d814533d338fb",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.1355833333333383,
-          "fidelity": false,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "RefusedNonZeroDefect",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.1171190476190533,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.6171190476190531,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.1355833333333383,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.6355833333333385,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          }
-        },
-        {
-          "candidate": "experience-2-6",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "9db9b7b24ac3bda9bd2e364a686e31a9d7ca3d131f34efe2e2b0b2222b242641",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.0865833333333366,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "CandidateAdmitted",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "58639f69df999d41d71d1431655a27d43ac28b5856604425243b3444e5ad38cd"
-    },
     {
       "generation": 8,
       "author": null,
@@ -9652,6 +9601,233 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "b73969301126609aa9cff8382fb5a0190e01c29294208f1cc0aad3589810cf6f"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-25T20:06:47.868Z",
+      "base": "d8e2c07d222a8819ef4dea1588168cf8b5c5d258",
+      "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
+      "previous": "b73969301126609aa9cff8382fb5a0190e01c29294208f1cc0aad3589810cf6f",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "art-synth-1",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "730d08ec9d3e1711e5d5e16498a317e5afff8b2ee727a92f032cbacb6216b243",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.2623553946884114,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.007084395424836601,
+              "changed": 0.0235703125
+            },
+            {
+              "mean": 0.007564797794117647,
+              "changed": 0.0223046875
+            },
+            {
+              "mean": 0.011870552491830066,
+              "changed": 0.0331796875
+            },
+            {
+              "mean": 0.012700919117647059,
+              "changed": 0.03276171875
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6347007638190333,
+            "evidence": "artifacts/evolution/art/art-synth-1-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 191,
+                "triangles": 27976,
+                "frameMs": 3.8000000000174623
+              },
+              {
+                "calls": 185,
+                "triangles": 30200,
+                "frameMs": 2.2000000000116415
+              },
+              {
+                "calls": 49,
+                "triangles": 20968,
+                "frameMs": 1.5
+              },
+              {
+                "calls": 39,
+                "triangles": 13286,
+                "frameMs": 0.8999999999941792
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1993901061667043
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.19726677208041563
+              }
+            ],
+            "frames": [
+              {
+                "calls": 191,
+                "triangles": 27976,
+                "frameMs": 2.099999999976717
+              },
+              {
+                "calls": 185,
+                "triangles": 30200,
+                "frameMs": 2.1000000000058208
+              },
+              {
+                "calls": 49,
+                "triangles": 20968,
+                "frameMs": 0.6000000000058208
+              },
+              {
+                "calls": 39,
+                "triangles": 13286,
+                "frameMs": 0.5
+              }
+            ]
+          }
+        },
+        {
+          "candidate": "art-synth-2",
+          "family": "art",
+          "author": "seeded-synthesis",
+          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
+          "configHash": "7fc09e065fb2fff0e4fc42c11358e824e1df557009a820aee9df23669fca4768",
+          "baselineWork": 0.23252706850815388,
+          "candidateWork": 0.23088651639913835,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 4,
+          "comparisons": [
+            {
+              "mean": 0.009081546160130719,
+              "changed": 0.02768359375
+            },
+            {
+              "mean": 0.009524433210784314,
+              "changed": 0.02697265625
+            },
+            {
+              "mean": 0.01534170241013072,
+              "changed": 0.0374296875
+            },
+            {
+              "mean": 0.01614168198529412,
+              "changed": 0.03882421875
+            }
+          ],
+          "reference": {
+            "protectedEqual": true,
+            "separation": 0.6362254127708514,
+            "evidence": "artifacts/evolution/art/art-synth-2-*.png"
+          },
+          "before": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 11.900942897165983,
+                "coverage": 0.17115428055116333
+              },
+              {
+                "site": "B",
+                "contrast": 11.900942897165983,
+                "coverage": 0.1658459453354416
+              }
+            ],
+            "frames": [
+              {
+                "calls": 191,
+                "triangles": 27976,
+                "frameMs": 4
+              },
+              {
+                "calls": 185,
+                "triangles": 30200,
+                "frameMs": 2.5
+              },
+              {
+                "calls": 49,
+                "triangles": 20968,
+                "frameMs": 1
+              },
+              {
+                "calls": 39,
+                "triangles": 13286,
+                "frameMs": 1.1000000000058208
+              }
+            ]
+          },
+          "after": {
+            "textures": [
+              {
+                "site": "A",
+                "contrast": 12.834688787207531,
+                "coverage": 0.17549130336571042
+              },
+              {
+                "site": "B",
+                "contrast": 12.834688787207531,
+                "coverage": 0.1704540320758979
+              }
+            ],
+            "frames": [
+              {
+                "calls": 191,
+                "triangles": 27976,
+                "frameMs": 2.3000000000174623
+              },
+              {
+                "calls": 185,
+                "triangles": 30200,
+                "frameMs": 2.5
+              },
+              {
+                "calls": 49,
+                "triangles": 20968,
+                "frameMs": 0.5999999999767169
+              },
+              {
+                "calls": 39,
+                "triangles": 13286,
+                "frameMs": 0.3000000000174623
+              }
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "32cd9b5f8ea6d2fbe9b6dbd2750c8cc95d08440fb0c05e6943348cd90cb34e47"
     }
   ]
 }
