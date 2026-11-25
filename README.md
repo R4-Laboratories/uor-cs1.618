@@ -4,11 +4,11 @@
 
 An original, playable tactical multiplayer FPS inspired by the round-based defusal play of Counter-Strike 1.4/1.5, built on **Verdant Engine** and modeled with the **Prism** toolchain. The repository is `uor-cs1.618`; the game is **cs1.618**.
 
-Two teams, five players per team, two objective sites, one original map: **Meridian**, a coastal relay station. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. Meridian combines original architecture, operators, weapons and synthesized audio with locally packaged CC0 surface scans and a coastal panorama. [Art sources](public/art/meridian/SOURCES.md)
+Two teams of five play for two objective sites on **Meridian**, an original coastal customs quarter. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. Meridian combines original architecture, operators, weapons and synthesized audio with locally packaged CC0 surface scans and a coastal panorama. [Art sources](public/art/meridian/SOURCES.md)
 
-![Ember and Tidal in the Meridian relay station](docs/evidence/studio-upgrade/after-operators.webp)
+![Customs Arcade in the expanded Meridian arena](docs/evidence/field-update/customs.webp)
 
-[Compare the earlier and current game](docs/STUDIO-UPGRADE.md) · [Inspect the 20 live materials](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html#material-inspector)
+[Explore the field update](docs/MERIDIAN-FIELD-UPDATE.md) · [Earlier rendering comparison](docs/STUDIO-UPGRADE.md) · [Inspect the 20 live materials](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html#material-inspector)
 
 ## Play from GitHub Pages
 
@@ -54,7 +54,8 @@ The shipped Wasm binaries are committed. Rust and the Prism SDK are needed only 
 - Browser-hosted WebRTC rooms with signed Stitch discovery, fresh pinned-host identity verification, private invitations, worker authority, reliable control and unordered realtime data channels. Optional TURN and custom signaling.
 - Authoritative 60 Hz server, 20 Hz snapshots, client movement prediction and reconciliation, remote interpolation, isolated named rooms and up to ten players.
 - Freeze/buy, live, planted, round-end and match-end phases. Equipment and money persist for survivors; eliminations reset equipment. Win, loss, kill and plant rewards.
-- P9 pistol, Kestrel assault rifle, Sentinel assault rifle, Vector SMG and scoped Longbow rifle. Recoil, movement spread, headshots, finite magazines, timed reloads, armor and defusal kits.
+- Eight original weapons across two inventory slots, including the Rivet heavy pistol, Tern carbine and Breaker scattergun. The host resolves game damage from range, hit zone, armor remaining and the weapon’s own profile. Hold right mouse to aim and press Q to switch equipped weapons.
+- Prism career profiles retain separate practice and multiplayer K/D across visits. Export a signed backup to merge it on another device linked to the same identity. [Career profile](https://r4-laboratories.github.io/uor-cs1.618/identity.html#career)
 - Hold-to-plant and hold-to-defuse with persistent objective directions, countdowns and interruption feedback. Single-defuser bot coordination, carrier escort, bounded reaction and burst fire. Dropped-device pickup, defusal kits, blast damage, elimination/timeout/detonation outcomes and scoreboard.
 - Five original procedural weapon finishes, reload/switch motion, readable site wayfinding and a stable planted device, with distinct spatial objective and round audio.
 - Browser-local 5v5 practice in a worker; online bot fill. Static hosting can run practice without a server.

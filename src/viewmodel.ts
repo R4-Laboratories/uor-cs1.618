@@ -2,13 +2,16 @@ import * as T from 'three';
 import {PartBuilder, surfaceTexture, type Point} from './operator-geometry';
 import {studioSurface} from './studio-render';
 
-type WeaponType='sidearm'|'kestrel'|'m4'|'smg'|'scout';
+type WeaponType='sidearm'|'kestrel'|'m4'|'smg'|'scout'|'rivet'|'breaker'|'tern';
 interface Finish {shell:number; panel:number; accent:number; index:number}
 const finish:Record<WeaponType,Finish>={
   sidearm:{shell:0x535d66,panel:0x263a43,accent:0x9cbdad,index:9},
   kestrel:{shell:0x786650,panel:0x353b37,accent:0xdb894a,index:7},
   m4:{shell:0x52646b,panel:0x263c43,accent:0xc4ba85,index:4},
   smg:{shell:0x686250,panel:0x353a35,accent:0xdda85f,index:3},
+  rivet:{shell:0x8c9090,panel:0x423c41,accent:0xc5a06b,index:12},
+  breaker:{shell:0x525e5c,panel:0x6f503c,accent:0xc67a3e,index:28},
+  tern:{shell:0x6a7971,panel:0x354346,accent:0xacbe92,index:16},
   scout:{shell:0x747c63,panel:0x394539,accent:0xd5bb84,index:8},
 };
 const dark=0x202a2d,steel=0x404c51,cut=0x7c8787,rubber=0x252c2c;
@@ -107,11 +110,12 @@ function topCover(parts:PartBuilder,width:number,length:number,z:number,y:number
 /** Viewmodel is pre-batched by finish and animated component. The flash stays owned by WorldView. */
 export function createViewmodel(id:string){
   const type:WeaponType=Object.hasOwn(finish,id)?id as WeaponType:'sidearm';
-  const p=finish[type],pistol=type==='sidearm',compact=type==='smg',scout=type==='scout',kestrel=type==='kestrel';
+  const rivet=type==='rivet',breaker=type==='breaker',tern=type==='tern';
+  const p=finish[type],pistol=type==='sidearm'||rivet,compact=type==='smg',scout=type==='scout',kestrel=type==='kestrel';
   const root=new T.Group(),body=new PartBuilder(),metal=new PartBuilder(),soft=new PartBuilder(),mag=new PartBuilder();
-  const front=pistol?-.50:compact?-.66:scout?-1.02:kestrel?-.90:-.87;
-  const shoulder=pistol?-.12:compact?.09:scout?.18:.16;
-  const top=pistol?.034:.043;
+  const front=rivet?-.60:pistol?-.50:breaker?-.92:tern?-.77:compact?-.66:scout?-1.02:kestrel?-.90:-.87;
+  const shoulder=pistol?-.12:tern?.074:compact?.09:scout?.18:.16;
+  const top=rivet?.052:pistol?.034:.043;
   const bodyProfile:[number,number][]=pistol
     ? [[-.48,.013],[-.46,top],[-.145,top],[-.126,.029],[-.132,-.02],[-.44,-.02],[-.48,-.007]]
     : [[-.52,.019],[-.484,top],[-.18,top],[-.133,.043],[-.126,-.028],[-.191,-.043],[-.25,-.041],[-.283,-.08],[-.373,-.08],[-.401,-.045],[-.501,-.041]];
@@ -135,13 +139,22 @@ export function createViewmodel(id:string){
   metal.link([0,.016,front+.14],[0,.016,front+.02],pistol?.023:.021,pistol?.022:.019,steel,16);
   metal.link([0,.016,front+.037],[0,.016,front-.009],.029,.025,cut,16);
   metal.link([0,.016,front-.009],[0,.016,front-.011],.017,.017,0x13191b,16);
+  if(rivet){
+    // A taller, brighter slide and stepped nose make Rivet readable from behind.
+    body.profile(0,[[-.581,.014],[-.555,.055],[-.28,.055],[-.263,.041],[-.26,-.021],[-.557,-.022]],.091,p.shell);
+    topCover(body,.082,.328,-.554,.040,0x939c9a);
+    for(let i=0;i<3;i++)metal.box([-.038,.046,-.43-i*.029],[.011,.008,.018],dark,[.04,0,0],.002);
+    soft.profile(0,[[-.57,-.029],[-.45,-.023],[-.35,-.042],[-.39,-.065],[-.54,-.06]],.073,p.panel);
+    soft.box([-.037,-.12,-.154],[.009,.112,.067],p.panel,[.20,0,0],.004);
+    for(let i=0;i<4;i++)soft.box([-.042,-.083-i*.02,-.154+i*.003],[.004,.004,.051],p.accent);
+  }
   if(pistol){
     soft.profile(0,[[-.463,-.019],[-.169,-.022],[-.154,-.068],[-.22,-.08],[-.247,-.055],[-.415,-.054]],.071,p.panel);
-    metal.box([0,.057,-.448],[.011,.021,.023],steel);metal.box([0,.059,-.441],[.005,.007,.008],0xf2c582);
-    for(const x of [-.027,.027])metal.box([x,.057,-.164],[.02,.025,.029],steel);
+    metal.box([0,rivet?.081:.057,rivet?-.548:-.448],[.011,.021,.023],steel);metal.box([0,rivet?.084:.059,rivet?-.535:-.435],[.005,.007,.008],0xf2c582);
+    for(const x of [-.027,.027])metal.box([x,rivet?.079:.057,-.164],[.02,.025,.029],steel);
     mag.box([0,0,0],[.077,.024,.077],dark,[.18,0,0],.005);
   }else{
-    const guardEnd=compact?-.61:scout?-.62:kestrel?-.67:-.72;
+    const guardEnd=breaker?-.76:tern?-.70:compact?-.61:scout?-.62:kestrel?-.67:-.72;
     body.profile(0,[[guardEnd,.036],[-.495,.05],[-.462,.035],[-.464,-.038],[guardEnd+.017,-.046],[guardEnd,-.024]],.091,kestrel?0x83573c:p.panel);
     for(let i=0;i<(scout?3:compact?3:5);i++){
       const z=guardEnd+.029+i*.032;
@@ -150,7 +163,23 @@ export function createViewmodel(id:string){
     }
     metal.link([0,.016,guardEnd],[0,.016,front+.09],scout?.03:.024,scout?.028:.019,steel,16);
     metal.link([0,.016,guardEnd+.017],[0,.016,guardEnd-.017],.037,.034,cut,14);
-    if(compact){
+    if(breaker){
+      // Deep ribbed foregrip and stacked tubes distinguish the long scatter profile.
+      metal.link([0,-.04,-.45],[0,-.04,front+.10],.028,.027,steel,16);
+      mag.profile(0,[[-.745,.008],[-.54,.008],[-.505,-.012],[-.528,-.08],[-.70,-.085],[-.751,-.058]],.112,p.panel);
+      for(let i=0;i<8;i++)mag.box([0,-.043,-.546-i*.024],[.119,.067,.011],0x473f32,[0,0,0],.005);
+      body.profile(0,[[-.135,.026],[.113,.02],[.168,-.017],[.166,-.131],[.119,-.130],[-.10,-.055]],.099,p.panel);
+      soft.box([0,-.065,.162],[.106,.125,.028],rubber,[0,0,0],.009);
+    }else if(tern){
+      // A high bridge wraps an open carry slot; the compact, broad rear shoulder is
+      // intentionally unlike Meridian's open-stock SMG or the long Kestrel.
+      body.profile(0,[[-.32,.05],[-.28,.115],[-.25,.115],[-.249,.052]],.063,p.shell);
+      body.profile(0,[[-.50,.051],[-.466,.117],[-.448,.117],[-.456,.051]],.066,p.shell);
+      body.box([0,.118,-.374],[.075,.02,.22],p.shell,[0,0,0],.004);
+      soft.profile(0,[[-.172,.026],[.059,.035],[.095,-.010],[.086,-.11],[.054,-.124],[-.136,-.075]],.097,p.panel);
+      body.profile(0,[[-.162,.045],[.034,.052],[.069,.031],[.054,.003],[-.166,.003]],.108,p.shell);
+      for(let i=0;i<3;i++)metal.box([-.054,.016,-.107+i*.03],[.003,.017,.014],steel);
+    }else if(compact){
       // Collapsible wire stock and exposed guide rods give the SMG a visibly open rear silhouette.
       for(const x of [-.035,.035]){
         metal.link([x,.005,-.219],[x,.005,shoulder-.016],.008,.008,cut,12);
@@ -171,8 +200,9 @@ export function createViewmodel(id:string){
      body.profile(0,[[-.106,.032],[shoulder-.063,.029],[shoulder-.033,.009],[-.079,.007]],.081,p.shell);
     }
     const curve=kestrel?.037:compact?-.027:0;
-    mag.profile(0,[[-.051,.067],[.025,.084],[.05,-.076],[.036+curve,-.133],[-.036+curve,-.13],[-.043,-.083]],.059,kestrel?steel:p.panel);
-    for(let i=0;i<4;i++)mag.box([-.031,.036-i*.037,-.008+(curve*i/4)],[.004,.006,.061],cut,[.12,0,0]);
+    if(breaker){metal.box([0,-.056,-.358],[.042,.015,.105],cut,[0,0,0],.003);}
+    else {mag.profile(0,[[-.051,.067],[.025,.084],[.05,-.076],[.036+curve,-.133],[-.036+curve,-.13],[-.043,-.083]],.059,kestrel?steel:p.panel);
+    for(let i=0;i<4;i++)mag.box([-.031,.036-i*.037,-.008+(curve*i/4)],[.004,.006,.061],cut,[.12,0,0]);}
     if(scout){
       for(const z of [-.244,-.44])metal.box([0,.091,z],[.059,.076,.034],dark,[0,0,0],.004);
       metal.link([0,.144,-.537],[0,.144,-.181],.037,.038,steel,22);
@@ -186,18 +216,48 @@ export function createViewmodel(id:string){
       for(const x of [-.025,.025])metal.box([x,.105,-.176],[.013,.036,.024],steel,[0,0,-x*4],.003);
       metal.box([0,.083,-.59],[.016,.068,.022],steel,[0,0,0],.002);
       metal.box([0,.111,-.578],[.005,.009,.003],p.accent);
+    }else if(breaker||tern){
+      const height=tern?.141:.087;
+      for(const side of [-1,1])metal.box([side*.022,height-.006,tern?-.269:-.171],[.014,.021,.022],steel);
+      metal.box([0,(height+.038)/2,guardEnd+.025],[.012,height-.038,.016],steel);
+      metal.ellipsoid([0,height-.002,guardEnd+.033],[.005,.005,.006],p.accent);
     }else if(!kestrel)fittedSight(metal,-.255,p);
     else{
       metal.box([0,.061,-.284],[.064,.016,.048],dark);
       metal.box([0,.071,front+.085],[.01,.07,.02],steel);
-      for(const x of [-.025,.025])metal.box([x,.073,-.284],[.013,.018,.027],steel);
+      for(const x of [-.025,.025])metal.box([x,.089,-.284],[.013,.030,.027],steel);
     }
   }
-  batch(root,'coated-chassis',body,{...studioSurface('parkerized'),map:surfaceTexture('finish',p.index)});
+  const chassis=batch(root,'coated-chassis',body,{...studioSurface('parkerized'),map:surfaceTexture('finish',p.index)});
   batch(root,'machined-hardware',metal,studioSurface('brushedSteel'));
   batch(root,'polymer-furniture',soft,studioSurface('polymer'));
-  const magazine=batch(root,'detachable-magazine',mag,studioSurface('gunmetal'));
-  const magazineRest:Point=[0,pistol?-.208:-.144,pistol?-.152:compact?-.255:-.327];magazine.position.fromArray(magazineRest);
+  const magazine=batch(root,breaker?'foregrip':'detachable-magazine',mag,studioSurface(breaker?'polymer':'gunmetal'));
+  const magazineRest:Point=breaker?[0,0,0]:[0,pistol?-.208:-.144,pistol?-.152:compact?-.255:-.327];magazine.position.fromArray(magazineRest);
   const {group,support}=makeHands(pistol);root.add(group);
-  return {root,magazine,magazineRest,support,muzzle:front-.038};
+  // Height of the clear pixel over the blade, or center of the optical housing.
+  const sightHeight=rivet?.095:pistol?.070:scout?.144:breaker?.091:tern?.146:compact?.123:kestrel?.110:.119;
+  return {root,chassis,pistol,magazine,magazineRest,support,sightHeight,muzzle:front-.012};
+}
+
+/** Emissive crossed ribbons blend into the scene at their dark tips. The origin
+ * is the tip of the model, shared with the rendered tracer. */
+export function createMuzzleFlash(){
+  const positions:number[]=[],colors:number[]=[];
+  const core=new T.Color(0xfff1be),warm=new T.Color(0xffb348),edge=new T.Color(0x2d1407);
+  const vertex=(x:number,y:number,z:number,tint:T.Color)=>{
+    positions.push(x,y,z);colors.push(tint.r,tint.g,tint.b);
+  };
+  for(let i=0;i<5;i++){
+    const phase=i*Math.PI/5,c=Math.cos(phase),s=Math.sin(phase);
+    const width=.020+(i%3)*.011,tip=-.125-(i%3)*.048;
+    for(const side of [-1,1]){
+      vertex(0,0,0,core);vertex(side*c*width,side*s*width,-.04,edge);vertex(0,0,-.07,warm);
+      vertex(0,0,-.07,warm);vertex(side*c*width,side*s*width,-.04,edge);vertex(0,0,tip,edge);
+    }
+  }
+  const geometry=new T.BufferGeometry();
+  geometry.setAttribute('position',new T.Float32BufferAttribute(positions,3));
+  geometry.setAttribute('color',new T.Float32BufferAttribute(colors,3));
+  return new T.Mesh(geometry,new T.MeshBasicMaterial({vertexColors:true,side:T.DoubleSide,
+    transparent:true,blending:T.AdditiveBlending,depthWrite:false,toneMapped:false}));
 }

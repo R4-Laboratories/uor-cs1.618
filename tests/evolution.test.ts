@@ -66,8 +66,8 @@ test('deployment watcher repairs missing publication without retrying failed val
  assert.equal(deploymentDecision({...base,runs:[{...run,status:'in_progress'}]}),'wait');
  assert.equal(deploymentDecision({...base,runs:[{...run,conclusion:'success'},{...run,id:2,conclusion:'success'}]}),'blocked');
 });
-test('generated navigation alternatives preserve the independent full graph and all 480 route samples',async()=>{
- for(const cell of policy.navigationCells){const config={...state.config,navigation:{cell}};const result=await measureNavigation({id:`navigation-${cell}`,family:'navigation',config},state.config);assert.equal(result.fidelity,true);assert.equal(result.bounds,true);assert.equal(result.samples,480);assert.ok(result.candidateWork<result.baselineWork);}
+test('generated navigation alternatives preserve the independent full graph across the 480 original routes and the expanded map corpus',async()=>{
+ for(const cell of policy.navigationCells){const config={...state.config,navigation:{cell}};const result=await measureNavigation({id:`navigation-${cell}`,family:'navigation',config},state.config);assert.equal(result.fidelity,true);assert.equal(result.bounds,true);assert.equal(result.legacySamples,480);assert.ok(Number(result.expandedSamples)>480);assert.equal(result.samples,480+Number(result.expandedSamples));assert.ok(result.candidateWork<result.baselineWork);}
 });
 
 test('history custody rejects tampered records and broken links',()=>{

@@ -2,7 +2,7 @@ export interface Invitation {room:string;token:string;}
 export interface NetworkFields {stun:string;turn:string;username:string;credential:string;relay:boolean;signaling:string;}
 export interface NetworkConfig {ice:RTCConfiguration;signaling?:{host:string;port:number;path:string;secure:boolean;};}
 export const DEFAULT_STUN='stun:stun.l.google.com:19302, stun:stun.cloudflare.com:3478';
-export const PEER_PROTOCOL='cs1618-v2';
+export {GAME_PROTOCOL as PEER_PROTOCOL} from '../shared/protocol';
 export function newInvitation():Invitation{
  const hex=(n:number)=>Array.from(crypto.getRandomValues(new Uint8Array(n)),v=>v.toString(16).padStart(2,'0')).join('');
  return {room:hex(6),token:hex(16)};

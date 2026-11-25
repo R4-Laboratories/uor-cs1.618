@@ -123,3 +123,10 @@ prism-frame{position:fixed;inset:0 0 auto;z-index:50}prism-frame[hidden]{display
 @media (prefers-reduced-motion: reduce) {
   .crosshair > i:nth-child(n) {transition: none}
 }
+
+.career-entry{margin:8px 0;font-size:12px}.career-entry a{color:#b6d6c4}.career-entry span{color:#a2b2b0;margin-left:8px}
+
+.weapon-card .armory-spec{display:flex;justify-content:space-between;gap:5px;margin-top:5px;font:11px Barlow,sans-serif;color:#c0cdc9}
+.weapon-card footer{margin-top:10px}
+.weapon-card:disabled{opacity:.72}
+@media(max-width:600px){.weapon-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.weapon-card .armory-spec{font-size:10px;flex-wrap:wrap}}

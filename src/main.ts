@@ -12,16 +12,21 @@ import './style.css';
 import {PeerRoom} from './peer-room';
 import {MatchDirectory} from './match-directory';
 import {identityStore} from './identity-store';
+import {careerAccount,careerPreferenceKey,sharedCareerID} from './career-account';
+import {CareerRecorder} from './career-recorder';
+import {saveMatchScore} from './career-store';
 import {createIdentity} from '../shared/hologram-identity';
 import {supportedSignaling,type MatchListing,type MatchFields} from '../shared/match-discovery';
 import {DEFAULT_STUN,newInvitation,parseInvitation,networkConfig} from './peer-config';
+import {RemoteMotion} from './remote-motion';
 import {WorldView} from './world';
 import {UI,$} from './ui';
 import {createEngine} from '../shared/engine';
 import {GameAudio} from './audio';
-import {neutralInput,type Input,type Motion,type Snapshot,type PublicPlayer} from '../shared/protocol';
+import {GAME_PROTOCOL,neutralInput,type Input,type Motion,type Snapshot,type PublicPlayer} from '../shared/protocol';
 import {movePlayer} from '../shared/movement';
 import {WEAPONS,type Team} from '../shared/config';
+const remoteMotion=new RemoteMotion();
 const ui=new UI(),canvas=$<HTMLCanvasElement>('world');
 let view:WorldView;
 try{view=new WorldView(canvas);}catch(error){$('load-detail').textContent='WebGL2 is unavailable. Enable hardware acceleration and reload.';throw error;}
@@ -32,6 +37,22 @@ const engine=await createEngine(bytes);view.setEngine(engine);const audio=new Ga
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;
 let peerRoom:PeerRoom|null=null;
 let directory:MatchDirectory|null=null;
+let career:CareerRecorder|null=null,sharedCareerAtJoin:string|null=null;
+function startCareer(mode:'practice'|'multiplayer'){
+ $('career-save-state').textContent='';sharedCareerAtJoin=null;
+ const recorder:CareerRecorder=new CareerRecorder(mode,careerAccount().then(key=>{
+  if(career===recorder && key && 'frame' in key)sharedCareerAtJoin=key.owner;
+  return key?.owner??null;
+ }),saveMatchScore,message=>{
+  if(career===recorder){$('career-save-state').textContent=message;if(message.includes('unavailable'))ui.toast(message);}
+ });
+ career=recorder;
+}
+function changedCareer(){
+ if(career){career=null;sharedCareerAtJoin=null;$('career-save-state').textContent='Prism account changed · rejoin to record this account';}
+}
+prismFrame.addEventListener('accountchange',()=>{if(sharedCareerAtJoin && sharedCareerID()!==sharedCareerAtJoin)changedCareer();});
+window.addEventListener('storage',event=>{if(event.key===careerPreferenceKey)changedCareer();});
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
 let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0;
 let pending:{input:Input;canMove:boolean}[]=[];const keys=new Set<string>();
@@ -66,33 +87,44 @@ $<HTMLInputElement>('procedural-art').onchange=e=>{const enabled=(e.target as HT
 void fetch(`${import.meta.env.BASE_URL}evolution.json`).then(r=>r.ok?r.json():null).then(data=>{$('evolution-generation').textContent=data&&Number.isSafeInteger(data.generation)?`generation ${data.generation}`:'unavailable';}).catch(()=>{$('evolution-generation').textContent='unavailable';});
 function send(message:unknown){if(peerRoom)peerRoom.send(message);else if(worker)worker.postMessage(message);else if(socket?.readyState===WebSocket.OPEN)socket.send(JSON.stringify(message));}
 function spectator():PublicPlayer|null{if(!snapshot||snapshot.self.alive)return null;const list=snapshot.players.filter(p=>p.team===snapshot!.self.team&&p.alive);return list[spectatorIndex%Math.max(1,list.length)]??null;}
-function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);keys.clear();fire=false;scope=false;}
+function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);
+ if(worker){worker.postMessage({type:'practice-playing',playing:!open&&$('deploy-overlay').classList.contains('hidden')});}
+ $('pause-timing').textContent=worker?'Practice is paused. Resume when you’re ready.':'The online match continues while this menu is open.';keys.clear();fire=false;scope=false;}
 async function capture(){await audio.start();try{await canvas.requestPointerLock();}catch{ui.toast('Click the game again to capture your mouse.');}ui.show('deploy-overlay',false);setPaused(false);}
 function receive(m:any){
- if(m.type==='welcome'){connecting=false;seq=0;lastEvent=0;pending=[];ui.show('lobby',false);ui.show('hud',true);ui.show('deploy-overlay',true);$('deploy-description').textContent=`You joined ${m.team==='attack'?'Ember — attackers':'Tidal — defenders'}. Click to deploy.`;ui.status('');return;}
+ if(m.type==='welcome'&&socket&&m.protocol!==GAME_PROTOCOL){disconnect();ui.status('The server uses a different game version. Rejoin a compatible server.');return;}
+ if(m.type==='welcome'){ui.show('ready-loadout',!!worker);connecting=false;seq=0;lastEvent=0;pending=[];ui.show('lobby',false);ui.show('hud',true);ui.show('deploy-overlay',true);$('deploy-description').textContent=`You joined ${m.team==='attack'?'Ember — attackers':'Tidal — defenders'}. Click to deploy.`;ui.status('');return;}
  if(m.type==='snapshot'){
   const s=m as Snapshot,previous=snapshot;
   if(previous&&s.tick<=previous.tick)return;
+  if(!previous||s.round!==previous.round)view.clearRoundEffects();
   if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){ui.resetCombat(s.self.health);yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
-  if(previous&&previous.self.weapon!==s.self.weapon)audio.event({id:0,type:'equip'},{...s.self,yaw},s.self.id);
-  snapshot=s;lastSnapshot=performance.now();
+  if(previous&&previous.self.weapon!==s.self.weapon)audio.event({id:s.tick,type:'equip',weapon:s.self.weapon},{...s.self,yaw},s.self.id);
+  snapshot=s;lastSnapshot=performance.now();career?.observe(s.self.career);remoteMotion.receive(s,lastSnapshot);
   pending=pending.filter(p=>p.input.seq>s.self.seq);
   position={x:s.self.x,y:s.self.y,z:s.self.z,vx:s.self.vx,vy:s.self.vy,vz:s.self.vz,grounded:s.self.grounded,crouch:s.self.crouch};
   let prevJump=false;for(const p of pending){movePlayer(position,{...p.input,jump:p.input.jump&&!prevJump},1/60,engine,p.canMove);prevJump=p.input.jump;}
-  for(const e of s.events)if(e.id>lastEvent){lastEvent=e.id;if(e.at!==undefined&&s.time-e.at>0.5)continue;view.event(e,s.self.id);ui.event(e,s);if(e.type!=='hit'||e.actor===s.self.id)audio.event(e,{...position,yaw},s.self.id);}
+  const followed=spectator(), listener=followed??{...position,yaw};
+  for(const e of s.events)if(e.id>lastEvent){
+   lastEvent=e.id;if(e.at!==undefined&&s.time-e.at>0.5)continue;
+   view.event(e,s.self.id);ui.event(e,s);
+   if(e.type==='hit'&&e.target===s.self.id)audio.event({...e,type:'hurt'},listener,s.self.id);
+   else if(e.type!=='hit'||e.actor===s.self.id)audio.event(e,listener,followed?.id??s.self.id);
+  }
   if(!s.self.alive&&ui.buyOpen)ui.setBuy(false,s);
   return;
  }
  if(m.type==='pong'){ping=performance.now()-m.at;return;}
  if(m.type==='buy-result'){
   const messages:Record<string,string>={funds:'Not enough credits.',team:'This item is issued to the other team.',phase:'The buy window is closed.',zone:'Return to your spawn to buy.',dead:'You can buy when you respawn.',owned:'You already have this item.',unknown:'Unknown equipment.'};
+  if(worker&&snapshot&&m.selfState?.id===snapshot.self.id)snapshot={...snapshot,self:m.selfState};
   $('buy-message').textContent=m.error?messages[m.error]??'Purchase refused.':'Equipment issued.';
-  if(!m.error){if(WEAPONS[m.item])slot=0;setTimeout(()=>{if(snapshot){ui.renderBuy(snapshot);}},100);}
+  if(!m.error){if(Object.hasOwn(WEAPONS,m.item))slot=WEAPONS[m.item].slot;setTimeout(()=>{if(snapshot){ui.renderBuy(snapshot);}},100);}
   return;
  }
  if(m.type==='error'){if(m.code==='input')return;ui.status(m.message);ui.toast(m.message);if(connecting){connecting=false;busy(false);}return;}
 }
-function disconnect(){audio.stop();void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
+function disconnect(){remoteMotion.clear();audio.stop();void directory?.stopHosting();peerRoom?.close();peerRoom=null;peerSharing();worker?.terminate();worker=null;if(socket){socket.onclose=null;socket.close();socket=null;}snapshot=null;position=null;pending=[];connecting=false;keys.clear();fire=false;scope=false;ui.setBuy(false,null);ui.scoreOpen=false;ui.show('scoreboard',false);setPaused(false);ui.show('deploy-overlay',false);ui.show('hud',false);ui.show('lobby',true);document.exitPointerLock();busy(false);}
 async function joinPeer(host:boolean,listing?:MatchListing){
  if(connecting)return;
  let invite,network;try{
@@ -114,6 +146,7 @@ async function joinPeer(host:boolean,listing?:MatchListing){
   }
   publication(isPublic?'Publishing a public listing…':host?'Private room · invitation only.':'Joined by invitation.');
   await audio.start();
+  startCareer('multiplayer');
   peerRoom=await PeerRoom.start({host,hostIdentity,expectedHost:listing?{prism:listing.prism,audience:location.origin,policy:await policyReady}:undefined,invitation:invite,network,name,team,bots:$<HTMLInputElement>('fill-bots').checked,bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),receive,status:message=>{ui.status(message);ui.toast(message);},closed:reason=>{disconnect();ui.status(reason);ui.toast(reason);}});
   if(listing)publication('Host Prism verified against the public listing with a fresh transport challenge.');
   if(isPublic){
@@ -131,18 +164,24 @@ async function join(local:boolean){
  connecting=true;ui.status(local?'Preparing your local operation…':'Connecting to the game server…');busy(true);
  save('cs-name',name);save('cs-room',room);if(!local)save('cs-server',address);
  await audio.start();
+ startCareer(local?'practice':'multiplayer');
  if(local){worker=new Worker(new URL('./practice-worker.ts',import.meta.url),{type:'module'});worker.onmessage=e=>receive(e.data);worker.onerror=()=>{disconnect();ui.status('Practice could not start. Reload and try again.');};worker.postMessage({type:'init',bytes:bytes.slice(0),roundBytes:roundBytes.slice(0),name,team});}
  else{
   socket=new WebSocket(address);const current=socket;const timeout=setTimeout(()=>{if(connecting){disconnect();ui.status('Connection timed out. Check the game server address.');}},12000);
-  socket.onopen=()=>{current.send(JSON.stringify({type:'join',name,room,team,bots:$<HTMLInputElement>('fill-bots').checked}));};
+  socket.onopen=()=>{current.send(JSON.stringify({type:'join',protocol:GAME_PROTOCOL,name,room,team,bots:$<HTMLInputElement>('fill-bots').checked}));};
   socket.onmessage=e=>{try{receive(JSON.parse(e.data));if(!connecting)clearTimeout(timeout);}catch{ui.toast('The server sent an invalid response.');}};
   socket.onerror=()=>{ui.status('Could not connect. Start the server or check its address.');};
-  socket.onclose=()=>{clearTimeout(timeout);disconnect();ui.status('Disconnected from the game server. Rejoin to continue.');};
+  socket.onclose=event=>{clearTimeout(timeout);disconnect();ui.status(event.code===1002?'The server uses a different game version. Reload or choose a compatible room.':'Disconnected from the game server. Rejoin to continue.');};
  }
 }
 $('join-form').addEventListener('submit',e=>{e.preventDefault();if($<HTMLSelectElement>('network-mode').value==='browser')void joinPeer(false);else void join(false);});$('host-room').onclick=()=>{void joinPeer(true);};$('practice').onclick=()=>{void join(true);};$('deploy').onclick=()=>{void capture();};$('resume').onclick=()=>{void capture();};$('leave').onclick=disconnect;
 for(const button of document.querySelectorAll<HTMLButtonElement>('[data-team]'))button.onclick=()=>{team=button.dataset.team as Team|'auto';for(const b of document.querySelectorAll('[data-team]'))b.classList.toggle('selected',b===button);};
-$('close-buy').onclick=()=>{ui.setBuy(false,snapshot);void capture();};
+$('ready-loadout').onclick=()=>{if(worker&&snapshot)ui.setBuy(true,snapshot);};
+function closeBuy(){
+ ui.setBuy(false,snapshot);
+ if($('deploy-overlay').classList.contains('hidden'))void capture();
+}
+$('close-buy').onclick=closeBuy;
 $('buy-menu').onclick=e=>{const button=(e.target as Element).closest<HTMLButtonElement>('[data-buy]');if(button&&!button.disabled)send({type:'buy',item:button.dataset.buy});};
 function saveSetting(name:string,value:string){try{localStorage.setItem('cs1618-'+name,value);}catch{}}
 function setting(name:string,fallback:string){try{return localStorage.getItem('cs1618-'+name)??fallback;}catch{return fallback;}}
@@ -154,16 +193,26 @@ $<HTMLInputElement>('sensitivity').oninput=e=>{sensitivity=Number((e.target as H
 $<HTMLInputElement>('volume').oninput=e=>{audio.setVolume(Number((e.target as HTMLInputElement).value));saveSetting('volume',String(audio.volume));};
 document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;if(!locked&&snapshot&&!ui.buyOpen&&!ui.scoreOpen&&$('deploy-overlay').classList.contains('hidden'))setPaused(true);if(locked)setPaused(false);});
 document.addEventListener('mousemove',e=>{if(!locked||ui.buyOpen||ui.pauseOpen||!snapshot?.self.alive)return;const factor=.002*sensitivity*(scope?.5:1);yaw-=e.movementX*factor;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));pitch=Math.max(-1.5,Math.min(1.5,pitch-e.movementY*factor));});
-document.addEventListener('mousedown',e=>{if(!locked||ui.buyOpen||ui.pauseOpen)return;if(e.button===0)fire=true;if(e.button===2)scope=true;});document.addEventListener('mouseup',e=>{if(e.button===0)fire=false;if(e.button===2)scope=false;});
+document.addEventListener('mousedown',e=>{if(!locked||ui.buyOpen||ui.pauseOpen)return;if(e.button===0){
+ const self=snapshot?.self;
+ if(!fire&&self?.alive&&snapshot?.phase==='live'&&!self.reloadLeft&&self.inventory[self.slot]?.ammo===0)
+  audio.event({id:self.seq,type:'dry-trigger',weapon:self.weapon},self,self.id);
+ fire=true;
+}if(e.button===2)scope=true;});document.addEventListener('mouseup',e=>{if(e.button===0)fire=false;if(e.button===2)scope=false;});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('keydown',e=>{
  if(!snapshot)return;if((e.target as HTMLElement).tagName==='INPUT')return;
  if(['Tab','Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
  if(e.code==='Tab'){ui.scoreOpen=true;ui.show('scoreboard',true);return;}
+ if(e.code==='Escape'&&ui.buyOpen&&!$('deploy-overlay').classList.contains('hidden')){closeBuy();return;}
  if(e.code==='Escape'){ui.setBuy(false,snapshot);document.exitPointerLock();setPaused(true);return;}
  if(e.repeat)return;
- if(e.code==='KeyB'&&snapshot.self.alive){ui.setBuy(!ui.buyOpen,snapshot);keys.clear();fire=false;scope=false;if(ui.buyOpen){setPaused(false);document.exitPointerLock();}else void capture();return;}
- if(e.code==='Digit1')slot=0;if(e.code==='Digit2')slot=1;
+ if(e.code==='KeyB'&&snapshot.self.alive){
+  if(ui.buyOpen)closeBuy();else{ui.setBuy(true,snapshot);setPaused(false);document.exitPointerLock();}
+  return;
+ }
+ if(e.code==='Digit1'&&snapshot.self.inventory[0].id!=='sidearm')slot=0;if(e.code==='Digit2')slot=1;
+ if(e.code==='KeyQ'&&snapshot.self.inventory[0].id!=='sidearm')slot=slot===0?1:0;
  if(e.code==='Space'&&!snapshot.self.alive)spectatorIndex++;
  keys.add(e.code);
 });
@@ -171,7 +220,7 @@ document.addEventListener('keyup',e=>{keys.delete(e.code);if(e.code==='Tab'){ui.
 window.addEventListener('blur',()=>{keys.clear();fire=false;scope=false;});
 let previousJump=false,lastRender=0;
 function tick(){
- if(!snapshot||!position)return;
+ if(!snapshot||!position||worker&&(ui.pauseOpen||!$('deploy-overlay').classList.contains('hidden')))return;
  const active=locked&&!ui.buyOpen&&!ui.pauseOpen&&snapshot.self.alive&&!view.cameraError;
  if(active){if(keys.has('ArrowLeft'))yaw+=.025;if(keys.has('ArrowRight'))yaw-=.025;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));}
  const i:Input={...neutralInput(),seq:++seq,yaw,pitch,slot,forward:active?(Number(keys.has('KeyW'))-Number(keys.has('KeyS'))):0,strafe:active?(Number(keys.has('KeyD'))-Number(keys.has('KeyA'))):0,jump:active&&keys.has('Space'),crouch:active&&(keys.has('ControlLeft')||keys.has('KeyC')),walk:active&&keys.has('ShiftLeft'),fire:active&&fire,reload:active&&keys.has('KeyR'),use:active&&keys.has('KeyE'),scope:active&&scope};
@@ -183,13 +232,17 @@ function frame(now:number){
  const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;accumulator+=dt;
  while(accumulator>=1/60){tick();accumulator-=1/60;}
  if(ui.pauseOpen&&view.hd){const h=view.hd.diagnostics;$('hd-status').textContent=h.status==='failed'?'HD geometry unavailable':`Verdant HD${Math.max(0,h.lod)} · ${h.triangles.toLocaleString()} detail triangles · ${h.status}`;}
- prismFrame.hidden=!!snapshot&&!ui.pauseOpen;const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target,!!snapshot&&!ui.pauseOpen);lastRender=now;}
+ prismFrame.hidden=!!snapshot&&!ui.pauseOpen;
+ const target=spectator();
+ const playing=!!snapshot&&!ui.pauseOpen&&!ui.buyOpen&&$('deploy-overlay').classList.contains('hidden');
+ if(!document.hidden&&now-lastRender>(playing?0:1000/12)){const rendered=snapshot?{...snapshot,players:snapshot.players.map(p=>remoteMotion.sample(p,now))}:null;
+   view.render(Math.min(.15,(now-lastRender)/1000),rendered,position,yaw,pitch,scope,target?remoteMotion.sample(target,now):null,playing);lastRender=now;}
  ui.show('camera-warning',!!view.cameraError);
  if(snapshot&&position){
   uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target,yaw);uiTime=0;}
   ui.updateAim(snapshot, position, yaw, scope, view.camera.fov);
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
-  audio.update(dt,snapshot,{...position,yaw});
+  audio.update(dt,snapshot,target??{...position,yaw});
   if(peerRoom){const p=peerRoom.status;for(const el of document.querySelectorAll<HTMLElement>('.peer-state'))el.textContent=p.host?`HOST · ${p.peers} guest connection(s) · ${p.route}`:`WEBRTC · ${p.route} · ${p.fast?'realtime channel':'reliable fallback'}`;}
   if(now-lastSnapshot>20000&&peerRoom&&!peerRoom.isHost){disconnect();ui.status('The browser host stopped responding. Ask the host to keep its tab active.');}
   if(now-lastSnapshot>5000&&socket){disconnect();ui.status('Connection lost. Rejoin the room to continue.');}

@@ -27,7 +27,7 @@ export function qualityStep(state:QualityState,dt:number,policy:Experience):Qual
  return {scale,slow,fast};
 }
 export function audioProfile(type:string,weapon:string|undefined,occluded:boolean){
- const signatures:Record<string,[number,number,number]>={sidearm:[1900,170,.12],kestrel:[2800,90,.19],m4:[3400,125,.16],smg:[4200,200,.1],scout:[1500,65,.35]};
+ const signatures:Record<string,[number,number,number]>={sidearm:[1900,170,.12],kestrel:[2800,90,.19],m4:[3400,125,.16],smg:[4200,200,.1],scout:[1500,65,.35],rivet:[2350,106,.24],breaker:[1750,55,.39],tern:[3070,144,.206]};
  // [tone, duration, level, second note / first note, pulse count]. Original cues.
  const cues:Record<string,[number,number,number,number,number]>={
   'reload-start':[230,.23,.13,.55,2],'reload-complete':[410,.14,.16,1.4,2],'reload-cancel':[160,.09,.09,.7,1],
@@ -36,10 +36,11 @@ export function audioProfile(type:string,weapon:string|undefined,occluded:boolea
   'bomb-pickup':[620,.22,.12,1.5,2],'bomb-drop':[145,.17,.16,.6,1],
   plant:[740,.46,.14,1.25,3],defuse:[880,.65,.16,.75,3],round:[330,.25,.12,1.25,2],'round-result':[392,.8,.18,1.5,3],
   'bomb-warning':[1250,.095,.16,1,1],'bomb-critical':[1800,.11,.20,1.2,2],
-  equip:[290,.12,.11,1.7,2],hit:[800,.12,.10,.75,1],
+  equip:[290,.12,.11,1.7,2],hit:[800,.12,.10,.75,1],'armor-hit':[1170,.084,.085,.56,2],
+  hurt:[81,.14,.21,.48,1],'armor-hurt':[183,.12,.18,.56,2],
  };
  const special=cues[type];
- const [cutoff,tone,duration]=type==='shot'?signatures[weapon??'sidearm']??signatures.sidearm:type==='step'?[330,70,.065]:type==='explode'?[900,40,.48]:[1800,special?.[0]??660,special?.[1]??.2];
+ const [cutoff,tone,duration]=type==='shot'?signatures[weapon??'sidearm']??signatures.sidearm:type==='step'?[330,70,.065]:type==='explode'?[900,40,.48]:[type==='hurt'?360:type==='armor-hurt'?1050:1800,special?.[0]??660,special?.[1]??.2];
  return {cutoff:occluded?Math.min(450,cutoff):cutoff,tone,duration,level:type==='step'?.12:type==='explode'?.5:type==='shot'?.28:special?.[2]??.1,ratio:special?.[3]??.45,pulses:special?.[4]??1};
 }
 export function compileExperience(config:Experience){

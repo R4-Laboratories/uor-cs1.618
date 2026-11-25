@@ -145,3 +145,35 @@ export async function verifyMeBinding(binding: MeBinding, appOrigin: string, now
   seen.add(replayKey);
   return { prism: proof.prism, account: who.account };
 }
+
+export type CareerSeal = { at:number; stitch:IdentityProof } | { at:number; signature:string; delegation:any };
+export type CareerKey = {owner:string; frame:MeFrame} | {owner:string; session:any};
+type CareerPurpose = 'backup' | 'session';
+
+function careerMessage(owner:string, app:string, purpose:CareerPurpose, challenge:string, at:number) {
+  return { kind:'cs1618/career/1', owner, app, purpose, challenge, at };
+}
+
+export async function sealCareer(key:CareerKey, app:string, purpose:CareerPurpose, challenge:string, at=Date.now()):Promise<CareerSeal> {
+  const message=careerMessage(key.owner,app,purpose,challenge,at);
+  if ('frame' in key) return {at,...await key.frame.sign(stitch.canonicalBytes(message))};
+  return {at,stitch:await signIdentity(key.session,app,challenge,message,at)};
+}
+
+/** A backup is a durable signed document. Verify its delegation at signing time.
+ * Access to restore is separately verified with a fresh challenge on the current device. */
+export async function verifyCareerSeal(seal:CareerSeal, owner:string, app:string, purpose:CareerPurpose, challenge:string, now=Date.now()) {
+  bounded(seal); origin(app);
+  if (!seal || !Number.isSafeInteger(seal.at) || seal.at<0 || seal.at>now || (purpose==='session' && now-seal.at>60000)) fail('time','Career signature has invalid time.');
+  const message=careerMessage(owner,app,purpose,challenge,seal.at);
+  if ('stitch' in seal) {
+    if (seal.stitch?.envelope?.body?.at!==seal.at || stitch.canonicalJson(seal.stitch?.envelope?.body?.payload?.payload)!==stitch.canonicalJson(message)) fail('binding','Career signature does not match this record.');
+    const who=await verifyIdentity(seal.stitch,app,challenge,seal.at,new Set());
+    if(who.prism!==owner) fail('binding','Career signature belongs to another identity.');
+  } else {
+    const who=await checkedDelegation(seal.delegation,app,seal.at);
+    if(who.account!==owner) fail('binding','Career signer belongs to another identity.');
+    const key=await crypto.subtle.importKey('raw',stitch.fromBase64Url(who.sessionKey),{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+    if(!await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,stitch.fromBase64Url(seal.signature),stitch.canonicalBytes(message))) fail('signature','Career signature did not verify.');
+  }
+}

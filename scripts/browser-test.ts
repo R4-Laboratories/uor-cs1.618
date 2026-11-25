@@ -48,9 +48,18 @@ try{
   const images=Array.from(document.querySelectorAll<HTMLImageElement>('.armory-preview'));
   return images.length>=2 && images.every(image=>image.complete && image.naturalWidth===420);
  });
+ await a.click('[data-buy="rivet"]');
+ await a.waitForFunction(()=>{const self=(window as any).cs1618.snapshot.self;return self.inventory[1].id==='rivet'&&self.slot===1;});
+ await a.waitForFunction(()=>document.querySelector<HTMLButtonElement>('[data-buy="rivet"]')?.disabled);
  await a.click('[data-buy="kestrel"]');await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.inventory[0].id==='kestrel');
  await a.click('#close-buy');await a.waitForFunction(()=>(window as any).cs1618.locked);
- await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.weapon==='kestrel');assert.equal(pa.money,2300);results.push('Browser buy menu equips a server-issued rifle and deducts the exact price');
+ await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.weapon==='kestrel');assert.equal(pa.money,1750);
+ await a.keyboard.press('KeyQ');
+ await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.weapon==='rivet');
+ await a.keyboard.press('KeyQ');
+ await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.weapon==='kestrel');
+ results.push('Rivet and Kestrel occupy separate slots, and Q switches both ways');
+ results.push('Browser buy menu equips a server-issued rifle and deducts the exact price');
  console.log('Testing locomotion');room.phase='live';room.phaseLeft=100;
  Object.assign(pa,{x:0,z:23,vx:0,vz:0});Object.assign(pb,{x:20,z:-18,vx:0,vz:0});
  await Promise.all([
@@ -96,7 +105,13 @@ try{
  await a.screenshot({path:'artifacts/multiplayer.png',timeout:20000});
  await a.keyboard.press('Escape');await a.waitForSelector('#pause:not(.hidden)');await a.click('#leave');await a.waitForSelector('#lobby:not(.hidden)');
  await a.screenshot({path:'artifacts/lobby.png',timeout:20000});await a.waitForFunction(()=>(window as any).cs1618.characters.actors===0);results.push('Escape menu and leaving a room restore the lobby and release character slots');
- console.log('Testing standalone practice');await a.click('#practice');await a.waitForSelector('#deploy-overlay:not(.hidden)');await a.waitForFunction(()=>(window as any).cs1618.snapshot?.players.length===10);await a.click('#deploy');await a.waitForTimeout(300);assert.equal((await state(a)).snapshot.room,'PRACTICE');results.push('Static browser practice starts ten-player simulation without a WebSocket connection');
+ console.log('Testing standalone practice');await a.click('#practice');await a.waitForSelector('#deploy-overlay:not(.hidden)');await a.waitForFunction(()=>(window as any).cs1618.snapshot?.players.length===10);
+ await a.click('#ready-loadout');await a.click('[data-buy="rivet"]');
+ await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.inventory[1].id==='rivet');
+ assert.equal((await state(a)).snapshot.tick,0);
+ await a.click('#close-buy');await a.click('#deploy');
+ await a.waitForFunction(()=>(window as any).cs1618.snapshot.tick>0);
+ results.push('Practice loadout issues a real purchase before starting the round clock');assert.equal((await state(a)).snapshot.room,'PRACTICE');results.push('Static browser practice starts ten-player simulation without a WebSocket connection');
  await a.waitForFunction(()=>(window as any).cs1618.characters.actors===10);await a.screenshot({path:'artifacts/practice.png',timeout:20000});
  assert.deepEqual(errors,[]);results.push('No uncaught browser errors across online and local gameplay');
  await writeFile('artifacts/browser-results.json',JSON.stringify({passed:results,errors,rendering},null,2)+'\n');console.log(results.join('\n'));

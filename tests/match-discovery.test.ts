@@ -55,7 +55,7 @@ test('untrusted input, pending verifications and room state remain bounded',asyn
 test('fresh live proof binds Prism, room, token, both transport peers and endpoint',async()=>{
  assert.equal(typeof discovery.verifyHostProof,'function','Live host proof is not implemented');
  const host=await createIdentity(),other=await createIdentity();
- const binding={...room,hostPeer:'cs1618-v2-'+room.room,guestPeer:'cs1618-v2-guest-test',signaling:'peerjs-cloud',challenge:'a'.repeat(64)};
+ const binding={...room,hostPeer:'cs1618-v3-'+room.room,guestPeer:'cs1618-v3-guest-test',signaling:'peerjs-cloud',challenge:'a'.repeat(64)};
  const proof=await discovery.signHostProof(host,app,binding,now);
  await discovery.verifyHostProof(proof,host.prism,app,binding,policy,now);
  for(const altered of [{...binding,token:'2'.repeat(32)},{...binding,room:'0'.repeat(12)},{...binding,hostPeer:'substitute'},{...binding,guestPeer:'other-guest'},{...binding,challenge:'b'.repeat(64)},{...binding,signaling:'other'}])await assert.rejects(discovery.verifyHostProof(proof,host.prism,app,altered,policy,now));

@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {ImpactMarks} from './impact-marks';
 import {BOXES} from '../shared/map';
 import type {GameEvent} from '../shared/protocol';
 
@@ -45,7 +46,9 @@ export class CombatEffects {
   private readonly puffs:Puff[] = [];
   private readonly traces:{line:T.Line<T.BufferGeometry,T.LineBasicMaterial>;age:number}[] = [];
 
-  constructor(private scene:T.Scene) {}
+  private readonly impactMarks:ImpactMarks;
+  constructor(private scene:T.Scene) { this.impactMarks=new ImpactMarks(scene); }
+  clear(){this.impactMarks.clear();}
 
   private puff(position:T.Vector3, color:number, start:number, end:number, duration:number,
                opacity:number, drift:T.Vector3, glow=false) {
@@ -60,17 +63,19 @@ export class CombatEffects {
     this.puffs.push({sprite,age:0,duration,start,end,opacity,drift});
   }
 
-  shot(e:GameEvent) {
+  shot(e:GameEvent, muzzle:T.Vector3|null=null) {
     const {x,y,z,ex,ey,ez}=e;
     if (x===undefined||y===undefined||z===undefined||ex===undefined||ey===undefined||ez===undefined) return;
-    const origin=new T.Vector3(x,y-.075,z), end=new T.Vector3(ex,ey,ez);
+    const origin=muzzle??new T.Vector3(x,y,z), end=new T.Vector3(ex,ey,ez);
     const distance=origin.distanceTo(end);
     if (!Number.isFinite(distance)||distance<.05) return;
-    const geometry=new T.BufferGeometry().setFromPoints([origin.clone().lerp(end,Math.min(1,.7/distance)),end]);
+    const start=muzzle??origin.clone().lerp(end,Math.min(1,.7/distance));
+    const geometry=new T.BufferGeometry().setFromPoints([start,end]);
     const line=new T.Line(geometry,new T.LineBasicMaterial({color:0xffe3b2,opacity:.63,transparent:true,depthWrite:false}));
     if (this.traces.length>=24) this.removeTrace(this.traces.shift()!.line);
     this.scene.add(line);
     this.traces.push({line,age:0});
+    this.impactMarks.stamp(ex,ey,ez,e.id);
     if (touchesScenery(ex,ey,ez)) {
       end.lerp(origin,Math.min(1,.075/distance));
       this.puff(end,0xbfae93,.08,.44,.28,.56,new T.Vector3(0,.46,0));

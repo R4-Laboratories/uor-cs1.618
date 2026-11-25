@@ -15,7 +15,7 @@ export function reticleGap(weapon: Weapon, motion: Motion, recoil: number, heigh
  * from that ray, even if the shooter has moved since it was fired. */
 export function incomingBearing(hit: GameEvent, events: readonly GameEvent[], receiver: string) {
   if (hit.type !== 'hit' || hit.target !== receiver || !hit.actor) return null;
-  const shot = events.find(event => event.id === hit.id - 1);
+  const shot = events.find(event => event.id === (hit.shotId ?? hit.id - 1));
   if (shot?.type !== 'shot' || shot.actor !== hit.actor || shot.at !== hit.at) return null;
   if (shot.x === undefined || shot.z === undefined || shot.ex === undefined || shot.ez === undefined) return null;
   const dx = shot.x - shot.ex;

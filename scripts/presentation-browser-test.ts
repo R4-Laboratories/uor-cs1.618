@@ -2,6 +2,8 @@ import {chromium} from 'playwright';
 import {createServer} from 'vite';
 import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import {WEAPONS} from '../shared/config';
+import {checkWeaponAim} from './check-weapon-aim';
 const baseline=process.env.PRESENTATION_BASELINE==='1',out='artifacts/presentation';
 await mkdir(out,{recursive:true});
 const server=await createServer({server:{port:0,host:'127.0.0.1',hmr:false},plugins:[{name:'presentation-fixture',configureServer(s){s.middlewares.use('/presentation-fixture',(_req,res)=>{res.setHeader('Content-Type','text/html');res.end('<html><body><canvas id="world"></canvas><div id="app"></div></body></html>');});}}]});
@@ -28,7 +30,7 @@ try{
  const staging=await page.evaluate(()=>(window as any).fixture.engine.textureStaging);
  assert(staging.textures>=6 && staging.storedBytes>0 && staging.storedBytes<staging.logicalBytes,'runtime Studio materials have a compact CPU backing');
  const prefix=baseline?'before':'after';
- for(const weapon of ['sidearm','kestrel','m4','smg','scout']){
+ for(const weapon of Object.keys(WEAPONS)){
   await page.evaluate(weapon=>{const f=(window as any).fixture;f.snapshot.self.weapon=weapon;for(let i=0;i<5;i++)f.draw();},weapon);
   await page.screenshot({path:`${out}/${prefix}-${weapon}.png`});
  }
@@ -93,6 +95,7 @@ try{
   await page.screenshot({path:`${out}/after-reload.png`});
   const switchFeedback=await page.evaluate(()=>{const f=(window as any).fixture;f.snapshot.self.reloadLeft=0;f.snapshot.self.weapon='sidearm';f.draw();return f.world.gun.position.y;});assert(switchFeedback<-.3);
   await page.screenshot({path:`${out}/after-switch.png`});
+  await checkWeaponAim(page,out);
   await page.goto(url);await page.waitForFunction(()=>(window as any).cs1618);await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>{document.documentElement.style.setProperty('--dim','#000');document.documentElement.style.setProperty('--mint','#000');return {fits:document.documentElement.scrollWidth<=innerWidth,label:getComputedStyle(document.querySelector('label')!).color};});assert(mobile.fits);assert.equal(mobile.label,'rgb(156, 174, 172)');await page.screenshot({path:`${out}/after-mobile-lobby.png`});
 

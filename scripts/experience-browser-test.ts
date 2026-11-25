@@ -1,5 +1,6 @@
 import {chromium} from 'playwright';
 import {preview} from 'vite';
+import {WEAPONS} from '../shared/config';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 const server=process.env.EXPERIENCE_URL?null:await preview({preview:{port:0,host:'127.0.0.1'}});
@@ -10,7 +11,7 @@ try{
  await page.goto(url+'evolution-lab.html');await page.waitForFunction(()=>(window as any).experienceLab);
  const sound=await page.evaluate(()=>(window as any).experienceLab.measureAudio());
  for(const row of sound.rows){assert(row.peak>0&&row.peak<1);assert(row.right>row.left*3);assert(row.tail<1e-9);assert.equal(row.ended,1);}
- for(const weapon of ['sidearm','kestrel','m4','smg','scout']){const rows=sound.rows.filter((r:any)=>r.weapon===weapon);assert(rows[1].right<rows[0].right);}
+ for(const weapon of Object.keys(WEAPONS)){const rows=sound.rows.filter((r:any)=>r.weapon===weapon);assert.equal(rows.length,2);assert(rows[1].right<rows[0].right);}
  assert(sound.stress.peak<1);assert.equal(sound.stress.ended,sound.stress.voices);
  const voices=await page.evaluate(()=>(window as any).experienceLab.stressVoices());assert(voices.high<=voices.limit);assert.equal(voices.after,0);
  const render=await page.evaluate(()=>{const world=(window as any).evolutionLab.world;world.setQuality('low');const low=world.renderer.getPixelRatio();const count=world.scene.children.length;world.setQuality('native');const native=world.renderer.getPixelRatio();return {low,native,count,after:world.scene.children.length};});

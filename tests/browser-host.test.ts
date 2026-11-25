@@ -46,3 +46,10 @@ test('duplicate transport opens preserve joined sessions and the original join d
  f.host.open('pending');f.setClock(9000);assert.equal(f.host.open('pending'),true);
  f.setClock(10001);f.host.step(1/60);assert(f.closed.includes('pending'),'Repeated open must not renew unauthenticated handshake lifetime');
 });
+test('WebRTC scores are delivered reliably and repeated in later movement snapshots',async()=>{
+ const f=await fixture();f.join('host');f.join('guest');
+ f.sent.length=0;f.match.players.get('guest')!.kills=1;
+ for(let i=0;i<6;i++)f.host.step(1/60);
+ const packets=f.sent.filter(p=>p.id==='guest'&&p.message.type==='snapshot');
+ assert.deepEqual(packets.map(p=>[p.realtime,p.message.self.career.kills]),[[false,1],[true,1]]);
+});

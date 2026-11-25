@@ -1,6 +1,7 @@
 // Capture the actual first-person models for the buy menu. Run from the repository root.
 import {mkdir, writeFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
+import {WEAPONS} from '../shared/config.ts';
 import {createServer} from 'vite';
 
 const entry = '/armory-preview.js';
@@ -19,6 +20,7 @@ const server = await createServer({
           const world = new WorldView(canvas, {preserveDrawingBuffer:true});
           const bytes = await (await fetch('/wasm/cs_verdant.wasm')).arrayBuffer();
           world.setEngine(await createEngine(bytes));
+          await world.meridian.ready;
           const renderer = world.renderer;
           const camera = new T.OrthographicCamera(-1, 1, 1, -1, .01, 20);
           renderer.setPixelRatio(1);
@@ -63,7 +65,7 @@ const server = await createServer({
       });
     }
   }],
-  server:{host:'127.0.0.1',port:0}
+  server:{host:'127.0.0.1',port:0,hmr:false}
 });
 let browser;
 try {
@@ -74,7 +76,7 @@ try {
   await page.goto(server.resolvedUrls.local[0]+'armory-fixture');
   await page.waitForFunction(() => Boolean(window.previewReady));
   await mkdir('public/armory', {recursive:true});
-  for (const id of ['kestrel','m4','smg','scout']) {
+  for (const {id} of Object.values(WEAPONS).filter(w=>w.price>0)) {
     const image = await page.evaluate(async weapon => (await window.previewReady)(weapon), id);
     await writeFile('public/armory/'+id+'.webp',Buffer.from(image,'base64'));
   }

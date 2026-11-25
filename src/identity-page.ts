@@ -1,17 +1,19 @@
 import {frame,frameReady,policyReady} from './prism-frame';
 import {identityStore} from './identity-store';
+import {installCareerPanel} from './career-panel';
+const refreshCareer=installCareerPanel();
 import {createIdentity,publicIdentity,signIdentity,verifyIdentity,bindMeAccount,createDevice,createLinkOffer,parseLinkUri,requestLink,linkCode,acceptLinkRequest,completeLink,MAX_IDENTITY_BYTES,type MeFrame} from '../shared/hologram-identity';
 const $=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 let session:any=null,pending:any=null,joining:any=null,binding:any=null;
 const status=(text:string,error=false)=>{$('identity-status').textContent=text;$('identity-status').toggleAttribute('data-error',error);};
 async function paint(){const id=session?await publicIdentity(session):null;$('prism-id').textContent=id?.prism??'No local identity';$('create-identity').toggleAttribute('disabled',!!id);}
-async function save(next:any){await identityStore(true,next);session=next;await paint();}
+async function save(next:any){await identityStore(true,next);session=next;await paint();await refreshCareer();}
 function need(){if(!session)throw Error('Create or link a local identity first.');return session;}
 function input(id:string){const text=$(id) as HTMLInputElement;return text.value.trim();}
 function json(id:string){const text=input(id);if(new TextEncoder().encode(text).length>MAX_IDENTITY_BYTES)throw Error('Link data is too large.');return JSON.parse(text);}
 function output(id:string,value:unknown){$<HTMLTextAreaElement>(id).value=typeof value==='string'?value:JSON.stringify(value);}
 function download(value:unknown,name:string){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function action(id:string,work:()=>Promise<void>){$(id).onclick=async()=>{const buttons=[...document.querySelectorAll<HTMLButtonElement>('main button')],disabled=buttons.map(b=>b.disabled);buttons.forEach(b=>b.disabled=true);status('Checking…');try{await work();}catch(error){status((error as Error).message,true);}finally{buttons.forEach((b,i)=>b.disabled=disabled[i]);await paint();$<HTMLButtonElement>('export-binding').disabled=!binding;}};}
+function action(id:string,work:()=>Promise<void>){$(id).onclick=async()=>{const buttons=[...document.querySelectorAll<HTMLButtonElement>('main button:not(#career-export):not(#career-persist)')],disabled=buttons.map(b=>b.disabled);buttons.forEach(b=>b.disabled=true);status('Checking…');try{await work();}catch(error){status((error as Error).message,true);}finally{buttons.forEach((b,i)=>b.disabled=disabled[i]);await paint();$<HTMLButtonElement>('export-binding').disabled=!binding;}};}
 try{session=await identityStore();await paint();}catch{status('Browser storage is unavailable. Identity changes will not be saved.',true);}
 policyReady.then(p=>$('policy-status').textContent=`Compiled identity policy loaded: ${p.application.vectors.length} examples passed.`).catch(()=>{$('policy-status').textContent='Identity policy unavailable; sharing is disabled.';});
 action('create-identity',async()=>{if(session)throw Error('This browser already has an identity.');await save(await createIdentity());status('Local identity created. Nothing was sent to a server.');});

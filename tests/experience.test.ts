@@ -31,7 +31,7 @@ test('adaptive resolution has hysteresis, finite limits and ignores background s
 });
 test('sound profiles distinguish weapons, lower occluded frequencies and bound resources',()=>{
  const sounds=Object.keys(WEAPONS).map(w=>audioProfile('shot',w,false));
- assert.equal(new Set(sounds.map(s=>s.cutoff)).size,5);
+ assert.equal(new Set(sounds.map(s=>s.cutoff)).size,Object.keys(WEAPONS).length);
  for(const w of Object.keys(WEAPONS)){const a=audioProfile('shot',w,false),b=audioProfile('shot',w,true);assert(b.cutoff<a.cutoff);assert(a.duration<=.5&&a.level<=.5);}
  validateExperience(DEFAULT_EXPERIENCE);
  for(const patch of [{voices:10000},{recoveryMs:0},{downMs:NaN},{extra:'code'}])assert.throws(()=>validateExperience({...DEFAULT_EXPERIENCE,...patch}));

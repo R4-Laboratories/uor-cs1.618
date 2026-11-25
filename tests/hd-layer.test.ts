@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as T from 'three';
 import {readFile} from 'node:fs/promises';
 import {createEngine} from '../shared/engine';
+import {MAP} from '../shared/map';
 import {HdLayer} from '../src/hd-layer';
 const engine=await createEngine(await readFile('public/wasm/cs_verdant.wasm'));
 test('HD scene installs real engine geometry and swaps detail without leaking old meshes',async()=>{
@@ -26,7 +27,7 @@ test('imported bridge is visible from the attack approach and detail clears play
  assert(hits.length>0,'HD architecture must actually appear along the attack approach');
  assert(engine.ray(origin.x,origin.y,origin.z,direction.x,direction.y,direction.z,30)>=hits[0].distance,'Map walls must not hide the imported landmark');
  for(const child of layer.group.children){const b=new T.Box3().setFromObject(child);
-  assert(b.min.y>=6||b.max.x< -27||b.min.x>27||b.max.z< -27||b.min.z>27,'Visual geometry must clear the playable routes and target silhouettes');
+  assert(b.min.y>=6||b.max.x< -MAP.halfWidth||b.min.x>MAP.halfWidth||b.max.z< -MAP.halfDepth||b.min.z>MAP.halfDepth,'Visual geometry must clear the playable routes and target silhouettes');
  }
  layer.dispose();
 });

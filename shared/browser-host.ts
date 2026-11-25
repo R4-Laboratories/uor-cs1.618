@@ -1,6 +1,6 @@
 import {Match} from '../server/match';
 import {RULES,WEAPONS} from './config';
-interface Session {joined:boolean;opened:number;last:number;window:number;count:number;}
+interface Session {joined:boolean;opened:number;last:number;window:number;count:number;lastKills:number;lastDeaths:number;}
 /** Authority boundary shared by the worker and its tests. IDs come only from transport. */
 export class BrowserMatchHost {
  private sessions=new Map<string,Session>();
@@ -12,7 +12,7 @@ export class BrowserMatchHost {
   // Repeated transport notifications must not drop a player or renew join deadlines.
   if(this.sessions.has(id))return true;
   if(this.sessions.size>=RULES.maxPlayers){this.drop(id,'Room full.');return false;}
-  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,window:now,count:0});return true;
+  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,window:now,count:0,lastKills:0,lastDeaths:0});return true;
  }
  private reject(id:string,reason:string){this.leave(id);this.drop(id,reason);}
  message(id:string,value:unknown){
@@ -51,7 +51,14 @@ export class BrowserMatchHost {
    else if(s.joined&&id!=='host'&&now-s.last>20000)this.reject(id,'Peer stopped responding.');
   }
   this.match.step(dt);
-  if(++this.snapshotTicks%3===0)for(const [id,s]of this.sessions)if(s.joined)this.send(id,this.match.snapshot(id),true);
+  if(++this.snapshotTicks%3===0)for(const [id,s]of this.sessions)if(s.joined){
+   const snapshot=this.match.snapshot(id),score=snapshot.self.career!;
+   // The snapshot carrying a score change uses the reliable channel. Later
+   // realtime snapshots still carry the same high-water marks if they arrive first.
+   const changed=score.kills!==s.lastKills||score.deaths!==s.lastDeaths;
+   this.send(id,snapshot,!changed);
+   s.lastKills=score.kills;s.lastDeaths=score.deaths;
+  }
  }
  leave(id:string){
   const session=this.sessions.get(id);if(!session)return;this.sessions.delete(id);

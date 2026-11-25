@@ -1,0 +1,138 @@
+{
+  "rounds": [
+    {
+      "offset": 0,
+      "round": 1,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "MID COURT"
+      ],
+      "planted": false,
+      "outcome": "Opposition eliminated",
+      "samples": 171,
+      "closeSamples": 150,
+      "sightedSamples": 151,
+      "advancingSighted": 40
+    },
+    {
+      "offset": 0,
+      "round": 2,
+      "firstContact": [
+        "MID COURT"
+      ],
+      "planted": false,
+      "outcome": "Opposition eliminated",
+      "samples": 90,
+      "closeSamples": 63,
+      "sightedSamples": 84,
+      "advancingSighted": 43
+    },
+    {
+      "offset": 0,
+      "round": 3,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "MID COURT"
+      ],
+      "planted": true,
+      "outcome": "Device detonated",
+      "samples": 932,
+      "closeSamples": 710,
+      "sightedSamples": 728,
+      "advancingSighted": 43
+    },
+    {
+      "offset": 17,
+      "round": 1,
+      "firstContact": [
+        "DEFENDER SPAWN",
+        "MID COURT",
+        "SITE B"
+      ],
+      "planted": true,
+      "outcome": "Opposition eliminated",
+      "samples": 309,
+      "closeSamples": 208,
+      "sightedSamples": 82,
+      "advancingSighted": 31
+    },
+    {
+      "offset": 17,
+      "round": 2,
+      "firstContact": [
+        "MID COURT",
+        "SITE A"
+      ],
+      "planted": false,
+      "outcome": "Opposition eliminated",
+      "samples": 118,
+      "closeSamples": 63,
+      "sightedSamples": 73,
+      "advancingSighted": 39
+    },
+    {
+      "offset": 17,
+      "round": 3,
+      "firstContact": [
+        "MID COURT"
+      ],
+      "planted": true,
+      "outcome": "Device detonated",
+      "samples": 931,
+      "closeSamples": 705,
+      "sightedSamples": 675,
+      "advancingSighted": 35
+    },
+    {
+      "offset": 53,
+      "round": 1,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "DEFENDER SPAWN",
+        "MID COURT",
+        "SITE B"
+      ],
+      "planted": true,
+      "outcome": "Opposition eliminated",
+      "samples": 284,
+      "closeSamples": 179,
+      "sightedSamples": 78,
+      "advancingSighted": 36
+    },
+    {
+      "offset": 53,
+      "round": 2,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "DEFENDER SPAWN",
+        "MID COURT",
+        "SITE A"
+      ],
+      "planted": false,
+      "outcome": "Opposition eliminated",
+      "samples": 157,
+      "closeSamples": 96,
+      "sightedSamples": 110,
+      "advancingSighted": 41
+    },
+    {
+      "offset": 53,
+      "round": 3,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "DEFENDER SPAWN",
+        "MID COURT",
+        "SITE B"
+      ],
+      "planted": true,
+      "outcome": "Opposition eliminated",
+      "samples": 189,
+      "closeSamples": 90,
+      "sightedSamples": 57,
+      "advancingSighted": 38
+    }
+  ],
+  "nearTeammateFraction": 0.7117258723671801,
+  "movingWithContactFraction": 0.16977428851815504,
+  "plantRounds": 5
+}

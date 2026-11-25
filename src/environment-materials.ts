@@ -12,7 +12,7 @@ export interface MeridianAssets {
 export function createMeridianMaterials(scene: T.Scene): MeridianAssets {
   const root = `${import.meta.env.BASE_URL}art/meridian/`;
   const manager = new T.LoadingManager();
-  const status = {loaded: 0, total: 11, failed: [] as string[]};
+  const status = {loaded: 0, total: 15, failed: [] as string[]};
   let finish!: () => void;
   const ready = new Promise<void>(resolve => {finish = resolve;});
   manager.onProgress = (_url, loaded, total) => Object.assign(status, {loaded, total});
@@ -34,6 +34,8 @@ export function createMeridianMaterials(scene: T.Scene): MeridianAssets {
     });
   }
   const materials = {
+    limewash: mineral('plaster','limewash',.32),
+    cobbles: mineral('limestone', 'cobbles', .52),
     stone: mineral('limestone', 'masonry', .62),
     plaster: mineral('plaster', 'stucco', .30),
     teal: mineral('tealPaint', 'cladding', .55),

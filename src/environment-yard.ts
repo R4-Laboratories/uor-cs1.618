@@ -1,54 +1,14 @@
 import * as T from 'three';
 import {BOXES, MAP} from '../shared/map';
-
-/** Face-mounted trim and distant structures share instanced batches across the yard. */
-class Hardware {
-  private bins = new Map<T.BufferGeometry, Map<T.Material,T.Matrix4[]>>();
-  private readonly cube = new T.BoxGeometry();
-  private readonly round = new T.CylinderGeometry(.5,.5,1,20);
-  private add(shape:T.BufferGeometry, material:T.Material, object:T.Object3D) {
-    let bin = this.bins.get(shape);
-    if (!bin) this.bins.set(shape,bin=new Map());
-    let instances=bin.get(material);
-    if (!instances) bin.set(material,instances=[]);
-    object.updateMatrix();
-    instances.push(object.matrix);
-  }
-  box(x:number,y:number,z:number,w:number,h:number,d:number,m:T.Material) {
-    const o=new T.Object3D();
-    o.position.set(x,y,z); o.scale.set(w,h,d);
-    this.add(this.cube,m,o);
-  }
-  tank(x:number,y:number,z:number,diameter:number,height:number,m:T.Material) {
-    const o=new T.Object3D();
-    o.position.set(x,y,z); o.scale.set(diameter,height,diameter);
-    this.add(this.round,m,o);
-  }
-  beam(a:[number,number,number],b:[number,number,number],w:number,d:number,m:T.Material) {
-    const from=new T.Vector3(...a),to=new T.Vector3(...b);
-    const vector=to.clone().sub(from), o=new T.Object3D();
-    o.position.copy(from).lerp(to,.5);
-    o.scale.set(w,vector.length(),d);
-    o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),vector.normalize());
-    this.add(this.cube,m,o);
-  }
-  finish(scene:T.Scene) {
-    for (const [geometry,materials] of this.bins) for (const [material,poses] of materials) {
-      const batch=new T.InstancedMesh(geometry,material,poses.length);
-      batch.name='Meridian architecture'; batch.castShadow=true; batch.receiveShadow=true;
-      poses.forEach((matrix,i)=>batch.setMatrixAt(i,matrix));
-      batch.computeBoundingSphere();
-      scene.add(batch);
-    }
-  }
-}
+import {Hardware} from './environment-hardware';
+import {buildCustomsQuarter} from './environment-quarter';
 
 function roadPaint(scene:T.Scene) {
   // One decal atlas in map space: wear, contact at the wall foot, gratings and lane stripes.
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1024;
   const c=canvas.getContext('2d')!;
-  const scale=canvas.width/54;
-  c.scale(scale,scale); c.translate(27,27);
+  const scale=canvas.width/(MAP.halfWidth*2);
+  c.scale(scale,canvas.height/(MAP.halfDepth*2)); c.translate(MAP.halfWidth,MAP.halfDepth);
   for (const b of BOXES) {
     if (b.y!==0) continue;
     c.fillStyle='rgba(39,34,26,.42)';
@@ -75,9 +35,9 @@ function roadPaint(scene:T.Scene) {
   const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
   c.globalCompositeOperation='destination-out';
   c.fillStyle='rgba(255,255,255,.7)';
-  for(let i=0;i<12000;i++)c.fillRect(random()*54-27,random()*54-27,.035+random()*.10,.04);
+  for(let i=0;i<12000;i++)c.fillRect((random()*2-1)*MAP.halfWidth,(random()*2-1)*MAP.halfDepth,.035+random()*.10,.04);
   const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;tex.anisotropy=4;
-  const decal=new T.Mesh(new T.PlaneGeometry(54,54),new T.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));
+  const decal=new T.Mesh(new T.PlaneGeometry(2*MAP.halfWidth,2*MAP.halfDepth),new T.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));
   decal.rotation.x=-Math.PI/2; decal.position.y=.012;scene.add(decal);
 }
 
@@ -158,7 +118,7 @@ export function buildMeridianYard(scene:T.Scene, mats:Record<string,T.MeshStanda
     }
     // Tank drums beyond the seawall carry reinforcing hoops and a shared service catwalk.
     for(const z of [-23,-8]){
-      const x=sign*37; const d=10;
+      const x=sign*56; const d=10;
       kit.tank(x,5.4,z,d,10.8,pearl);
       for(const y of [1.2,5.4,10.5])kit.tank(x,y,z,d+.12,.16,steel);
       kit.tank(x,10.95,z,d-.45,.35,conduit);
@@ -218,6 +178,7 @@ export function buildMeridianYard(scene:T.Scene, mats:Record<string,T.MeshStanda
     for(const dx of [11,13])kit.box(cx+dx,top-2.5,cz,.055,4.8,.085,frame);
     kit.box(cx+12,top-4.95,cz,3.4,.28,1.3,amber);
   }
+  buildCustomsQuarter(scene,kit,mats);
   kit.finish(scene);
   roadPaint(scene);
   sitePerimeters(scene);

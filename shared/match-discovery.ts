@@ -1,7 +1,8 @@
 import {signIdentity,verifyIdentity,type IdentityProof,MAX_IDENTITY_BYTES} from './hologram-identity';
 import type {HologramPolicy} from './hologram-policy';
 export const MATCH_LEASE_MS=45000, MATCH_REFRESH_MS=20000;
-export const MATCH_PROTOCOL='cs1618-v2', DIRECTORY_CHALLENGE='cs1618/matches/1';
+import {GAME_PROTOCOL} from './protocol';
+export const MATCH_PROTOCOL=GAME_PROTOCOL, DIRECTORY_CHALLENGE='cs1618/matches/1';
 export interface MatchFields {room:string;token:string;name:string;players:number;capacity:number;map:'meridian';signaling:string;}
 export interface MatchListing extends MatchFields {kind:'cs1618/match/1';protocol:typeof MATCH_PROTOCOL;visibility:'public';at:number;expires:number;withdrawn:boolean;prism:string;}
 export interface HostBinding {room:string;token:string;hostPeer:string;guestPeer:string;signaling:string;challenge:string;}

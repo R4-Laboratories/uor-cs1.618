@@ -2,7 +2,7 @@ import {BOXES, MAP} from '../shared/map';
 import type {Motion, PublicPlayer, Snapshot} from '../shared/protocol';
 
 const size = 200;
-const scale = 3;
+const scale = (size - 14) / (2 * Math.max(MAP.halfWidth, MAP.halfDepth));
 const coordinate = (world: number) => size / 2 + world * scale;
 
 function background() {
@@ -12,20 +12,22 @@ function background() {
   ctx.fillStyle = '#0d1b21';
   ctx.fillRect(0, 0, size, size);
   ctx.fillStyle = '#293c40';
-  const low = coordinate(-MAP.half);
-  ctx.fillRect(low, low, MAP.half * 2 * scale, MAP.half * 2 * scale);
+  const west = coordinate(-MAP.halfWidth), north = coordinate(-MAP.halfDepth);
+  ctx.fillRect(west, north, MAP.halfWidth * 2 * scale, MAP.halfDepth * 2 * scale);
 
   ctx.strokeStyle = '#718b872b';
   ctx.lineWidth = 0.6;
   ctx.beginPath();
-  for (let world = -24; world <= 24; world += 6) {
-    const axis = coordinate(world);
-    ctx.moveTo(axis, low); ctx.lineTo(axis, size - low);
-    ctx.moveTo(low, axis); ctx.lineTo(size - low, axis);
+  for (let x = -40; x <= MAP.halfWidth; x += 8) {
+    ctx.moveTo(coordinate(x), north); ctx.lineTo(coordinate(x), size - north);
+  }
+  for (let z = -24; z <= MAP.halfDepth; z += 8) {
+    ctx.moveTo(west, coordinate(z)); ctx.lineTo(size - west, coordinate(z));
   }
   ctx.stroke();
 
   for (const box of BOXES) {
+    if (box.y > 1.78) continue;
     const x = coordinate(box.x - box.w / 2);
     const y = coordinate(box.z - box.d / 2);
     const cover = box.h < 3.5;

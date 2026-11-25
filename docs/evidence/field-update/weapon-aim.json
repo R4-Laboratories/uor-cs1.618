@@ -1,0 +1,258 @@
+[
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "sidearm",
+    "depth": 27.353024167430693,
+    "hipError": 2.842170943040401e-14,
+    "sightError": 1.1868707527531666e-8,
+    "tracerError": 0.000011487552209555589,
+    "endpointError": 4.041916229865389e-7,
+    "hostDirectionError": 1.1102230246251565e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "rivet",
+    "depth": 26.67513396970193,
+    "hipError": 0,
+    "sightError": 1.1281913909872568e-8,
+    "tracerError": 0.000024301906208982237,
+    "endpointError": 1.4582227358075266e-7,
+    "hostDirectionError": 2.242025235105681e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "smg",
+    "depth": 30.501479550983902,
+    "hipError": 0,
+    "sightError": 1.0797162901032859e-8,
+    "tracerError": 0.000030462217189209035,
+    "endpointError": 7.75463146567207e-8,
+    "hostDirectionError": 2.2377261113193455e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "breaker",
+    "depth": 26.19548220855617,
+    "hipError": 0,
+    "sightError": 1.136359698377683e-8,
+    "tracerError": 0.0000118491748264269,
+    "endpointError": 1.2723313753756886e-7,
+    "hostDirectionError": 1.249000902703301e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "tern",
+    "depth": 27.18273111227926,
+    "hipError": 0,
+    "sightError": 1.048521291807167e-8,
+    "tracerError": 0.000037121138708253046,
+    "endpointError": 3.096132677501816e-7,
+    "hostDirectionError": 0,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "kestrel",
+    "depth": 27.149351485955645,
+    "hipError": 0,
+    "sightError": 1.0992478848935698e-8,
+    "tracerError": 0.000024802257489423562,
+    "endpointError": 1.3633869135595612e-7,
+    "hostDirectionError": 1.1107649934270853e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "m4",
+    "depth": 30.47969496975569,
+    "hipError": 0,
+    "sightError": 1.0859940437434547e-8,
+    "tracerError": 0.000011991720487013923,
+    "endpointError": 2.0039479262959128e-7,
+    "hostDirectionError": 2.237793284010081e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 800,
+      "height": 450
+    },
+    "id": "scout",
+    "depth": 26.040266543157053,
+    "hipError": 0,
+    "sightError": 1.0497557134790093e-8,
+    "tracerError": 0.000004544422117844923,
+    "endpointError": 4.5376160062326663e-7,
+    "hostDirectionError": 3.1031676915590914e-17,
+    "scoped": true,
+    "opticVisible": true,
+    "drawn": false
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "sidearm",
+    "depth": 27.353024167430693,
+    "hipError": 0,
+    "sightError": 1.3004495561525903e-8,
+    "tracerError": 0.000029031121335290987,
+    "endpointError": 4.041916229865389e-7,
+    "hostDirectionError": 1.1102230246251565e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "rivet",
+    "depth": 26.67513396970193,
+    "hipError": 0,
+    "sightError": 1.1904976282418372e-8,
+    "tracerError": 0.00004660231758652552,
+    "endpointError": 1.4582227358075266e-7,
+    "hostDirectionError": 2.242025235105681e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "smg",
+    "depth": 30.501479550983902,
+    "hipError": 0,
+    "sightError": 1.093731083184078e-8,
+    "tracerError": 0.00006504933052944396,
+    "endpointError": 7.75463146567207e-8,
+    "hostDirectionError": 2.2377261113193455e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "breaker",
+    "depth": 26.19548220855617,
+    "hipError": 0,
+    "sightError": 1.2063945682327748e-8,
+    "tracerError": 0.000014317872453364184,
+    "endpointError": 1.2723313753756886e-7,
+    "hostDirectionError": 1.249000902703301e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "tern",
+    "depth": 27.18273111227926,
+    "hipError": 0,
+    "sightError": 1.032390391375719e-8,
+    "tracerError": 0.000026907798740954225,
+    "endpointError": 3.096132677501816e-7,
+    "hostDirectionError": 0,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "kestrel",
+    "depth": 27.149351485955645,
+    "hipError": 0,
+    "sightError": 1.1341442030008985e-8,
+    "tracerError": 0.000018596598521649864,
+    "endpointError": 1.3633869135595612e-7,
+    "hostDirectionError": 1.1107649934270853e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "m4",
+    "depth": 30.47969496975569,
+    "hipError": 0,
+    "sightError": 1.106245991413177e-8,
+    "tracerError": 0.000020883120752377847,
+    "endpointError": 2.0039479262959128e-7,
+    "hostDirectionError": 2.237793284010081e-16,
+    "scoped": false,
+    "opticVisible": false,
+    "drawn": true
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 640
+    },
+    "id": "scout",
+    "depth": 26.040266543157053,
+    "hipError": 0,
+    "sightError": 1.0356988275634382e-8,
+    "tracerError": 0.000009298891076008226,
+    "endpointError": 4.5376160062326663e-7,
+    "hostDirectionError": 3.1031676915590914e-17,
+    "scoped": true,
+    "opticVisible": true,
+    "drawn": false
+  }
+]

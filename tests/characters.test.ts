@@ -40,6 +40,14 @@ test('operator kit shares the Verdant pose and follows equipment and grounding c
  const kit=group.getObjectByName('fitted-field-equipment') as T.SkinnedMesh;
  assert.equal(kit.skeleton,rig.mesh.skeleton);
  assert(kit.geometry.getAttribute('skinIndex').count>1000);
+ const finishes=kit.material as T.MeshStandardMaterial[];
+ assert.deepEqual(kit.geometry.groups.map(group=>group.materialIndex),[0,1,2]);
+ assert(finishes[0].normalMap && finishes[2] instanceof T.MeshPhysicalMaterial);
+ assert(finishes[2].roughness<finishes[0].roughness);
+ assert.notEqual(rig.weapon.material,finishes[0]);
+ const other=layer.create({...p,id:'teammate'});
+ const otherKit=other.getObjectByName('fitted-field-equipment') as T.SkinnedMesh;
+ assert.equal(otherKit.geometry,kit.geometry);assert.equal(otherKit.material,kit.material);
  const original=rig.weapon.geometry;
  layer.update({...p,weapon:'sidearm',grounded:false},1/30,1);
  assert.notEqual(rig.weapon.geometry,original);

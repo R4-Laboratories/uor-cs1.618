@@ -1,8 +1,9 @@
 import * as T from 'three';
-import {carriedModel, tailoredKit, uniformColor} from './operator-kit';
+import {carriedLength,carriedModel, tailoredKit, uniformColor} from './operator-kit';
 import {surfaceTexture} from './operator-geometry';
+import {operatorTextile} from './operator-textile';
 import {studioSurface} from './studio-render';
-import {RULES} from '../shared/config';
+import {RULES,WEAPONS} from '../shared/config';
 import type {VerdantEngine,CharacterAsset} from '../shared/engine';
 import type {PublicPlayer} from '../shared/protocol';
 interface Rig {slot:number;group:T.Group;mesh:T.SkinnedMesh;bones:T.Bone[];weapon:T.Mesh;shadow:T.Mesh;elapsed:number;}
@@ -15,7 +16,8 @@ export class CharacterLayer{
  private materials:T.MeshStandardMaterial[];
  private kitGeometry:T.BufferGeometry[];
  private carriedGeometry=new Map<string,T.BufferGeometry>();
- private equipmentMaterial:T.MeshStandardMaterial;
+ private kitMaterials:T.MeshStandardMaterial[];
+ private carriedMaterial:T.MeshStandardMaterial;
  private readonly groundGeometry=new T.PlaneGeometry(.85,1.02);
  private readonly groundMaterial:T.MeshBasicMaterial;
  private readonly target=new T.Vector3();
@@ -36,10 +38,19 @@ export class CharacterLayer{
    geometry.setAttribute('skinIndex',new T.Uint16BufferAttribute(a.joints.flat(),4));geometry.setAttribute('skinWeight',new T.Float32BufferAttribute(a.weights.flat().map(v=>v/1000),4));
    geometry.morphAttributes.position=a.morphs.map(m=>new T.Float32BufferAttribute(m.flat(),3));geometry.morphTargetsRelative=true;geometry.computeBoundingSphere();return geometry;
   });
-  const weave=surfaceTexture('cloth');
-  this.materials=[0,1].map(i=>new T.MeshStandardMaterial({...studioSurface(i?'navyFabric':'oliveFabric'),color:0xffffff,vertexColors:true,map:weave}));
+  const twill=operatorTextile(), finish=surfaceTexture('finish',28);
+  this.materials=[0,1].map(i=>new T.MeshStandardMaterial({...studioSurface(i?'navyFabric':'oliveFabric'),...twill,color:0xffffff,vertexColors:true}));
+  const webbing=new T.MeshStandardMaterial({...studioSurface('webbing'),...twill,color:0xffffff,vertexColors:true});
+  webbing.name='Woven carrier';
+  const hardware=new T.MeshStandardMaterial({...studioSurface('tealPaint'),color:0xffffff,vertexColors:true,map:finish});
+  hardware.name='Coated helmet and hardware';
+  const visor=new T.MeshPhysicalMaterial({...studioSurface('glass'),color:0xffffff,vertexColors:true,
+   clearcoat:1,clearcoatRoughness:.075,ior:1.5,envMapIntensity:1.4});
+  visor.name='Curved visor';
   this.kitGeometry=this.assets.map(tailoredKit);
-  this.equipmentMaterial=new T.MeshStandardMaterial({...studioSurface('webbing'),color:0xffffff,vertexColors:true,map:weave});
+  this.kitMaterials=[webbing,hardware,visor];
+  this.carriedMaterial=new T.MeshStandardMaterial({...studioSurface('gunmetal'),color:0xffffff,vertexColors:true,map:finish});
+  this.carriedMaterial.name='Equipment alloy';
   const size=32,data=new Uint8Array(size*size*4);
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){
    const i=(y*size+x)*4,r=Math.hypot((x+.5)*2/size-1,(y+.5)*2/size-1);
@@ -60,17 +71,22 @@ export class CharacterLayer{
   const minY=Math.min(...asset.positions.map(v=>v[1])),maxY=Math.max(...asset.positions.map(v=>v[1])),scale=RULES.standingHeight/(maxY-minY);mesh.scale.setScalar(scale);mesh.position.y=-minY*scale;mesh.castShadow=true;mesh.receiveShadow=true;
   // A small bounded roster avoids a stale bind-pose frustum bound clipping animated limbs.
   mesh.frustumCulled=false;mesh.name='verdant-22-joint-operator';group.name='verdant-operator';group.add(mesh);
-  const gear=new T.SkinnedMesh(this.kitGeometry[team],this.equipmentMaterial);
+  const gear=new T.SkinnedMesh(this.kitGeometry[team],this.kitMaterials);
   gear.name='fitted-field-equipment';gear.castShadow=true;gear.receiveShadow=true;gear.frustumCulled=false;
   gear.bind(mesh.skeleton,mesh.bindMatrix);mesh.add(gear);
-  const weapon=new T.Mesh(this.weaponGeometry(p.weapon),this.equipmentMaterial);
+  const weapon=new T.Mesh(this.weaponGeometry(p.weapon),this.carriedMaterial);
   weapon.name=p.weapon;weapon.castShadow=true;weapon.position.set(-.095,-.035,.24);bones[3].add(weapon);
   const shadow=new T.Mesh(this.groundGeometry,this.groundMaterial);
   shadow.name='boot-contact';shadow.rotation.x=-Math.PI/2;shadow.position.y=.017;group.add(shadow);
   this.rigs.set(p.id,{slot,group,mesh,bones,weapon,shadow,elapsed:0});return group;
  }
+ muzzleOf(id:string,weapon:string|undefined){
+  const rig=this.rigs.get(id);
+  if(!rig||!rig.group.visible||rig.weapon.name!==weapon)return null;
+  return rig.weapon.localToWorld(new T.Vector3(0,.026,carriedLength(rig.weapon.name)));
+ }
  private weaponGeometry(id:string){
-  const key=['sidearm','smg','m4','scout','kestrel'].includes(id)?id:'sidearm';
+  const key=Object.hasOwn(WEAPONS,id)?id:'sidearm';
   let geometry=this.carriedGeometry.get(key);
   if(!geometry){geometry=carriedModel(key);this.carriedGeometry.set(key,geometry);}
   return geometry;
@@ -105,15 +121,15 @@ export class CharacterLayer{
   for(let i=0;i<22;i++){rig.bones[i].position.fromArray(pose,i*7);rig.bones[i].quaternion.fromArray(pose,i*7+3);}
   rig.weapon.rotation.x=-pitch;
   this.grip(rig,7,-1,.0);
-  this.grip(rig,11,1,p.weapon==='sidearm'?.065:.18);
+  this.grip(rig,11,1,(p.weapon==='sidearm'||p.weapon==='rivet')?.065:.18);
   if(rig.mesh.morphTargetInfluences)for(let i=0;i<3;i++)rig.mesh.morphTargetInfluences[i]=pose[154+i];
  }
  remove(id:string){const rig=this.rigs.get(id);if(!rig)return;this.engine.releaseCharacter(rig.slot);rig.mesh.skeleton.dispose();rig.group.removeFromParent();this.rigs.delete(id);}
  clear(){for(const id of [...this.rigs.keys()])this.remove(id);}
  dispose(){
   this.clear();this.geometry.forEach(g=>g.dispose());this.kitGeometry.forEach(g=>g.dispose());
-  this.carriedGeometry.forEach(g=>g.dispose());this.materials[0].map?.dispose();
-  this.materials.forEach(material=>material.dispose());this.equipmentMaterial.dispose();
+  this.carriedGeometry.forEach(g=>g.dispose());this.materials[0].map?.dispose();this.materials[0].normalMap?.dispose();this.carriedMaterial.map?.dispose();
+  this.materials.forEach(material=>material.dispose());this.kitMaterials.forEach(material=>material.dispose());this.carriedMaterial.dispose();
   this.groundGeometry.dispose();this.groundMaterial.map?.dispose();this.groundMaterial.dispose();
  }
  get diagnostics(){return {source:'Verdant Engine',joints:22,poseUpdates:this.poseUpdates,actors:this.rigs.size,trianglesPerActor:this.geometry[0].index!.count/3,equipmentTriangles:this.kitGeometry[0].getAttribute('position').count/3};}

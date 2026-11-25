@@ -1,3 +1,4 @@
+import {GAME_PROTOCOL} from '../shared/protocol';
 import http from 'node:http';
 import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
@@ -22,7 +23,7 @@ export async function createGameServer({dev=false,port=3000,host='0.0.0.0'}={}){
   let pathname;try{pathname=decodeURIComponent(url.pathname);}catch{res.writeHead(400);res.end();return;}
   const file=path.resolve(ROOT,'dist','.'+pathname+(pathname.endsWith('/')?'index.html':''));
   if(!file.startsWith(path.join(ROOT,'dist')+path.sep)){res.writeHead(403);res.end();return;}
-  try{if(!(await stat(file)).isFile())throw Error();const data=await readFile(file);const mime:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2'};res.setHeader('Content-Type',mime[path.extname(file)]??'application/octet-stream');res.setHeader('X-Content-Type-Options','nosniff');res.end(data);}catch{res.writeHead(404);res.end('Not found. Run npm run build first.');}
+  try{if(!(await stat(file)).isFile())throw Error();const data=await readFile(file);const mime:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.mp3':'audio/mpeg','.woff2':'font/woff2'};res.setHeader('Content-Type',mime[path.extname(file)]??'application/octet-stream');res.setHeader('X-Content-Type-Options','nosniff');res.end(data);}catch{res.writeHead(404);res.end('Not found. Run npm run build first.');}
  });
  const wss=new WebSocketServer({noServer:true,maxPayload:4096,perMessageDeflate:false});
  server.on('upgrade',(req,socket,head)=>{if(req.url!=='/socket'){socket.destroy();return;}const allowed=process.env.ALLOWED_ORIGINS?.split(',');if(allowed&&req.headers.origin&&!allowed.includes(req.headers.origin)){socket.destroy();return;}wss.handleUpgrade(req,socket,head,ws=>wss.emit('connection',ws,req));});
@@ -39,6 +40,7 @@ export async function createGameServer({dev=false,port=3000,host='0.0.0.0'}={}){
    if(!m||typeof m!=='object')return;
    if(m.type==='ping'){if(Number.isFinite(m.at))ws.send(JSON.stringify({type:'pong',at:m.at}));return;}
    if(m.type==='join'&&!c.joined){
+    if(m.protocol!==GAME_PROTOCOL){ws.close(1002,'Incompatible game version');return;}
     if(typeof m.room!=='string'||!/^[A-Za-z0-9-]{1,20}$/.test(m.room)||typeof m.name!=='string'||!['auto','attack','defend'].includes(m.team)||typeof m.bots!=='boolean'){ws.send(JSON.stringify({type:'error',code:'join',message:'Use a room code of 1–20 letters, digits or hyphens.'}));return;}
     // Reserve the handshake before awaiting Wasm to prevent duplicate joins.
     c.joined=true;const room=m.room.toUpperCase();
@@ -52,7 +54,7 @@ export async function createGameServer({dev=false,port=3000,host='0.0.0.0'}={}){
     if(match.players.size>=RULES.maxPlayers)match.evictBot(m.team);
     const p=match.join(c.id,m.name,m.team);if(!p){c.joined=false;ws.send(JSON.stringify({type:'error',code:'room-full',message:'This room is full.'}));return;}
     c.room=match;clearTimeout(timeout);if(m.bots)match.enableBots();
-    ws.send(JSON.stringify({type:'welcome',id:c.id,room,team:p.team,tickRate:RULES.tickRate}));ws.send(JSON.stringify(match.snapshot(c.id)));return;
+    ws.send(JSON.stringify({type:'welcome',protocol:GAME_PROTOCOL,id:c.id,room,team:p.team,tickRate:RULES.tickRate}));ws.send(JSON.stringify(match.snapshot(c.id)));return;
    }
    if(!c.room)return;
    if(m.type==='input'){if(!c.room.input(c.id,m.input))ws.send(JSON.stringify({type:'error',code:'input',message:'Input rejected.'}));}

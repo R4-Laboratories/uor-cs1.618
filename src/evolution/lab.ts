@@ -4,7 +4,7 @@ import {renderPolicy} from '../generated/render-policy';
 const canvas=document.querySelector('canvas')!;
 const world=new WorldView(canvas,{evolution:false,preserveDrawingBuffer:true});
 world.renderer.setPixelRatio(1);world.renderer.setSize(640,400,false);world.camera.aspect=640/400;world.camera.updateProjectionMatrix();
-const cameras=[{at:[0,1.62,24],to:[0,2,0]},{at:[-19,1.62,13],to:[-15,2,-15]},{at:[19,1.62,-15],to:[15,2,15]},{at:[0,7,-23],to:[0,1,6]}];
+const cameras=[{at:[0,1.62,24],to:[0,2,0]},{at:[-19,1.62,13],to:[-15,2,-15]},{at:[19,1.62,-15],to:[15,2,15]},{at:[0,7,-23],to:[0,1,6]},{at:[-35.7,1.62,20],to:[-36,2.3,-6]},{at:[36.7,1.62,-9.8],to:[32.8,2.85,4]}];
 let undo:()=>void=()=>{};
 function measure(policy:BatchPolicy,views=cameras){
  undo();undo=applyStaticBatching(world.scene,policy);world.renderer.shadowMap.needsUpdate=true;

@@ -1,0 +1,170 @@
+{
+  "rounds": [
+    {
+      "offset": 0,
+      "round": 1,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "DEFENDER SPAWN",
+        "EAST ARCADE",
+        "EAST LANDING",
+        "MID COURT",
+        "PUMP HALL",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Opposition eliminated",
+      "samples": 302,
+      "closeSamples": 16,
+      "sightedSamples": 33,
+      "advancingSighted": 27
+    },
+    {
+      "offset": 0,
+      "round": 2,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "DEFENDER SPAWN",
+        "EAST ARCADE",
+        "MID COURT",
+        "SITE A",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 361,
+      "closeSamples": 6,
+      "sightedSamples": 39,
+      "advancingSighted": 26
+    },
+    {
+      "offset": 0,
+      "round": 3,
+      "firstContact": [
+        "DEFENDER SPAWN",
+        "EAST ARCADE",
+        "MID COURT",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 410,
+      "closeSamples": 102,
+      "sightedSamples": 80,
+      "advancingSighted": 50
+    },
+    {
+      "offset": 17,
+      "round": 1,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "EAST ARCADE",
+        "EAST LANDING",
+        "MID COURT",
+        "PUMP HALL",
+        "SITE A",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 342,
+      "closeSamples": 10,
+      "sightedSamples": 40,
+      "advancingSighted": 30
+    },
+    {
+      "offset": 17,
+      "round": 2,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "MID COURT",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": false,
+      "outcome": "Opposition eliminated",
+      "samples": 214,
+      "closeSamples": 8,
+      "sightedSamples": 30,
+      "advancingSighted": 20
+    },
+    {
+      "offset": 17,
+      "round": 3,
+      "firstContact": [
+        "DEFENDER SPAWN",
+        "EAST ARCADE",
+        "MID COURT",
+        "SITE B"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 347,
+      "closeSamples": 118,
+      "sightedSamples": 20,
+      "advancingSighted": 16
+    },
+    {
+      "offset": 53,
+      "round": 1,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "EAST ARCADE",
+        "EAST LANDING",
+        "MID COURT",
+        "PUMP HALL",
+        "SITE A",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 346,
+      "closeSamples": 10,
+      "sightedSamples": 38,
+      "advancingSighted": 31
+    },
+    {
+      "offset": 53,
+      "round": 2,
+      "firstContact": [
+        "ATTACKER SPAWN",
+        "EAST ARCADE",
+        "MID COURT",
+        "SITE A",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 461,
+      "closeSamples": 12,
+      "sightedSamples": 24,
+      "advancingSighted": 18
+    },
+    {
+      "offset": 53,
+      "round": 3,
+      "firstContact": [
+        "DEFENDER SPAWN",
+        "EAST ARCADE",
+        "MID COURT",
+        "SITE B",
+        "WEST WALK"
+      ],
+      "planted": true,
+      "outcome": "Device defused",
+      "samples": 330,
+      "closeSamples": 106,
+      "sightedSamples": 40,
+      "advancingSighted": 29
+    }
+  ],
+  "nearTeammateFraction": 0.12463861227112111,
+  "movingWithContactFraction": 0.7180232558139535,
+  "plantRounds": 8
+}
