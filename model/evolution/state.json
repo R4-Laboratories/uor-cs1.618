@@ -1,7 +1,7 @@
 {
   "schema": "cs1618/evolution-state/1",
   "generation": 10,
-  "seed": 223696213,
+  "seed": 357913941,
   "config": {
     "render": {
       "cell": 16,
@@ -283,253 +283,17 @@
   },
   "weights": {
     "render": 1,
-    "navigation": 5,
+    "navigation": 4,
     "art": 1,
-    "tactics": 3,
+    "tactics": 2,
     "experience": 1
   },
-  "context": "f3f7d4971304be7895b38d2e7ebf7340c5f1b5cc9eb31b6e1ab868ba15365686",
+  "context": "491705cc2757e940bd45fe2c2c6c1dde8348816e7c2b4919741ce6bebdce89a5",
   "tried": [
     "navigation-6",
-    "tactics-synth-1",
-    "tactics-synth-3",
-    "art-synth-0",
-    "art-synth-1",
-    "art-synth-2",
-    "art-synth-3",
-    "experience-0-3",
-    "experience-0-5",
-    "experience-0-6",
-    "experience-1-1",
-    "experience-1-2",
-    "experience-1-3",
-    "experience-1-4",
-    "experience-1-5",
-    "experience-1-6",
-    "experience-2-5",
-    "experience-2-6",
-    "experience-3-3",
-    "experience-3-4",
-    "experience-3-5",
-    "experience-3-6",
-    "experience-4-6",
-    "experience-5-5",
-    "experience-5-6",
-    "experience-6-6",
-    "render-16-4",
-    "render-32-2",
-    "render-32-4",
-    "render-64-2",
-    "render-64-4",
-    "render-8-2",
-    "render-8-4"
+    "tactics-synth-1"
   ],
   "history": [
-    {
-      "generation": 8,
-      "author": null,
-      "at": "2026-11-16T10:53:55.363Z",
-      "base": "0741c89f767e4c44566eb9b9e5974be25d80e1b9",
-      "context": "4476d4dda942d26cfa3be0f191a695b4f19c713ac27d058b9058a7f12801391c",
-      "previous": "695bc4050b5761e342e5ee822bad1734fa5b4ea57a1d0261331a8f57ae2be2ba",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "render-64-2",
-          "family": "render",
-          "author": "optimizer",
-          "metric": "work count",
-          "configHash": "c1b7731fceaec73b41e957ecc7853a10a5822b2d4580ff8baf895384c1737ef5",
-          "baselineWork": 60636,
-          "candidateWork": 42604,
-          "fidelity": true,
-          "bounds": false,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 2.0424836601307188e-7,
-              "changed": 0
-            },
-            {
-              "mean": 0.0000013327205882352942,
-              "changed": 0.0000078125
-            },
-            {
-              "mean": 1.940359477124183e-7,
-              "changed": 0
-            },
-            {
-              "mean": 4.6466503267973856e-7,
-              "changed": 0
-            }
-          ],
-          "reference": [
-            {
-              "calls": 279,
-              "triangles": 3418,
-              "frameMs": 4.699999999953434
-            },
-            {
-              "calls": 197,
-              "triangles": 2554,
-              "frameMs": 2.599999999976717
-            },
-            {
-              "calls": 244,
-              "triangles": 2926,
-              "frameMs": 2.199999999953434
-            },
-            {
-              "calls": 290,
-              "triangles": 3650,
-              "frameMs": 3.300000000046566
-            }
-          ],
-          "before": [
-            {
-              "calls": 137,
-              "triangles": 3862,
-              "frameMs": 6.300000000046566
-            },
-            {
-              "calls": 100,
-              "triangles": 2950,
-              "frameMs": 2.299999999930151
-            },
-            {
-              "calls": 103,
-              "triangles": 3058,
-              "frameMs": 2.200000000069849
-            },
-            {
-              "calls": 129,
-              "triangles": 3866,
-              "frameMs": 1.400000000023283
-            }
-          ],
-          "after": [
-            {
-              "calls": 78,
-              "triangles": 4126,
-              "frameMs": 1.8000000000465661
-            },
-            {
-              "calls": 57,
-              "triangles": 3982,
-              "frameMs": 0.6999999999534339
-            },
-            {
-              "calls": 59,
-              "triangles": 3742,
-              "frameMs": 0.8000000000465661
-            },
-            {
-              "calls": 72,
-              "triangles": 4154,
-              "frameMs": 1.8999999999068677
-            }
-          ]
-        },
-        {
-          "candidate": "render-64-4",
-          "family": "render",
-          "author": "optimizer",
-          "metric": "work count",
-          "configHash": "41c51b8ef9e03229960a43f13e500369d101c5c85c6998f7864cc3fe9ecf44a2",
-          "baselineWork": 60636,
-          "candidateWork": 43444,
-          "fidelity": true,
-          "bounds": false,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 2.0424836601307188e-7,
-              "changed": 0
-            },
-            {
-              "mean": 0.0000013327205882352942,
-              "changed": 0.0000078125
-            },
-            {
-              "mean": 1.787173202614379e-7,
-              "changed": 0
-            },
-            {
-              "mean": 4.6466503267973856e-7,
-              "changed": 0
-            }
-          ],
-          "reference": [
-            {
-              "calls": 279,
-              "triangles": 3418,
-              "frameMs": 8.400000000023283
-            },
-            {
-              "calls": 197,
-              "triangles": 2554,
-              "frameMs": 2.099999999976717
-            },
-            {
-              "calls": 244,
-              "triangles": 2926,
-              "frameMs": 5.299999999930151
-            },
-            {
-              "calls": 290,
-              "triangles": 3650,
-              "frameMs": 2.800000000046566
-            }
-          ],
-          "before": [
-            {
-              "calls": 137,
-              "triangles": 3862,
-              "frameMs": 9.300000000046566
-            },
-            {
-              "calls": 100,
-              "triangles": 2950,
-              "frameMs": 1.5
-            },
-            {
-              "calls": 103,
-              "triangles": 3058,
-              "frameMs": 2.400000000023283
-            },
-            {
-              "calls": 129,
-              "triangles": 3866,
-              "frameMs": 2.1000000000931323
-            }
-          ],
-          "after": [
-            {
-              "calls": 82,
-              "triangles": 4126,
-              "frameMs": 1.599999999976717
-            },
-            {
-              "calls": 59,
-              "triangles": 3970,
-              "frameMs": 0.9000000000232831
-            },
-            {
-              "calls": 61,
-              "triangles": 3730,
-              "frameMs": 0.8999999999068677
-            },
-            {
-              "calls": 73,
-              "triangles": 4118,
-              "frameMs": 1.400000000023283
-            }
-          ]
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "70192189bf9c11180c1ee2108c49c4e77321c9c26c503c0abeb90d710fc7f574"
-    },
     {
       "generation": 8,
       "author": null,
@@ -9718,6 +9482,108 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "a766131ccd140c5d021e956cfec51e46900f0ff08faf9f8bf6f0f7595526200e"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-25T17:29:34.664Z",
+      "base": "7e25eae5dd0bb0dd1034c259f315c69f6de52e14",
+      "context": "491705cc2757e940bd45fe2c2c6c1dde8348816e7c2b4919741ce6bebdce89a5",
+      "previous": "a766131ccd140c5d021e956cfec51e46900f0ff08faf9f8bf6f0f7595526200e",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "navigation-6",
+          "family": "navigation",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "11d4530247711838187ce07dd20bf8a5c54ab292630598989b8e0c7b81940db0",
+          "baselineWork": 2651,
+          "candidateWork": 9349,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 480,
+          "comparisons": null,
+          "reference": {
+            "pairs": 101926,
+            "elapsed": 29.592486999999892,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "before": {
+            "pairs": 2651,
+            "elapsed": 14.997773999999936,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          },
+          "after": {
+            "pairs": 9349,
+            "elapsed": 18.841818999999987,
+            "nodes": 452,
+            "graph": "6adfc76d81de4a9698a493ba5c8382e3f30c19d19ebd360593ef92bbc025d446",
+            "routes": "a15d5e9d583ed18608f85b98f091aed6cef6e6f7d243e44a128d9f494dbc91f3",
+            "samples": 480
+          }
+        },
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "732746fb7b8ddfb93263e991e2d16472767bb709009263f49979961f2182cfa6",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 198,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 2,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "661382475c9e7eaa0b610b11601b14b1026e1db551577b1ba39689fe85a06231"
     }
   ]
 }
