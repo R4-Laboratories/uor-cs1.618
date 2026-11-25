@@ -20,6 +20,8 @@ The browser uses Verdant Engine 2.22.4 and Three.js WebGL2. The game stages six 
 
 The [live material inspector](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html) compares any two of the 20 authored surfaces under the same light. Editing the [MaterialX library](../model/studio-materials/meridian.mtlx) and regenerating its register updates the game and inspector together. [Studio admission and replay](STUDIO-MATERIALS.md) · [Rust adapter and proof scope](VERDANT-3D.md)
 
+The development source watcher compares all four graphics repositories to the shipped revisions. The evolution evaluator waits for the scanned assets and keys its stored decisions to the compiled material library and image bytes. A material or scan change therefore opens a fresh evaluation against the new scene.
+
 ## Compare the rendering
 
 These are in-engine captures at fixed camera positions on the same map. The earlier build is `62a6d4a`. Chromium used its software WebGL renderer for reproducibility. The comparisons show art and rendering changes. Physical-GPU frame time was not measured.

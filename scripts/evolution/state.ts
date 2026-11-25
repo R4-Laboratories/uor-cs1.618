@@ -7,7 +7,10 @@ export function contextDigest(){
  const paths:string[]=[];
  function walk(dir:string){for(const e of readdirSync(dir,{withFileTypes:true})){const p=dir+'/'+e.name;if(e.isDirectory())walk(p);else if(/\.(ts|mjs|json|css|html|yml)$/.test(p)&&!ownedPaths.includes(p))paths.push(p);}}
  for(const dir of ['src','shared','server','scripts','tests','vendor'])walk(dir);
- paths.push('model/verdant-3d.json','model/hologram-policy.json','model/hologram-vendor.json','model/prism-frame.json','public/app.holo','model/evolution/policy.json','model/evolution/brief.json','model/development/r4-decisions.json','model/development/backlog.json','model/development/sources.json','package-lock.json','package.json','index.html','evolution-lab.html','evolution-studio.html','vite.config.ts','tsconfig.json','public/wasm/cs_verdant.wasm','public/wasm/cs_evolution.wasm');
+ // The visual evaluator loads these source images and compiled MaterialX inputs.
+ // A change to their bytes must invalidate prior visual candidate measurements.
+ for(const file of readdirSync('public/art/meridian').filter(file=>file.endsWith('.webp')))paths.push('public/art/meridian/'+file);
+ paths.push('model/studio-render-surfaces.json','model/upstream-lock.json','model/verdant-3d.json','model/hologram-policy.json','model/hologram-vendor.json','model/prism-frame.json','public/app.holo','model/evolution/policy.json','model/evolution/brief.json','model/development/r4-decisions.json','model/development/backlog.json','model/development/sources.json','package-lock.json','package.json','index.html','evolution-lab.html','evolution-studio.html','vite.config.ts','tsconfig.json','public/wasm/cs_verdant.wasm','public/wasm/cs_evolution.wasm');
  return digest(paths.sort().map(path=>[path,createHash('sha256').update(readFileSync(path)).digest('hex')]));
 }
 export function stateFiles(state:EvolutionState){

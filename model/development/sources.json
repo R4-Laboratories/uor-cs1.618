@@ -61,7 +61,7 @@
     },
     {
       "repository": "afflom/verdant-engine",
-      "commit": "b2b29ca65f792ad2ceaf5ea3d7313ca5580b17c4",
+      "commit": "9d22f5ac364db8352d12434e1c9c3dbed65ac6c9",
       "paths": [
         "crates/verdant-core/src/character.rs",
         "crates/verdant-core/src/collision.rs",
@@ -70,6 +70,36 @@
       ],
       "purpose": "Pinned game engine and 3D character/physics/rendering changes",
       "integration": "Cargo dependency; character mesh, animation and IK execute in cs_verdant.wasm"
+    },
+    {
+      "repository": "afflom/vRAM",
+      "commit": "f3a121d091a827fc9e0d6b6cae25d840847ce90d",
+      "paths": [
+        "device/proof/runtime/bundle/packages/rust-core/vram_representation",
+        "device/proof/runtime/project/src/Main.lex.tex"
+      ],
+      "purpose": "Page representation selection for browser texture backing",
+      "integration": "Compiled Rust guest called by the browser adapter"
+    },
+    {
+      "repository": "afflom/vTensor",
+      "commit": "280a1a43a856928c729d0abe1a3373b3ac3b4c75",
+      "paths": [
+        "generated/layout/packages/rust-core/vtensor_layout",
+        "app/src/TensorLayout.lex.tex"
+      ],
+      "purpose": "Validate texture dimensions and stride spans",
+      "integration": "Compiled Rust guest called before staging RGBA8 textures"
+    },
+    {
+      "repository": "afflom/verdant-studio",
+      "commit": "7423aa68ae6c10870f5d9165e00dde5a6223e024",
+      "paths": [
+        "certified/packages/rust-std/verdant_studio",
+        "model/bindings"
+      ],
+      "purpose": "Admit and check the OpenPBR material authority",
+      "integration": "Replayable Studio authoring CLI and material register"
     }
   ]
 }
