@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["crates/cs-verdant"]
+exclude = ["vendor/vRAM/vram_representation", "vendor/vTensor/vtensor_layout"]
 [profile.release]
 opt-level = "s"
 lto = true

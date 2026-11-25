@@ -22,3 +22,10 @@ level = "build"
 suite = "cs-verdant"
 record = "Interface::featureCsVerdantScene3d"
 statement = "cs_verdant::scene3d: Bounded HD geometry and camera/governor bridges to the pinned Verdant Prism kernels."
+
+[[id]]
+id = "FT-04"
+level = "build"
+suite = "cs-verdant"
+record = "Interface::featureCsVerdantTextureStore"
+statement = "cs_verdant::texture_store: Admission of browser material storage through upstream Prism-generated kernels."

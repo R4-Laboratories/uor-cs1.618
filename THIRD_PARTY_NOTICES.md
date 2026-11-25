@@ -1,6 +1,6 @@
 # Third-party notices
 
-Original game code, map, models, textures and synthesized sounds are MIT licensed. No Counter-Strike maps, models, audio, logos or other Valve assets are included.
+Original game code, map geometry, models, procedural textures and synthesized sounds are MIT licensed. No Counter-Strike maps, models, audio, logos or other Valve assets are included.
 
 - **Verdant Engine** — afflom/verdant-engine, MIT OR Apache-2.0. Used under MIT. The Rust dependency is pinned by commit in Cargo.toml and Cargo.lock; its BVH, geometry mathematics and binaural acoustics are compiled into `cs_verdant.wasm`. License copied to `docs/licenses/verdant-engine-MIT.txt`.
 - **uor-matmul** — UOR-Foundation/uor-matmul, transitive engine dependency; locked in Cargo.lock. Only linked code retained by the Wasm linker ships.
@@ -21,3 +21,11 @@ are retained in `model/development/r4-decisions.json` and compiled into
 `shared/r4-synthesis.generated.ts` by the restricted local compiler.
 Copyright (c) 2026 The UOR Foundation. Upstream offers MIT OR Apache-2.0;
 complete license texts are retained in `vendor/lexlean-r4/`.
+
+## Browser texture storage
+
+`vendor/vRAM/vram_representation` and `vendor/vTensor/vtensor_layout` contain the original Prism-generated Rust packages from afflom/vRAM and afflom/vTensor. The game compiles them into its Verdant Wasm bridge under the MIT option. The package metadata and compiler provenance accompany the source. The corresponding upstream MIT notices are in `vendor/vRAM/LICENSE-MIT` and `vendor/vTensor/LICENSE-MIT`. Revisions are pinned in `model/upstream-lock.json`.
+
+## Meridian materials and lighting
+
+Five surface scans and the panorama are locally packaged derivatives of Poly Haven CC0 assets. Each original and its processing steps appear in the [art source register](public/art/meridian/SOURCES.md). The material authority register includes the OpenPBR 1.1.2 surface declaration and a Verdant Studio binding. The upstream licenses accompany the [source files](model/studio-materials/authority/).

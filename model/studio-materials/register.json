@@ -1,0 +1,21 @@
+{
+  "upstream": {
+    "repo": "afflom/verdant-studio",
+    "revision": "7423aa68ae6c10870f5d9165e00dde5a6223e024",
+    "sourcePackage": "certified/packages/rust-std/verdant_studio",
+    "provenanceSha256": "0dd9800c5eb397865da53f81dde89b7c4b230b1c9695bd26aec873918112b164"
+  },
+  "binding": {
+    "id": "ASWF-OPENPBR-1.1.2",
+    "sha256": "998a4828d8830a67435ee294b94359a288996d9519bf4da6317bcf03a800cf87"
+  },
+  "admissions": [
+    {
+      "construct": "MeridianSurfaceResponse",
+      "std": {
+        "authority": "ASWF-OPENPBR-1.1.2",
+        "row": "D07"
+      }
+    }
+  ]
+}

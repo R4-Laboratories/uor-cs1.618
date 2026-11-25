@@ -1,6 +1,14 @@
 # Verdant 3D integration
 
-Pinned upstream: [`9b6c14d4b756b09faecf61b9f61cf894155f52c9`](https://github.com/afflom/verdant-engine/commit/9b6c14d4b756b09faecf61b9f61cf894155f52c9), inspected 2026-11-16. This imports all three commits since `b2b29ca`, including the latest generated Prism tensor kernels, HD LOD4 changes, runtime governor, universe and narrative modules. Upstream source is unchanged. The game-specific bridge selects the following runtime capabilities.
+## November 25 engine and material storage upgrade
+
+The Rust bridge now compiles Verdant Engine 2.22.4 at `9d22f5ac364db8352d12434e1c9c3dbed65ac6c9`. Texture staging first passes the channel, width, height and byte strides of each RGBA8 map to the compiled vTensor layout kernel. A map is admitted only when its byte length matches the returned span. For each page, the browser measures the payload lengths of a fill, sparse byte exceptions, a packed 16-value palette and literal bytes. The compiled vRAM kernel selects the representation. GPU uploads and context restoration read ordinary RGBA8 bytes from that backing. `textureStaging.storedBytes` measures encoded payload bytes and excludes JS object overhead and GPU memory. `tests/texture-pages.test.ts` exercises all four representations, mutation isolation, short final pages and invalid spans against the shipped Wasm. Upstream LexLean model inputs, compiler provenance and licenses accompany both Rust packages in `vendor`. [Studio renderer changes](STUDIO-UPGRADE.md)
+
+The vRAM package is under `device/proof/runtime/bundle/packages/rust-core/vram_representation` upstream and its model under `device/proof/runtime/project/src/Main.lex.tex`. vTensor publishes the layout package under `generated/layout/packages/rust-core/vtensor_layout` and its source under `app/src/TensorLayout.lex.tex`. The UORust projection covers the game adapter and retains its open translation claims in [frontier.toml](../prism/rust-projection/frontier.toml).
+
+## November 16 integration record
+
+Then-pinned upstream: [`9b6c14d4b756b09faecf61b9f61cf894155f52c9`](https://github.com/afflom/verdant-engine/commit/9b6c14d4b756b09faecf61b9f61cf894155f52c9), inspected 2026-11-16. This imports all three commits since `b2b29ca`, including the latest generated Prism tensor kernels, HD LOD4 changes, runtime governor, universe and narrative modules. Upstream source is unchanged. The game-specific bridge selects the following runtime capabilities.
 
 ## Active in the game
 

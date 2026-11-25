@@ -23,21 +23,21 @@ definition{
   name: acCsVerdantCsVerdantWallBlocksShotsAndMovement,
   parameters: [],
   result: String,
-  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:10 passes."
+  body: "wall_blocks_shots_and_movement at crates/cs-verdant/src/lib.rs:11 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantDiagonalMotionSlidesAndRadiusCannotClipCorner,
   parameters: [],
   result: String,
-  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:19 passes."
+  body: "diagonal_motion_slides_and_radius_cannot_clip_corner at crates/cs-verdant/src/lib.rs:20 passes."
 }
 
 definition{
   name: acCsVerdantCsVerdantRayMissesOpenSpace,
   parameters: [],
   result: String,
-  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:29 passes."
+  body: "ray_misses_open_space at crates/cs-verdant/src/lib.rs:30 passes."
 }
 
 definition{
@@ -59,6 +59,20 @@ definition{
   parameters: [],
   result: String,
   body: "camera_keeps_near_plane_outside_wall_and_refuses_invalid_optics at crates/cs-verdant/src/scene3d.rs:200 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantTextureStoreTensorPlaneRejectsEmptyOversizeAndPreservesChannelStride,
+  parameters: [],
+  result: String,
+  body: "tensor_plane_rejects_empty_oversize_and_preserves_channel_stride at crates/cs-verdant/src/texture_store.rs:43 passes."
+}
+
+definition{
+  name: acCsVerdantCsVerdantTextureStoreShortPagesOnlyAdmitEncodingsSmallerThanTheLiteral,
+  parameters: [],
+  result: String,
+  body: "short_pages_only_admit_encodings_smaller_than_the_literal at crates/cs-verdant/src/texture_store.rs:51 passes."
 }
 
 definition{
@@ -265,6 +279,20 @@ definition{
 }
 
 definition{
+  name: callCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::texture_store::cs_texture_span: extern \"C\" fn cs_texture_span(width: u32, height: u32) -> u32"
+}
+
+definition{
+  name: callCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: String,
+  body: "cs_verdant::texture_store::cs_texture_page_plan: extern \"C\" fn cs_texture_page_plan(length: u32, uniform: u32, sparse: u32, packed: u32) -> i32"
+}
+
+definition{
   name: featureCsVerdant,
   parameters: [],
   result: Foundation.Arch::Feature,
@@ -286,10 +314,17 @@ definition{
 }
 
 definition{
+  name: featureCsVerdantTextureStore,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "cs_verdant::texture_store: Admission of browser material storage through upstream Prism-generated kernels.", calls := (cons "Interface::callCsVerdantTextureStoreCsTextureSpan" (cons "Interface::callCsVerdantTextureStoreCsTexturePagePlan" (nil String))), acceptance := (cons "Interface::acCsVerdantCsVerdantTextureStoreShortPagesOnlyAdmitEncodingsSmallerThanTheLiteral" (cons "Interface::acCsVerdantCsVerdantTextureStoreTensorPlaneRejectsEmptyOversizeAndPreservesChannelStride" (nil String)))})
+}
+
+definition{
   name: journeyLibraryCsVerdant,
   parameters: [],
   result: Foundation.Arch::Journey,
-  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (cons "Interface::featureCsVerdantCharacters" (cons "Interface::featureCsVerdantScene3d" (nil String))))})
+  body: (record Foundation.Arch::Journey {actor := "Architecture::stakeholderLibraryUsers", steps := (cons "Interface::featureCsVerdant" (cons "Interface::featureCsVerdantCharacters" (cons "Interface::featureCsVerdantScene3d" (cons "Interface::featureCsVerdantTextureStore" (nil String)))))})
 }
 \end{semanticmodule}
 \end{lexlean}

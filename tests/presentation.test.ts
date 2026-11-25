@@ -12,8 +12,16 @@ test('weapon replacement disposes owned resources once and keeps shared geometry
  for(let cycle=0;cycle<12;cycle++){
   world.setWeapon('scout');const materials=new Set<T.Material>(),geometries=new Set<T.BufferGeometry>(),shared=new Set<T.BufferGeometry>();
   world.gun.traverse(o=>{if(o instanceof T.Mesh&&o!==world.flash){for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);if(o.geometry.type!=='BoxGeometry')geometries.add(o.geometry);else shared.add(o.geometry);}});
+  const maps=new Set([...materials].map(m=>(m as T.MeshStandardMaterial).map).filter(map=>map!==null));
+  const studioMaps=new Set([...materials].map(m=>(m as T.MeshStandardMaterial).roughnessMap).filter(map=>map!==null));
+  let releasedMaps=0,releasedStudioMaps=0;
+  for(const map of maps)map.addEventListener('dispose',()=>releasedMaps++);
+  const onStudioDispose=()=>{releasedStudioMaps++;};
+  for(const map of studioMaps)map.addEventListener('dispose',onStudioDispose);
   let materialDisposals=0,geometryDisposals=0,flashDisposals=0,sharedDisposals=0;for(const g of shared)g.addEventListener('dispose',()=>sharedDisposals++);for(const m of materials)m.addEventListener('dispose',()=>materialDisposals++);for(const g of geometries)g.addEventListener('dispose',()=>geometryDisposals++);world.flash.geometry.addEventListener('dispose',()=>flashDisposals++);
   world.setWeapon('sidearm');assert.equal(materialDisposals,materials.size);assert.equal(geometryDisposals,geometries.size);assert.equal(flashDisposals,0);assert.equal(sharedDisposals,0);assert(world.gun.children.includes(world.flash));
+  assert(maps.size>0);assert.equal(releasedMaps,maps.size);assert.equal(releasedStudioMaps,0);
+  for(const map of studioMaps)map.removeEventListener('dispose',onStudioDispose);
  }
 });
 test('objective, reload and result cues have distinct bounded signatures',()=>{

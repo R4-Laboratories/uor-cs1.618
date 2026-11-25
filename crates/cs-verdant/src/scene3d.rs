@@ -150,7 +150,7 @@ pub extern "C" fn cs_camera(
         let Some(bvh) = world.triangles.as_ref() else {
             return 0;
         };
-        let Ok(frame) = rig.solve_frame(0., Vec3::new(x, y, z), bvh, |_, _| 0.) else {
+        let Ok(frame) = rig.solve_frame(0., Vec3::new(x, y, z), bvh, &|_, _| 0.) else {
             return 0;
         };
         if !frame.near_sphere_guarded || frame.clearance_meters + 1e-6 < frame.guard_radius_meters {

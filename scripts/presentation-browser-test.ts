@@ -4,7 +4,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const baseline=process.env.PRESENTATION_BASELINE==='1',out='artifacts/presentation';
 await mkdir(out,{recursive:true});
-const server=await createServer({server:{port:0,host:'127.0.0.1'},plugins:[{name:'presentation-fixture',configureServer(s){s.middlewares.use('/presentation-fixture',(_req,res)=>{res.setHeader('Content-Type','text/html');res.end('<html><body><canvas id="world"></canvas><div id="app"></div></body></html>');});}}]});
+const server=await createServer({server:{port:0,host:'127.0.0.1',hmr:false},plugins:[{name:'presentation-fixture',configureServer(s){s.middlewares.use('/presentation-fixture',(_req,res)=>{res.setHeader('Content-Type','text/html');res.end('<html><body><canvas id="world"></canvas><div id="app"></div></body></html>');});}}]});
 await server.listen();const url=server.resolvedUrls!.local[0];
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
 try{
@@ -12,18 +12,42 @@ try{
  await page.goto(url+'presentation-fixture');
  await page.evaluate(`(async()=>{
  await import('/src/style.css');const {WorldView}=await import('/src/world.ts'),{UI}=await import('/src/ui.ts'),{createEngine}=await import('/shared/engine.ts'),{WEAPONS}=await import('/shared/config.ts');
- const world=new WorldView(document.querySelector('canvas'),{preserveDrawingBuffer:true});world.setEngine(await createEngine(await (await fetch('/wasm/cs_verdant.wasm')).arrayBuffer()));world.setQuality('native');
+ const world=new WorldView(document.querySelector('canvas'),{preserveDrawingBuffer:true});const engine=await createEngine(await (await fetch('/wasm/cs_verdant.wasm')).arrayBuffer());world.setEngine(engine);world.setQuality('native');
  const ui=new UI();ui.show('loading',false);ui.show('hud',true);
  const self={id:'p',name:'Operator',team:'attack',alive:true,x:-21,y:0,z:16,vx:0,vy:0,vz:0,grounded:true,crouch:false,yaw:0,pitch:0,weapon:'sidearm',kills:0,deaths:0,bot:false,health:100,armor:100,money:4200,kit:false,inventory:[{id:'kestrel',ammo:30,reserve:90},{id:'sidearm',ammo:15,reserve:60}],slot:1,reloadLeft:0,progress:0,action:'',seq:1,recoil:0};
  const snapshot={type:'snapshot',time:20,tick:1200,room:'MERIDIAN',phase:'live',round:3,remaining:95,score:{attack:1,defend:1},players:[self],self,bomb:{state:'carried',carrier:'p',x:-21,y:0,z:16,site:null,remaining:40},events:[],winner:null,reason:''};
- window.fixture={world,ui,snapshot,draw(){const gun=snapshot.self.inventory[1];if(gun.id!==snapshot.self.weapon){const config=WEAPONS[snapshot.self.weapon];Object.assign(gun,{id:config.id,ammo:config.mag,reserve:config.reserve});}world.render(.1,snapshot,snapshot.self,snapshot.self.yaw,snapshot.self.pitch,false,null,true);ui.update(snapshot,snapshot.self,0,null);}};
+ window.fixture={world,ui,engine,snapshot,draw(){const gun=snapshot.self.inventory[1];if(gun.id!==snapshot.self.weapon){const config=WEAPONS[snapshot.self.weapon];Object.assign(gun,{id:config.id,ammo:config.mag,reserve:config.reserve});}world.render(.1,snapshot,snapshot.self,snapshot.self.yaw,snapshot.self.pitch,false,null,true);ui.update(snapshot,snapshot.self,0,null);ui.updateAim(snapshot,snapshot.self,snapshot.self.yaw,false,world.camera.fov);}};
  })()`);
  await page.waitForFunction(()=>(window as any).fixture.world.hd.diagnostics.status==='ready');
+ const meridian=await page.evaluate(async()=>{
+  const assets=(window as any).fixture.world.meridian;
+  await assets.ready;
+  return assets.status;
+ });
+ assert(meridian.loaded===meridian.total && meridian.total>=11 && meridian.failed.length===0,'all surface scans and the panorama load');
+ const staging=await page.evaluate(()=>(window as any).fixture.engine.textureStaging);
+ assert(staging.textures>=6 && staging.storedBytes>0 && staging.storedBytes<staging.logicalBytes,'runtime Studio materials have a compact CPU backing');
  const prefix=baseline?'before':'after';
  for(const weapon of ['sidearm','kestrel','m4','smg','scout']){
   await page.evaluate(weapon=>{const f=(window as any).fixture;f.snapshot.self.weapon=weapon;for(let i=0;i<5;i++)f.draw();},weapon);
   await page.screenshot({path:`${out}/${prefix}-${weapon}.png`});
  }
+ // Inspect both upstream animated rigs in an unobstructed lane at the same
+ // distance, camera angle and quality for every reference capture.
+ await page.evaluate(()=>{
+  const f=(window as any).fixture, s=f.snapshot;
+  Object.assign(s.self,{x:0,z:22,yaw:0,pitch:-.12,weapon:'kestrel'});
+  s.players=[s.self,{...s.self,id:'ember',team:'attack',x:-.85,z:18.1,yaw:Math.PI-.25,bot:true,weapon:'kestrel'},
+   {...s.self,id:'tidal',team:'defend',x:.85,z:18.1,yaw:Math.PI+.25,bot:true,weapon:'m4'}];
+  for(let i=0;i<5;i++)f.draw();
+ });
+ await page.screenshot({path:`${out}/${prefix}-operators.png`});
+ const operators=await page.evaluate(()=>{
+  const f=(window as any).fixture;
+  return {rigs:f.world.characters.diagnostics, visible:['ember','tidal'].every(id=>f.world.players.get(id)?.visible), cameraError:f.world.cameraError};
+ });
+ assert(operators.visible && operators.rigs.poseUpdates>0 && !operators.cameraError);
+ await page.evaluate(()=>{const s=(window as any).fixture.snapshot;s.players=[s.self];});
  await page.evaluate(()=>{const f=(window as any).fixture,s=f.snapshot;s.self.x=-17;s.self.z=-8;s.self.pitch=-.28;s.self.weapon='sidearm';s.bomb={state:'planted',carrier:null,x:-16,y:0,z:-12,site:'A',remaining:17};f.draw();});
  await page.screenshot({path:`${out}/${prefix}-site.png`});
  if(!baseline){
@@ -72,7 +96,7 @@ try{
   await page.goto(url);await page.waitForFunction(()=>(window as any).cs1618);await page.setViewportSize({width:390,height:844});
   const mobile=await page.evaluate(()=>{document.documentElement.style.setProperty('--dim','#000');document.documentElement.style.setProperty('--mint','#000');return {fits:document.documentElement.scrollWidth<=innerWidth,label:getComputedStyle(document.querySelector('label')!).color};});assert(mobile.fits);assert.equal(mobile.label,'rgb(156, 174, 172)');await page.screenshot({path:`${out}/after-mobile-lobby.png`});
 
-  await writeFile(`${out}/browser-results.json`,JSON.stringify({result,objective,cover,narrow,responsive,feedback,switchFeedback,mobile,errors,renderer:'Chromium SwiftShader; real scene render, fixed snapshot fixtures, no hidden override'},null,2));
+  await writeFile(`${out}/browser-results.json`,JSON.stringify({meridian,staging,operators,result,objective,cover,narrow,responsive,feedback,switchFeedback,mobile,errors,renderer:'Chromium SwiftShader; real scene render, fixed snapshot fixtures, no hidden override'},null,2));
  }
  assert.deepEqual(errors,[]);console.log(`Presentation ${prefix}: rendered screenshots captured; zero page errors.`);
 }finally{await browser.close();await server.close();}

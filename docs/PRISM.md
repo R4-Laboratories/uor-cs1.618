@@ -14,6 +14,9 @@ Exact source revisions are in [upstream-lock.json](../model/upstream-lock.json).
 | `UOR-Foundation/prismpm` | Builds the actual core Wasm and binary HOLO archive from that model; runs the application verification pipeline. |
 | `afflom/prism-devrel` | Its builder generates the model's facets, theorem declarations and application contract from `model/round.prompt.json`. |
 | `afflom/UORust` | Built from the pinned source; projects the Rust bridge into `prism/rust-projection` and checks that projection. Its open frontier is retained. |
+| `afflom/vTensor` | The generated `vtensor_layout` Rust crate computes the byte extent of each RGBA8 material plane in the engine Wasm. |
+| `afflom/vRAM` | The generated `vram_representation` Rust crate admits a measured encoding for each 4 KiB material page. The browser stores the resulting pages until a GPU upload needs pixels. |
+| `afflom/verdant-studio` | Studio material operations and standard profiles direct the renderer’s surface parameters. See [the Studio upgrade](STUDIO-UPGRADE.md). |
 
 ## The runtime boundary
 
@@ -35,7 +38,7 @@ npm run prism:generate
 npm run prism:verify
 ```
 
-The generator intentionally recreates the source project. `lexlean lock` inside the verifier normalizes its lock for the pinned SDK. The verifier uses the image digest in `prism/prismpm.lock`, not a moving tag. A full SDK build needs substantial disk and memory. The application model is located at `prism/app`; the UORust projection is a separate inspection model, not part of the round guest.
+New upstream checkouts are shallow. vRAM, vTensor and Verdant Studio use sparse checkouts of the source paths used here. The generator intentionally recreates the source project. `lexlean lock` inside the verifier normalizes its lock for the pinned SDK. The verifier uses the image digest in `prism/prismpm.lock`, not a moving tag. A full SDK build needs substantial disk and memory. The application model is located at `prism/app`; the UORust projection is a separate inspection model, not part of the round guest.
 
 After a deliberate successful regeneration, copy the verified build's `core-wasm/prism_cs_round_core_wasm.wasm` to `public/wasm/cs_round.wasm` and its `CS Round.holo` to `public/prism/CS-Round.holo`. Review the build ID, update the recorder if it changed, run the parity tests, then run `node scripts/record-artifacts.mjs`. Recording a digest alone does not establish correctness.
 
@@ -45,8 +48,8 @@ For the Rust projection:
 cd ../upstream/UORust
 cargo build --release --locked
 cd ../../cs1.618
-../upstream/UORust/target/release/uorust project . --out prism/rust-projection --last-modified 2026-11-16T00:00:00Z
-../upstream/UORust/target/release/uorust check . --out prism/rust-projection --last-modified 2026-11-16T00:00:00Z
+../upstream/UORust/target/release/uorust project . --out prism/rust-projection --name cs1.618 --last-modified 2026-11-25T00:00:00Z
+../upstream/UORust/target/release/uorust check . --out prism/rust-projection --name cs1.618 --last-modified 2026-11-25T00:00:00Z
 ```
 
 Read [frontier.toml](../prism/rust-projection/frontier.toml) before interpreting the projection: dependency types and engine behavior are not automatically lifted into Lean, advisory checks were not supplied, and open claims remain open. See [verification evidence](VERIFICATION.md) for the actual checks performed and environmental limits.

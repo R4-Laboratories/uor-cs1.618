@@ -73,7 +73,7 @@ function receive(m:any){
  if(m.type==='snapshot'){
   const s=m as Snapshot,previous=snapshot;
   if(previous&&s.tick<=previous.tick)return;
-  if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
+  if(!previous||s.round!==previous.round||!previous.self.alive&&s.self.alive){ui.resetCombat(s.self.health);yaw=s.self.yaw;pitch=s.self.pitch;slot=s.self.slot;pending=[];keys.clear();}
   if(previous&&previous.self.weapon!==s.self.weapon)audio.event({id:0,type:'equip'},{...s.self,yaw},s.self.id);
   snapshot=s;lastSnapshot=performance.now();
   pending=pending.filter(p=>p.input.seq>s.self.seq);
@@ -186,7 +186,8 @@ function frame(now:number){
  prismFrame.hidden=!!snapshot&&!ui.pauseOpen;const target=spectator();if(!document.hidden&&now-lastRender>(snapshot&&!ui.pauseOpen?0:1000/24)){view.render(Math.min(.15,(now-lastRender)/1000),snapshot,position,yaw,pitch,scope,target,!!snapshot&&!ui.pauseOpen);lastRender=now;}
  ui.show('camera-warning',!!view.cameraError);
  if(snapshot&&position){
-  uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target);uiTime=0;}
+  uiTime+=dt;if(uiTime>.08){ui.update(snapshot,position,ping,target,yaw);uiTime=0;}
+  ui.updateAim(snapshot, position, yaw, scope, view.camera.fov);
   pingTime+=dt;if(pingTime>2){send({type:'ping',at:performance.now()});pingTime=0;}
   audio.update(dt,snapshot,{...position,yaw});
   if(peerRoom){const p=peerRoom.status;for(const el of document.querySelectorAll<HTMLElement>('.peer-state'))el.textContent=p.host?`HOST · ${p.peers} guest connection(s) · ${p.route}`:`WEBRTC · ${p.route} · ${p.fast?'realtime channel':'reliable fallback'}`;}
@@ -197,4 +198,4 @@ function frame(now:number){
 }
 requestAnimationFrame(frame);
 // Read-only diagnostics for automated rendering/network verification and operator support.
-Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',hd:view.hd?.diagnostics,cameraGuard:view.cameraGuard,cameraError:view.cameraError,characters:view.characters?.diagnostics,evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});
+Object.defineProperty(window,'cs1618',{get:()=>({snapshot,position:position?{...position}:null,yaw,pitch,locked,engine:'Verdant Core',textureStaging:{...engine.textureStaging},mapAssets:{...view.meridian.status},hd:view.hd?.diagnostics,cameraGuard:view.cameraGuard,cameraError:view.cameraError,characters:view.characters?.diagnostics,evolution:view.evolutionStatus,artwork:view.artwork.status,quality:{mode:view.qualityMode,scale:view.quality.scale},audioVoices:audio.activeVoices,pending:pending.length,network:peerRoom?.status??{mode:worker?'practice':socket?'server':'offline'}})});

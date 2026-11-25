@@ -2,7 +2,7 @@
   {
     "name": "verdant-engine",
     "repository": "https://github.com/afflom/verdant-engine.git",
-    "commit": "9b6c14d4b756b09faecf61b9f61cf894155f52c9"
+    "commit": "9d22f5ac364db8352d12434e1c9c3dbed65ac6c9"
   },
   {
     "name": "verdant-resonance",
@@ -28,5 +28,20 @@
     "name": "UORust",
     "repository": "https://github.com/afflom/UORust.git",
     "commit": "9d1f379676aa1099c4b88093608a37a66ba819f6"
+  },
+  {
+    "name": "vRAM",
+    "repository": "https://github.com/afflom/vRAM.git",
+    "commit": "f3a121d091a827fc9e0d6b6cae25d840847ce90d"
+  },
+  {
+    "name": "vTensor",
+    "repository": "https://github.com/afflom/vTensor.git",
+    "commit": "280a1a43a856928c729d0abe1a3373b3ac3b4c75"
+  },
+  {
+    "name": "verdant-studio",
+    "repository": "https://github.com/afflom/verdant-studio.git",
+    "commit": "7423aa68ae6c10870f5d9165e00dde5a6223e024"
   }
 ]

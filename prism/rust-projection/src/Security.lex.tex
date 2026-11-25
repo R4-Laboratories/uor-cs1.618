@@ -95,7 +95,7 @@ definition{
   name: controlSet,
   parameters: [],
   result: Production.ThreatModel::ControlSet,
-  body: (record Production.ThreatModel::ControlSet {title := "cs1.618 security controls", text := "Controls uorust derived from the cs1.618 workspace: memory safety, capability sites and the locked dependency graph.", version := "0.1.0", lastModified := "2026-11-16T00:00:00Z"})
+  body: (record Production.ThreatModel::ControlSet {title := "cs1.618 security controls", text := "Controls uorust derived from the cs1.618 workspace: memory safety, capability sites and the locked dependency graph.", version := "0.1.0", lastModified := "2026-11-25T00:00:00Z"})
 }
 
 definition{
@@ -109,7 +109,7 @@ definition{
   name: modeledAssetLockedDependencies,
   parameters: [],
   result: Production.ThreatModel::ModeledAsset,
-  body: (record Production.ThreatModel::ModeledAsset {asset := "Security::assetLockedDependencies", name := "Locked dependency graph", text := "The 82 packages Cargo.lock pins."})
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Security::assetLockedDependencies", name := "Locked dependency graph", text := "The 159 packages Cargo.lock pins."})
 }
 
 definition{
@@ -130,7 +130,7 @@ definition{
   name: modeledControlDependencySubstitution,
   parameters: [],
   result: Production.ThreatModel::ModeledControl,
-  body: (record Production.ThreatModel::ModeledControl {control := "Security::controlDependencySubstitution", name := "Locked and checked dependencies", text := "Every dependency is pinned with its checksum and checked against advisories and licences.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "Cargo.lock pins 82 packages, 74 with a registry checksum"}) (nil Production.ThreatModel::Evidence))})
+  body: (record Production.ThreatModel::ModeledControl {control := "Security::controlDependencySubstitution", name := "Locked and checked dependencies", text := "Every dependency is pinned with its checksum and checked against advisories and licences.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "Cargo.lock pins 159 packages, 30 with a registry checksum"}) (nil Production.ThreatModel::Evidence))})
 }
 
 definition{

@@ -101,7 +101,7 @@ pub extern "C" fn cs_character_step(
                     time,
                     Some(target),
                     floor,
-                    |_, _| 0.,
+                    &|_, _| 0.,
                 )
             })
             .is_err()

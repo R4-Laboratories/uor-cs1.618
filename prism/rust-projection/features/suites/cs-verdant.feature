@@ -51,3 +51,11 @@ Feature: cs-verdant
     Then the acceptance row Interface::acCsVerdantCsVerdantScene3dCameraKeepsNearPlaneOutsideWallAndRefusesInvalidOptics holds
     And the acceptance row Interface::acCsVerdantCsVerdantScene3dGovernorPreservesExplicitPinsAndRefusesNonfiniteSamples holds
     And the acceptance row Interface::acCsVerdantCsVerdantScene3dHdDetailIsBoundedAndInvalidRequestsClearOldAsset holds
+
+  @FT-04 @build
+  Scenario: cs_verdant::texture_store: Admission of browser material storage through upstream Prism-generated kernels.
+    Given the record Interface::featureCsVerdantTextureStore
+    When the interface call Interface::callCsVerdantTextureStoreCsTextureSpan is made
+    And the interface call Interface::callCsVerdantTextureStoreCsTexturePagePlan is made
+    Then the acceptance row Interface::acCsVerdantCsVerdantTextureStoreShortPagesOnlyAdmitEncodingsSmallerThanTheLiteral holds
+    And the acceptance row Interface::acCsVerdantCsVerdantTextureStoreTensorPlaneRejectsEmptyOversizeAndPreservesChannelStride holds

@@ -1,0 +1,202 @@
+{
+  "limestone": {
+    "base_color": [
+      0.80695,
+      0.63076,
+      0.42327
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.87,
+    "finish": "mineral"
+  },
+  "concrete": {
+    "base_color": [
+      0.40198,
+      0.4452,
+      0.4452
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.82,
+    "finish": "mineral"
+  },
+  "plaster": {
+    "base_color": [
+      0.82279,
+      0.6376,
+      0.4452
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.88,
+    "finish": "mineral"
+  },
+  "tealPaint": {
+    "base_color": [
+      0.04374,
+      0.1912,
+      0.18782
+    ],
+    "base_metalness": 0.13,
+    "specular_roughness": 0.61,
+    "finish": "paint"
+  },
+  "crate": {
+    "base_color": [
+      0.43966,
+      0.25818,
+      0.11193
+    ],
+    "base_metalness": 0.01,
+    "specular_roughness": 0.78,
+    "finish": "wood"
+  },
+  "galvanized": {
+    "base_color": [
+      0.45641,
+      0.521,
+      0.55201
+    ],
+    "base_metalness": 0.78,
+    "specular_roughness": 0.52,
+    "finish": "metal"
+  },
+  "asphalt": {
+    "base_color": [
+      0.1912,
+      0.21223,
+      0.22323
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.91,
+    "finish": "mineral"
+  },
+  "trim": {
+    "base_color": [
+      0.52712,
+      0.43415,
+      0.31399
+    ],
+    "base_metalness": 0.1,
+    "specular_roughness": 0.58,
+    "finish": "paint"
+  },
+  "darkMetal": {
+    "base_color": [
+      0.08228,
+      0.11444,
+      0.12744
+    ],
+    "base_metalness": 0.73,
+    "specular_roughness": 0.52,
+    "finish": "metal"
+  },
+  "glass": {
+    "base_color": [
+      0.06301,
+      0.20508,
+      0.2462
+    ],
+    "base_metalness": 0.2,
+    "specular_roughness": 0.18,
+    "finish": "glass"
+  },
+  "gunmetal": {
+    "base_color": [
+      0.08022,
+      0.10462,
+      0.12214
+    ],
+    "base_metalness": 0.82,
+    "specular_roughness": 0.37,
+    "finish": "metal"
+  },
+  "parkerized": {
+    "base_color": [
+      0.05286,
+      0.06848,
+      0.06663
+    ],
+    "base_metalness": 0.76,
+    "specular_roughness": 0.58,
+    "finish": "metal"
+  },
+  "polymer": {
+    "base_color": [
+      0.0319,
+      0.04519,
+      0.05127
+    ],
+    "base_metalness": 0.02,
+    "specular_roughness": 0.7,
+    "finish": "paint"
+  },
+  "brushedSteel": {
+    "base_color": [
+      0.32314,
+      0.38643,
+      0.41254
+    ],
+    "base_metalness": 0.86,
+    "specular_roughness": 0.31,
+    "finish": "metal"
+  },
+  "copper": {
+    "base_color": [
+      0.45641,
+      0.18447,
+      0.06125
+    ],
+    "base_metalness": 0.76,
+    "specular_roughness": 0.45,
+    "finish": "metal"
+  },
+  "oliveFabric": {
+    "base_color": [
+      0.14413,
+      0.16203,
+      0.09759
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.9,
+    "finish": "fabric"
+  },
+  "navyFabric": {
+    "base_color": [
+      0.05781,
+      0.08866,
+      0.13563
+    ],
+    "base_metalness": 0.0,
+    "specular_roughness": 0.91,
+    "finish": "fabric"
+  },
+  "webbing": {
+    "base_color": [
+      0.08438,
+      0.09531,
+      0.06301
+    ],
+    "base_metalness": 0.01,
+    "specular_roughness": 0.88,
+    "finish": "fabric"
+  },
+  "lens": {
+    "base_color": [
+      0.03071,
+      0.16513,
+      0.19462
+    ],
+    "base_metalness": 0.33,
+    "specular_roughness": 0.16,
+    "finish": "glass"
+  },
+  "leather": {
+    "base_color": [
+      0.12214,
+      0.07819,
+      0.05613
+    ],
+    "base_metalness": 0.01,
+    "specular_roughness": 0.72,
+    "finish": "wood"
+  }
+}

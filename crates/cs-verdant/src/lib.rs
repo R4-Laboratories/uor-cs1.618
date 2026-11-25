@@ -3,6 +3,7 @@
 
 mod characters;
 mod scene3d;
+mod texture_store;
 #[cfg(test)]
 mod tests {
     use super::*;

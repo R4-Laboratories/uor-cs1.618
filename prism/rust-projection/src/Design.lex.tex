@@ -209,6 +209,20 @@ definition{
 }
 
 definition{
+  name: processCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: processCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
   name: umlComponents,
   parameters: [],
   result: Foundation.Arch::DesignView,
@@ -710,6 +724,34 @@ definition{
   parameters: [],
   result: Foundation.Arch::OpmLink,
   body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantScene3dCsCameraResult"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantTextureStoreCsTextureSpan"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantTextureStoreCsTextureSpan"})
+}
+
+definition{
+  name: opmLibCsVerdantThingCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantTextureStoreCsTexturePagePlan"})
+}
+
+definition{
+  name: opmLibCsVerdantInstrumentCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmLibCsVerdant", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantTextureStoreCsTexturePagePlan"})
 }
 
 definition{
@@ -1228,6 +1270,48 @@ definition{
   parameters: [],
   result: Foundation.Arch::OpmLink,
   body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantScene3d", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantScene3dCsCameraResult"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStore,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "cs_verdant::texture_store processes", viewpoint := "Architecture::viewpointMaintenance", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStoreObject,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantTextureStore", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Architecture::componentLibCsVerdant"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStoreThingCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantTextureStore", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantTextureStoreCsTextureSpan"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStoreInstrumentCsVerdantTextureStoreCsTextureSpan,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantTextureStore", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantTextureStoreCsTextureSpan"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStoreThingCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Design::opmModuleLibCsVerdantTextureStore", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Design::processCsVerdantTextureStoreCsTexturePagePlan"})
+}
+
+definition{
+  name: opmModuleLibCsVerdantTextureStoreInstrumentCsVerdantTextureStoreCsTexturePagePlan,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Design::opmModuleLibCsVerdantTextureStore", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Architecture::componentLibCsVerdant", target := "Design::processCsVerdantTextureStoreCsTexturePagePlan"})
 }
 \end{semanticmodule}
 \end{lexlean}

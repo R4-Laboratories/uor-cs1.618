@@ -17,7 +17,12 @@ function measure(policy:BatchPolicy,views=cameras){
  }
  return {frames,inventory:sceneryInventory(world.scene)};
 }
-Object.assign(window,{evolutionLab:{ready:true,generated:renderPolicy,measure}});
+const evolutionLab={ready:false, generated:renderPolicy, measure};
+Object.assign(window,{evolutionLab});
+void world.meridian.ready.then(() => {
+ if(world.meridian.status.failed.length)throw new Error('Meridian surface assets failed to load');
+ evolutionLab.ready=true;
+});
 // Creative evaluation keeps protected scene identity while permitting the declared art surfaces to change.
 import {artProgram} from '../../shared/generated-artwork';
 import {paintArtwork} from '../creative/artwork';

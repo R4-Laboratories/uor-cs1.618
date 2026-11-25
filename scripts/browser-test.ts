@@ -42,7 +42,13 @@ try{
  const pa=[...room.players.values()].find(p=>p.name==='Aster')!,pb=[...room.players.values()].find(p=>p.name==='Beryl')!;
  pa.money=5000;
  await a.bringToFront();await a.click('#deploy');await a.waitForFunction(()=>(window as any).cs1618.locked);
- await a.keyboard.press('KeyB');await a.waitForSelector('#buy-menu:not(.hidden)');await a.click('[data-buy="kestrel"]');await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.inventory[0].id==='kestrel');
+ await a.keyboard.press('KeyB');await a.waitForSelector('#buy-menu:not(.hidden)');
+ await a.locator('.armory-preview').first().waitFor();
+ await a.waitForFunction(()=>{
+  const images=Array.from(document.querySelectorAll<HTMLImageElement>('.armory-preview'));
+  return images.length>=2 && images.every(image=>image.complete && image.naturalWidth===420);
+ });
+ await a.click('[data-buy="kestrel"]');await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.inventory[0].id==='kestrel');
  await a.click('#close-buy');await a.waitForFunction(()=>(window as any).cs1618.locked);
  await a.waitForFunction(()=>(window as any).cs1618.snapshot.self.weapon==='kestrel');assert.equal(pa.money,2300);results.push('Browser buy menu equips a server-issued rifle and deducts the exact price');
  console.log('Testing locomotion');room.phase='live';room.phaseLeft=100;

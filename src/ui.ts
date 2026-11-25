@@ -1,12 +1,18 @@
+import {incomingBearing, reticleGap, screenBearing} from './combat-feedback';
 import {objectiveHint,plantedObjective} from '../shared/objective-hud';
 import type {MatchListing} from '../shared/match-discovery';
 import {TEAM_NAMES,WEAPONS,EQUIPMENT,RULES} from '../shared/config';
-import {BOXES,MAP,zoneAt} from '../shared/map';
+import {zoneAt} from '../shared/map';
+import {TacticalRadar} from './radar';
 import type {Snapshot,PublicPlayer,Motion,GameEvent} from '../shared/protocol';
 export const $=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const escape=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 export class UI{
  buyOpen=false;scoreOpen=false;pauseOpen=false;toastUntil=0;hitUntil=0;hurtUntil=0;lastHealth=100;lastRound=-1;killLines:{text:string;until:number}[]=[];
+ private readonly radar: TacticalRadar;
+ private damageBearing: number | null = null;
+ private hitKind: 'body' | 'head' | 'elimination' = 'body';
+ private previousGap = -1;
  constructor(){
  $('app').innerHTML=`
  <div id="loading" class="loading"><div class="brand-mark">φ</div><span>LOADING MERIDIAN</span><small id="load-detail">Initializing Verdant Engine…</small></div>
@@ -27,6 +33,7 @@ export class UI{
   <footer class="lobby-footer"><span><b>φ</b> BUILT FOR THE OPEN WEB</span><span>VERDANT ENGINE <i>/</i> cs1.618</span><span>PRECISION OVER CHAOS.</span></footer>
  </main>
  <div id="hud" class="hud hidden">
+  <div id="scope-glass" class="scope-glass hidden" aria-hidden="true"><i></i><b></b></div>
   <div class="radar-wrap"><canvas id="radar" width="200" height="200" aria-label="Tactical minimap"></canvas><span id="zone">MERIDIAN</span></div>
   <div class="round-bar"><div class="team-score ember"><small>EMBER</small><strong id="score-a">0</strong><span id="alive-a"></span></div><div class="clock"><small id="phase-label">BUY PHASE</small><strong id="clock">00:12</strong><span id="round-label">ROUND 01</span></div><div class="team-score tidal"><small>TIDAL</small><strong id="score-d">0</strong><span id="alive-d"></span></div></div>
   <div class="session-info"><span id="session-room">MERIDIAN</span><span id="ping">LOCAL</span></div>
@@ -38,11 +45,11 @@ export class UI{
   </section>
   <div id="kill-feed" class="kill-feed"></div>
   <div id="round-banner" class="round-banner hidden"><small id="banner-label">ROUND COMPLETE</small><h2 id="banner-title"></h2><p id="banner-detail"></p></div>
-  <div id="crosshair" class="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hit-marker" class="hit-marker hidden">×</div><div id="hurt" class="hurt hidden"></div>
+  <div id="crosshair" class="crosshair"><i></i><i></i><i></i><i></i><b></b></div><div id="hit-marker" class="hit-marker hidden" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div id="hurt" class="hurt hidden" aria-hidden="true"><i id="damage-bearing"></i></div>
   <div id="objective" class="objective hidden"><span id="objective-text"></span><div class="progress"><i id="objective-progress"></i></div></div>
   <div id="context-hint" class="context-hint"></div>
   <div id="spectator" class="spectator hidden"><small>ELIMINATED · SPECTATING</small><strong id="spectator-name"></strong><span>Next round, you’re back. <kbd>SPACE</kbd> Next teammate</span></div>
-  <div class="bottom-hud"><div class="vitals"><div><span class="stat-icon">+</span><strong id="health">100</strong><small>HEALTH</small></div><span class="divider"></span><div><span class="stat-icon shield">◇</span><strong id="armor">0</strong><small>ARMOR</small></div></div><div class="utility"><span id="money">$800</span><span id="equipment"></span><span class="buy-key"><kbd>B</kbd> BUY</span></div><div class="ammo"><small id="weapon-name">P9 SIDEARM</small><div><strong id="ammo">15</strong><span>/ <b id="reserve">60</b></span></div><span id="reload-label">1 PRIMARY <i>·</i> 2 SIDEARM</span></div></div>
+  <div class="bottom-hud"><div class="vitals"><div><span class="stat-icon">+</span><strong id="health">100</strong><small>HEALTH</small><i class="vital-meter" aria-hidden="true"><i id="health-meter"></i></i></div><span class="divider"></span><div><span class="stat-icon shield">◇</span><strong id="armor">0</strong><small>ARMOR</small><i class="vital-meter" aria-hidden="true"><i id="armor-meter"></i></i></div></div><div class="utility"><span id="money">$800</span><span id="equipment"></span><span class="buy-key"><kbd>B</kbd> BUY</span></div><div class="ammo"><small id="weapon-name">P9 SIDEARM</small><div><strong id="ammo">15</strong><span>/ <b id="reserve">60</b></span></div><i class="mag-meter" aria-hidden="true"><i id="mag-meter"></i></i><span id="reload-label">1 PRIMARY <i>·</i> 2 SIDEARM</span></div></div>
   <div class="control-strip"><span><kbd>WASD</kbd> MOVE</span><span><kbd>R</kbd> RELOAD</span><span><kbd>E</kbd> INTERACT</span><span><kbd>TAB</kbd> SCOREBOARD</span><span><kbd>ESC</kbd> MENU</span></div>
  </div>
  <div id="deploy-overlay" class="overlay hidden"><div class="pause-card"><div class="eyebrow">CONNECTION ESTABLISHED</div><h2>Ready on the line.</h2><p id="deploy-description">Click to capture the mouse and deploy.</p><div class="peer-share hidden"><label>ROOM INVITATION<input class="invitation-link" readonly aria-label="Room invitation"></label><button type="button" class="secondary copy-invitation">COPY INVITATION</button><p class="peer-state"></p><p class="publication-state" role="status"></p><small>Keep the host tab open and active. The room ends when its host leaves.</small></div><button id="deploy" class="primary">DEPLOY <span>→</span></button><small>WASD move · Mouse aim · Left click fire<br>B buy · E hold to plant / defuse</small></div></div>
@@ -50,6 +57,7 @@ export class UI{
  <section id="buy-menu" class="overlay hidden"><div class="buy-panel"><header><div><span class="eyebrow">FIELD SUPPLY</span><h2>Make it count.</h2></div><div><strong id="buy-balance">$800</strong><button id="close-buy" class="icon-btn" aria-label="Close buy menu">×</button></div></header><p id="buy-rule">Purchases are available near your spawn during the buy window.</p><div id="weapon-grid" class="weapon-grid"></div><h3>EQUIPMENT</h3><div id="equipment-grid" class="equipment-grid"></div><footer><span id="buy-message" role="status">Select equipment to purchase.</span><span><kbd>B</kbd> CLOSE</span></footer></div></section>
  <section id="scoreboard" class="overlay score-overlay hidden"><div class="score-panel"><header><span class="eyebrow">MERIDIAN / DEFUSAL</span><h2>Round intelligence.</h2><span>FIRST TO ${RULES.matchWin}</span></header><div id="score-rows"></div></div></section>
  <div id="toast" class="toast hidden" role="status"></div>`;
+  this.radar = new TacticalRadar($<HTMLCanvasElement>('radar'));
  }
  matches(listings:MatchListing[],join:(listing:MatchListing)=>void){
   const list=$('match-list');list.replaceChildren();
@@ -67,18 +75,67 @@ export class UI{
  setBuy(open:boolean,s:Snapshot|null){this.buyOpen=open;this.show('buy-menu',open);if(open&&s)this.renderBuy(s);}
  renderBuy(s:Snapshot){
   $('buy-balance').textContent=`$${s.self.money.toLocaleString()}`;
-  $('weapon-grid').innerHTML=Object.values(WEAPONS).filter(w=>w.price>0&&(!w.team||w.team===s.self.team)).map(w=>`<button class="weapon-card" data-buy="${w.id}" ${s.self.money<w.price?'disabled':''}><span>${w.category}</span><svg viewBox="0 0 240 70" aria-hidden="true"><path d="M20 33h35l10-12h70v8h70v5h-60l-8 10h-31l-4 22H85l-4-23H61L31 53z"/><path d="M62 25v-8h48v8M170 28v-9h4v9"/></svg><strong>${w.name}</strong><footer><b>$${w.price.toLocaleString()}</b><small>${w.mag} ROUNDS</small></footer></button>`).join('');
+  $('weapon-grid').innerHTML=Object.values(WEAPONS).filter(w=>w.price>0&&(!w.team||w.team===s.self.team)).map(w=>`<button class="weapon-card" data-buy="${w.id}" ${s.self.money<w.price?'disabled':''}><span>${w.category}</span><img class="armory-preview" src="${import.meta.env.BASE_URL}armory/${w.id}.webp" width="420" height="160" alt=""><strong>${w.name}</strong><footer><b>$${w.price.toLocaleString()}</b><small>${w.mag} ROUNDS</small></footer></button>`).join('');
   $('equipment-grid').innerHTML=EQUIPMENT.filter(e=>!('team'in e)||e.team===s.self.team).map(e=>`<button data-buy="${e.id}" ${s.self.money<e.price?'disabled':''}><strong>${e.name}</strong><small>${e.detail}</small><span>$${e.price}</span></button>`).join('');
  }
  event(e:GameEvent,s:Snapshot){
   const name=(id:string|undefined)=>escape(s.players.find(p=>p.id===id)?.name??'Operator');
   if(e.type==='kill'){this.killLines.unshift({text:`<b>${!e.actor&&e.text==='Device blast'?'Bomb blast':name(e.actor)}</b> <span>${e.head?'⌖':'—'} ${escape(WEAPONS[e.weapon!]?.name??'')}</span> ${name(e.target)}`,until:performance.now()+6500});this.killLines=this.killLines.slice(0,5);}
-  if(e.type==='hit'&&e.actor===s.self.id)this.hitUntil=performance.now()+160;
+  if (e.type === 'hit' && e.actor === s.self.id) {
+   this.hitKind = e.head ? 'head' : 'body';
+   this.hitUntil = performance.now() + 175;
+  }
+  if (e.type === 'kill' && e.actor === s.self.id) {
+   this.hitKind = 'elimination';
+   this.hitUntil = performance.now() + 250;
+  }
+  if (e.type === 'hit' && e.target === s.self.id) {
+   this.damageBearing = incomingBearing(e, s.events, s.self.id);
+   this.hurtUntil = performance.now() + 420;
+  }
   if(e.type==='plant'||e.type==='defuse')this.toast(e.text??'');
  }
- update(s:Snapshot,pos:Motion,ping:number,spectating:PublicPlayer|null){
-  const now=performance.now(),self=s.self;this.show('toast',now<this.toastUntil);this.show('hit-marker',now<this.hitUntil);
-  if(self.health<this.lastHealth)this.hurtUntil=now+350;this.lastHealth=self.health;this.show('hurt',now<this.hurtUntil);
+ resetCombat(health: number) {
+  this.hitUntil = this.hurtUntil = 0;
+  this.lastHealth = health;
+  this.damageBearing = null;
+ }
+
+ updateAim(s: Snapshot, pos: Motion, yaw: number, scoped: boolean, fov: number) {
+  const now = performance.now();
+  const aiming = s.self.alive && !this.buyOpen && !this.pauseOpen && !this.scoreOpen;
+  const optic = aiming && scoped && s.self.weapon === 'scout';
+  this.show('scope-glass', optic);
+  this.show('crosshair', aiming && !optic);
+  const marker = $('hit-marker');
+  this.show('hit-marker', aiming && now < this.hitUntil);
+  if (now < this.hitUntil) marker.dataset.kind = this.hitKind;
+  if (aiming && !optic) {
+   const gap = Math.round(reticleGap(WEAPONS[s.self.weapon], pos, s.self.recoil, innerHeight, fov) * 2) / 2;
+   if (gap !== this.previousGap) {
+    $('crosshair').style.setProperty('--aim-gap', `${gap}px`);
+    this.previousGap = gap;
+   }
+  }
+  const hurt = aiming && now < this.hurtUntil;
+  this.show('hurt', hurt);
+  if (hurt) {
+   const directed = this.damageBearing !== null;
+   $('hurt').classList.toggle('directed', directed);
+   if (directed) $('damage-bearing').style.transform = `rotate(${screenBearing(this.damageBearing!, yaw)}rad)`;
+  }
+ }
+
+ update(s:Snapshot,pos:Motion,ping:number,spectating:PublicPlayer|null,yaw=s.self.yaw){
+  const now=performance.now(),self=s.self;this.show('toast',now<this.toastUntil);
+  if (self.health < this.lastHealth && now >= this.hurtUntil) {
+   this.damageBearing = null;
+   this.hurtUntil = now + 300;
+  }
+  this.lastHealth = self.health;
+  $('health-meter').style.transform = `scaleX(${self.health / 100})`;
+  $('armor-meter').style.transform = `scaleX(${self.armor / 100})`;
+  $('health').classList.toggle('low-stat', self.health <= 25);
   $('score-a').textContent=String(s.score.attack);$('score-d').textContent=String(s.score.defend);
   for(const [team,id]of [['attack','alive-a'],['defend','alive-d']] as const)$(id).innerHTML=s.players.filter(p=>p.team===team).map(p=>`<i class="${p.alive?'':'dead'}"></i>`).join('');
   const planted=s.bomb?.state==='planted'&&!s.bomb.terminal&&s.phase==='live';const time=planted?s.bomb!.remaining:s.remaining;
@@ -90,6 +147,9 @@ export class UI{
   $('zone').textContent=zoneAt(pos.x,pos.z);$('health').textContent=String(self.health);$('armor').textContent=String(self.armor);$('money').textContent=`$${self.money.toLocaleString()}`;
   $('equipment').textContent=[s.bomb?.carrier===self.id?'◈ BOMB':'',self.kit?'◇ KIT':''].filter(Boolean).join('  ');
   const g=self.inventory[self.slot];$('weapon-name').textContent=WEAPONS[g.id].name.toUpperCase();$('ammo').textContent=String(g.ammo).padStart(2,'0');$('reserve').textContent=String(g.reserve);$('reload-label').textContent=self.reloadLeft>0?`RELOADING  ${self.reloadLeft.toFixed(1)}s`:'1 PRIMARY  ·  2 SIDEARM';
+  const ammoFraction = g.ammo / WEAPONS[g.id].mag;
+  $('mag-meter').style.transform = `scaleX(${ammoFraction})`;
+  $('ammo').classList.toggle('low-stat', ammoFraction <= 0.2);
   const card=plantedObjective(s);this.show('bomb-card',!!card);
   if(card){
    $('bomb-card').dataset.mode=card.mode;$('bomb-card').classList.toggle('critical',card.remaining<10);
@@ -107,20 +167,11 @@ export class UI{
   const hint=objectiveHint(s,pos),interacting=ownInteraction||hint.startsWith('HOLD E');
   $('context-hint').textContent=hint+(self.alive&&s.phase==='live'&&g.ammo===0&&!interacting?' · PRESS R TO RELOAD':'');
   const ended=s.phase==='ended'||s.phase==='matchEnd';this.show('round-banner',ended);if(ended){$('banner-label').textContent=s.phase==='matchEnd'?'MATCH COMPLETE':'ROUND COMPLETE';$('banner-title').textContent=`${s.winner?TEAM_NAMES[s.winner]:'ROUND'} WINS`;$('banner-detail').textContent=s.reason;}
-  this.show('crosshair',self.alive&&!this.buyOpen&&!this.pauseOpen);this.show('spectator',!self.alive);$('spectator-name').textContent=spectating?.name??'Waiting for next round';
+  this.show('spectator',!self.alive);$('spectator-name').textContent=spectating?.name??'Waiting for next round';
   this.killLines=this.killLines.filter(k=>k.until>now);$('kill-feed').innerHTML=this.killLines.map(k=>`<div>${k.text}</div>`).join('');
   if(this.scoreOpen)this.renderScore(s);
   if(this.buyOpen&&this.lastRound!==s.round)this.renderBuy(s);this.lastRound=s.round;
-  this.radar(s,pos,spectating);
+  this.radar.draw(s,pos,yaw,spectating);
  }
  renderScore(s:Snapshot){$('score-rows').innerHTML=(['attack','defend']as const).map(team=>`<div class="score-team ${team}"><h3>${TEAM_NAMES[team]} <b>${s.score[team]}</b></h3><div class="score-table-head"><span>OPERATOR</span><span>K</span><span>D</span><span>STATUS</span></div>${s.players.filter(p=>p.team===team).sort((a,b)=>b.kills-a.kills).map(p=>`<div class="score-row ${p.id===s.self.id?'you':''}"><span>${escape(p.name)} ${p.bot?'<small>BOT</small>':''}${p.id===s.self.id?' <small>YOU</small>':''}</span><span>${p.kills}</span><span>${p.deaths}</span><span>${p.alive?'ACTIVE':'OUT'}</span></div>`).join('')}</div>`).join('');}
- radar(s:Snapshot,pos:Motion,spectating:PublicPlayer|null){
-  const c=$<HTMLCanvasElement>('radar').getContext('2d')!;const scale=3;const coord=(v:number)=>100+v*scale;
-  c.clearRect(0,0,200,200);c.fillStyle='rgba(10,24,27,.9)';c.fillRect(0,0,200,200);c.strokeStyle='#43565a';c.strokeRect(19,19,162,162);
-  for(const b of BOXES){c.fillStyle=b.material==='crate'?'#6e7160':'#3b4b4d';c.fillRect(coord(b.x-b.w/2),coord(b.z-b.d/2),b.w*scale,b.d*scale);}
-  for(const site of MAP.sites){c.fillStyle=site.id==='A'?'#de9e67':'#81bdc2';c.font='bold 14px sans-serif';c.fillText(site.id,coord(site.x)-4,coord(site.z)+5);}
-  for(const p of s.players){if(!p.alive||p.team!==s.self.team)continue;c.fillStyle=p.id===s.self.id?'#d8efb7':'#86b6be';c.beginPath();c.arc(coord(p.id===s.self.id?pos.x:p.x),coord(p.id===s.self.id?pos.z:p.z),p.id===s.self.id?4:2.5,0,Math.PI*2);c.fill();}
-  const view=s.self.alive?{...pos,yaw:s.self.yaw}:spectating;if(view){c.strokeStyle='#d8efb7';c.beginPath();c.moveTo(coord(view.x),coord(view.z));c.lineTo(coord(view.x)-Math.sin(view.yaw)*11,coord(view.z)-Math.cos(view.yaw)*11);c.stroke();}
-  if(s.bomb&&!s.bomb.terminal&&(s.bomb.state==='planted'||s.self.team==='attack')){c.fillStyle='#f6b069';c.fillRect(coord(s.bomb.x)-2,coord(s.bomb.z)-2,4,4);}
- }
 }

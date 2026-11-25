@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<materialx version="1.39">
+  <open_pbr_surface name="limestone" type="surfaceshader" cs_finish="mineral">
+    <input name="base_color" type="color3" value="0.80695, 0.63076, 0.42327"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.87"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="concrete" type="surfaceshader" cs_finish="mineral">
+    <input name="base_color" type="color3" value="0.40198, 0.44520, 0.44520"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.82"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="plaster" type="surfaceshader" cs_finish="mineral">
+    <input name="base_color" type="color3" value="0.82279, 0.63760, 0.44520"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.88"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="tealPaint" type="surfaceshader" cs_finish="paint">
+    <input name="base_color" type="color3" value="0.04374, 0.19120, 0.18782"/>
+    <input name="base_metalness" type="float" value="0.13"/>
+    <input name="specular_roughness" type="float" value="0.61"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="crate" type="surfaceshader" cs_finish="wood">
+    <input name="base_color" type="color3" value="0.43966, 0.25818, 0.11193"/>
+    <input name="base_metalness" type="float" value="0.01"/>
+    <input name="specular_roughness" type="float" value="0.78"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="galvanized" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.45641, 0.52100, 0.55201"/>
+    <input name="base_metalness" type="float" value="0.78"/>
+    <input name="specular_roughness" type="float" value="0.52"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="asphalt" type="surfaceshader" cs_finish="mineral">
+    <input name="base_color" type="color3" value="0.19120, 0.21223, 0.22323"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.91"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="trim" type="surfaceshader" cs_finish="paint">
+    <input name="base_color" type="color3" value="0.52712, 0.43415, 0.31399"/>
+    <input name="base_metalness" type="float" value="0.1"/>
+    <input name="specular_roughness" type="float" value="0.58"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="darkMetal" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.08228, 0.11444, 0.12744"/>
+    <input name="base_metalness" type="float" value="0.73"/>
+    <input name="specular_roughness" type="float" value="0.52"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="glass" type="surfaceshader" cs_finish="glass">
+    <input name="base_color" type="color3" value="0.06301, 0.20508, 0.24620"/>
+    <input name="base_metalness" type="float" value="0.2"/>
+    <input name="specular_roughness" type="float" value="0.18"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="gunmetal" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.08022, 0.10462, 0.12214"/>
+    <input name="base_metalness" type="float" value="0.82"/>
+    <input name="specular_roughness" type="float" value="0.37"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="parkerized" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.05286, 0.06848, 0.06663"/>
+    <input name="base_metalness" type="float" value="0.76"/>
+    <input name="specular_roughness" type="float" value="0.58"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="polymer" type="surfaceshader" cs_finish="paint">
+    <input name="base_color" type="color3" value="0.03190, 0.04519, 0.05127"/>
+    <input name="base_metalness" type="float" value="0.02"/>
+    <input name="specular_roughness" type="float" value="0.7"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="brushedSteel" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.32314, 0.38643, 0.41254"/>
+    <input name="base_metalness" type="float" value="0.86"/>
+    <input name="specular_roughness" type="float" value="0.31"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="copper" type="surfaceshader" cs_finish="metal">
+    <input name="base_color" type="color3" value="0.45641, 0.18447, 0.06125"/>
+    <input name="base_metalness" type="float" value="0.76"/>
+    <input name="specular_roughness" type="float" value="0.45"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="oliveFabric" type="surfaceshader" cs_finish="fabric">
+    <input name="base_color" type="color3" value="0.14413, 0.16203, 0.09759"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.9"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="navyFabric" type="surfaceshader" cs_finish="fabric">
+    <input name="base_color" type="color3" value="0.05781, 0.08866, 0.13563"/>
+    <input name="base_metalness" type="float" value="0"/>
+    <input name="specular_roughness" type="float" value="0.91"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="webbing" type="surfaceshader" cs_finish="fabric">
+    <input name="base_color" type="color3" value="0.08438, 0.09531, 0.06301"/>
+    <input name="base_metalness" type="float" value="0.01"/>
+    <input name="specular_roughness" type="float" value="0.88"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="lens" type="surfaceshader" cs_finish="glass">
+    <input name="base_color" type="color3" value="0.03071, 0.16513, 0.19462"/>
+    <input name="base_metalness" type="float" value="0.33"/>
+    <input name="specular_roughness" type="float" value="0.16"/>
+  </open_pbr_surface>
+  <open_pbr_surface name="leather" type="surfaceshader" cs_finish="wood">
+    <input name="base_color" type="color3" value="0.12214, 0.07819, 0.05613"/>
+    <input name="base_metalness" type="float" value="0.01"/>
+    <input name="specular_roughness" type="float" value="0.72"/>
+  </open_pbr_surface>
+</materialx>

@@ -1,126 +1,28 @@
 {
   "SPDXID": "SPDXRef-DOCUMENT",
   "creationInfo": {
-    "created": "2026-11-16T00:00:00Z",
+    "created": "2026-11-25T00:00:00Z",
     "creators": [
       "Tool: uorust"
     ]
   },
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "https://uor.foundation/spdx/cs1.618/ff16a944860335c30850f8ebf4ea35476fa079497d4e3ee0826ad655616e1fa1",
+  "documentNamespace": "https://uor.foundation/spdx/cs1.618/17b71a91460c0314236f422b82a163d724d755d34be0a47b0597e9cf0fe32e0d",
   "name": "cs1.618",
   "packages": [
     {
-      "SPDXID": "SPDXRef-Package-adler2-2.0.1",
+      "SPDXID": "SPDXRef-Package-block-buffer-0.12.1",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
+          "checksumValue": "d2f6c7dbe95a6ed67ad9f18e57daf93a2f034c524b99fd2b76d18fdfeb6660aa"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/adler2/2.0.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "adler2",
-      "versionInfo": "2.0.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-arrayvec-0.7.8",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "d3fb67a6e08acf24fdeccbac2cb6ac4305825bd1f117462e0e6f2f193345ad56"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/arrayvec/0.7.8/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "arrayvec",
-      "versionInfo": "0.7.8"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-autocfg-1.5.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/autocfg/1.5.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "autocfg",
-      "versionInfo": "1.5.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-base64-0.13.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/base64/0.13.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "base64",
-      "versionInfo": "0.13.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-bit-set-0.8.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "08807e080ed7f9d5433fa9b275196cfc35414f66a0c79d864dc51a0d825231a3"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/bit-set/0.8.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "bit-set",
-      "versionInfo": "0.8.0"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-bit-vec-0.8.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "5e764a1d40d510daf35e07be9eb06e75770908c27d411ee6c92109c9840eaaf7"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/bit-vec/0.8.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "bit-vec",
-      "versionInfo": "0.8.0"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-bitflags-2.13.2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/bitflags/2.13.2/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "bitflags",
-      "versionInfo": "2.13.2"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-block-buffer-0.10.4",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/block-buffer/0.10.4/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/block-buffer/0.12.1/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "block-buffer",
-      "versionInfo": "0.10.4"
+      "versionInfo": "0.12.1"
     },
     {
       "SPDXID": "SPDXRef-Package-bytemuck-1.25.2",
@@ -165,20 +67,6 @@
       "versionInfo": "1.5.0"
     },
     {
-      "SPDXID": "SPDXRef-Package-byteorder-lite-0.1.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "8f1fe948ff07f4bd06c30984e69f5b4899c516a3ef74f34df92a2df2ab535495"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/byteorder-lite/0.1.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "byteorder-lite",
-      "versionInfo": "0.1.0"
-    },
-    {
       "SPDXID": "SPDXRef-Package-cfg-if-1.0.5",
       "checksums": [
         {
@@ -193,74 +81,46 @@
       "versionInfo": "1.0.5"
     },
     {
-      "SPDXID": "SPDXRef-Package-cfg-aliases-0.2.2",
+      "SPDXID": "SPDXRef-Package-const-oid-0.10.3",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "f079e83a288787bcd14a6aea84cee5c87a67c5a3e660c30f557a3d24761b3527"
+          "checksumValue": "be95d4a884358a21a199689323c29e9256b4a1b315e22f183d155422041d3a9a"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/cfg_aliases/0.2.2/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/const-oid/0.10.3/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
-      "name": "cfg_aliases",
-      "versionInfo": "0.2.2"
+      "name": "const-oid",
+      "versionInfo": "0.10.3"
     },
     {
-      "SPDXID": "SPDXRef-Package-codespan-reporting-0.11.1",
+      "SPDXID": "SPDXRef-Package-cpufeatures-0.3.1",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "3538270d33cc669650c4b093848450d380def10c331d38c768e34cac80576e6e"
+          "checksumValue": "5ca28b0ae3115b884660db4118d803791fd6756b6e88f39c0f3f7859060d7566"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/codespan-reporting/0.11.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "codespan-reporting",
-      "versionInfo": "0.11.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-cpufeatures-0.2.17",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "59ed5838eebb26a2bb2e58f6d5b5316989ae9d08bab10e0e6d103e656d1b0280"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/cpufeatures/0.2.17/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/cpufeatures/0.3.1/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "cpufeatures",
-      "versionInfo": "0.2.17"
+      "versionInfo": "0.3.1"
     },
     {
-      "SPDXID": "SPDXRef-Package-crc32fast-1.5.5",
+      "SPDXID": "SPDXRef-Package-crypto-common-0.2.2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "2b929dd2a135771f40afabd1073f85eed59c800b7c61901e5c254270497dad64"
+          "checksumValue": "ce6e4c961d6cd6c9a86db418387425e8bdeaf05b3c8bc1411e6dca4c252f1453"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/crc32fast/1.5.5/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "crc32fast",
-      "versionInfo": "1.5.5"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-crypto-common-0.1.7",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "78c8292055d1c1df0cce5d180393dc8cce0abec0a7102adb6c7b1eef6016d60a"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/crypto-common/0.1.7/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/crypto-common/0.2.2/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "crypto-common",
-      "versionInfo": "0.1.7"
+      "versionInfo": "0.2.2"
     },
     {
       "SPDXID": "SPDXRef-Package-cs-verdant-0.1.0",
@@ -271,74 +131,18 @@
       "versionInfo": "0.1.0"
     },
     {
-      "SPDXID": "SPDXRef-Package-digest-0.10.7",
+      "SPDXID": "SPDXRef-Package-digest-0.11.3",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "9ed9a281f7bc9b7576e61468ba615a66a5c8cfdff42420a70aa82701a3b1e292"
+          "checksumValue": "f1dd6dbb5841937940781866fa1281a1ff7bd3bf827091440879f9994983d5c2"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/digest/0.10.7/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/digest/0.11.3/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "digest",
-      "versionInfo": "0.10.7"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-equivalent-1.0.3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "00d174d5400e5e8fd687ad1049e2f578285fa914201b1af7e8b112a4546bd826"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/equivalent/1.0.3/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "equivalent",
-      "versionInfo": "1.0.3"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-fdeflate-0.3.7",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "1e6853b52649d4ac5c0bd02320cddc5ba956bdb407c4b75a2c6b75bf51500f8c"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/fdeflate/0.3.7/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "fdeflate",
-      "versionInfo": "0.3.7"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-flate2-1.1.11",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "626d4928326b646e70f65ed36fc7cf9f206bdb68a0019ee7c6b4709da4e084c4"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/flate2/1.1.11/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "flate2",
-      "versionInfo": "1.1.11"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-generic-array-0.14.7",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "85649ca51fd72272d7821adaf274ad91c288277713d9c18820d8499a7ff69e9a"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/generic-array/0.14.7/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "generic-array",
-      "versionInfo": "0.14.7"
+      "versionInfo": "0.11.3"
     },
     {
       "SPDXID": "SPDXRef-Package-gltf-1.4.1",
@@ -383,74 +187,18 @@
       "versionInfo": "1.4.1"
     },
     {
-      "SPDXID": "SPDXRef-Package-hashbrown-0.17.1",
+      "SPDXID": "SPDXRef-Package-hybrid-array-0.4.15",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
+          "checksumValue": "27f864f10dfb56725ce5ce5472bc52252c8f93a4ab86327122cebf62c5f59a17"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/hashbrown/0.17.1/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/hybrid-array/0.4.15/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
-      "name": "hashbrown",
-      "versionInfo": "0.17.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-heck-0.5.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/heck/0.5.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "heck",
-      "versionInfo": "0.5.0"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-hexf-parse-0.2.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/hexf-parse/0.2.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "hexf-parse",
-      "versionInfo": "0.2.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-image-0.25.10",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "85ab80394333c02fe689eaf900ab500fbd0c2213da414687ebf995a65d5a6104"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/image/0.25.10/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "image",
-      "versionInfo": "0.25.10"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-indexmap-2.14.2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "cc4e190f5d26ca7051642629da2c52fc03bde85a03197c99408dcd291734c855"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/indexmap/2.14.2/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "indexmap",
-      "versionInfo": "2.14.2"
+      "name": "hybrid-array",
+      "versionInfo": "0.4.15"
     },
     {
       "SPDXID": "SPDXRef-Package-inflections-1.1.1",
@@ -509,20 +257,6 @@
       "versionInfo": "0.2.191"
     },
     {
-      "SPDXID": "SPDXRef-Package-log-0.4.35",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/log/0.4.35/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "log",
-      "versionInfo": "0.4.35"
-    },
-    {
       "SPDXID": "SPDXRef-Package-memchr-2.8.3",
       "checksums": [
         {
@@ -535,90 +269,6 @@
       "licenseConcluded": "NOASSERTION",
       "name": "memchr",
       "versionInfo": "2.8.3"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-miniz-oxide-0.8.9",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/miniz_oxide/0.8.9/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "miniz_oxide",
-      "versionInfo": "0.8.9"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-miniz-oxide-0.9.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "b63fbc4a50860e98e7b2aa7804ded1db5cbc3aff9193adaff57a6931bf7c4b4c"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/miniz_oxide/0.9.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "miniz_oxide",
-      "versionInfo": "0.9.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-moxcms-0.8.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "bb85c154ba489f01b25c0d36ae69a87e4a1c73a72631fc6c0eb6dde34a73e44b"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/moxcms/0.8.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "moxcms",
-      "versionInfo": "0.8.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-naga-24.0.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "e380993072e52eef724eddfcde0ed013b0c023c3f0417336ed041aa9f076994e"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/naga/24.0.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "naga",
-      "versionInfo": "24.0.0"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-num-traits-0.2.19",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/num-traits/0.2.19/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "num-traits",
-      "versionInfo": "0.2.19"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-png-0.18.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "60769b8b31b2a9f263dae2776c37b1b28ae246943cf719eb6946a1db05128a61"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/png/0.18.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "png",
-      "versionInfo": "0.18.1"
     },
     {
       "SPDXID": "SPDXRef-Package-proc-macro2-1.0.107",
@@ -635,20 +285,6 @@
       "versionInfo": "1.0.107"
     },
     {
-      "SPDXID": "SPDXRef-Package-pxfm-0.1.30",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "d55d956fa96f5ec02be2e13af0e20391a5aa83d6a074e3ad368959d0fab299ea"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/pxfm/0.1.30/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "pxfm",
-      "versionInfo": "0.1.30"
-    },
-    {
       "SPDXID": "SPDXRef-Package-quote-1.0.47",
       "checksums": [
         {
@@ -661,34 +297,6 @@
       "licenseConcluded": "NOASSERTION",
       "name": "quote",
       "versionInfo": "1.0.47"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-rustc-hash-1.1.0",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/rustc-hash/1.1.0/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "rustc-hash",
-      "versionInfo": "1.1.0"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-rustversion-1.0.23",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/rustversion/1.0.23/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "rustversion",
-      "versionInfo": "1.0.23"
     },
     {
       "SPDXID": "SPDXRef-Package-serde-1.0.229",
@@ -747,60 +355,18 @@
       "versionInfo": "1.0.154"
     },
     {
-      "SPDXID": "SPDXRef-Package-sha2-0.10.9",
+      "SPDXID": "SPDXRef-Package-sha2-0.11.2",
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "a7507d819769d01a365ab707794a4084392c824f54a7a6a7862f8c3d0892b283"
+          "checksumValue": "5b0e5c7d67bc53f435386b2130fdc900488c5703770f6d8a4633060e34288a27"
         }
       ],
-      "downloadLocation": "https://crates.io/api/v1/crates/sha2/0.10.9/download",
+      "downloadLocation": "https://crates.io/api/v1/crates/sha2/0.11.2/download",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "sha2",
-      "versionInfo": "0.10.9"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-simd-adler32-0.3.10",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "3a219298ac11a56ea9a6d2120044824d6f01aeb034955e7af7bc16858527deea"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/simd-adler32/0.3.10/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "simd-adler32",
-      "versionInfo": "0.3.10"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-strum-0.26.3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "8fec0f0aef304996cf250b31b5a10dee7980c85da9d759361292b8bca5a18f06"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/strum/0.26.3/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "strum",
-      "versionInfo": "0.26.3"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-strum-macros-0.26.4",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "4c6bee85a5a24955dc440386795aa378cd9cf82acd5f764469152d2270e581be"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/strum_macros/0.26.4/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "strum_macros",
-      "versionInfo": "0.26.4"
+      "versionInfo": "0.11.2"
     },
     {
       "SPDXID": "SPDXRef-Package-syn-2.0.119",
@@ -831,48 +397,6 @@
       "versionInfo": "3.0.10"
     },
     {
-      "SPDXID": "SPDXRef-Package-termcolor-1.4.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "06794f8f6c5c898b3275aebefa6b8a1cb24cd2c6c79397ab15774837a0bc5755"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/termcolor/1.4.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "termcolor",
-      "versionInfo": "1.4.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-thiserror-2.0.21",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/thiserror/2.0.21/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "thiserror",
-      "versionInfo": "2.0.21"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-thiserror-impl-2.0.21",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/thiserror-impl/2.0.21/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "thiserror-impl",
-      "versionInfo": "2.0.21"
-    },
-    {
       "SPDXID": "SPDXRef-Package-typenum-1.20.1",
       "checksums": [
         {
@@ -899,34 +423,6 @@
       "licenseConcluded": "NOASSERTION",
       "name": "unicode-ident",
       "versionInfo": "1.0.27"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-unicode-width-0.1.14",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/unicode-width/0.1.14/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "unicode-width",
-      "versionInfo": "0.1.14"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-unicode-xid-0.2.6",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "ebc1c04c71510c7f702b52b7c350734c9ff1295c464a03335b00bb84fc54f853"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/unicode-xid/0.2.6/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "unicode-xid",
-      "versionInfo": "0.2.6"
     },
     {
       "SPDXID": "SPDXRef-Package-uor-matmul-0.1.0",
@@ -969,104 +465,988 @@
       "versionInfo": "0.1.0"
     },
     {
-      "SPDXID": "SPDXRef-Package-urlencoding-2.1.3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "daf8dba3b7eb870caf1ddeed7bc9d2a049f3cfdfae7cb521b087cc33ae4c49da"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/urlencoding/2.1.3/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "urlencoding",
-      "versionInfo": "2.1.3"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-verdant-core-0.1.0",
+      "SPDXID": "SPDXRef-Package-verdant-core-2.22.4",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "verdant-core",
-      "versionInfo": "0.1.0"
+      "versionInfo": "2.22.4"
     },
     {
-      "SPDXID": "SPDXRef-Package-verdant-tensor-0.1.0",
+      "SPDXID": "SPDXRef-Package-verdant-tensor-2.22.4",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "name": "verdant-tensor",
+      "versionInfo": "2.22.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-add-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_add_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-finite-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_finite",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-fit-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_fit",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-geometry-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_geometry",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-insert-field-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_insert_field",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-quantized-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_quantized",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-affine-weight-fields-2.43.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_affine_weight_fields",
+      "versionInfo": "2.43.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-bitpacked-product-2.41.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_bitpacked_product",
+      "versionInfo": "2.41.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-circular-magnitudes-2.21.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_circular_magnitudes",
+      "versionInfo": "2.21.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-circular-orient-2.21.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_circular_orient",
+      "versionInfo": "2.21.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-circular-prepare-2.21.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_circular_prepare",
+      "versionInfo": "2.21.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-circular-reduce-2.21.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_circular_reduce",
+      "versionInfo": "2.21.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-circular-square-2.21.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_circular_square",
+      "versionInfo": "2.21.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-count-f32-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_count_f32",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-count-f64-2.12.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_count_f64",
+      "versionInfo": "2.12.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-delta-rule-2.50.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_delta_rule",
+      "versionInfo": "2.50.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-division-class-2.12.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_division_class",
+      "versionInfo": "2.12.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-division-finish-2.12.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_division_finish",
+      "versionInfo": "2.12.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-division-norm-2.12.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_division_norm",
+      "versionInfo": "2.12.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-encoded-word-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_encoded_word",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-error-function-2.47.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_error_function",
+      "versionInfo": "2.47.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-exponential-f32-2.19.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_exponential_f32",
+      "versionInfo": "2.19.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-exponential-increment-2.48.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_exponential_increment",
+      "versionInfo": "2.48.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-exponential-scale-2.19.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_exponential_scale",
+      "versionInfo": "2.19.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-exponential-step-2.19.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_exponential_step",
+      "versionInfo": "2.19.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-float-storage-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_float_storage",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-float-transform-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_float_transform",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-gelu-2.28.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_gelu",
+      "versionInfo": "2.28.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-grouped-affine-2.40.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_grouped_affine",
+      "versionInfo": "2.40.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-grouped-dot-2.26.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_grouped_dot",
+      "versionInfo": "2.26.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-grouped-q8-2.25.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_grouped_q8",
+      "versionInfo": "2.25.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-grouped-six-encoding-2.46.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_grouped_six_encoding",
+      "versionInfo": "2.46.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-base-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_base",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-digit-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_digit",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-exponent-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_exponent",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-group-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_group",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-index-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_index",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-limbs-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_limbs",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-multiply-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_multiply",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-normalize-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_normalize",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-power-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_power",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-term-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_term",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-head-slope-word-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_head_slope_word",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-high-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_high_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-importance-grid-2.49.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_importance_grid",
+      "versionInfo": "2.49.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-increment-pack-2.48.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_increment_pack",
+      "versionInfo": "2.48.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-increment-term-2.48.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_increment_term",
+      "versionInfo": "2.48.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-integer-f32-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_integer_f32",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-iq3-fit-2.49.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_iq3_fit",
+      "versionInfo": "2.49.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-iq3-level-2.49.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_iq3_level",
+      "versionInfo": "2.49.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-iq3-scale-2.49.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_iq3_scale",
+      "versionInfo": "2.49.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-iq3-score-2.49.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_iq3_score",
+      "versionInfo": "2.49.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-admit-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_admit",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-inverse-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_inverse",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-prepare-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_prepare",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-product-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_product",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-scale-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_scale",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-series-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_series",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-term-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_term",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logarithmic-word-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logarithmic_word",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-logistic-2.24.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_logistic",
+      "versionInfo": "2.24.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-low-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_low_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-matrix-shape-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_matrix_shape",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-modular-word64-2.22.2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_modular_word64",
+      "versionInfo": "2.22.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-narrow-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_narrow_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-normalize-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_normalize_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-normalized-exponential-2.30.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_normalized_exponential",
+      "versionInfo": "2.30.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-numeric-equality-2.22.4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_numeric_equality",
+      "versionInfo": "2.22.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-pack-plan-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_pack_plan_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-packed-dot-2.18.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_packed_dot",
+      "versionInfo": "2.18.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-packed-field-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_packed_field",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-product-f64-2.22.1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_product_f64",
+      "versionInfo": "2.22.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-quotient-f64-2.12.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_quotient_f64",
+      "versionInfo": "2.12.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-quotient-route-2.22.2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_quotient_route",
+      "versionInfo": "2.22.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-center-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_center",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-coefficient-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_coefficient",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-instruction-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_instruction",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-offset-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_offset",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-power-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_power",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-prepare-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_prepare",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-log-segment-2.22.3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_log_segment",
+      "versionInfo": "2.22.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-constant-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_constant",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-decode-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_decode",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-input-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_input",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-instruction-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_instruction",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-large-stage-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_large_stage",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-part-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_part",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-reciprocal-limb-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_reciprocal_limb",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-route-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_route",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-reference-sine-shift-factor-2.22.5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_reference_sine_shift_factor",
+      "versionInfo": "2.22.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-rotation-geometry-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_rotation_geometry",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-rotation-limit-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_rotation_limit",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-rotation-signed-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_rotation_signed",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-rotation-step-2.22.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_rotation_step",
+      "versionInfo": "2.22.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-round-mantissa-f64-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_round_mantissa_f64",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-row-ranking-2.29.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_row_ranking",
+      "versionInfo": "2.29.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-scalar-f32-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_scalar_f32",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-signed64-conversion-2.21.8",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_signed64_conversion",
+      "versionInfo": "2.21.8"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-signed-truncation-2.44.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_signed_truncation",
+      "versionInfo": "2.44.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-small-float-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_small_float",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-softplus-2.32.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_softplus",
+      "versionInfo": "2.32.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-storage-block-2.10.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_storage_block",
+      "versionInfo": "2.10.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-storage-transfer-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_storage_transfer",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-symmetric-dot-2.17.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_symmetric_dot",
+      "versionInfo": "2.17.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-symmetric-dot-layout-2.17.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_symmetric_dot_layout",
+      "versionInfo": "2.17.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-symmetric-q8-2.17.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_symmetric_q8",
+      "versionInfo": "2.17.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-tanh-2.27.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_tanh",
+      "versionInfo": "2.27.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-unary-activate-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_unary_activate",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-unary-dispatch-2.48.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_unary_dispatch",
+      "versionInfo": "2.48.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-unary-plan-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_unary_plan",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-unary-round-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_unary_round",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-unary-select-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_unary_select",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-weighted-blend-2.23.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_weighted_blend",
+      "versionInfo": "2.23.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-weighted-pivot-2.23.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_weighted_pivot",
+      "versionInfo": "2.23.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-weighted-reciprocal-2.23.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_weighted_reciprocal",
+      "versionInfo": "2.23.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-wide-mode-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_wide_mode",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-wide-narrowing-2.21.8",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_wide_narrowing",
+      "versionInfo": "2.21.8"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-verdant-widen-f32-2.9.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "verdant_widen_f32",
+      "versionInfo": "2.9.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-vram-representation-0.1.0",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "name": "vram_representation",
       "versionInfo": "0.1.0"
     },
     {
-      "SPDXID": "SPDXRef-Package-version-check-0.9.5",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/version_check/0.9.5/download",
+      "SPDXID": "SPDXRef-Package-vtensor-layout-0.1.0",
+      "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
-      "name": "version_check",
-      "versionInfo": "0.9.5"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-winapi-util-0.1.11",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/winapi-util/0.1.11/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "winapi-util",
-      "versionInfo": "0.1.11"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-windows-link-0.2.1",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/windows-link/0.2.1/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "windows-link",
-      "versionInfo": "0.2.1"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-windows-sys-0.61.2",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/windows-sys/0.61.2/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "windows-sys",
-      "versionInfo": "0.61.2"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-zlib-rs-0.6.8",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "b268e58e7c693d7c271f93ffc4ba3b380412554231c85bf61ca7af91042a4112"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/zlib-rs/0.6.8/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "zlib-rs",
-      "versionInfo": "0.6.8"
+      "name": "vtensor_layout",
+      "versionInfo": "0.1.0"
     },
     {
       "SPDXID": "SPDXRef-Package-zmij-1.0.23",
@@ -1081,34 +1461,6 @@
       "licenseConcluded": "NOASSERTION",
       "name": "zmij",
       "versionInfo": "1.0.23"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-zune-core-0.5.3",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "d56377fd46368984a170bc5aac5567e52ca5da874caa60bea39fcbca78fb658b"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/zune-core/0.5.3/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "zune-core",
-      "versionInfo": "0.5.3"
-    },
-    {
-      "SPDXID": "SPDXRef-Package-zune-jpeg-0.5.15",
-      "checksums": [
-        {
-          "algorithm": "SHA256",
-          "checksumValue": "27bc9d5b815bc103f142aa054f561d9187d191692ec7c2d1e2b4737f8dbd7296"
-        }
-      ],
-      "downloadLocation": "https://crates.io/api/v1/crates/zune-jpeg/0.5.15/download",
-      "filesAnalyzed": false,
-      "licenseConcluded": "NOASSERTION",
-      "name": "zune-jpeg",
-      "versionInfo": "0.5.15"
     }
   ],
   "spdxVersion": "SPDX-2.3"

@@ -40,8 +40,8 @@
   "dependencies": [
     {
       "url": "./wasm/cs_verdant.wasm",
-      "bytes": 261647,
-      "sha256": "b4d9096a739d6dd7fec457155c751fb1851d2230bd147015f3ed561b0697e2ce"
+      "bytes": 242067,
+      "sha256": "4f3dd4c322b8712f0a5e7b888353adf21bd7e67471fb11a0b1c1f405074bdb66"
     },
     {
       "url": "./prism/CS-Round.holo",

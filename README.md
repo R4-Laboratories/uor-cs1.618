@@ -4,9 +4,11 @@
 
 An original, playable tactical multiplayer FPS inspired by the round-based defusal play of Counter-Strike 1.4/1.5, built on **Verdant Engine** and modeled with the **Prism** toolchain. The repository is `uor-cs1.618`; the game is **cs1.618**.
 
-Two teams, five players per team, two objective sites, one original map: **Meridian**, a coastal relay station. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. All geometry, weapon models, textures, UI and synthesized audio are original.
+Two teams, five players per team, two objective sites, one original map: **Meridian**, a coastal relay station. Ember plants the device; Tidal defends or defuses. First to eight rounds wins. Meridian combines original architecture, operators, weapons and synthesized audio with locally packaged CC0 surface scans and a coastal panorama. [Art sources](public/art/meridian/SOURCES.md)
 
-![Meridian gameplay](docs/evidence/multiplayer.png)
+![Ember and Tidal in the Meridian relay station](docs/evidence/studio-upgrade/after-operators.webp)
+
+[Compare the earlier and current game](docs/STUDIO-UPGRADE.md) · [Inspect the 20 live materials](https://r4-laboratories.github.io/uor-cs1.618/evolution-studio.html#material-inspector)
 
 ## Play from GitHub Pages
 
@@ -116,7 +118,7 @@ npm run package           # source/server + static-client archives
 
 For browser tests, install Chromium once with `npx playwright install chromium`. Source regeneration uses sibling upstream checkouts under `../upstream`, pinned in [model/upstream-lock.json](model/upstream-lock.json), or `UPSTREAM_DIR`.
 
-[Verification evidence](docs/VERIFICATION.md) distinguishes checked behavior, imported engine code, formal model evidence and open claims. [Prism architecture](docs/PRISM.md) explains exactly how each of the six requested repositories is used. UORust's [frontier](prism/rust-projection/frontier.toml) remains explicit: it is not a claim that the Rust integration has been fully lifted into Lean.
+[Verification evidence](docs/VERIFICATION.md) distinguishes checked behavior, imported engine code, formal model evidence and open claims. [Prism architecture](docs/PRISM.md) describes the original game and proof toolchain. [Studio materials](docs/STUDIO-MATERIALS.md) documents the rendering pipeline. UORust's [frontier](prism/rust-projection/frontier.toml) remains explicit: it is not a claim that the Rust integration has been fully lifted into Lean.
 
 ## Layout
 
@@ -142,7 +144,7 @@ The [Prism identity page](https://r4-laboratories.github.io/uor-cs1.618/identity
 
 ## Latest engine integration
 
-[Verdant 3D upgrade](docs/VERDANT-3D.md): pinned `9b6c14d`, HD roofline and exterior geometry at LOD0–4, worker generation, triangle-guarded first-person cameras, and the upstream frame-budget governor. Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.
+Meridian uses Verdant Engine 2.22.4, with vTensor validating RGBA texture layouts and vRAM selecting the storage format for Studio roughness tiles. Verdant Studio directs the surface library through OpenPBR and MaterialX. [Studio upgrade](docs/STUDIO-UPGRADE.md) · [Verdant 3D integration](docs/VERDANT-3D.md). Use the pause menu’s render quality setting to compare HD4 and HD0. [Evolution impact audit](docs/evidence/evolution-impact-audit-2026-11-16.md) separates accepted program changes from evaluation-only ticks.
 
 ## Release evidence and rendering research
 

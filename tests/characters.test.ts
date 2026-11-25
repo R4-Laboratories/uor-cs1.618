@@ -33,3 +33,20 @@ test('steep bot aim stays within the animation ABI without interrupting renderin
  for(const pitch of [-Math.PI/2,Math.PI/2]){p.pitch=pitch;assert.doesNotThrow(()=>layer.update(p,1/30,1));}
  assert.equal(layer.poseUpdates,2);layer.clear();
 });
+
+test('operator kit shares the Verdant pose and follows equipment and grounding changes',()=>{
+ const layer=new CharacterLayer(engine),p=player('equipped');
+ const group=layer.create(p),rig=layer.rigs.get(p.id)!;
+ const kit=group.getObjectByName('fitted-field-equipment') as T.SkinnedMesh;
+ assert.equal(kit.skeleton,rig.mesh.skeleton);
+ assert(kit.geometry.getAttribute('skinIndex').count>1000);
+ const original=rig.weapon.geometry;
+ layer.update({...p,weapon:'sidearm',grounded:false},1/30,1);
+ assert.notEqual(rig.weapon.geometry,original);
+ assert.equal(rig.shadow.visible,false);
+ layer.update({...p,weapon:'kestrel',grounded:true},1/30,2);
+ assert.equal(rig.weapon.geometry,original);
+ assert.equal(rig.shadow.visible,true);
+ assert.equal(rig.weapon.parent,rig.bones[3]);
+ layer.dispose();assert.equal(layer.rigs.size,0);
+});

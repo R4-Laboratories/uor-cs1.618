@@ -12,7 +12,7 @@ let ts=`// Generated from model/round.prompt.json by scripts/prism-generate.mjs.
 for(const rule of p.rules)ts+=` if(${rule.when.map(condition).join('&&')})return ${JSON.stringify(rule.then)};\n`;
 ts+=` return ${JSON.stringify(p.otherwise)};\n}\n`;
 writeFileSync('shared/round.generated.ts',ts);
-const repos=['verdant-engine','verdant-resonance','lexlean','prismpm','prism-devrel','UORust'];
+const repos=['verdant-engine','verdant-resonance','lexlean','prismpm','prism-devrel','UORust','vRAM','vTensor','verdant-studio'];
 const pins=repos.map(name=>({name,repository:execFileSync('git',['-C',`${upstream}/${name}`,'remote','get-url','origin'],{encoding:'utf8'}).trim(),commit:execFileSync('git',['-C',`${upstream}/${name}`,'rev-parse','HEAD'],{encoding:'utf8'}).trim()}));
 mkdirSync('docs',{recursive:true});writeFileSync('model/upstream-lock.json',JSON.stringify(pins,null,2)+'\n');
 console.log('Generated round decision projection and upstream source pins. Formal proof status is reported separately.');

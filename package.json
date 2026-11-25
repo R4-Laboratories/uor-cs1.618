@@ -1,6 +1,6 @@
 {
   "name": "cs1-618",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -26,7 +26,7 @@
     "test:identity-browser": "tsx scripts/identity-browser-test.ts && tsx scripts/frame-assets-browser-test.ts",
     "test:discovery-browser": "tsx scripts/discovery-browser-test.ts",
     "test:objective-browser": "tsx scripts/objective-browser-test.ts",
-    "test:presentation-browser": "tsx scripts/presentation-browser-test.ts && tsx scripts/presentation-audio-test.ts",
+    "test:presentation-browser": "tsx scripts/presentation-browser-test.ts && tsx scripts/presentation-audio-test.ts && node scripts/studio-render-browser.mjs",
     "test:frame-assets-browser": "tsx scripts/frame-assets-browser-test.ts"
   },
   "dependencies": {

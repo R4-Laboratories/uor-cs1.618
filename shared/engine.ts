@@ -1,9 +1,23 @@
+import { packRgbaPages, type PackedTexture, type TextureStagingStats } from './texture-pages';
 import { BOXES } from './map';
 export interface CharacterAsset {positions:number[][];normals:number[][];colors:number[][];indices:number[];morphs:number[][][];bones:{parent:number;root:boolean;translation:number[];rotation:number[]}[];joints:number[][];weights:number[][];}
 export interface HdAsset {name:string;positions:number[][];normals:number[][];uvs:number[][];colors:number[][];indices:number[];}
 type Exports=Record<string,(...args:number[])=>number>;
 export class VerdantEngine {
  constructor(private ex:Exports,private memory:WebAssembly.Memory) {ex.cs_clear();for(const b of BOXES)ex.cs_box(b.x,b.y,b.z,b.w,b.h,b.d);ex.cs_build();}
+ /** Cumulative material staging measurements across successful uploads. */
+ readonly textureStaging: TextureStagingStats = {textures:0,logicalBytes:0,storedBytes:0,fillPages:0,sparsePages:0,palettePages:0,literalPages:0};
+ packTexture(width:number,height:number,rgba:Uint8Array):PackedTexture {
+  if (!Number.isSafeInteger(width) || !Number.isSafeInteger(height) || width < 1 || height < 1 || width > 1024 || height > 1024) {
+   throw new RangeError('Material dimensions exceed texture staging bounds');
+  }
+  const span = this.ex.cs_texture_span(width,height);
+  if (span <= 0 || rgba.byteLength !== span) throw new RangeError('RGBA8 data differs from the vTensor byte span');
+  return packRgbaPages(rgba,this.ex.cs_texture_page_plan,this.textureStaging);
+ }
+ stageTexture(width:number,height:number,rgba:Uint8Array):Uint8Array<ArrayBuffer> {
+  return this.packTexture(width,height,rgba).unpack();
+ }
  hdAsset(kind:number,lod:number):HdAsset{
   if(!Number.isInteger(kind)||!Number.isInteger(lod)||kind<0||kind>2||lod<0||lod>4||!this.ex.cs_hd_asset(kind,lod))throw new RangeError('Invalid Verdant HD asset');
   return JSON.parse(new TextDecoder().decode(new Uint8Array(this.memory.buffer,this.ex.cs_hd_ptr(),this.ex.cs_hd_len())));
