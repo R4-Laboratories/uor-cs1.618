@@ -1,6 +1,7 @@
+import {PacketBudget} from './packet-budget';
 import {Match} from '../server/match';
 import {RULES,WEAPONS} from './config';
-interface Session {joined:boolean;opened:number;last:number;window:number;count:number;lastKills:number;lastDeaths:number;}
+interface Session {joined:boolean;opened:number;last:number;budget:PacketBudget;lastKills:number;lastDeaths:number;}
 /** Authority boundary shared by the worker and its tests. IDs come only from transport. */
 export class BrowserMatchHost {
  private sessions=new Map<string,Session>();
@@ -12,18 +13,19 @@ export class BrowserMatchHost {
   // Repeated transport notifications must not drop a player or renew join deadlines.
   if(this.sessions.has(id))return true;
   if(this.sessions.size>=RULES.maxPlayers){this.drop(id,'Room full.');return false;}
-  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,window:now,count:0,lastKills:0,lastDeaths:0});return true;
+  const now=this.now();this.sessions.set(id,{joined:false,opened:now,last:now,budget:new PacketBudget(),lastKills:0,lastDeaths:0});return true;
  }
  private reject(id:string,reason:string){this.leave(id);this.drop(id,reason);}
  message(id:string,value:unknown){
   const session=this.sessions.get(id);if(!session)return;
   const now=this.now();
-  if(now-session.window>=1000){session.window=now;session.count=0;}
-  if(++session.count>150){this.reject(id,'Message rate exceeded.');return;}
   let size:number;try{size=JSON.stringify(value).length;}catch{this.reject(id,'Invalid message.');return;}
   if(size>4096){this.reject(id,'Message too large.');return;}
   if(!value||typeof value!=='object')return;
   const m=value as Record<string,any>;
+  const admission=session.budget.take(now,session.joined&&m.type==='input');
+  if(admission==='skip')return;
+  if(admission==='close'){this.reject(id,'Message rate exceeded.');return;}
   if(!session.joined){
    if(m.type!=='join'||m.token!==this.token||typeof m.name!=='string'||!['auto','attack','defend'].includes(m.team)){
     this.reject(id,'Invalid invitation or join request.');return;

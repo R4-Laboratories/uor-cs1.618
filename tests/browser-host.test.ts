@@ -53,3 +53,14 @@ test('WebRTC scores are delivered reliably and repeated in later movement snapsh
  const packets=f.sent.filter(p=>p.id==='guest'&&p.message.type==='snapshot');
  assert.deepEqual(packets.map(p=>[p.realtime,p.message.self.career.kills]),[[false,1],[true,1]]);
 });
+
+test('queued movement delivered after a render stall keeps the guest connected and controls responsive',async()=>{
+ const f=await fixture();f.join('host');f.join('guest');
+ for(let seq=1;seq<=155;seq++)f.host.message('guest',{type:'input',input:{...neutralInput(),seq}});
+ f.host.message('guest',{type:'ping',at:321});
+ assert(f.sent.some(entry=>entry.id==='guest'&&entry.message.type==='pong'&&entry.message.at===321));
+ assert.equal(f.closed.length,0);
+ assert(f.match.players.get('guest')!.acceptedSeq<155);
+ f.setClock(20);f.host.message('guest',{type:'input',input:{...neutralInput(),seq:156}});
+ assert.equal(f.match.players.get('guest')!.acceptedSeq,156);
+});

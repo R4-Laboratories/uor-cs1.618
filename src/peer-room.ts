@@ -1,3 +1,4 @@
+import {PacketBudget} from '../shared/packet-budget';
 import Peer,{type DataConnection} from 'peerjs';
 import {signHostProof,verifyHostProof,type HostBinding} from '../shared/match-discovery';
 import type {HologramPolicy} from '../shared/hologram-policy';
@@ -9,7 +10,7 @@ interface Options {
  hostIdentity?:any;expectedHost?:{prism:string;audience:string;policy:HologramPolicy};
  receive:(message:any)=>void;status:(message:string)=>void;closed:(reason:string)=>void;
 }
-interface Link {proofState:'none'|'waiting'|'verifying'|'verified';challenge?:HostBinding;id:string;opened:boolean;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;window:number;count:number;}
+interface Link {proofState:'none'|'waiting'|'verifying'|'verified';challenge?:HostBinding;id:string;opened:boolean;connection:DataConnection;fast:RTCDataChannel|null;timer:ReturnType<typeof setTimeout>;lastSeen:number;route:string;budget:PacketBudget;}
 /** Rendezvous uses PeerServer; gameplay stays on encrypted browser-to-browser channels. */
 export class PeerRoom {
  readonly invitation:string;
@@ -85,7 +86,7 @@ export class PeerRoom {
  }
  private attach(connection:DataConnection){
   const id=`remote-${crypto.randomUUID()}`;
-  const link:Link={id,proofState:'none',opened:false,connection,fast:null,lastSeen:performance.now(),route:'negotiating',window:performance.now(),count:0,timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
+  const link:Link={id,proofState:'none',opened:false,connection,fast:null,lastSeen:performance.now(),route:'negotiating',budget:new PacketBudget(),timer:setTimeout(()=>this.remove(link,'Peer handshake timed out.'),15000)};
   this.links.set(id,link);this.diagnostics.peers=this.links.size;
   // PeerJS normally owns ondatachannel. Route only its primary channel to its handler.
   const pc=connection.peerConnection,original=pc.ondatachannel;
@@ -116,9 +117,10 @@ export class PeerRoom {
  }
  private incoming(link:Link,data:unknown,realtime:boolean){
   if(this.stopped||!this.links.has(link.id))return;
-  const now=performance.now();if(now-link.window>=1000){link.window=now;link.count=0;}
-  if(++link.count>150){this.remove(link,'Message rate exceeded.');return;}
   if(typeof data!=='string'||data.length>(this.options.host?4096:131072)){this.remove(link,'Invalid peer packet.');return;}
+  const admission=link.budget.take(performance.now(),realtime);
+  if(admission==='skip')return;
+  if(admission==='close'){this.remove(link,'Message rate exceeded.');return;}
   let message:any;try{message=JSON.parse(data);}catch{this.remove(link,'Invalid peer packet.');return;}
   if(!message||typeof message!=='object')return;
   link.lastSeen=performance.now();
