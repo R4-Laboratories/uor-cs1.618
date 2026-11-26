@@ -261,401 +261,128 @@
   "lastEvaluation": {
     "generation": 11,
     "author": null,
-    "at": "2026-11-26T12:50:11.802Z",
-    "base": "72948b759285d8cea93cc703de7f5eff7abe76fb",
+    "at": "2026-11-26T13:09:29.641Z",
+    "base": "7e0ad8a03d3100205745492bffddfcd83d9e6efa",
     "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
-    "previous": "e4d1c6073b137b4c46bc59acf86361fcb547d270f30ac64aff19da87c50b2e7f",
+    "previous": "a1f73b220c1678df31ba851cc5556c4fee73107b22d1b58ee0db40a900b12757",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "render-8-2",
-        "family": "render",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "1c028cb22b068109e092995f25e8716d28d79ce7969e467eb6e7bc5a3b1b6b8c",
-        "baselineWork": 260780,
-        "candidateWork": 286516,
+        "candidate": "tactics-synth-1",
+        "family": "tactics",
+        "author": "seeded-synthesis",
+        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+        "configHash": "f19eb259dac0c1b270134f8aa24242b66643b66ee655cb348a2892b6957fedd4",
+        "baselineWork": 1,
+        "candidateWork": 1,
         "fidelity": true,
         "bounds": true,
-        "samples": 6,
-        "comparisons": [
-          {
-            "mean": 3.0637254901960784e-8,
-            "changed": 0
-          },
-          {
-            "mean": 3.0126633986928107e-7,
-            "changed": 0.00000390625
-          },
-          {
-            "mean": 0.0000025122549019607842,
-            "changed": 0
-          },
-          {
-            "mean": 1.0212418300653595e-8,
-            "changed": 0
-          },
-          {
-            "mean": 0,
-            "changed": 0
-          },
-          {
-            "mean": 2.0424836601307188e-7,
-            "changed": 0.00000390625
-          }
-        ],
-        "reference": [
-          {
-            "calls": 424,
-            "triangles": 30530,
-            "frameMs": 4.19999999999709
-          },
-          {
-            "calls": 306,
-            "triangles": 26044,
-            "frameMs": 1.5999999999985448
-          },
-          {
-            "calls": 359,
-            "triangles": 30420,
-            "frameMs": 2.400000000001455
-          },
-          {
-            "calls": 431,
-            "triangles": 30532,
-            "frameMs": 2.3000000000029104
-          },
-          {
-            "calls": 230,
-            "triangles": 23732,
-            "frameMs": 3.1000000000058208
-          },
-          {
-            "calls": 245,
-            "triangles": 28342,
-            "frameMs": 1.1999999999970896
-          }
-        ],
-        "before": [
-          {
-            "calls": 171,
-            "triangles": 30974,
-            "frameMs": 2.599999999998545
-          },
-          {
-            "calls": 134,
-            "triangles": 27088,
-            "frameMs": 1.9000000000014552
-          },
-          {
-            "calls": 148,
-            "triangles": 30996,
-            "frameMs": 2.2000000000043656
-          },
-          {
-            "calls": 172,
-            "triangles": 30904,
-            "frameMs": 2.2999999999956344
-          },
-          {
-            "calls": 119,
-            "triangles": 25220,
-            "frameMs": 0.9000000000014552
-          },
-          {
-            "calls": 115,
-            "triangles": 29698,
-            "frameMs": 2.1000000000058208
-          }
-        ],
-        "after": [
-          {
-            "calls": 239,
-            "triangles": 30926,
-            "frameMs": 4.30000000000291
-          },
-          {
-            "calls": 177,
-            "triangles": 26296,
-            "frameMs": 1.6999999999970896
-          },
-          {
-            "calls": 200,
-            "triangles": 30576,
-            "frameMs": 1.6999999999970896
-          },
-          {
-            "calls": 238,
-            "triangles": 30832,
-            "frameMs": 1.7000000000116415
-          },
-          {
-            "calls": 146,
-            "triangles": 24128,
-            "frameMs": 1.1000000000058208
-          },
-          {
-            "calls": 149,
-            "triangles": 28858,
-            "frameMs": 2.1000000000058208
-          }
-        ]
+        "samples": 222,
+        "comparisons": null,
+        "reference": {
+          "metricVersion": 3,
+          "objectiveCases": 24,
+          "training": 96,
+          "heldOut": 96,
+          "realMatches": 6,
+          "scope": "Fixed scenario corpus; not general match win rate"
+        },
+        "before": {
+          "objectiveErrors": 0,
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
+          ]
+        },
+        "after": {
+          "objectiveErrors": 0,
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
+          ]
+        }
       },
       {
-        "candidate": "render-8-4",
-        "family": "render",
-        "author": "optimizer",
-        "metric": "work count",
-        "configHash": "44c2c17228c66b962d0c83bf87cc3790a6ca39d244ce634665d2be982de3800e",
-        "baselineWork": 260780,
-        "candidateWork": 311236,
+        "candidate": "tactics-synth-3",
+        "family": "tactics",
+        "author": "seeded-synthesis",
+        "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+        "configHash": "f19eb259dac0c1b270134f8aa24242b66643b66ee655cb348a2892b6957fedd4",
+        "baselineWork": 1,
+        "candidateWork": 1,
         "fidelity": true,
         "bounds": true,
-        "samples": 6,
-        "comparisons": [
-          {
-            "mean": 0,
-            "changed": 0
-          },
-          {
-            "mean": 9.191176470588236e-8,
-            "changed": 0
-          },
-          {
-            "mean": 3.2679738562091505e-7,
-            "changed": 0
-          },
-          {
-            "mean": 0,
-            "changed": 0
-          },
-          {
-            "mean": 0,
-            "changed": 0
-          },
-          {
-            "mean": 1.991421568627451e-7,
-            "changed": 0.00000390625
-          }
-        ],
-        "reference": [
-          {
-            "calls": 424,
-            "triangles": 30530,
-            "frameMs": 5.899999999994179
-          },
-          {
-            "calls": 306,
-            "triangles": 26044,
-            "frameMs": 1.6000000000058208
-          },
-          {
-            "calls": 359,
-            "triangles": 30420,
-            "frameMs": 1.5
-          },
-          {
-            "calls": 431,
-            "triangles": 30532,
-            "frameMs": 2
-          },
-          {
-            "calls": 230,
-            "triangles": 23732,
-            "frameMs": 2.3999999999941792
-          },
-          {
-            "calls": 245,
-            "triangles": 28342,
-            "frameMs": 1.2999999999883585
-          }
-        ],
-        "before": [
-          {
-            "calls": 171,
-            "triangles": 30974,
-            "frameMs": 2.3000000000029104
-          },
-          {
-            "calls": 134,
-            "triangles": 27088,
-            "frameMs": 1.5
-          },
-          {
-            "calls": 148,
-            "triangles": 30996,
-            "frameMs": 1.7999999999883585
-          },
-          {
-            "calls": 172,
-            "triangles": 30904,
-            "frameMs": 2.400000000008731
-          },
-          {
-            "calls": 119,
-            "triangles": 25220,
-            "frameMs": 1.3000000000029104
-          },
-          {
-            "calls": 115,
-            "triangles": 29698,
-            "frameMs": 3.8999999999941792
-          }
-        ],
-        "after": [
-          {
-            "calls": 289,
-            "triangles": 30770,
-            "frameMs": 2.1000000000058208
-          },
-          {
-            "calls": 213,
-            "triangles": 26188,
-            "frameMs": 1.6999999999970896
-          },
-          {
-            "calls": 246,
-            "triangles": 30540,
-            "frameMs": 2.3999999999941792
-          },
-          {
-            "calls": 292,
-            "triangles": 30724,
-            "frameMs": 2.3000000000029104
-          },
-          {
-            "calls": 177,
-            "triangles": 24068,
-            "frameMs": 1.5
-          },
-          {
-            "calls": 184,
-            "triangles": 28846,
-            "frameMs": 1.9000000000087311
-          }
-        ]
+        "samples": 222,
+        "comparisons": null,
+        "reference": {
+          "metricVersion": 3,
+          "objectiveCases": 24,
+          "training": 96,
+          "heldOut": 96,
+          "realMatches": 6,
+          "scope": "Fixed scenario corpus; not general match win rate"
+        },
+        "before": {
+          "objectiveErrors": 0,
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
+          ]
+        },
+        "after": {
+          "objectiveErrors": 0,
+          "trainingErrors": 0,
+          "holdoutErrors": 0,
+          "trainingFailed": [],
+          "holdoutFailed": [],
+          "completed": 6,
+          "invalidInputs": 0,
+          "outcomes": [
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused",
+            "Device defused"
+          ]
+        }
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "a1f73b220c1678df31ba851cc5556c4fee73107b22d1b58ee0db40a900b12757"
+    "hash": "422ad7a5449829c0229d84f9fe34d2cf763216eb6b3dc9fce65fbcd08ae58f9f"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 10,
-      "author": null,
-      "at": "2026-11-16T19:55:53.179Z",
-      "base": "b8117641d5d354a8e6b8192f1bb44ad2d4ec4789",
-      "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
-      "previous": "40db9cc89e9ec324c565de31d2849ca78adfd73874a4e8d9053a12a240502ddc",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "experience-0-3",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "548a5d47c9ed4484e26ea3894bccdc2624078abfb5a8e8317b152494bec8ba8d",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.3365833333333366,
-          "fidelity": false,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "RefusedNonZeroDefect",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.3251190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 24,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.3365833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 24,
-            "frames": 360,
-            "fidelity": true
-          }
-        },
-        {
-          "candidate": "experience-0-5",
-          "family": "experience",
-          "author": "typed-recipe-compiler",
-          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-          "configHash": "72bb1967d6e7c8fa22fc90180849b2f863f3762befb64e8a27a9c3a40e8d95ec",
-          "baselineWork": 2.0865833333333366,
-          "candidateWork": 2.1355833333333383,
-          "fidelity": false,
-          "bounds": true,
-          "samples": 780,
-          "comparisons": {
-            "r4Verdict": "RefusedNonZeroDefect",
-            "heldOut": {
-              "before": {
-                "loss": 2.0751190476190517,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.5751190476190519,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              },
-              "after": {
-                "loss": 2.1171190476190533,
-                "lateBursts": 0,
-                "loadPixelRatio": 0.6171190476190531,
-                "voiceHighWater": 16,
-                "frames": 420,
-                "fidelity": true
-              }
-            },
-            "interactions": []
-          },
-          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-          "before": {
-            "loss": 2.0865833333333366,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.5865833333333367,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          },
-          "after": {
-            "loss": 2.1355833333333383,
-            "lateBursts": 0,
-            "loadPixelRatio": 0.6355833333333385,
-            "voiceHighWater": 16,
-            "frames": 360,
-            "fidelity": true
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "84f731c9171987a215d35d0040fb99d90c01aee9f31aa846b2cbd1498be044aa"
-    },
     {
       "generation": 10,
       "author": null,
@@ -9985,6 +9712,129 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "a1f73b220c1678df31ba851cc5556c4fee73107b22d1b58ee0db40a900b12757"
+    },
+    {
+      "generation": 11,
+      "author": null,
+      "at": "2026-11-26T13:09:29.641Z",
+      "base": "7e0ad8a03d3100205745492bffddfcd83d9e6efa",
+      "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
+      "previous": "a1f73b220c1678df31ba851cc5556c4fee73107b22d1b58ee0db40a900b12757",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "tactics-synth-1",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "f19eb259dac0c1b270134f8aa24242b66643b66ee655cb348a2892b6957fedd4",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 222,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 3,
+            "objectiveCases": 24,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "objectiveErrors": 0,
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "objectiveErrors": 0,
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        },
+        {
+          "candidate": "tactics-synth-3",
+          "family": "tactics",
+          "author": "seeded-synthesis",
+          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
+          "configHash": "f19eb259dac0c1b270134f8aa24242b66643b66ee655cb348a2892b6957fedd4",
+          "baselineWork": 1,
+          "candidateWork": 1,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 222,
+          "comparisons": null,
+          "reference": {
+            "metricVersion": 3,
+            "objectiveCases": 24,
+            "training": 96,
+            "heldOut": 96,
+            "realMatches": 6,
+            "scope": "Fixed scenario corpus; not general match win rate"
+          },
+          "before": {
+            "objectiveErrors": 0,
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          },
+          "after": {
+            "objectiveErrors": 0,
+            "trainingErrors": 0,
+            "holdoutErrors": 0,
+            "trainingFailed": [],
+            "holdoutFailed": [],
+            "completed": 6,
+            "invalidInputs": 0,
+            "outcomes": [
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused",
+              "Device defused"
+            ]
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "422ad7a5449829c0229d84f9fe34d2cf763216eb6b3dc9fce65fbcd08ae58f9f"
     }
   ]
 }
