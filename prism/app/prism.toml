@@ -1,0 +1,11 @@
+[application]
+name = "cs1-618"
+version = "0.12.0"
+description = "Decides each round of cs1.618, a tactical shooter built with the Verdant engine: continue, attack or defend, from the round's observations."
+
+[model]
+source = "src"
+watch = ["src/**/*.lex.tex", "language/**/*.toml", "lexlean.toml"]
+
+# Deny by default: an empty set grants the holo nothing.
+[capabilities]

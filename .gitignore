@@ -14,3 +14,6 @@ prism/**/.lake/
 public/build.json
 
 /public/engine.json
+
+# What prism-code records about the last check and build, per machine.
+prism/app/session.json
