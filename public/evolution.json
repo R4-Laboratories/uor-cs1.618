@@ -1,9 +1,9 @@
 {
   "schema": "cs1618/evolution-public/1",
-  "generation": 10,
+  "generation": 11,
   "config": {
     "render": {
-      "cell": 16,
+      "cell": 32,
       "minimum": 2
     },
     "navigation": {
@@ -259,355 +259,288 @@
     }
   },
   "lastEvaluation": {
-    "generation": 10,
+    "generation": 11,
     "author": null,
-    "at": "2026-11-26T05:15:38.745Z",
-    "base": "a9a672703c87ed20b8127df4e7b1309838105f60",
+    "at": "2026-11-26T05:35:11.904Z",
+    "base": "2e02c34dac12ba78e5ec6d316edf4e26294b62c2",
     "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
-    "previous": "6cb8b7850943a2f6a28aa51c6b630a96919c9599808d4ec0d015660ba7f01ea9",
-    "result": "no-improvement",
+    "previous": "4bee7f7c4630e0c87982f21fbd98117c19437572f4eb8f571b2a0d7f7a874721",
+    "result": "admitted",
     "proposals": [
       {
-        "candidate": "experience-5-6",
-        "family": "experience",
-        "author": "typed-recipe-compiler",
-        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "b3fcc9f76501ff0578ff334c8c85a75a303c7b5781fc4f637092abd13bb1ca2e",
-        "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.1355833333333383,
-        "fidelity": false,
-        "bounds": true,
-        "samples": 780,
-        "comparisons": {
-          "r4Verdict": "RefusedNonZeroDefect",
-          "heldOut": {
-            "before": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            },
-            "after": {
-              "loss": 2.1171190476190533,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.6171190476190531,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            }
-          },
-          "interactions": [
-            {
-              "a": "downMs",
-              "b": "upMs",
-              "mixedLoss": 0
-            }
-          ]
-        },
-        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-        "before": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        },
-        "after": {
-          "loss": 2.1355833333333383,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.6355833333333385,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        }
-      },
-      {
-        "candidate": "experience-6-6",
-        "family": "experience",
-        "author": "typed-recipe-compiler",
-        "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "001f4fa38f4b0f53fdf68ac5542669e071779263abaca1fa56980e4deaefb81c",
-        "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.0865833333333366,
+        "candidate": "render-16-4",
+        "family": "render",
+        "author": "optimizer",
+        "metric": "work count",
+        "configHash": "45b0c045cb9d237fecb4e83a7fe4c64498235297c6b55e7df6eea71c7c8863e3",
+        "baselineWork": 271976,
+        "candidateWork": 281412,
         "fidelity": true,
         "bounds": true,
-        "samples": 780,
-        "comparisons": {
-          "r4Verdict": "CandidateAdmitted",
-          "heldOut": {
-            "before": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            },
-            "after": {
-              "loss": 2.0751190476190517,
-              "lateBursts": 0,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 16,
-              "frames": 420,
-              "fidelity": true
-            }
+        "samples": 6,
+        "comparisons": [
+          {
+            "mean": 3.0637254901960784e-8,
+            "changed": 0
           },
-          "interactions": []
-        },
-        "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
-        "before": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        },
-        "after": {
-          "loss": 2.0865833333333366,
-          "lateBursts": 0,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 16,
-          "frames": 360,
-          "fidelity": true
-        }
+          {
+            "mean": 2.8084150326797387e-7,
+            "changed": 0
+          },
+          {
+            "mean": 0.0000025122549019607842,
+            "changed": 0
+          },
+          {
+            "mean": 1.0212418300653595e-8,
+            "changed": 0
+          },
+          {
+            "mean": 0,
+            "changed": 0
+          },
+          {
+            "mean": 2.0424836601307188e-7,
+            "changed": 0.00000390625
+          }
+        ],
+        "reference": [
+          {
+            "calls": 424,
+            "triangles": 30530,
+            "frameMs": 5.5
+          },
+          {
+            "calls": 306,
+            "triangles": 26044,
+            "frameMs": 1.6000000000058208
+          },
+          {
+            "calls": 359,
+            "triangles": 30420,
+            "frameMs": 1.8000000000174623
+          },
+          {
+            "calls": 431,
+            "triangles": 30532,
+            "frameMs": 7.100000000005821
+          },
+          {
+            "calls": 230,
+            "triangles": 23732,
+            "frameMs": 1
+          },
+          {
+            "calls": 245,
+            "triangles": 28342,
+            "frameMs": 1.7000000000116415
+          }
+        ],
+        "before": [
+          {
+            "calls": 203,
+            "triangles": 30974,
+            "frameMs": 2.1999999999825377
+          },
+          {
+            "calls": 156,
+            "triangles": 26632,
+            "frameMs": 1.8999999999941792
+          },
+          {
+            "calls": 169,
+            "triangles": 30660,
+            "frameMs": 3.3999999999941792
+          },
+          {
+            "calls": 200,
+            "triangles": 30856,
+            "frameMs": 1.5
+          },
+          {
+            "calls": 134,
+            "triangles": 24536,
+            "frameMs": 1
+          },
+          {
+            "calls": 129,
+            "triangles": 29218,
+            "frameMs": 1.6999999999825377
+          }
+        ],
+        "after": [
+          {
+            "calls": 217,
+            "triangles": 30842,
+            "frameMs": 1.900000000023283
+          },
+          {
+            "calls": 171,
+            "triangles": 26596,
+            "frameMs": 1.6000000000058208
+          },
+          {
+            "calls": 185,
+            "triangles": 30636,
+            "frameMs": 2
+          },
+          {
+            "calls": 221,
+            "triangles": 30808,
+            "frameMs": 1.5
+          },
+          {
+            "calls": 152,
+            "triangles": 24512,
+            "frameMs": 1.3999999999941792
+          },
+          {
+            "calls": 142,
+            "triangles": 29218,
+            "frameMs": 1.3000000000174623
+          }
+        ]
+      },
+      {
+        "candidate": "render-32-2",
+        "family": "render",
+        "author": "optimizer",
+        "metric": "work count",
+        "configHash": "e1a039925660a7d415afd403c41b58483378247b2f8477c622a7f7b21ea5f4cb",
+        "baselineWork": 271976,
+        "candidateWork": 260780,
+        "fidelity": true,
+        "bounds": true,
+        "samples": 6,
+        "comparisons": [
+          {
+            "mean": 3.0637254901960784e-8,
+            "changed": 0
+          },
+          {
+            "mean": 0.0000010723039215686274,
+            "changed": 0.0000078125
+          },
+          {
+            "mean": 0.000002522467320261438,
+            "changed": 0
+          },
+          {
+            "mean": 1.0212418300653595e-8,
+            "changed": 0
+          },
+          {
+            "mean": 0,
+            "changed": 0
+          },
+          {
+            "mean": 2.0424836601307188e-7,
+            "changed": 0.00000390625
+          }
+        ],
+        "reference": [
+          {
+            "calls": 424,
+            "triangles": 30530,
+            "frameMs": 4.5
+          },
+          {
+            "calls": 306,
+            "triangles": 26044,
+            "frameMs": 1.3000000000174623
+          },
+          {
+            "calls": 359,
+            "triangles": 30420,
+            "frameMs": 2.3999999999941792
+          },
+          {
+            "calls": 431,
+            "triangles": 30532,
+            "frameMs": 4.100000000005821
+          },
+          {
+            "calls": 230,
+            "triangles": 23732,
+            "frameMs": 1.6000000000058208
+          },
+          {
+            "calls": 245,
+            "triangles": 28342,
+            "frameMs": 1.6999999999534339
+          }
+        ],
+        "before": [
+          {
+            "calls": 203,
+            "triangles": 30974,
+            "frameMs": 3.1000000000349246
+          },
+          {
+            "calls": 156,
+            "triangles": 26632,
+            "frameMs": 1.2999999999883585
+          },
+          {
+            "calls": 169,
+            "triangles": 30660,
+            "frameMs": 2.5
+          },
+          {
+            "calls": 200,
+            "triangles": 30856,
+            "frameMs": 2.7000000000116415
+          },
+          {
+            "calls": 134,
+            "triangles": 24536,
+            "frameMs": 1
+          },
+          {
+            "calls": 129,
+            "triangles": 29218,
+            "frameMs": 1.8000000000465661
+          }
+        ],
+        "after": [
+          {
+            "calls": 171,
+            "triangles": 30974,
+            "frameMs": 1.8999999999650754
+          },
+          {
+            "calls": 134,
+            "triangles": 27088,
+            "frameMs": 1
+          },
+          {
+            "calls": 148,
+            "triangles": 30996,
+            "frameMs": 1.5
+          },
+          {
+            "calls": 172,
+            "triangles": 30904,
+            "frameMs": 1.6000000000349246
+          },
+          {
+            "calls": 119,
+            "triangles": 25220,
+            "frameMs": 1
+          },
+          {
+            "calls": 115,
+            "triangles": 29698,
+            "frameMs": 1.6000000000349246
+          }
+        ]
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "4bee7f7c4630e0c87982f21fbd98117c19437572f4eb8f571b2a0d7f7a874721"
+    "hash": "abf2908d4acdfad874b9f5ceac102b5cebeaa696f9803afddd29c40a6d9346e8"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 10,
-      "author": null,
-      "at": "2026-11-16T19:17:53.036Z",
-      "base": "2f54a251238b26cfa2f41cfa95e8e4e17d94df83",
-      "context": "8acbd64cb5aee8176172fda40d468c4218725c9351f1033a54e073bd52fa575f",
-      "previous": "bea0b5d63948b458f06cfa061a8c5e35a3acdce64237cd1c507514327692ff05",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "art-synth-2",
-          "family": "art",
-          "author": "seeded-synthesis",
-          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-          "configHash": "78a5b228f4c5e7f388964c7de45b750f43267843c202209ac3d9e04dbd2e4bf9",
-          "baselineWork": 0.23252706850815388,
-          "candidateWork": 0.30140059603138347,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 0.009943969566993465,
-              "changed": 0.02941796875
-            },
-            {
-              "mean": 0.010507883986928104,
-              "changed": 0.02798046875
-            },
-            {
-              "mean": 0.01710232843137255,
-              "changed": 0.04280078125
-            },
-            {
-              "mean": 0.018081020220588235,
-              "changed": 0.0426328125
-            }
-          ],
-          "reference": {
-            "protectedEqual": true,
-            "separation": 0.6615373610938612,
-            "evidence": "artifacts/evolution/art/art-synth-2-*.png"
-          },
-          "before": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 11.900942897165983,
-                "coverage": 0.17115428055116333
-              },
-              {
-                "site": "B",
-                "contrast": 11.900942897165983,
-                "coverage": 0.1658459453354416
-              }
-            ],
-            "frames": [
-              {
-                "calls": 127,
-                "triangles": 4764,
-                "frameMs": 4.7000000000116415
-              },
-              {
-                "calls": 127,
-                "triangles": 4776,
-                "frameMs": 5.900000000023283
-              },
-              {
-                "calls": 42,
-                "triangles": 1860,
-                "frameMs": 1.099999999976717
-              },
-              {
-                "calls": 32,
-                "triangles": 1596,
-                "frameMs": 1.099999999976717
-              }
-            ]
-          },
-          "after": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 12.145723264040305,
-                "coverage": 0.24108877343573526
-              },
-              {
-                "site": "B",
-                "contrast": 12.145723264040305,
-                "coverage": 0.2370454032075898
-              }
-            ],
-            "frames": [
-              {
-                "calls": 127,
-                "triangles": 4764,
-                "frameMs": 2.6000000000349246
-              },
-              {
-                "calls": 127,
-                "triangles": 4776,
-                "frameMs": 1.7000000000116415
-              },
-              {
-                "calls": 42,
-                "triangles": 1860,
-                "frameMs": 1.900000000023283
-              },
-              {
-                "calls": 32,
-                "triangles": 1596,
-                "frameMs": 0.7999999999883585
-              }
-            ]
-          }
-        },
-        {
-          "candidate": "art-synth-3",
-          "family": "art",
-          "author": "seeded-synthesis",
-          "metric": "inverse lettering contrast + motif density deviation (lower is better; not aesthetic quality)",
-          "configHash": "d859c356acdabfdfe840f743da55250f52f4f934c25f6ad73b36690d5ab7fb31",
-          "baselineWork": 0.23252706850815388,
-          "candidateWork": 0.25577922026179933,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 4,
-          "comparisons": [
-            {
-              "mean": 0.009089562908496732,
-              "changed": 0.02714453125
-            },
-            {
-              "mean": 0.00953951695261438,
-              "changed": 0.02646875
-            },
-            {
-              "mean": 0.015509135008169935,
-              "changed": 0.03722265625
-            },
-            {
-              "mean": 0.016325837418300654,
-              "changed": 0.0384609375
-            }
-          ],
-          "reference": {
-            "protectedEqual": true,
-            "separation": 0.6362254127708514,
-            "evidence": "artifacts/evolution/art/art-synth-3-*.png"
-          },
-          "before": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 11.900942897165983,
-                "coverage": 0.17115428055116333
-              },
-              {
-                "site": "B",
-                "contrast": 11.900942897165983,
-                "coverage": 0.1658459453354416
-              }
-            ],
-            "frames": [
-              {
-                "calls": 127,
-                "triangles": 4764,
-                "frameMs": 5.2000000000116415
-              },
-              {
-                "calls": 127,
-                "triangles": 4776,
-                "frameMs": 3.7999999999883585
-              },
-              {
-                "calls": 42,
-                "triangles": 1860,
-                "frameMs": 1.2000000000116415
-              },
-              {
-                "calls": 32,
-                "triangles": 1596,
-                "frameMs": 0.5999999999767169
-              }
-            ]
-          },
-          "after": {
-            "textures": [
-              {
-                "site": "A",
-                "contrast": 12.834688787207531,
-                "coverage": 0.19914163090128756
-              },
-              {
-                "site": "B",
-                "contrast": 12.834688787207531,
-                "coverage": 0.19658911226564266
-              }
-            ],
-            "frames": [
-              {
-                "calls": 127,
-                "triangles": 4764,
-                "frameMs": 2.2000000000116415
-              },
-              {
-                "calls": 127,
-                "triangles": 4776,
-                "frameMs": 2.099999999976717
-              },
-              {
-                "calls": 42,
-                "triangles": 1860,
-                "frameMs": 1
-              },
-              {
-                "calls": 32,
-                "triangles": 1596,
-                "frameMs": 0.5999999999767169
-              }
-            ]
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "99c102f81ca38f4e9b06032ea81072ba0aedfe63a124e0e17f29c1bb1c292bca"
-    },
     {
       "generation": 10,
       "author": null,
@@ -9396,6 +9329,287 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "4bee7f7c4630e0c87982f21fbd98117c19437572f4eb8f571b2a0d7f7a874721"
+    },
+    {
+      "generation": 11,
+      "author": null,
+      "at": "2026-11-26T05:35:11.904Z",
+      "base": "2e02c34dac12ba78e5ec6d316edf4e26294b62c2",
+      "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
+      "previous": "4bee7f7c4630e0c87982f21fbd98117c19437572f4eb8f571b2a0d7f7a874721",
+      "result": "admitted",
+      "proposals": [
+        {
+          "candidate": "render-16-4",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "45b0c045cb9d237fecb4e83a7fe4c64498235297c6b55e7df6eea71c7c8863e3",
+          "baselineWork": 271976,
+          "candidateWork": 281412,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 6,
+          "comparisons": [
+            {
+              "mean": 3.0637254901960784e-8,
+              "changed": 0
+            },
+            {
+              "mean": 2.8084150326797387e-7,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000025122549019607842,
+              "changed": 0
+            },
+            {
+              "mean": 1.0212418300653595e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0,
+              "changed": 0
+            },
+            {
+              "mean": 2.0424836601307188e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 424,
+              "triangles": 30530,
+              "frameMs": 5.5
+            },
+            {
+              "calls": 306,
+              "triangles": 26044,
+              "frameMs": 1.6000000000058208
+            },
+            {
+              "calls": 359,
+              "triangles": 30420,
+              "frameMs": 1.8000000000174623
+            },
+            {
+              "calls": 431,
+              "triangles": 30532,
+              "frameMs": 7.100000000005821
+            },
+            {
+              "calls": 230,
+              "triangles": 23732,
+              "frameMs": 1
+            },
+            {
+              "calls": 245,
+              "triangles": 28342,
+              "frameMs": 1.7000000000116415
+            }
+          ],
+          "before": [
+            {
+              "calls": 203,
+              "triangles": 30974,
+              "frameMs": 2.1999999999825377
+            },
+            {
+              "calls": 156,
+              "triangles": 26632,
+              "frameMs": 1.8999999999941792
+            },
+            {
+              "calls": 169,
+              "triangles": 30660,
+              "frameMs": 3.3999999999941792
+            },
+            {
+              "calls": 200,
+              "triangles": 30856,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 134,
+              "triangles": 24536,
+              "frameMs": 1
+            },
+            {
+              "calls": 129,
+              "triangles": 29218,
+              "frameMs": 1.6999999999825377
+            }
+          ],
+          "after": [
+            {
+              "calls": 217,
+              "triangles": 30842,
+              "frameMs": 1.900000000023283
+            },
+            {
+              "calls": 171,
+              "triangles": 26596,
+              "frameMs": 1.6000000000058208
+            },
+            {
+              "calls": 185,
+              "triangles": 30636,
+              "frameMs": 2
+            },
+            {
+              "calls": 221,
+              "triangles": 30808,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 152,
+              "triangles": 24512,
+              "frameMs": 1.3999999999941792
+            },
+            {
+              "calls": 142,
+              "triangles": 29218,
+              "frameMs": 1.3000000000174623
+            }
+          ]
+        },
+        {
+          "candidate": "render-32-2",
+          "family": "render",
+          "author": "optimizer",
+          "metric": "work count",
+          "configHash": "e1a039925660a7d415afd403c41b58483378247b2f8477c622a7f7b21ea5f4cb",
+          "baselineWork": 271976,
+          "candidateWork": 260780,
+          "fidelity": true,
+          "bounds": true,
+          "samples": 6,
+          "comparisons": [
+            {
+              "mean": 3.0637254901960784e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0.0000010723039215686274,
+              "changed": 0.0000078125
+            },
+            {
+              "mean": 0.000002522467320261438,
+              "changed": 0
+            },
+            {
+              "mean": 1.0212418300653595e-8,
+              "changed": 0
+            },
+            {
+              "mean": 0,
+              "changed": 0
+            },
+            {
+              "mean": 2.0424836601307188e-7,
+              "changed": 0.00000390625
+            }
+          ],
+          "reference": [
+            {
+              "calls": 424,
+              "triangles": 30530,
+              "frameMs": 4.5
+            },
+            {
+              "calls": 306,
+              "triangles": 26044,
+              "frameMs": 1.3000000000174623
+            },
+            {
+              "calls": 359,
+              "triangles": 30420,
+              "frameMs": 2.3999999999941792
+            },
+            {
+              "calls": 431,
+              "triangles": 30532,
+              "frameMs": 4.100000000005821
+            },
+            {
+              "calls": 230,
+              "triangles": 23732,
+              "frameMs": 1.6000000000058208
+            },
+            {
+              "calls": 245,
+              "triangles": 28342,
+              "frameMs": 1.6999999999534339
+            }
+          ],
+          "before": [
+            {
+              "calls": 203,
+              "triangles": 30974,
+              "frameMs": 3.1000000000349246
+            },
+            {
+              "calls": 156,
+              "triangles": 26632,
+              "frameMs": 1.2999999999883585
+            },
+            {
+              "calls": 169,
+              "triangles": 30660,
+              "frameMs": 2.5
+            },
+            {
+              "calls": 200,
+              "triangles": 30856,
+              "frameMs": 2.7000000000116415
+            },
+            {
+              "calls": 134,
+              "triangles": 24536,
+              "frameMs": 1
+            },
+            {
+              "calls": 129,
+              "triangles": 29218,
+              "frameMs": 1.8000000000465661
+            }
+          ],
+          "after": [
+            {
+              "calls": 171,
+              "triangles": 30974,
+              "frameMs": 1.8999999999650754
+            },
+            {
+              "calls": 134,
+              "triangles": 27088,
+              "frameMs": 1
+            },
+            {
+              "calls": 148,
+              "triangles": 30996,
+              "frameMs": 1.5
+            },
+            {
+              "calls": 172,
+              "triangles": 30904,
+              "frameMs": 1.6000000000349246
+            },
+            {
+              "calls": 119,
+              "triangles": 25220,
+              "frameMs": 1
+            },
+            {
+              "calls": 115,
+              "triangles": 29698,
+              "frameMs": 1.6000000000349246
+            }
+          ]
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "abf2908d4acdfad874b9f5ceac102b5cebeaa696f9803afddd29c40a6d9346e8"
     }
   ]
 }
