@@ -261,20 +261,20 @@
   "lastEvaluation": {
     "generation": 10,
     "author": null,
-    "at": "2026-11-26T03:02:01.718Z",
-    "base": "cd2fa54d6cd30af6cf14627066bdc88e1cb7be2f",
+    "at": "2026-11-26T03:20:29.934Z",
+    "base": "2c8f5e51227b3d504af465acd0ddb080426645af",
     "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
-    "previous": "2f2d98b8c5d50ac9343df40d586142a314946e2b78359c4ae4306f8de94eb297",
+    "previous": "4584d2a4bcdfa45dbb68a393bd566af7ad3d106f634e2ec8a8265ae9d311c49f",
     "result": "no-improvement",
     "proposals": [
       {
-        "candidate": "experience-1-3",
+        "candidate": "experience-1-5",
         "family": "experience",
         "author": "typed-recipe-compiler",
         "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "47f0632e1fe9e3f3d35d3d2a5994465d8bc297fec8a364a1138e652443d2fe44",
+        "configHash": "e754faa29c4ed17f4a30baf71bdd4a59cb66f45d35cca86a4d3074318030f7b4",
         "baselineWork": 2.0865833333333366,
-        "candidateWork": 2.5365833333333367,
+        "candidateWork": 2.3355833333333385,
         "fidelity": false,
         "bounds": true,
         "samples": 780,
@@ -290,10 +290,10 @@
               "fidelity": true
             },
             "after": {
-              "loss": 2.525119047619052,
+              "loss": 2.317119047619053,
               "lateBursts": 1,
-              "loadPixelRatio": 0.5751190476190519,
-              "voiceHighWater": 24,
+              "loadPixelRatio": 0.6171190476190531,
+              "voiceHighWater": 16,
               "frames": 420,
               "fidelity": true
             }
@@ -301,7 +301,7 @@
           "interactions": [
             {
               "a": "recoveryMs",
-              "b": "voices",
+              "b": "downMs",
               "mixedLoss": 0
             }
           ]
@@ -316,20 +316,20 @@
           "fidelity": true
         },
         "after": {
-          "loss": 2.5365833333333367,
+          "loss": 2.3355833333333385,
           "lateBursts": 1,
-          "loadPixelRatio": 0.5865833333333367,
-          "voiceHighWater": 24,
+          "loadPixelRatio": 0.6355833333333385,
+          "voiceHighWater": 16,
           "frames": 360,
           "fidelity": true
         }
       },
       {
-        "candidate": "experience-1-4",
+        "candidate": "experience-1-6",
         "family": "experience",
         "author": "typed-recipe-compiler",
         "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
-        "configHash": "bcebe1605cef82c8bc4a55d1d59e05446ed87eff2d32645b48f1c15b11f78cb5",
+        "configHash": "d4fd89e2677033474b596e113bab47b0c341d8d6a99fcdf4e478ae3333bd0586",
         "baselineWork": 2.0865833333333366,
         "candidateWork": 2.2865833333333367,
         "fidelity": false,
@@ -355,7 +355,13 @@
               "fidelity": true
             }
           },
-          "interactions": []
+          "interactions": [
+            {
+              "a": "recoveryMs",
+              "b": "upMs",
+              "mixedLoss": 0
+            }
+          ]
         },
         "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
         "before": {
@@ -377,127 +383,10 @@
       }
     ],
     "checks": "complete-game-gates-passed",
-    "hash": "4584d2a4bcdfa45dbb68a393bd566af7ad3d106f634e2ec8a8265ae9d311c49f"
+    "hash": "6c8c881ecfff33f69e1496e2aa28b91d59d058859c229a1b596905daed242754"
   },
   "scope": "Generated procedural artwork and tactical programs, plus rendering/navigation optimization. Compiled weapon, audio and rendering experience programs. Typed authorship with measured gates; no unrestricted repository self-modification.",
   "history": [
-    {
-      "generation": 8,
-      "author": null,
-      "at": "2026-11-16T14:26:05.416Z",
-      "base": "c9b282aeef3b6ae9cb8a88b65da562afdb705435",
-      "context": "741c3bca6015b060a121e82d36de0beaf1f3d84b28adf4eca091f97bc1e22f79",
-      "previous": "4e827c364af6677b19aac6084a12dac49af3c2618f1cf6fd24ddd46a74ea0722",
-      "result": "no-improvement",
-      "proposals": [
-        {
-          "candidate": "tactics-synth-1",
-          "family": "tactics",
-          "author": "seeded-synthesis",
-          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-          "configHash": "687cf6fef031c681f8bc76d1e5dcf612eb945b20e53efe1a34b43e1129abcd25",
-          "baselineWork": 1,
-          "candidateWork": 1,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 198,
-          "comparisons": null,
-          "reference": {
-            "metricVersion": 2,
-            "training": 96,
-            "heldOut": 96,
-            "realMatches": 6,
-            "scope": "Fixed scenario corpus; not general match win rate"
-          },
-          "before": {
-            "trainingErrors": 0,
-            "holdoutErrors": 0,
-            "trainingFailed": [],
-            "holdoutFailed": [],
-            "completed": 6,
-            "invalidInputs": 0,
-            "outcomes": [
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused"
-            ]
-          },
-          "after": {
-            "trainingErrors": 0,
-            "holdoutErrors": 0,
-            "trainingFailed": [],
-            "holdoutFailed": [],
-            "completed": 6,
-            "invalidInputs": 0,
-            "outcomes": [
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused"
-            ]
-          }
-        },
-        {
-          "candidate": "tactics-synth-3",
-          "family": "tactics",
-          "author": "seeded-synthesis",
-          "metric": "tactical decision errors + failed emergency objective scenarios (lower is better)",
-          "configHash": "687cf6fef031c681f8bc76d1e5dcf612eb945b20e53efe1a34b43e1129abcd25",
-          "baselineWork": 1,
-          "candidateWork": 1,
-          "fidelity": true,
-          "bounds": true,
-          "samples": 198,
-          "comparisons": null,
-          "reference": {
-            "metricVersion": 2,
-            "training": 96,
-            "heldOut": 96,
-            "realMatches": 6,
-            "scope": "Fixed scenario corpus; not general match win rate"
-          },
-          "before": {
-            "trainingErrors": 0,
-            "holdoutErrors": 0,
-            "trainingFailed": [],
-            "holdoutFailed": [],
-            "completed": 6,
-            "invalidInputs": 0,
-            "outcomes": [
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused"
-            ]
-          },
-          "after": {
-            "trainingErrors": 0,
-            "holdoutErrors": 0,
-            "trainingFailed": [],
-            "holdoutFailed": [],
-            "completed": 6,
-            "invalidInputs": 0,
-            "outcomes": [
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused",
-              "Device defused"
-            ]
-          }
-        }
-      ],
-      "checks": "complete-game-gates-passed",
-      "hash": "777b22600503421d5a017a6ac607b519bb9333a3728fd7582bcf33ba2be35873"
-    },
     {
       "generation": 9,
       "author": null,
@@ -9766,6 +9655,133 @@
       ],
       "checks": "complete-game-gates-passed",
       "hash": "4584d2a4bcdfa45dbb68a393bd566af7ad3d106f634e2ec8a8265ae9d311c49f"
+    },
+    {
+      "generation": 10,
+      "author": null,
+      "at": "2026-11-26T03:20:29.934Z",
+      "base": "2c8f5e51227b3d504af465acd0ddb080426645af",
+      "context": "770e05cf63dc9d4daede3b3df5a4b41c4639b5de8b19469767f4f5745821cd07",
+      "previous": "4584d2a4bcdfa45dbb68a393bd566af7ad3d106f634e2ec8a8265ae9d311c49f",
+      "result": "no-improvement",
+      "proposals": [
+        {
+          "candidate": "experience-1-5",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "e754faa29c4ed17f4a30baf71bdd4a59cb66f45d35cca86a4d3074318030f7b4",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.3355833333333385,
+          "fidelity": false,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "RefusedNonZeroDefect",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.317119047619053,
+                "lateBursts": 1,
+                "loadPixelRatio": 0.6171190476190531,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": [
+              {
+                "a": "recoveryMs",
+                "b": "downMs",
+                "mixedLoss": 0
+              }
+            ]
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.3355833333333385,
+            "lateBursts": 1,
+            "loadPixelRatio": 0.6355833333333385,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          }
+        },
+        {
+          "candidate": "experience-1-6",
+          "family": "experience",
+          "author": "typed-recipe-compiler",
+          "metric": "burst recovery + synthetic overloaded-frame pixel work + bounded audio voices (lower is better)",
+          "configHash": "d4fd89e2677033474b596e113bab47b0c341d8d6a99fcdf4e478ae3333bd0586",
+          "baselineWork": 2.0865833333333366,
+          "candidateWork": 2.2865833333333367,
+          "fidelity": false,
+          "bounds": true,
+          "samples": 780,
+          "comparisons": {
+            "r4Verdict": "RefusedNonZeroDefect",
+            "heldOut": {
+              "before": {
+                "loss": 2.0751190476190517,
+                "lateBursts": 0,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              },
+              "after": {
+                "loss": 2.275119047619052,
+                "lateBursts": 1,
+                "loadPixelRatio": 0.5751190476190519,
+                "voiceHighWater": 16,
+                "frames": 420,
+                "fidelity": true
+              }
+            },
+            "interactions": [
+              {
+                "a": "recoveryMs",
+                "b": "upMs",
+                "mixedLoss": 0
+              }
+            ]
+          },
+          "reference": "Fixed engineering contracts; frame traces are synthetic, not measured GPU speed. No claim of improved player preference.",
+          "before": {
+            "loss": 2.0865833333333366,
+            "lateBursts": 0,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          },
+          "after": {
+            "loss": 2.2865833333333367,
+            "lateBursts": 1,
+            "loadPixelRatio": 0.5865833333333367,
+            "voiceHighWater": 16,
+            "frames": 360,
+            "fidelity": true
+          }
+        }
+      ],
+      "checks": "complete-game-gates-passed",
+      "hash": "6c8c881ecfff33f69e1496e2aa28b91d59d058859c229a1b596905daed242754"
     }
   ]
 }
