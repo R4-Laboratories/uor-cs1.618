@@ -37,7 +37,7 @@ let heldChatShortcut: string | null = null;
 let view:WorldView;
 try{view=new WorldView(canvas);}catch(error){$('load-detail').textContent='WebGL2 is unavailable. Enable hardware acceleration and reload.';throw error;}
 let bytes:ArrayBuffer;
-try{const response=await fetch(engineAssetUrl(document.baseURI));if(!response.ok)throw Error('Engine download failed');bytes=await response.arrayBuffer();}catch(error){$('load-detail').textContent='Could not load the game engine. Check the connection and reload.';throw error;}
+try{const response=await fetch(engineAssetUrl(new URL(import.meta.env.BASE_URL,document.baseURI).href));if(!response.ok)throw Error('Engine download failed');bytes=await response.arrayBuffer();}catch(error){$('load-detail').textContent='Could not load the game engine. Check the connection and reload.';throw error;}
 const roundResponse=await fetch(`${import.meta.env.BASE_URL}wasm/cs_round.wasm`);if(!roundResponse.ok){$('load-detail').textContent='Could not load the Prism round kernel. Reload to try again.';throw Error('Missing Prism kernel');}const roundBytes=await roundResponse.arrayBuffer();
 const engine=await createEngine(bytes);view.setEngine(engine);const audio=new GameAudio(engine);
 let snapshot:Snapshot|null=null,position:Motion|null=null,worker:Worker|null=null,socket:WebSocket|null=null,connecting=false;
@@ -60,6 +60,8 @@ function changedCareer(){
 prismFrame.addEventListener('accountchange',()=>{if(sharedCareerAtJoin && sharedCareerID()!==sharedCareerAtJoin)changedCareer();});
 window.addEventListener('storage',event=>{if(event.key===careerPreferenceKey)changedCareer();});
 let team:Team|'auto'='auto',yaw=0,pitch=0,seq=0,slot:0|1=1,fire=false,scope=false,locked=false,sensitivity=1,spectatorIndex=0;
+// In a holospace the page is a sandboxed frame that may not lock the pointer, so the mouse looks without a lock.
+let freeLook=false;
 let ping=0,lastEvent=0,lastSnapshot=0,lastFrame=performance.now(),accumulator=0,uiTime=0,pingTime=0;
 let pending:{input:Input;canMove:boolean}[]=[];const keys=new Set<string>();
 const saved=(key:string,fallback:string)=>{try{return localStorage.getItem(key)??fallback;}catch{return fallback;}};
@@ -109,7 +111,7 @@ function spectator():PublicPlayer|null{if(!snapshot||snapshot.self.alive)return 
 function setPaused(open:boolean){ui.pauseOpen=open;ui.show('pause',open);
  if(worker){worker.postMessage({type:'practice-playing',playing:!open&&$('deploy-overlay').classList.contains('hidden')});}
  $('pause-timing').textContent=worker?'Practice is paused. Resume when you’re ready.':'The online match continues while this menu is open.';clearControls();}
-async function capture(){await audio.start();try{await canvas.requestPointerLock();}catch{ui.toast('Click the game again to capture your mouse.');}ui.show('deploy-overlay',false);setPaused(false);}
+async function capture(){await audio.start();try{await canvas.requestPointerLock();}catch{if(__CS_HOLO__){freeLook=true;locked=true;}else ui.toast('Click the game again to capture your mouse.');}ui.show('deploy-overlay',false);setPaused(false);}
 function roleBriefing(side:Team){return side==='attack'?'Ember · attack and plant the device.':'Tidal · defend the sites and defuse the device.';}
 function receive(m:any){
  if(m.type==='welcome'&&socket&&m.protocol!==GAME_PROTOCOL){disconnect();ui.status('The server uses a different game version. Rejoin a compatible server.');return;}
@@ -257,7 +259,7 @@ document.addEventListener('keydown',e=>{
  if(['Tab','Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
  if(e.code==='Tab'){ui.scoreOpen=true;ui.show('scoreboard',true);return;}
  if(e.code==='Escape'&&ui.buyOpen&&!$('deploy-overlay').classList.contains('hidden')){closeBuy();return;}
- if(e.code==='Escape'&&!e.repeat){ui.setBuy(false,snapshot);document.exitPointerLock();setPaused(true);return;}
+ if(e.code==='Escape'&&!e.repeat){ui.setBuy(false,snapshot);document.exitPointerLock();if(freeLook)locked=false;setPaused(true);return;}
  if(e.repeat)return;
  if(e.code==='KeyB'&&snapshot.self.alive){
   if(ui.buyOpen)closeBuy();else{ui.setBuy(true,snapshot);setPaused(false);document.exitPointerLock();}

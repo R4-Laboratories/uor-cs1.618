@@ -27,7 +27,8 @@
     "test:discovery-browser": "tsx scripts/discovery-browser-test.ts",
     "test:objective-browser": "tsx scripts/objective-browser-test.ts",
     "test:presentation-browser": "tsx scripts/presentation-browser-test.ts && tsx scripts/presentation-audio-test.ts && node scripts/studio-render-browser.mjs",
-    "test:frame-assets-browser": "tsx scripts/frame-assets-browser-test.ts"
+    "test:frame-assets-browser": "tsx scripts/frame-assets-browser-test.ts",
+    "build:holo": "vite build --mode holo"
   },
   "dependencies": {
     "@fontsource/barlow": "5.3.0",
